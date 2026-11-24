@@ -200,6 +200,7 @@
   _grB10Act(a, b) {
     const v = b && b.dataset ? b.dataset.v : "", s = b && b.dataset ? Number(b.dataset.s || 0) : 0, k = b && b.dataset ? b.dataset.k : "";
     if (a === "grxsunnow") { this._grSunH = null; this._render(); return true; }
+    if (this._grKAct && this._grKAct(a, b)) return true;   /* 2026.11.4.4b1: Fenster- und Türkontakte */
     const ed = this._sfEd; if (!ed) return false;
     const P = ed.plan;
     if (a === "grxnorth") { this._sfSnap(); P.north = ((((P.north || 0) + s) % 360) + 360) % 360; this._render(); return true; }
@@ -215,7 +216,7 @@
     return false;
   }
   _grB10Change(t) {
-    if (t.dataset && t.dataset.f === "grxpk") { const cur = this._grSelItem(); if (cur) { this._sfSnap(); cur.e = t.value || ""; this._render(); } return true; }
+    if (t.dataset && t.dataset.f === "grxpk") { const cur = this._grSelItem(); if (cur) { this._sfSnap(); if (t.dataset.k === "ek") cur.ek = t.value || ""; else { cur.e = t.value || ""; if (!cur.e) delete cur.ek; } this._render(); } return true; }
     if (t.dataset && t.dataset.f === "grxsunh") { this._grSunH = Number(t.value); this._render(); return true; }
     return false;
   }

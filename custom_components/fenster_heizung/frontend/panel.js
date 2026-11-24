@@ -785,7 +785,7 @@ const MV_STG = [
   ["vorab", "0.9", "Fertig bis auf Feinschliff.", "Einstellungen bleiben erhalten, nur Aussehen und Kleinigkeiten ändern sich noch.", "Weiter zu Stabil nach mindestens zwei Updates ohne gemeldeten Datenverlust oder schweren Fehler."],
   ["stabil", "ab 1.0", "Geprüft und für den Alltag gedacht.", "Einstellungen bleiben bei Updates erhalten, neue Funktionen kommen nur dazu.", "Neue Funktionen heben die Version an (1.1, 1.2). Ein großer Umbau macht daraus 2.0."]];
 const MV = {
-  gr: { v: "0.11", b: 15, d: "2026-11-23", p: "2026.11.4.1", log: [["0.11", 15, "2026.11.4.1", "Handy-Ansicht Build 4: Sonderfälle – in schmalen Räumen werden Symbole zu Punkten, zu viele enden mit „+2“, in sehr kleinen Räumen zeigt ein Farbpunkt die Temperatur; Raum antippen zeigt alles im Raum-Blatt"], ["0.11", 14, "2026.11.4.1", "Handy-Ansicht Build 3: neue Werkzeugleiste – Etage, Ansicht, Bearbeiten und „⋯“ in einer Zeile, Ebenen als Wischleiste; der Plan beginnt weiter oben"], ["0.11", 13, "2026.11.4.1", "Handy-Ansicht Build 2: Status-Leiste je Raum – Temperatur links, Geräte mit Zustand, Melder und Lampen rechts, bei schmalen Räumen zweizeilig; nichts überlagert mehr den Raumnamen"], ["0.11", 12, "2026.11.4.1", "Handy-Ansicht Build 1: Raumnamen bleiben immer im Raum (vorher ragte z. B. „Sportzimmer“ in den Nachbarraum), Trennung an der Wortfuge („Sport-/zimmer“), Schrift nach Raumbreite"], ["0.10.1", 11, "2026.11.4", "Stufe Beta: Modul 0 ist mit Version 2026.11.4 zum Testen freigegeben – der Grundriss läuft mit echten Daten und wird von Modul 1, 11 und 18 genutzt"], ["0.10.1", 10, "2026.11.4b58", "Puppenhaus entfernt (nur noch der Plan, im Banner wieder das Haus-Symbol). Werkzeugleiste im Baukasten bleibt am Handy/iPad nach dem Wischen stehen und springt nicht mehr an den Anfang (auch Ebenen- und Etagen-Knöpfe)."], ["0.10", 10, "2026.11.4b56", "Puppenhaus (alle Etagen schräg übereinander, Antippen klappt flach, auch im Banner), Sonnenlicht durch die Fenster mit Tageszeit-Regler und Nordrichtung, Möbel (19) und Außenbereich (42: Garten & Pflanzen, Spielen & Freizeit, Wege, Bauten & Technik) mit Größe in cm, Grundstück als eigene Etage mit Haus-Umriss, Zustände (Pool, Bewässerung, Gartenlampe …). Raumnamen passen sich dem Raum an und verdecken keine Melder mehr"], ["0.9", 9, "2026.11.4b55", "Haustechnik, Sensoren und Notfall-Punkte im Plan (34 Teile, mit Zustand aus Home Assistant, Kegel für Bewegungsmelder und Kamera, WLAN-Reichweite, Notizen); Notfall-Punkte auch in Modul 11. Raum-Sensoren in Home Assistant (Fläche, Temperatur, Lampen an, Fenster offen, belegt, Wohnfläche). Bereiche und Etagen aus dem Plan anlegen"], ["0.8", 8, "2026.11.4b55", "Zoom (+/−, Strg+Mausrad, zwei Finger), Verschieben, Vollbild und Raum-Fokus im Plan. Export als PDF (A4 quer, alle Etagen, mit Titel, Fläche und Datum), PNG und SVG. Dashboard-Karte „Grundriss“ (custom:sw-grundriss-card) mit Stil, Etage, Ebenen und Raum-Blatt"], ["0.7", 7, "2026.11.4b54", "Baukasten 2.0: Raster 5–50 cm, Wände rasten auf 15° ein, Maße im Plan. Türen und Fenster schräg auf jeder Wand, frei drehbar, mit Breite und Art (Doppel-, Schiebe-, Pendel-, Falt-, Terrassentür, Garagentor; bodentief, Dachfenster, Rollladen), Abstand zur Ecke, wandern mit dem Raum. Plan-Check, Maßstab messen, Etage kopieren, Tastatur. Treppenarten (L, U halbgewendelt, Wendel, Dachboden), mobile Heizer und Luftentfeuchter aus Modul 1 (Entfeuchter folgt seinem Standort), Markise mit Stand"], ["0.6", 6, "2026.11.4b54", "Eine Optik überall: Modul 1, 11 und der Baukasten zeichnen den Grundriss wie Modul 0. Neuer Baukasten mit Leiste oben, Werkzeugen links, Eigenschaften daneben und Ablage zum Ziehen. Ebene „Jetzt“ und Raum-Blatt beim Antippen eines Raums"], ["0.5", 5, "2026.11.4b53", "Neue Optik des Grundrisses: Wandstärken, Böden je Raumart, Türen mit Schwenkbogen, Fenster mit Glas (offen = gelb), Treppen, Raumsymbol und m², Maße, Nordpfeil, Maßstab; Stile Modern, Bauplan und Hell"], ["0.4", 4, "2026.11.4b53", "Sichern & Einlesen: Plan als Datei, Einlesen mit Vorschau (ersetzen oder Etagen dazu), Verlauf der letzten 15 Stände und Umzugs-Kopie wiederherstellen"], ["0.3", 3, "2026.11.4b52", "Baukasten zieht aus Modul 11 nach Modul 0: Bearbeiten in Modul 1, 11 und 18 führt hierher und zurück, Reiter Ebenen mit Bauplan, Melder, Lampen und Wärme"], ["0.2", 2, "2026.11.4b52", "Reiter Räume: eine Liste Plan-Raum ↔ Bereich ↔ Raum in Modul 1 mit „genutzt von“, Zuordnung aus Modul 18 übernommen, Einstellungen mit Rückfrage beim Ausschalten"], ["0.1", 1, "2026.11.4b52", "Neues Modul: der Grundriss gehört dem Kern, Umzug aus Modul 11, Plan mit Ebenen Melder und Lampen ansehen"]] },
+  gr: { v: "0.12", b: 1, d: "2026-11-24", p: "2026.11.4.4b1", log: [["0.12", 1, "2026.11.4.4b1", "Fenster- und Türkontakte im Fenster bzw. in der Tür: zu, gekippt, offen und „?“ im Plan, Chip „offen · 25 min“ (nicht auf dem Handy), Übernehmen alter Kontakt-Elemente, „Kontakte aus Modul 1 zuordnen“; Heizkörper mit Wärmeschein und Temperatur zur Raumseite"], ["0.11", 15, "2026.11.4.1", "Handy-Ansicht Build 4: Sonderfälle – in schmalen Räumen werden Symbole zu Punkten, zu viele enden mit „+2“, in sehr kleinen Räumen zeigt ein Farbpunkt die Temperatur; Raum antippen zeigt alles im Raum-Blatt"], ["0.11", 14, "2026.11.4.1", "Handy-Ansicht Build 3: neue Werkzeugleiste – Etage, Ansicht, Bearbeiten und „⋯“ in einer Zeile, Ebenen als Wischleiste; der Plan beginnt weiter oben"], ["0.11", 13, "2026.11.4.1", "Handy-Ansicht Build 2: Status-Leiste je Raum – Temperatur links, Geräte mit Zustand, Melder und Lampen rechts, bei schmalen Räumen zweizeilig; nichts überlagert mehr den Raumnamen"], ["0.11", 12, "2026.11.4.1", "Handy-Ansicht Build 1: Raumnamen bleiben immer im Raum (vorher ragte z. B. „Sportzimmer“ in den Nachbarraum), Trennung an der Wortfuge („Sport-/zimmer“), Schrift nach Raumbreite"], ["0.10.1", 11, "2026.11.4", "Stufe Beta: Modul 0 ist mit Version 2026.11.4 zum Testen freigegeben – der Grundriss läuft mit echten Daten und wird von Modul 1, 11 und 18 genutzt"], ["0.10.1", 10, "2026.11.4b58", "Puppenhaus entfernt (nur noch der Plan, im Banner wieder das Haus-Symbol). Werkzeugleiste im Baukasten bleibt am Handy/iPad nach dem Wischen stehen und springt nicht mehr an den Anfang (auch Ebenen- und Etagen-Knöpfe)."], ["0.10", 10, "2026.11.4b56", "Puppenhaus (alle Etagen schräg übereinander, Antippen klappt flach, auch im Banner), Sonnenlicht durch die Fenster mit Tageszeit-Regler und Nordrichtung, Möbel (19) und Außenbereich (42: Garten & Pflanzen, Spielen & Freizeit, Wege, Bauten & Technik) mit Größe in cm, Grundstück als eigene Etage mit Haus-Umriss, Zustände (Pool, Bewässerung, Gartenlampe …). Raumnamen passen sich dem Raum an und verdecken keine Melder mehr"], ["0.9", 9, "2026.11.4b55", "Haustechnik, Sensoren und Notfall-Punkte im Plan (34 Teile, mit Zustand aus Home Assistant, Kegel für Bewegungsmelder und Kamera, WLAN-Reichweite, Notizen); Notfall-Punkte auch in Modul 11. Raum-Sensoren in Home Assistant (Fläche, Temperatur, Lampen an, Fenster offen, belegt, Wohnfläche). Bereiche und Etagen aus dem Plan anlegen"], ["0.8", 8, "2026.11.4b55", "Zoom (+/−, Strg+Mausrad, zwei Finger), Verschieben, Vollbild und Raum-Fokus im Plan. Export als PDF (A4 quer, alle Etagen, mit Titel, Fläche und Datum), PNG und SVG. Dashboard-Karte „Grundriss“ (custom:sw-grundriss-card) mit Stil, Etage, Ebenen und Raum-Blatt"], ["0.7", 7, "2026.11.4b54", "Baukasten 2.0: Raster 5–50 cm, Wände rasten auf 15° ein, Maße im Plan. Türen und Fenster schräg auf jeder Wand, frei drehbar, mit Breite und Art (Doppel-, Schiebe-, Pendel-, Falt-, Terrassentür, Garagentor; bodentief, Dachfenster, Rollladen), Abstand zur Ecke, wandern mit dem Raum. Plan-Check, Maßstab messen, Etage kopieren, Tastatur. Treppenarten (L, U halbgewendelt, Wendel, Dachboden), mobile Heizer und Luftentfeuchter aus Modul 1 (Entfeuchter folgt seinem Standort), Markise mit Stand"], ["0.6", 6, "2026.11.4b54", "Eine Optik überall: Modul 1, 11 und der Baukasten zeichnen den Grundriss wie Modul 0. Neuer Baukasten mit Leiste oben, Werkzeugen links, Eigenschaften daneben und Ablage zum Ziehen. Ebene „Jetzt“ und Raum-Blatt beim Antippen eines Raums"], ["0.5", 5, "2026.11.4b53", "Neue Optik des Grundrisses: Wandstärken, Böden je Raumart, Türen mit Schwenkbogen, Fenster mit Glas (offen = gelb), Treppen, Raumsymbol und m², Maße, Nordpfeil, Maßstab; Stile Modern, Bauplan und Hell"], ["0.4", 4, "2026.11.4b53", "Sichern & Einlesen: Plan als Datei, Einlesen mit Vorschau (ersetzen oder Etagen dazu), Verlauf der letzten 15 Stände und Umzugs-Kopie wiederherstellen"], ["0.3", 3, "2026.11.4b52", "Baukasten zieht aus Modul 11 nach Modul 0: Bearbeiten in Modul 1, 11 und 18 führt hierher und zurück, Reiter Ebenen mit Bauplan, Melder, Lampen und Wärme"], ["0.2", 2, "2026.11.4b52", "Reiter Räume: eine Liste Plan-Raum ↔ Bereich ↔ Raum in Modul 1 mit „genutzt von“, Zuordnung aus Modul 18 übernommen, Einstellungen mit Rückfrage beim Ausschalten"], ["0.1", 1, "2026.11.4b52", "Neues Modul: der Grundriss gehört dem Kern, Umzug aus Modul 11, Plan mit Ebenen Melder und Lampen ansehen"]] },
   fh: { v: "1.9", b: 9, d: "2026-11-23", p: "2026.11.4b59", log: [["1.9", 9, "2026.11.4b59", "Elektroheizer 2.0 Build 1–4: Entfernen-Dialog mit Rückgängig, Papierkorb (30 Tage) zum Wiederherstellen, Leistung messen und Testlauf im Assistenten; Heizer unter Modul 1 · Einstellungen › Geräte (eigener Reiter entfällt) mit Liste und PV-Regeln, Geräte-Blatt mit Bearbeiten, Pausieren und „In anderen Raum stellen“ (Statistik zieht mit), Raumeinstellungen nur noch mit Kurzinfo; Einrichtungs-Assistent in vier Schritten (Gerät mit Vorschlägen, Raum als Kachel, Leistung per Vorlage, Regeln mit Vorschlägen) aus Raumkarte „⋯“, Modul-1-Einstellungen, Raumeinstellungen und Grundriss; eigene Geräteliste mit fester ID und Namen, automatische Übernahme bestehender Heizer (Reste in den Papierkorb), Entfernen räumt auf (Gerät aus, Thermostate zurück, Schalter-Entität gelöscht, Statistik auf Wunsch behalten)"], ["1.8", 8, "2026.11.3b10", "Haus-Szene: Solarmodule liegen jetzt gerade auf der Dachfläche (unten 4, darüber 3, links vom Schornstein) statt schräg über der Dachkante; Glanz bei Überschuss, Schnee bei Frost"], ["1.8", 7, "2026.11.3b9", "Messräume im Grundriss (Zuordnung im Grundriss oder in den Raumeinstellungen) und Messräume innen oder außen: außen ohne Wohlfühlbereich, mit Frost- und Glättehinweis, als Außenfläche im Grundriss und als Außentemperatur des Hauses wählbar"], ["1.8", 6, "2026.11.3b8", "Grundriss in der neuen Optik: Räume als Kacheln mit Licht in der Temperaturfarbe, Ziel-Temperatur, Status-Plakette wie in der Detail-Ansicht, HD-Heizkörper mit Wärme, Fenster mit Glas, Punktraster und Zusammenfassung (Ø, heizen, Fenster offen)"], ["1.8", 5, "2026.11.3b7", "Grundriss aus Modul 11 erscheint zuverlässig: erneuter Abruf nach Fehler (z. B. nach Neustart von Home Assistant) und jede Minute, Hinweis wenn der Grundriss nur Wände hat"], ["1.8", 4, "2026.11.3b4", "Karten lückenlos: jede Karte rutscht in die freie Lücke der kürzeren Spalte"], ["1.8", 3, "2026.11.3b3", "Luftentfeuchter: Betriebsart „Nur mit PV-Überschuss“ mit Start- und Aus-Verzögerung, Schimmelschutz und Batterie-Ladung als Überschuss; Haus-Szene: Sponsor-Extra Haus-Stile und Himmel-Themen (W7), Himmel gemeinsam mit Modul 3; Animationen halten an, wenn nicht sichtbar; eigene Animationsstufe im Tablet-Modus (Standard Aus)"], ["1.8", 2, "2026.11.3b2", "„Warum?“ als Zeitleiste; Präsenzmelder je Raum (Mindestens/Genau, Verzögerungen, Leerlauf-Absenkung); Haus-Szene in der Kopfkarte (Räume nach Etagen, Zustand, Wärmequelle, PV, Tageszeit und Wetter); Grundriss als Wärmekarte (dritte Ansicht, Baukasten aus Modul 11) mit Hinweis-Plaketten; acht neue Raumbilder (Esszimmer, Wintergarten, Keller / Hauswirtschaft, Werkstatt, Fitness, Dachboden, Garage, Carport / Außen); Messräume: Raumbild wählbar und aus dem Namen erkannt, Menü „⋯“ mit Messraum einstellen und Raumbild & Farbe"], ["1.8", 1, "2026.11.3b1", "Raumkarte 2.0: Raumbild je Raumtyp mit Zustand als Licht, Fenster und Heizkörper, Temperatur-Ring, Heizplan-Band mit Temperaturfarben, Fenster-Uhr, Hinweis-Plaketten, Menü „⋯“, Kompakt-Liste mit Mini-Bild, Elektroheizer und Luftentfeuchter als Kacheln und im Raumbild; Schalter „Raumkarten wie bisher“"], ["1.7", 1, "2026.11.2b10", "Luftentfeuchter-Nachtmodus: eigene Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts, Meldungen bis zum Morgen zurückhalten"], ["1.6", 3, "2026.11.2b7", "Messräume verschwinden nicht mehr, wenn das Dashboard die Einstellungen nicht laden konnte; fehlende Messräume lassen sich aus der Sicherung zurückholen"], ["1.6", 2, "2026.11.2b2", "Anwesenheit: Standort-Einstellungen und Temperatur bei Abwesenheit fallen nicht mehr auf die Grundwerte zurück"], ["1.6", 1, "2026.11.1b16", "Luftentfeuchter: NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“, neue Tag-Aktionen Entfeuchter heute aus und Wassertank geleert"], ["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   ww: { v: "1.1", b: 2, d: "2026-11-22", p: "2026.11.4b46", log: [["1.1", 2, "2026.11.4b46", "Neues Banner: Speicher im Schnitt mit Temperatur oben und unten, Zirkulation, Aufheizen und PV-Überschuss"], ["1.1", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.0", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   en: { v: "1.6", b: 5, d: "2026-11-15", p: "2026.11.3", log: [["1.6", 5, "2026.11.3", "Gaszähler mit Karte für Tag, Woche, Monat und Jahr, Abrechnungsjahr, Preisliste mit „gültig ab“ und Abschlag; Einstellungen in Reitern (Strom, Zähler, Gas, Anzeige)"], ["1.6", 4, "2026.11.3b21", "Autarkie-Ring im Banner sprang hin und her"], ["1.6", 3, "2026.11.3b20", "Flüsse in der Szene liefen nur beim Scrollen: Bewegung läuft jetzt über jeden Neuaufbau weiter"], ["1.6", 2, "2026.11.3b4", "Karten lückenlos beim Verschieben; Kosten-Treppe passt ihre Höhe an, Beschriftungen werden nicht mehr verdeckt; Energie-Szene ohne Zuschnitt, größere Werte, lange Namen gekürzt"], ["1.6", 1, "2026.11.3b3", "Neue Optik Stufe 4: Preisband unter der Tageskurve, Woche/Monat/Jahr gespiegelt (Solar oben, Netzbezug unten), Solar-Kalender im Jahr, Kosten-Treppe mit Symbolen, Sparschwein mit Anschaffungskosten, Verteilung als Ring mit Auto und Geräten aus Modul 4, Werte zählen beim Zeitraumwechsel hoch; W7 Sponsor-Extra Haus-Stile und Himmel-Themen; Energiefluss und Szene ohne Neustart der Animation bei neuen Werten"], ["1.5", 1, "2026.11.3b3", "Neue Optik Stufe 3: Energie-Szene im Banner (Haus mit Dach-PV, Balkon, Batterie, Strommast, Auto), Himmel und Wetter wie Modul 1, Summe mit Σ bei vergangenen Zeiträumen, Antippen führt zu Modul 8/13/14/16, flacher Streifen am Handy, Mini-Szene auf der Startseite"], ["1.4", 1, "2026.11.3b3", "Neue Optik Stufe 2: Energiefluss HD mit Geräte-Plaketten, Balkon als eigener Knoten, Batterie mit Füllstand, Auto aus Modul 8, Linienstärke nach Leistung, Antippen zeigt Werte; Hinweise mit Bild und Knopf, günstigster Strom des Tages; Schalter „Energiefluss wie bisher“"], ["1.3", 1, "2026.11.3b2", "Neue Optik Stufe 1: HD-Symbole an den Kacheln (Solar mit Balkon, Netzbezug, Einspeisung, Verbrauch), Kacheln 2.0 mit Verlauf als Fläche und Punkt „jetzt“, Vergleich als Plakette, Doppelring Autarkie/Eigenverbrauch, Preis-Skala; Schalter „Kacheln wie bisher“"], ["1.2", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -2443,6 +2443,7 @@ button.stck{cursor:pointer}
 .stmn{font-style:normal;font-weight:400;font-size:.76rem;color:var(--mut);margin-left:6px}
 .stinfo{cursor:default}
 .stmini{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;padding:6px 14px 14px}
+.grksug{display:flex;align-items:center;gap:8px;border:1px dashed var(--teal,#2dd4bf);border-radius:10px;padding:7px 10px;margin-top:6px}.grksug span{flex:1;min-width:0}.grksug b{display:block}.grksug small{color:var(--mut);font-size:.74rem;word-break:break-all}.grksug .btn2{flex:none}.grkmig{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border:1px solid var(--teal,#2dd4bf);background:rgba(45,212,191,.08);border-radius:12px;padding:10px 14px;margin:0 0 10px}.grkmig>span{flex:1;min-width:200px}.grkmig b{display:block}.grkmig small{color:var(--mut)}.grkmig .btn2{flex:none}.grkres{margin-top:8px;font-size:.82rem}.grkres div{display:flex;justify-content:space-between;gap:8px;padding:3px 0;border-top:1px solid var(--line)}
 .grprops .pkbtn,.grprops .pkbox{box-sizing:border-box;max-width:100%;min-width:0}.mdsr{display:flex;align-items:center;min-width:0}.mdsr+.mdsr{border-top:1px solid var(--line)}.mdsr .sxrow{flex:1;min-width:0}.mdsr .mdsx{cursor:default}.mdsr .mdsx:hover{background:none}.mdsr.off .sxt b{color:var(--mut)}.mdsoff{opacity:.55}.mdsep{flex:none;width:1px;height:28px;background:var(--line);margin:0 12px 0 4px}.mdsr .sw{margin-right:14px}.mdsr>.ibtn{flex:none}.mdsnt{flex:none;width:46px;margin-right:14px}.mdsst{display:none}.mdsseg{max-width:560px}.mdsseg button{white-space:nowrap}.mdsadd{padding:6px 14px 12px;border-top:1px solid var(--line)}.mdsft .btn2{flex:none}.mdsft{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-top:8px}
 @media(max-width:600px){.mdsr .sxrow>.sxc{display:none}.mdsst{display:inline}.mdsr .mdsd{display:none}.mdsr .sxt b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}.mdsep{margin:0 8px 0 2px}.mdsr .sw{margin-right:10px}.mdsnt{width:46px;margin-right:10px}.mdsseg button{font-size:.74rem;padding:8px 2px}}
 .stmb{display:flex;align-items:center;gap:8px;border:1px dashed var(--line);border-radius:12px;background:transparent;color:inherit;font:inherit;text-align:left;padding:8px 10px;cursor:pointer}
@@ -18103,7 +18104,7 @@ class FensterHeizungPanel extends HTMLElement {
     const floorAtR = (i) => { const an = ((i.r || 0) * Math.PI) / 180, nx = -Math.sin(an) * 10, ny = Math.cos(an) * 10, inR = (q, x, y) => (this._sfInRoom ? this._sfInRoom(q, x, y) : x > q.x && x < q.x + q.w && y > q.y && y < q.y + q.h); const r = ins.find((q) => inR(q, i.x + nx, i.y + ny) || inR(q, i.x - nx, i.y - ny)); return r ? `url(#${u}${kinds.get(r.id).k})` : T.bg; };
     items.forEach((i) => {
       const rot = i.r ? `rotate(${i.r} ${i.x} ${i.y})` : "", mir = i.mh || i.mv ? ` translate(${i.x} ${i.y}) scale(${i.mh ? -1 : 1} ${i.mv ? -1 : 1}) translate(${-i.x} ${-i.y})` : "";
-      if ((i.t === "d" && o.doors) || (i.t === "f" && o.windows)) d += this._grOpenSvg(i, T, WI, i.t === "d" ? floorAtR(i) : T.bg, P.scale > 0 ? P.scale : 40, st);   /* Build 7: alle Arten, jede Breite, jeder Winkel */
+      if ((i.t === "d" && o.doors) || (i.t === "f" && o.windows)) d += this._grOpenSvg(i, T, WI, i.t === "d" ? floorAtR(i) : T.bg, P.scale > 0 ? P.scale : 40, st, P, o.style === "hell");   /* Build 7: alle Arten, jede Breite, jeder Winkel */
       else if (i.t === "s" && o.stairs) d += this._grStairSvg ? this._grStairSvg(i, T, u) : "";   /* Build 7: Treppenarten */
       else if (i.t === "a" && o.doors && this._grAwnSvg) d += this._grAwnSvg(i, T, P.scale > 0 ? P.scale : 40, st, u);   /* Build 7: Markise */
       else if (i.t === "x") d += `<text x="${i.x}" y="${i.y}" font-size="${12 * NF}" font-style="italic" fill="${T.sub}">${esc(i.n || "")}</text>`;
@@ -18312,8 +18313,8 @@ class FensterHeizungPanel extends HTMLElement {
       <span class="grfill"></span>${ed.from && ed.from !== "gr" ? `<button class="grb" data-act="sfxcancel">← ${esc(this._grModName(ed.from))}</button>` : `<button class="grb" data-act="sfxcancel">Abbrechen</button>`}<button class="grb pri" data-act="sfxsave">${ic("check", 15)} Speichern</button></div>`;
     const hS = tl === "h" && this._grTechCat ? `<div class="grpsec"><b>Was setzen? Danach in den Plan tippen.</b>${this._grTechCat(this._grHkLast || "steckdose", "grxhkt")}</div>` : "";
     const oS = tl === "o" && this._grMobCat ? `<div class="grpsec"><b>Was setzen? Danach in den Plan tippen.</b>${this._grMobCat(this._grOkLast || "tisch", "grxokt", (ed.plan.floors.find((f) => f.id === fl) || {}).ga ? true : null)}</div>` : "";
-    const props = `<div class="grprops">${mk}${gS}${hS}${oS}<div class="grpsec">${X.prop}</div><details class="grpsec"${this._grEdFl ? " open" : ""}><summary data-act="grxedfl">Etage &amp; Plan</summary>${X.flBox}${this._grB10Box ? this._grB10Box() : ""}${this._grB7Box ? this._grB7Box() : ""}${X.scaleBox}${X.bgBox}${X.ioBox}</details></div>`;
-    return `<div class="gred2">${bar}<div class="grbody">${rail}<div class="grcv"><div class="sfpl edit"><svg class="sfpe gd" viewBox="${this._grEdVB ? this._grEdVB(fl).join(" ") : "0 0 800 480"}" role="img" aria-label="Grundriss bearbeiten">${this._grEditSvg(fl)}</svg></div>
+    const props = `<div class="grprops">${mk}${gS}${hS}${oS}<div class="grpsec">${X.prop}</div><details class="grpsec"${this._grEdFl ? " open" : ""}><summary data-act="grxedfl">Etage &amp; Plan</summary>${X.flBox}${this._grB10Box ? this._grB10Box() : ""}${this._grKAutoBox ? this._grKAutoBox() : ""}${this._grB7Box ? this._grB7Box() : ""}${X.scaleBox}${X.bgBox}${X.ioBox}</details></div>`;
+    return `<div class="gred2">${bar}${this._grKMigBar ? this._grKMigBar() : ""}<div class="grbody">${rail}<div class="grcv"><div class="sfpl edit"><svg class="sfpe gd" viewBox="${this._grEdVB ? this._grEdVB(fl).join(" ") : "0 0 800 480"}" role="img" aria-label="Grundriss bearbeiten">${this._grEditSvg(fl)}</svg></div>
       <div class="grhint">${ic("info", 14)}<span>${hint}</span></div>${tray}</div>${props}</div></div>`;
   }
   /* Ziehen aus der Ablage in den Plan (Maus, Finger, Stift) */
@@ -18414,7 +18415,8 @@ class FensterHeizungPanel extends HTMLElement {
     return { ...best, a: best.t - hw, b: best.L - best.t - hw };
   }
   /* ---- Zeichnen: Türen und Fenster in allen Arten (für _grDraw) */
-  _grOpenSvg(i, T, WI, fill, sc, st) {
+  _grOpenSvg(i, T, WI, fill, sc, st, P, hell) {
+    const KS = this._grKState ? this._grKState(i) : null, kc = KS ? this._grKCol(KS.k) : "", chip = KS && P && this._grKChip ? this._grKChip(i, P, T, hell) : "";
     const x = i.x, y = i.y, h = this._grHw(i, sc), rot = i.r ? `rotate(${i.r} ${x} ${y})` : "", mir = i.mh || i.mv ? ` translate(${x} ${y}) scale(${i.mh ? -1 : 1} ${i.mv ? -1 : 1}) translate(${-x} ${-y})` : "";
     if (i.t === "d") {
       const gap = `<rect x="${x - h}" y="${y - 9}" width="${2 * h}" height="18" fill="${fill}"/>`, jamb = `<path d="M${x - h} ${y - 9}v18M${x + h} ${y - 9}v18" stroke="${WI}" stroke-width="3"/>`;
@@ -18431,14 +18433,23 @@ class FensterHeizungPanel extends HTMLElement {
         default: s = leaf(`M${x - h} ${y}V${y - 2 * h}`) + arc(`M${x + h} ${y}A${2 * h} ${2 * h} 0 0 0 ${x - h} ${y - 2 * h}`);
       }
       const exA = i.ex === 1 ? `<path d="M${x - 6} ${y + 16}l6 6l6-6" fill="none" stroke="${T.accent}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>` : "";
-      return `<g transform="${rot}${mir}">${gap}${s}${exA}</g>`;
+      if (KS && KS.k === "zu" && i.dk !== "garage") s = `<path d="M${x - h + 1} ${y}H${x + h - 1}" stroke="${T.leaf}" stroke-width="3.4" stroke-linecap="round"/>`;   /* Kontakt: zu → Blatt in der Wand */
+      else if (KS && KS.k === "zu" && i.dk === "garage") s = `<path d="M${x - h} ${y}H${x + h}" stroke="${T.leaf}" stroke-width="4"/>`;
+      else if (KS && kc) s = `<g style="--k:${kc}">${s.replace(/stroke="[^"]*"/g, `stroke="${kc}"`)}</g>` + (KS.k === "offen" && !i.dk ? `<path d="M${x - h} ${y}L${x + h} ${y}A${2 * h} ${2 * h} 0 0 0 ${x - h} ${y - 2 * h}Z" fill="${kc}" fill-opacity=".1"/>` : "") + (KS.k === "?" ? `<text x="${x}" y="${y - 12}" text-anchor="middle" font-size="11" font-weight="800" fill="${kc}">?</text>` : "");
+      const ttlD = KS ? `<title>${{ glas: "Terrassentür", garage: "Garagentor" }[i.dk] || "Tür"} · ${esc(this._wzName(i.e))} · ${{ zu: "zu", offen: "offen", gekippt: "gekippt", "?": "liefert nichts" }[KS.k]}</title>` : "";
+      return `<g transform="${rot}${mir}">${ttlD}${gap}${s}${exA}</g>${chip}`;
     }
-    const open = !!(i.e && st && st[i.e] && st[i.e].state === "on"), c = open ? T.open : T.glass, ttl = `<title>${{ boden: "Fenster bodentief", dach: "Dachfenster", rollo: "Fenster mit Rollladen" }[i.fk] || "Fenster"}${i.e ? ` · ${esc(this._wzName(i.e))} · ${open ? "offen" : "zu"}` : ""}</title>`;
+    const k = KS ? KS.k : "", open = k === "offen", tilt = k === "gekippt", unk = k === "?", c = kc || T.glass, ttl = `<title>${{ boden: "Fenster bodentief", dach: "Dachfenster", rollo: "Fenster mit Rollladen" }[i.fk] || "Fenster"}${i.e ? ` · ${esc(this._wzName(i.e))} · ${{ zu: "zu", offen: "offen", gekippt: "gekippt", "?": "liefert nichts" }[k] || ""}` : ""}</title>`;
     if (i.fk === "dach") return `<g transform="${rot}">${ttl}<rect x="${x - h}" y="${y - h * 0.7}" width="${2 * h}" height="${h * 1.4}" fill="${c}" fill-opacity=".18" stroke="${T.frame}" stroke-width="1.6" stroke-dasharray="6 3"/><path d="M${x - h} ${y - h * 0.7}L${x + h} ${y + h * 0.7}M${x + h} ${y - h * 0.7}L${x - h} ${y + h * 0.7}" stroke="${c}" stroke-width="1" opacity=".7"/></g>`;
-    const frame = `<rect x="${x - h}" y="${y - 6}" width="${2 * h}" height="12" fill="${T.bg}"/><rect x="${x - h}" y="${y - 6}" width="${2 * h}" height="12" fill="none" stroke="${T.frame}" stroke-width="1.6"/>`;
+    const frame = `<rect x="${x - h}" y="${y - 6}" width="${2 * h}" height="12" fill="${T.bg}"/><rect x="${x - h}" y="${y - 6}" width="${2 * h}" height="12" fill="none" stroke="${kc || T.frame}" stroke-width="1.6"${unk ? ' stroke-dasharray="3 2"' : ""}/>`;
     const glass = i.fk === "boden" ? `<path d="M${x - h} ${y - 2}H${x + h}M${x - h} ${y + 2}H${x + h}" stroke="${c}" stroke-width="2.2"/><path d="M${x - h + 3} ${y + 9}h${2 * h - 6}" stroke="${T.frame}" stroke-width="1" stroke-dasharray="2 2"/>` : `<path d="M${x - h} ${y}H${x + h}" stroke="${c}" stroke-width="3"/>`;
     const rollo = i.fk === "rollo" ? `<rect x="${x - h}" y="${y - 12}" width="${2 * h}" height="4" rx="1" fill="${T.sub}" opacity=".85"/>` : "";
-    return `<g transform="${rot}">${ttl}${frame}${glass}${rollo}${open ? `<path d="M${x - h + 2} ${y - 6}L${x - h + 14} ${y - 20}" stroke="${c}" stroke-width="2.4" stroke-linecap="round"/>` : ""}</g>`;
+    /* Kontakt: offen → zwei Flügel aufgeschwenkt (Raumseite), gekippt → schmaler Spalt, ? → gestrichelt mit Fragezeichen */
+    const sd = P && this._grRoomSide ? this._grRoomSide(P, i, 20).side : 1, Y = (v) => y + sd * v;
+    const sash = open ? `<path d="M${x - h} ${Y(6)}A${h} ${h} 0 0 ${sd > 0 ? 0 : 1} ${x} ${Y(6 + h)}M${x + h} ${Y(6)}A${h} ${h} 0 0 ${sd > 0 ? 1 : 0} ${x} ${Y(6 + h)}" fill="${c}" fill-opacity=".12" stroke="${c}" stroke-width="1" stroke-dasharray="3 3"/><path d="M${x - h} ${Y(6)}L${x - h * 0.35} ${Y(6 + h * 0.92)}M${x + h} ${Y(6)}L${x + h * 0.35} ${Y(6 + h * 0.92)}" stroke="${c}" stroke-width="2.6" stroke-linecap="round"/>`
+      : tilt ? `<path d="M${x - h + 2} ${Y(6)}L${x + h - 2} ${Y(6)}L${x + h - 5} ${Y(13)}L${x - h + 5} ${Y(13)}Z" fill="${c}" fill-opacity=".22" stroke="${c}" stroke-width="1.3" stroke-dasharray="3 2"/>`
+      : unk ? `<text x="${x}" y="${Y(17) + (sd > 0 ? 0 : 6)}" text-anchor="middle" font-size="11" font-weight="800" fill="${c}">?</text>` : "";
+    return `<g transform="${rot}">${ttl}${frame}${glass}${rollo}${sash}</g>${chip}`;
   }
   /* ---- Eigenschaften für Türen und Fenster */
   _grOpenProps(sel) {
@@ -18452,7 +18463,7 @@ class FensterHeizungPanel extends HTMLElement {
     return `${kinds}
       <div class="vrow" style="margin:6px 0"><span>Breite</span><div class="step" style="flex:none"><button data-act="grxob" data-s="-5" aria-label="schmaler">${ic("minus", 16)}</button><b>${num(b / 100, 2)} m</b><button data-act="grxob" data-s="5" aria-label="breiter">${ic("plus", 16)}</button></div></div>
       <div class="vrow" style="margin:6px 0"><span>Winkel</span><div class="step" style="flex:none"><button data-act="grxor" data-s="-15" aria-label="15 Grad zurück">${ic("minus", 16)}</button><input class="grang" type="number" min="0" max="359" step="1" data-f="grxang" value="${sel.r || 0}" aria-label="Winkel in Grad"><button data-act="grxor" data-s="15" aria-label="15 Grad weiter">${ic("plus", 16)}</button></div></div>
-      <div class="grseg" style="margin:2px 0 8px"><button data-act="grxor" data-s="90">↻ 90°</button><button data-act="grxor" data-s="180">Umdrehen</button></div>${where}`;
+      <div class="grseg" style="margin:2px 0 8px"><button data-act="grxor" data-s="90">↻ 90°</button><button data-act="grxor" data-s="180">Umdrehen</button></div>${where}${this._grKProps ? this._grKProps(sel) : ""}`;
   }
   /* ---- Maße im Plan beim Bearbeiten (über allem, nicht anklickbar) */
   _grPill(x, y, t, warn) { const w = t.length * 6.3 + 14; return `<rect x="${x - w / 2}" y="${y - 9}" width="${w}" height="18" rx="9" fill="#0b1220" stroke="${warn ? "#f59e0b" : "#2dd4bf"}" opacity=".95"/><text x="${x}" y="${y + 4}" text-anchor="middle" font-size="11" font-weight="700" fill="${warn ? "#fcd34d" : "#5eead4"}">${esc(t)}</text>`; }
@@ -18902,7 +18913,7 @@ class FensterHeizungPanel extends HTMLElement {
       ["kamin", "Kamin / Ofen", "heizen", "fire", ["sensor:temperature", "climate"]], ["therme", "Therme", "heizen", "boiler", ["climate", "water_heater", "sensor:temperature"]], ["wp", "Wärmepumpe", "heizen", "hp", ["climate", "sensor:power"]], ["speicher", "Warmwasserspeicher", "heizen", "boiler", ["water_heater", "sensor:temperature"]],
       ["steckdose", "Steckdose", "strom", "plug", ["switch"]], ["schalter", "Schalter / Taster", "strom", "switch", ["switch", "light", "event"]], ["sicherung", "Sicherungskasten", "notfall", "fuse", []], ["zaehler", "Zähler", "strom", "meter", ["sensor:power", "sensor:energy"]],
       ["wechselrichter", "Wechselrichter", "strom", "inv", ["sensor:power"]], ["akku", "Batteriespeicher", "strom", "batt", ["sensor:battery", "sensor:power"]], ["wallbox", "Wallbox", "strom", "ev", ["sensor:power", "switch"]],
-      ["temp", "Temperatur / Feuchte", "sensor", "temp", ["sensor:temperature", "sensor:humidity"]], ["bewegung", "Bewegungsmelder", "sensor", "motion", ["binary_sensor:motion", "binary_sensor:occupancy", "binary_sensor:presence"]], ["kontakt", "Tür-/Fensterkontakt", "sensor", "contact", ["binary_sensor:window", "binary_sensor:door", "binary_sensor:opening"]],
+      ["temp", "Temperatur / Feuchte", "sensor", "temp", ["sensor:temperature", "sensor:humidity"]], ["bewegung", "Bewegungsmelder", "sensor", "motion", ["binary_sensor:motion", "binary_sensor:occupancy", "binary_sensor:presence"]], ["kontakt", "Kontakt (frei)", "sensor", "contact", ["binary_sensor:window", "binary_sensor:door", "binary_sensor:opening"]],
       ["wasser", "Wassermelder", "sensor", "drop", ["binary_sensor:moisture"]], ["luft", "Luftqualität", "sensor", "air", ["sensor:carbon_dioxide", "sensor:pm25", "sensor:volatile_organic_compounds", "sensor:aqi"]], ["hell", "Helligkeit", "sensor", "sun", ["sensor:illuminance"]],
       ["wlan", "WLAN-Zugangspunkt", "netz", "wifi", []], ["router", "Zigbee/Thread-Router", "netz", "mesh", []], ["kamera", "Kamera", "netz", "cam", ["camera"]], ["klingel", "Klingel", "netz", "bell", ["binary_sensor", "event"]], ["lautsprecher", "Lautsprecher", "netz", "spk", ["media_player"]], ["tv", "TV", "netz", "tv", ["media_player"]],
       ["haupthahn_w", "Haupthahn Wasser", "notfall", "valve", ["valve", "switch"]], ["haupthahn_g", "Haupthahn Gas", "notfall", "gas", ["valve", "switch"]], ["feuerloescher", "Feuerlöscher", "notfall", "ext", []], ["notausgang", "Notausgang", "notfall", "exit", []], ["sammelpunkt", "Sammelpunkt", "notfall", "meet", []], ["erstehilfe", "Erste Hilfe", "notfall", "aid", []],
@@ -18931,24 +18942,37 @@ class FensterHeizungPanel extends HTMLElement {
   }
   /* Heizkörper wie in echt: Länge × Tiefe in cm, Lamellen, Thermostatkopf am Ende. Heizt er (hvac_action heating), glüht er und strahlt Wärme in den Raum. */
   _grRadDim(i) { return { L: Math.max(30, Math.min(300, i.lw || 100)), D: Math.max(6, Math.min(30, i.dp || 10)) }; }
-  _grRadSvg(i, S, sc, T, hell, u) {
+  /* Zu welcher Seite liegt der Raum? +1 = lokale y-Richtung nach Drehung, −1 = Gegenseite (für Wärmeschein und Beschriftung) */
+  _grRoomSide(P, i, dist) {
+    const an = ((i.r || 0) * Math.PI) / 180, nx = -Math.sin(an), ny = Math.cos(an), rs = (P.items || []).filter((q) => q.t === "r" && q.fl === i.fl);
+    const inR = (x, y) => rs.some((q) => (this._sfInRoom ? this._sfInRoom(q, x, y) : x > q.x && x < q.x + q.w && y > q.y && y < q.y + q.h));
+    /* mehrere Abstände prüfen: liegt das Teil nah an einer Wand im Raum, ist die Seite mit mehr Raum die Raumseite */
+    const ds = [dist, dist * 2, dist * 3 + 10], hit = (sg) => ds.reduce((n, d) => n + (inR(i.x + nx * sg * d, i.y + ny * sg * d) ? 1 : 0), 0), a = hit(1), b = hit(-1);
+    return { nx, ny, side: b > a ? -1 : 1 };
+  }
+  /* Heizkörper wie in echt (2026.11.4.4b1): Körper an der Wand, Wärmeschein nur zur Raumseite, Temperatur neben dem Heizkörper im Raum – nicht quer darüber */
+  _grRadSvg(i, S, sc, T, hell, u, P) {
     const { L, D } = this._grRadDim(i), w = (L / 100) * sc, h = Math.max(6, (D / 100) * sc), x = i.x, y = i.y, rot = i.r ? ` transform="rotate(${i.r} ${x} ${y})"` : "";
     const s = this._hass.states[i.e], a = (s && s.attributes) || {}, heat = !!(S && a.hvac_action === "heating"), off = !s || ["off", "unavailable", "unknown"].includes(s.state), id = `${u || "g"}rad${String(i.id).replace(/[^a-z0-9]/gi, "")}`;
-    const body = heat ? `url(#${id}h)` : off ? (hell ? "#d1d5db" : "#4b5563") : hell ? "#f8fafc" : "#cbd5e1", edge = heat ? "#f97316" : off ? (hell ? "#9ca3af" : "#6b7280") : "#94a3b8";
+    const R = this._grRoomSide(P || this._sfPl(), i, h / 2 + 14), sd = R.side;
+    const body = heat ? `url(#${id}h)` : off ? (hell ? "#d1d5db" : "#4b5563") : hell ? "#f8fafc" : "#cbd5e1", edge = heat ? "#ea580c" : off ? (hell ? "#9ca3af" : "#6b7280") : "#94a3b8";
     const n = Math.max(3, Math.min(60, Math.round(w / Math.max(3, (6 / 100) * sc)))), ribs = Array.from({ length: n - 1 }, (_, j) => x - w / 2 + ((j + 1) * w) / n).map((rx) => `M${rx.toFixed(1)} ${(y - h / 2 + 1).toFixed(1)}V${(y + h / 2 - 1).toFixed(1)}`).join("");
-    const glow = heat ? `<g pointer-events="none"${rot}><rect x="${x - w / 2 - h}" y="${y - h * 2.6}" width="${w + 2 * h}" height="${h * 5.2}" rx="${h * 2.6}" fill="url(#${id}g)"><animate attributeName="opacity" values=".55;.9;.55" dur="3s" repeatCount="indefinite"/></rect></g>` : "";
-    const defs = heat ? `<defs><linearGradient id="${id}h" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fdba74"/><stop offset=".5" stop-color="#f97316"/><stop offset="1" stop-color="#ea580c"/></linearGradient><radialGradient id="${id}g"><stop offset="0" stop-color="#f97316" stop-opacity=".45"/><stop offset="1" stop-color="#f97316" stop-opacity="0"/></radialGradient></defs>` : "";
-    const valve = `<circle cx="${x + w / 2 + h * 0.55}" cy="${y}" r="${Math.max(2.5, h * 0.55)}" fill="${heat ? "#fdba74" : hell ? "#fff" : "#e5e7eb"}" stroke="${edge}" stroke-width="1.2"/>`;
-    const lab = S && S.t ? S.t : "", lw = lab.length * 5.6 + 12, ly = y + Math.max(h, 10) / 2 + 4;
-    const chip = lab ? `<rect x="${x - lw / 2}" y="${ly}" width="${lw}" height="15" rx="7.5" fill="${hell ? "#fff" : "#0b1220"}" opacity=".92"/><text x="${x}" y="${ly + 11}" text-anchor="middle" font-size="9.5" font-weight="700" fill="${heat ? "#f97316" : T.sub}">${esc(lab)}</text>` : "";
+    const gh = Math.min(Math.max(h * 3, 0.35 * sc), 0.8 * sc), gy = sd > 0 ? y + h / 2 : y - h / 2 - gh;
+    const glow = heat ? `<g pointer-events="none"${rot}><rect x="${x - w / 2}" y="${gy}" width="${w}" height="${gh}" fill="url(#${id}g)"><animate attributeName="opacity" values=".6;1;.6" dur="3s" repeatCount="indefinite"/></rect></g>` : "";
+    const defs = heat ? `<defs><linearGradient id="${id}h" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fdba74"/><stop offset=".5" stop-color="#f97316"/><stop offset="1" stop-color="#ea580c"/></linearGradient><linearGradient id="${id}g" x1="0" y1="${sd > 0 ? 0 : 1}" x2="0" y2="${sd > 0 ? 1 : 0}"><stop offset="0" stop-color="#f97316" stop-opacity=".42"/><stop offset="1" stop-color="#f97316" stop-opacity="0"/></linearGradient></defs>` : "";
+    const valve = `<rect x="${x + w / 2}" y="${y - h * 0.3}" width="${Math.max(3, h * 0.55)}" height="${h * 0.6}" rx="1.5" fill="${heat ? "#fdba74" : hell ? "#fff" : "#e5e7eb"}" stroke="${edge}" stroke-width="1"/>`;
+    /* Beschriftung: im Raum neben dem Heizkörper, mit Abstand je nach Lage (waagerecht: darunter/darüber, senkrecht: daneben) */
+    const lab = S && S.t ? S.t : "", lw = lab.length * 5.4 + 12, off2 = h / 2 + 5 + Math.abs(R.nx) * (lw / 2) + Math.abs(R.ny) * 7.5;
+    const cx = x + R.nx * sd * off2, cy = y + R.ny * sd * off2;
+    const chip = lab ? `<g pointer-events="none"><rect x="${cx - lw / 2}" y="${cy - 7.5}" width="${lw}" height="15" rx="7.5" fill="${hell ? "#fff" : "#0b1220"}" opacity=".92"/><text x="${cx}" y="${cy + 3.5}" text-anchor="middle" font-size="9.5" font-weight="700" fill="${heat ? "#f97316" : T.sub}">${esc(lab)}</text></g>` : "";
     const tit = `<title>Heizkörper ${num(L, 0)} × ${num(D, 0)} cm${i.e ? ` · ${esc(this._wzName(i.e))}` : ""}${lab ? ` · ${esc(lab)}` : ""}${heat ? " · heizt" : ""}</title>`;
-    return { under: defs + glow, over: `<g>${tit}<g${rot}><rect x="${x - w / 2}" y="${y - h / 2}" width="${w}" height="${h}" rx="${Math.min(3, h / 3)}" fill="${body}" stroke="${edge}" stroke-width="1.4"/><path d="${ribs}" stroke="${heat ? "#c2410c" : edge}" stroke-opacity=".7" stroke-width="1"/>${valve}</g>${chip}</g>` };
+    return { under: defs + glow, over: `<g>${tit}<g${rot}><rect x="${x - w / 2}" y="${y - h / 2}" width="${w}" height="${h}" rx="${Math.min(2.5, h / 3)}" fill="${body}" stroke="${edge}" stroke-width="1.2"/><path d="${ribs}" stroke="${heat ? "#c2410c" : edge}" stroke-opacity=".55" stroke-width=".8"/>${valve}</g>${chip}</g>` };
   }
   _grTechSvg(P, fl, T, q, u, hell, only) {
     const K = this._grTK(), sc = P.scale > 0 ? P.scale : 40; let d = "", over = "";
     (P.items || []).filter((i) => i.t === "h" && i.fl === fl && (!only || this._grTk(i).g === only)).forEach((i) => {
       const k = this._grTk(i), S = this._grTechState(i), c = S && S.al ? "#ef4444" : k.c, on = !!(S && S.on), x = i.x, y = i.y, nf = k.g === "notfall";
-      if (k.k === "heizkoerper") { const R = this._grRadSvg(i, S, sc, T, hell, u); d += R.under; over += R.over; return; }   /* 2026.11.4.3b5: Heizkörper maßstäblich statt Symbol */
+      if (k.k === "heizkoerper") { const R = this._grRadSvg(i, S, sc, T, hell, u, P); d += R.under; over += R.over; return; }   /* 2026.11.4.3b5: Heizkörper maßstäblich statt Symbol */
       if (k.k === "bewegung" || k.k === "kamera") {
         const R = (i.rg || (k.k === "kamera" ? 8 : 6)) * sc, fov = i.fov || (k.k === "kamera" ? 90 : 110), a0 = (((i.r || 0) - 90 - fov / 2) * Math.PI) / 180, a1 = (((i.r || 0) - 90 + fov / 2) * Math.PI) / 180;
         d += `<path d="M${x} ${y}L${x + R * Math.cos(a0)} ${y + R * Math.sin(a0)}A${R} ${R} 0 ${fov > 180 ? 1 : 0} 1 ${x + R * Math.cos(a1)} ${y + R * Math.sin(a1)}Z" fill="${c}" fill-opacity="${on ? 0.22 : 0.08}" stroke="${c}" stroke-opacity=".45" stroke-dasharray="4 4"/>`;
@@ -19259,6 +19283,7 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
   _grB10Act(a, b) {
     const v = b && b.dataset ? b.dataset.v : "", s = b && b.dataset ? Number(b.dataset.s || 0) : 0, k = b && b.dataset ? b.dataset.k : "";
     if (a === "grxsunnow") { this._grSunH = null; this._render(); return true; }
+    if (this._grKAct && this._grKAct(a, b)) return true;   /* 2026.11.4.4b1: Fenster- und Türkontakte */
     const ed = this._sfEd; if (!ed) return false;
     const P = ed.plan;
     if (a === "grxnorth") { this._sfSnap(); P.north = ((((P.north || 0) + s) % 360) + 360) % 360; this._render(); return true; }
@@ -19274,7 +19299,7 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
     return false;
   }
   _grB10Change(t) {
-    if (t.dataset && t.dataset.f === "grxpk") { const cur = this._grSelItem(); if (cur) { this._sfSnap(); cur.e = t.value || ""; this._render(); } return true; }
+    if (t.dataset && t.dataset.f === "grxpk") { const cur = this._grSelItem(); if (cur) { this._sfSnap(); if (t.dataset.k === "ek") cur.ek = t.value || ""; else { cur.e = t.value || ""; if (!cur.e) delete cur.ek; } this._render(); } return true; }
     if (t.dataset && t.dataset.f === "grxsunh") { this._grSunH = Number(t.value); this._render(); return true; }
     return false;
   }
@@ -19285,6 +19310,138 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
     its.forEach((i) => { const a = [i.x, i.x2, i.x + (i.w || 0)].filter((v) => v != null), b = [i.y, i.y2, i.y + (i.h || 0)].filter((v) => v != null); x0 = Math.min(x0, ...a.map((v) => v - 20)); y0 = Math.min(y0, ...b.map((v) => v - 20)); x1 = Math.max(x1, ...a.map((v) => v + 20)); y1 = Math.max(y1, ...b.map((v) => v + 20)); });
     x0 = Math.max(-50, x0); y0 = Math.max(-50, y0); x1 = Math.min(1200, x1); y1 = Math.min(1200, y1);
     return [x0, y0, x1 - x0, y1 - y0];
+  }
+  /* ================= Modul 0 v0.12 (2026.11.4.4b1): Fenster- und Türkontakte im Fenster bzw. in der Tür =================
+     Der Kontakt gehört zum Element selbst (i.e, optional i.ek für die Kippstellung). Der Plan zeigt zu, gekippt, offen und
+     „?“ (liefert nichts) – in Modul 0, in der Wärmekarte von Modul 1 und im Plan von Modul 11. Alte Kontakt-Elemente
+     direkt an Fenstern und Türen lassen sich übernehmen; „Kontakte aus Modul 1 zuordnen“ verteilt die Raum-Kontakte. */
+  _grKDc(e) { const s = this._hass.states[e]; return (s && s.attributes && s.attributes.device_class) || ""; }
+  _grKCand(i) {
+    const st = this._hass.states;
+    return Object.keys(st).filter((e) => {
+      const d = e.split(".")[0], dc = this._grKDc(e);
+      if (d === "binary_sensor") return ["window", "door", "opening", "garage_door"].includes(dc) || /fenster|window|tür|tuer|door|kontakt|contact/i.test(e);
+      if (d === "sensor") return /griff|handle|fenster|window|tilt|kipp/i.test(`${e} ${this._wzName(e)}`) && /^(open|opened|offen|tilted|tilt|gekippt|closed|zu|geschlossen|on|off)$/i.test(String(st[e].state)) ;
+      if (d === "cover") return i.t === "d" && (i.dk === "garage" || dc === "garage" || /garage|tor/i.test(e));
+      return false;
+    });
+  }
+  /* Zustand: zu · gekippt · offen · ? (liefert nichts); seit = Zeitpunkt der letzten Änderung */
+  _grKVal(e) {
+    const s = e && this._hass.states[e]; if (!s) return null;
+    const v = String(s.state).toLowerCase();
+    if (["unavailable", "unknown", ""].includes(v)) return "?";
+    if (/^(tilted|tilt|gekippt)$/.test(v)) return "gekippt";
+    if (/^(on|open|opened|opening|offen)$/.test(v)) return "offen";
+    if (/^(off|closed|closing|zu|geschlossen)$/.test(v)) return "zu";
+    return "?";
+  }
+  _grKState(i) {
+    if (!i || !i.e) return null;
+    const a = this._grKVal(i.e), b = i.ek ? this._grKVal(i.ek) : null; if (!a) return { k: "?", t: 0 };
+    const k = a === "?" ? "?" : b === "offen" || b === "gekippt" ? "gekippt" : a;
+    const s = this._hass.states[i.ek && k === "gekippt" ? i.ek : i.e], t = s && s.last_changed ? Date.parse(s.last_changed) : 0;
+    return { k, t };
+  }
+  _grKCol(k) { return k === "offen" ? "#ef4444" : k === "gekippt" ? "#f59e0b" : k === "?" ? "#94a3b8" : ""; }
+  /* Chip „offen · 25 min“ (ab 5 Minuten; orange ab der Erinnerung aus Modul 1, sonst 15 min) – auf dem Handy nur die Farbe */
+  _grKChip(i, P, T, hell) {
+    const S = this._grKState(i); if (!S || (S.k !== "offen" && S.k !== "gekippt") || this._narrow || !S.t) return "";
+    const min = Math.floor((Date.now() - S.t) / 60000); if (min < 5) return "";
+    const lim = Math.max(5, Number((this._gen || {}).notify_after) || 15), lab = `${S.k} · ${min >= 120 ? Math.floor(min / 60) + " h" : min + " min"}`, lw = lab.length * 5.4 + 12;
+    const R = this._grRoomSide(P, i, 22), d = 16 + Math.abs(R.nx) * (lw / 2) + Math.abs(R.ny) * 7.5, cx = i.x + R.nx * R.side * d, cy = i.y + R.ny * R.side * d, c = min >= lim ? "#f97316" : this._grKCol(S.k);
+    return `<g pointer-events="none"><rect x="${cx - lw / 2}" y="${cy - 7.5}" width="${lw}" height="15" rx="7.5" fill="${hell ? "#fff" : "#0b1220"}" stroke="${c}" stroke-width="1" opacity=".95"/><text x="${cx}" y="${cy + 3.5}" text-anchor="middle" font-size="9.5" font-weight="700" fill="${c}">${esc(lab)}</text></g>`;
+  }
+  /* Plan-Räume an beiden Seiten einer Öffnung → passende Modul-1-Räume */
+  _grKRooms(i, P) {
+    const an = ((i.r || 0) * Math.PI) / 180, nx = -Math.sin(an), ny = Math.cos(an), rs = (P.items || []).filter((q) => q.t === "r" && q.fl === i.fl), M = this._collect ? this._collect() : [], out = [];
+    [1, -1].forEach((sg) => { const x = i.x + nx * sg * 18, y = i.y + ny * sg * 18, r = rs.find((q) => this._sfInRoom(q, x, y)); if (r) { const m = this._gpMatch ? this._gpMatch(r, M) : null; if (m && !out.includes(m)) out.push(m); } });
+    return out;
+  }
+  _grKUsed(P, except) { return new Set((P.items || []).filter((x) => (x.t === "d" || x.t === "f") && x.id !== except).flatMap((x) => [x.e, x.ek]).filter(Boolean)); }
+  _grKSug(sel, P) {
+    const used = this._grKUsed(P, sel.id), isD = sel.t === "d";
+    for (const m of this._grKRooms(sel, P)) {
+      const free = (m.windows || []).filter((e) => !used.has(e) && this._hass.states[e]);
+      const pick = free.find((e) => (isD ? /tür|tuer|door|terrass/i : /fenster|window/i).test(`${e} ${this._wzName(e)}`)) || (free.length === 1 ? free[0] : null);
+      if (pick) return { e: pick, room: m.name };
+    }
+    return null;
+  }
+  /* Seitenfeld: Kontakt-Zeile für Fenster und Türen */
+  _grKProps(sel) {
+    if (sel.t === "d" && sel.dg) return "";
+    const P = this._sfPl(), cand = this._grKCand(sel), S = this._grKState(sel), sg = !sel.e ? this._grKSug(sel, P) : null;
+    const txt = S ? { zu: "zu", offen: "offen", gekippt: "gekippt", "?": "liefert nichts" }[S.k] : "";
+    const since = S && S.t ? ` seit ${new Date(S.t).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}` : "";
+    const hint = sel.t === "d" ? (sel.dk === "garage" ? /garage|tor/i : /tür|tuer|door|terrass|haus/i) : /fenster|window|griff/i;
+    return `<div class="sffld"><label>Kontakt aus Home Assistant (optional)</label>${cand.length || sel.e ? this._wzSel(cand, sel.e || "", "grxpk", `data-k="e"`, "– kein Kontakt –", hint) : `<div class="mut sm">Kein Fenster- oder Türkontakt in Home Assistant gefunden.</div>`}
+      ${sg ? `<div class="grksug"><span><b>${esc(this._wzName(sg.e))}</b><small>${esc(sg.e)} · in Modul 1 im Raum ${esc(sg.room)}</small></span><button class="btn2 pri" data-act="grxkuse" data-v="${esc(sg.e)}">Übernehmen</button></div>` : ""}
+      ${S ? `<div class="grwall ${S.k === "zu" ? "ok" : ""}" style="margin-top:6px">${ic(S.k === "zu" ? "check" : S.k === "?" ? "alert" : "windowOpen", 14)}<span>Verbunden · <b style="color:${this._grKCol(S.k) || "inherit"}">${txt}</b>${S.k === "?" ? "" : since}</span></div>` : ""}</div>
+      ${sel.t === "f" && sel.e ? `<div class="sffld"><label>Zweiter Kontakt für die Kippstellung (optional)</label>${this._wzSel(cand.filter((e) => e !== sel.e), sel.ek || "", "grxpk", `data-k="ek"`, "– keiner –", /kipp|tilt/i)}<small class="mut" style="display:block;margin-top:4px">Fenstergriffe, die selbst „gekippt“ melden (z. B. Homematic, Aqara), brauchen keinen zweiten Kontakt.</small></div>` : ""}`;
+  }
+  /* Alte Kontakt-Elemente direkt an Fenstern oder Türen (höchstens 60 cm) */
+  _grKMigList(P) {
+    const sc = P.scale > 0 ? P.scale : 40, ops = (P.items || []).filter((x) => (x.t === "d" && !x.dg) || x.t === "f"), out = [], taken = new Set();
+    (P.items || []).filter((x) => x.t === "h" && x.hk === "kontakt" && x.e).forEach((k) => {
+      let best = null; ops.filter((o) => o.fl === k.fl && !o.e && !taken.has(o.id)).forEach((o) => { const d = Math.hypot(o.x - k.x, o.y - k.y) - (this._grHw ? this._grHw(o, sc) : 40) * 0.6; if (d <= 0.6 * sc && (!best || d < best.d)) best = { o, d }; });
+      if (best) { taken.add(best.o.id); out.push({ k, o: best.o }); }
+    });
+    return out;
+  }
+  _grKMigBar() {
+    const ed = this._sfEd; if (!ed || this._grKMigLater) return "";
+    const L = this._grKMigList(ed.plan); if (!L.length) return "";
+    const nm = (o) => o.t === "d" ? ({ glas: "Terrassentür", garage: "Garagentor" }[o.dk] || "Tür") : "Fenster";
+    const rn = (o) => { const r = (ed.plan.items || []).find((q) => q.t === "r" && q.fl === o.fl && (this._sfInRoom(q, o.x + 12, o.y + 12) || this._sfInRoom(q, o.x - 12, o.y - 12))); return r && r.n ? " " + r.n : ""; };
+    return `<div class="grkmig">${ic("windowOpen", 18)}<span><b>${L.length === 1 ? "1 Kontakt liegt" : L.length + " Kontakte liegen"} direkt an Fenstern oder Türen</b><small>${esc(L.slice(0, 4).map((x) => nm(x.o) + rn(x.o)).join(" · "))}${L.length > 4 ? " …" : ""}. Sie werden in das Fenster bzw. die Tür übernommen, die Symbole verschwinden.</small></span><button class="btn2 pri" data-act="grxkmig">Übernehmen</button><button class="btn2" data-act="grxkmiglater">Später</button></div>`;
+  }
+  /* Etage & Plan: Kontakte aus Modul 1 auf Fenster und Türen verteilen – nur wenn eindeutig */
+  _grKAuto() {
+    const ed = this._sfEd, P = ed.plan, used = this._grKUsed(P, ""), res = [];
+    const plRooms = (P.items || []).filter((q) => q.t === "r"), M = this._collect ? this._collect() : [];
+    plRooms.forEach((r) => {
+      const m = this._gpMatch ? this._gpMatch(r, M) : null; if (!m) return;
+      const ops = (P.items || []).filter((o) => ((o.t === "d" && !o.dg) || o.t === "f") && o.fl === r.fl && !o.e && this._grKRooms(o, P).includes(m));
+      const sens = (m.windows || []).filter((e) => !used.has(e) && this._hass.states[e]);
+      if (!ops.length || !sens.length) return;
+      const isDoor = (e) => /tür|tuer|door|terrass/i.test(`${e} ${this._wzName(e)}`), pairs = [];
+      if (ops.length === 1 && sens.length === 1) pairs.push([ops[0], sens[0]]);
+      else {
+        const oD = ops.filter((o) => o.t === "d"), oF = ops.filter((o) => o.t === "f"), sD = sens.filter(isDoor), sF = sens.filter((e) => !isDoor(e));
+        if (oD.length === 1 && sD.length === 1) pairs.push([oD[0], sD[0]]);
+        if (oF.length === 1 && sF.length === 1) pairs.push([oF[0], sF[0]]);
+      }
+      pairs.forEach(([o, e]) => { o.e = e; used.add(e); });
+      const left = ops.length - pairs.length;
+      res.push({ room: r.n || m.name, n: pairs.length, open: left > 0 && sens.length > pairs.length ? left : 0 });
+    });
+    return res;
+  }
+  _grKAct(a, b) {
+    const ed = this._sfEd, v = b && b.dataset ? b.dataset.v : "";
+    if (a === "grxkmiglater") { this._grKMigLater = true; this._render(); return true; }
+    if (!ed) return false;
+    if (a === "grxkmig") {
+      const L = this._grKMigList(ed.plan); if (!L.length) return true;
+      this._sfSnap(); const drop = new Set(L.map((x) => x.k.id));
+      L.forEach(({ k, o }) => { o.e = k.e; });
+      ed.plan.items = ed.plan.items.filter((x) => !drop.has(x.id)); if (drop.has(ed.sel)) ed.sel = "";
+      this._toast(`${L.length} ${L.length === 1 ? "Kontakt" : "Kontakte"} übernommen – Speichern nicht vergessen`); this._render(); return true;
+    }
+    if (a === "grxkauto") {
+      this._sfSnap(); const R = this._grKAuto(), n = R.reduce((s, x) => s + x.n, 0), open = R.filter((x) => x.open);
+      this._grKRes = R; this._toast(n ? `${n} ${n === 1 ? "Kontakt" : "Kontakte"} zugeordnet${open.length ? ` · offen: ${open.map((x) => x.room).join(", ")}` : ""}` : open.length ? `Nicht eindeutig: ${open.map((x) => x.room).join(", ")} – bitte am Fenster wählen` : "Nichts zuzuordnen – Räume in Modul 1 und im Plan gleich benennen");
+      this._render(); return true;
+    }
+    const cur = (ed.plan.items || []).find((x) => x.id === ed.sel); if (!cur || (cur.t !== "d" && cur.t !== "f")) return false;
+    if (a === "grxkuse") { this._sfSnap(); cur.e = v; this._render(); return true; }
+    return false;
+  }
+  _grKAutoBox() {
+    const R = this._grKRes;
+    return `<div class="sffld"><label>Fenster- und Türkontakte</label><div class="mut sm" style="margin-bottom:6px">Verteilt die Fensterkontakte aus Modul 1 auf die Fenster und Türen im Plan – Raum für Raum, nur wenn es eindeutig ist.</div><button class="btn2" data-act="grxkauto" style="flex:none">${ic("windowOpen", 15)} Kontakte aus Modul 1 zuordnen</button>
+      ${R && R.length ? `<div class="grkres">${R.map((x) => `<div><span>${esc(x.room)}</span><b>${x.n ? x.n + " zugeordnet" : ""}${x.open ? `${x.n ? " · " : ""}${x.open} offen` : ""}${!x.n && !x.open ? "nichts frei" : ""}</b></div>`).join("")}</div>` : ""}</div>`;
   }
   /* ================= Modul 10: Konzept zum Durchklicken (In Entwicklung, Coming soon) ================= */
   _gaTab() {
