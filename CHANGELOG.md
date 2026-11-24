@@ -2,6 +2,19 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4.4b5] - 2026-11-24
+
+Korrekturen an den Sponsor-Max-Extras aus 2026.11.4.4b4.
+
+### Behoben
+- **Entitäten verschwanden beim Neustart:** War der Sponsor-Schlüssel nach dem Start noch nicht geladen, wurden die Entitäten der Extras gelöscht und neu angelegt. Jetzt werden sie nur sofort entfernt, wenn man das Extra selbst ausschaltet. Endet Sponsor Max, sind sie „nicht verfügbar“ und werden erst nach 30 Tagen gelöscht.
+- **Wieder einschalten:** Nach Aus und wieder An werden die Entitäten zuverlässig neu angelegt, ohne Fehlermeldung „ID existiert schon“.
+- **Messräume im Zeugnis:** Nach einem Neustart fehlten sie, bis das Dashboard einmal geöffnet wurde.
+- **Elektroheizer mit PV-Überschuss:** Der Anteil aus eigenem Solarstrom wurde zum Netzpreis gerechnet. Jetzt zählt nur der Netzbezug.
+- **Fenster-offen-Kosten bei Elektroheizern:** wurden durch den Wirkungsgrad der Zentralheizung geteilt und in Räumen nur mit Elektroheizer auf 0 gekappt.
+- **Wand-Tablet:** Kacheln zeigen die Temperatur des Raumsensors wie Modul 1 (vorher nur Thermostat). Konnten die Werte nicht geladen werden, lud die Leiste auf der Startseite in einer Schleife. Das Tablet holt Schalter und Einstellungen jetzt alle 10 Minuten neu.
+- **Abend-Briefing:** Die Zeilen der Extras (Wochennote, Heizkosten von gestern) erscheinen nur noch morgens.
+
 ## [2026.11.4.4b4] - 2026-11-24
 
 Drei neue Extras für Sponsor Max – die „bald“-Einträge in „Deine Extras“ sind jetzt Schalter (Standard aus). Sponsor und alle anderen sehen dort „🔒 Sponsor Max“ mit kurzer Beschreibung.

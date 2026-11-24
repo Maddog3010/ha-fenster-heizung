@@ -135,6 +135,12 @@ def test_costs_without_meter_use_estimate():
     assert r["a"]["eur"] == 0.4 and r["a"]["win"] == 0.4  # Fenster-Kosten nie mehr als die Raumkosten
 
 
+def test_window_cost_in_heater_only_room():
+    # Raum nur mit Elektroheizer: Fenster-Kosten dürfen nicht auf 0 fallen, aber nie über den Raumkosten liegen
+    r = L.period_costs({"d": {"b": {"ix": 0.0, "ce": 0.0, "ee": 0.5, "em": True, "we": 0.2, "wm": 30}}})
+    assert r["b"]["eur"] == 0.5 and r["b"]["win"] == 0.2
+
+
 def test_what_if():
     assert L.what_if(29.1) == 1.75
 

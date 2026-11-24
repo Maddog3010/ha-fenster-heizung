@@ -14753,7 +14753,8 @@ class FensterHeizungPanel extends HTMLElement {
     const sc = scope || this._mqScope || "month";
     this._hass.callWS({ type: "fenster_heizung/mx_get", scope: sc }).then((r) => { this._mqx = r; this._mqTs = Date.now(); this._mqScope = sc; })
       .catch(() => { this._mqx = this._mqx || { max: false, on: {}, err: true }; })
-      .finally(() => { this._mqBusy = false; if (this._loOpen) this._render(); if (this._modal && String(this._modal.type).startsWith("mqx")) this._renderModal(); });
+      .finally(() => { this._mqBusy = false; this._mqTs = Date.now(); /* auch bei Fehler: sonst lädt die Tablet-Leiste in einer Schleife */
+        if (this._loOpen || (this._tmOn && this._tmOn())) this._render(); if (this._modal && String(this._modal.type).startsWith("mqx")) this._renderModal(); });
   }
   /* laufender Zeitraum, solange er noch keine Note hat: der letzte abgeschlossene */
   _mqZ(W, per) { const cur = per === "week" ? W.week : W.month, last = per === "week" ? W.last_week : W.last_month; return cur && cur.note == null && last && last.note != null ? { ...last, done: true } : cur; }
@@ -14988,7 +14989,8 @@ class FensterHeizungPanel extends HTMLElement {
   }
   /* aus _tmTick: Zustand ermitteln, melden, Helligkeit, Alarm, Einbrennschutz */
   _mqTbTick() {
-    if (!this._mqTbOn()) { if (this._mqx === undefined && this._tmOn()) this._mqLoad(); return; }
+    if (Date.now() - (this._mqTs || 0) > 600000) this._mqLoad(true);  /* alle 10 Min.: Schalter, Einstellungen und Werte von anderen Geräten */
+    if (!this._mqTbOn()) return;
     if (!this._mqWakeSub && this._hass.connection && this._hass.user && this._hass.user.is_admin) {
       this._mqWakeSub = true;
       this._hass.connection.subscribeEvents((ev) => { if (ev.data && ev.data.tid === this._tmId()) this._tmWake(); }, "fenster_heizung_mx_wake").catch(() => { this._mqWakeSub = false; });
@@ -15042,7 +15044,7 @@ class FensterHeizungPanel extends HTMLElement {
     const i = R.findIndex((r) => r.id === T.room); if (i > 0) R = [R[i], ...R.slice(0, i), ...R.slice(i + 1)];
     const tile = (r) => {
       const th = (r.thermos || []).map((e) => st[e]).filter(Boolean), cur = th.map((x) => parseFloat(x.attributes.current_temperature)).filter(isFinite);
-      const t = r.rtVal != null ? r.rtVal : cur.length ? cur.reduce((a, b) => a + b, 0) / cur.length : NaN, h = r.humEid && st[r.humEid] ? parseFloat(st[r.humEid].state) : NaN;
+      const rt = this._rt(r, "show"), t = rt.sensor ? rt.t : cur.length ? cur.reduce((a, b) => a + b, 0) / cur.length : NaN, h = r.humEid && st[r.humEid] ? parseFloat(st[r.humEid].state) : NaN;
       const open = r.mode === "heizung_pausiert" || (r.windows || []).some((e) => st[e] && ["on", "open"].includes(st[e].state)), heat = th.some((x) => x.attributes.hvac_action === "heating");
       return `<div class="mqtile ${r.id === T.room ? "own" : ""}"><small>${esc(r.name)}</small><b>${isFinite(t) ? num(t, 1) + "°" : "–"}</b>${isFinite(h) ? `<span class="${h > 70 ? "warn" : ""}">${num(h, 0)} %</span>` : ""}<em class="${open ? "pk" : heat ? "tl" : ""}">${open ? "🪟 offen" : heat ? "heizt" : ""}</em></div>`;
     };

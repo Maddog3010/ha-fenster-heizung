@@ -243,8 +243,9 @@ def room_cost(day: dict[str, Any], house: dict[str, Any], six: float) -> dict[st
     else:
         central = day.get("ce", 0.0)
         meas = False
-    win = min(day.get("we", 0.0), central) if central > 0 else 0.0
-    return {"central": central, "elec": day.get("ee", 0.0), "win": win, "meter": meas, "elec_meas": bool(day.get("em"))}
+    elec = day.get("ee", 0.0)
+    win = min(day.get("we", 0.0), central + elec)  # Teil der Raumkosten, nie mehr als diese
+    return {"central": central, "elec": elec, "win": win, "meter": meas, "elec_meas": bool(day.get("em"))}
 
 
 def period_costs(days: dict[str, dict[str, Any]]) -> dict[str, Any]:

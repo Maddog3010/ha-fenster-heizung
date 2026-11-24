@@ -88,13 +88,20 @@ def register(hass: HomeAssistant, platform: str, add: Callable[[list], None], ma
         except Exception:  # noqa: BLE001
             return
         store["mx_vals"] = vals
+        try:  # aus der Registrierung entfernt (Extra ausgeschaltet): beim Wiedereinschalten neu anlegen
+            from homeassistant.helpers import entity_registry as er
+
+            reg = er.async_get(hass)
+            for k in [k for k in have if k not in vals]:
+                x = k.split("_", 1)[0][:2]
+                if reg.async_get_entity_id(platform, DOMAIN, f"{DOMAIN}_mx_{x}_{k}") is None:
+                    have.discard(k)
+        except Exception:  # noqa: BLE001
+            pass
         new = [k for k, v in vals.items() if v["p"] == platform and k not in have]
         if new:
             have.update(new)
             add([make(k, vals[k]) for k in new])
-        removed = [k for k in have if k not in vals]
-        for k in removed:
-            have.discard(k)  # Registrierung räumt mx_extras.sync() auf; hier nur „nicht verfügbar“
         async_dispatcher_send(hass, SIGNAL_VALS)
 
     mm = store.get("mxx")
