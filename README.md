@@ -523,6 +523,7 @@ Der Dienst ist offen: `statistik-worker/` (Cloudflare Worker, Anleitung in `docs
 | Morgen-Briefing, Jahres-Poster | | ✓ |
 | Wächter, Woche voraus, Was wäre wenn … | | ✓ |
 | Haus-Autopilot, Heizplan-Assistent | | ✓ |
+| Wohnklima-Zeugnis, Heizkosten je Raum, Wand-Tablet-Extras (ab 2026.11.4.4b4) | | ✓ |
 | Beta-Versionen (ab 2026.11.2) | 3 Tage nach Erscheinen | sofort |
 
 <details open>
@@ -552,6 +553,9 @@ Der Dienst ist offen: `statistik-worker/` (Cloudflare Worker, Anleitung in `docs
 - **Heizplan-Assistent:** Vorschläge zum früheren Absenken oder Aufheizen aus der gelernten Aufheizzeit, mit „Übernehmen“ und „Rückgängig“.
 - **Was wäre, wenn …:** größerer Akku oder mehr PV mit den Stundenwerten der letzten 12 Monate durchgerechnet, immer als Schätzung.
 - **Morgen-Briefing** aufs Handy, **Jahres-Poster** zum Drucken und der **Beta-Kanal** mit Testversionen sofort.
+- **Wohnklima-Zeugnis** (ab 2026.11.4.4b4): Schulnoten 1–6 je Raum und fürs Haus – Temperatur, Luftfeuchte, Lüften und Schimmelrisiko (zählt doppelt). Wochenzeugnis montags, Monatszeugnis am 1., mit Tipp zum schlechtesten Fach, im Morgen-Briefing und im Monatsbericht. Sensoren `sensor.sw_wohnklima_note_…`, `binary_sensor.sw_schimmelrisiko_…`, Ereignis `fenster_heizung_wohnklima_zeugnis`.
+- **Heizkosten je Raum** (ab 2026.11.4.4b4): Euro je Raum für Heute, Woche, Monat und Heizsaison. Elektroheizer mit Energiezähler gemessen, sonst wie Thermostate geschätzt (Heizlast × Ventilöffnung); mit Gesamtzähler ergibt die Summe genau den Zähler. Dazu die Kosten für Heizen bei offenem Fenster und „1 °C weniger spart …“. Räume ohne Thermostat und Heizer (Messräume) erscheinen nicht.
+- **Wand-Tablet-Extras** (ab 2026.11.4.4b4): Ruhe-Anzeige mit Uhr und Räumen (eigener Raum zuerst), Nachtdimmung mit roter oder Teal-Uhr, Schlafen, Einbrennschutz, bis zu 4 Schnellaktionen, Alarm aus Modul 11 als Vollbild mit Ton am Tablet. Echte Helligkeit über Fully Kiosk, Ladesteckdose hält den Akku bei 30–80 %. Je Tablet `binary_sensor.sw_tablet_…_wach`, `sensor.sw_tablet_…_zustand` und `button.sw_tablet_…_wecken` (z. B. für die Türklingel).
 
 <p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_max_autopilot.png" width="760" alt="Haus-Autopilot und Wächter"></p>
 <p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_max_heizplan_rechner_beta.png" width="760" alt="Heizplan-Assistent, Was wäre wenn, Beta-Kanal"></p>
@@ -619,7 +623,7 @@ Als [Issue auf GitHub](https://github.com/Maddog3010/ha-fenster-heizung/issues),
 - **Neue Version veröffentlichen:** Eintrag `## [2026.12.1] - JJJJ-MM-TT` in `CHANGELOG.md`, `version` in `manifest.json` setzen, `build.py` ausführen, auf GitHub ein Release mit demselben Tag ohne `v` anlegen (Testversion: **Set as a pre-release**).
 - **Modulversionen** stehen in `MV` in `02-konstanten.js` (`v`, Build `b`, Datum, Paket, Änderungsliste). Neue Funktion: Version +0.1, Build 1. Fehlerbehebung: Build +1.
 - Schreibende WebSocket-Befehle sind Administratoren vorbehalten. WebSocket-Felder heißen nie `id` (`dev`, `entry`, `ref` stattdessen).
-- **Sponsor Max:** `coach.py` (Energie-Coach, Monatsbericht), `waechter.py` (Wächter, Woche voraus), `autopilot.py` (Haus-Autopilot, Heizplan-Assistent), im Dashboard `12k-sponsor-s3.js` und `12o-max.js`.
+- **Sponsor Max:** `coach.py` (Energie-Coach, Monatsbericht), `waechter.py` (Wächter, Woche voraus), `autopilot.py` (Haus-Autopilot, Heizplan-Assistent), `mx_extras.py`/`mx_logic.py`/`mx_ent.py` (Wohnklima-Zeugnis, Heizkosten je Raum, Wand-Tablet-Extras), im Dashboard `12k-sponsor-s3.js`, `12o-max.js` und `12f2-mqx.js`.
 - **Modul 4:** `geraete.py` (Läufe mit Kurve, Standby, Jahreszähler, PV je Stunde), `geraete_calc.py` (bestes Startfenster, Preis-Gleichstand), im Dashboard `11-modul4-geraetestrom-elektroauto.js`, `11b-geraete-seite.js`, `11c-geraete-szene.js`, Grafik-Bibliothek `05d-grafik.js`.
 - **Addons (API 1):** `addon_manager.py`, `addon_api.py`, `addon_repo.py` (Katalog aus `Maddog3010/strom-waerme-addons`, Ed25519-signiert, SHA-256 je ZIP).
 

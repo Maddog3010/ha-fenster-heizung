@@ -1,6 +1,6 @@
   _build() {
     const sr = this.shadowRoot;
-    sr.innerHTML = `<style>${CSS_MAIN}${CSS_RK}${CSS_GH}${CSS_SUP}${CSS_STS}${CSS_GOE}${CSS_SF2}${CSS_WT}${CSS_SAI}${CSS_SB}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
+    sr.innerHTML = `<style>${CSS_MAIN}${CSS_RK}${CSS_GH}${CSS_SUP}${CSS_STS}${CSS_GOE}${CSS_SF2}${CSS_WT}${CSS_SAI}${CSS_SB}${CSS_MQX}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
     this._built = true; this._t0 = Date.now();
     /* Aufklappbereiche (<details>) merken: Home Assistant meldet laufend neue Werte, jeder Neuaufbau würde sie sonst wieder zuklappen (2026.11.4.3b5) */
     sr.addEventListener("toggle", (e) => { const d = e.target; if (d && d.tagName === "DETAILS" && !this._dkBusy) { const k = this._dKey(d); if (k) (this._dOpen = this._dOpen || {})[k] = d.open; } }, true);
@@ -65,6 +65,7 @@
       if (t.dataset && t.dataset.f === "mwset") { this._mwAssign(t.dataset.k, t.value); return; }
       if (t.dataset && (t.dataset.f === "vnotify" || t.dataset.f === "vwarn" || t.dataset.f === "vdays" || t.dataset.f === "vbat" || t.dataset.f === "vbatinv")) { const v = { ...this._vcfg() }; if (t.dataset.f === "vbat" || t.dataset.f === "vbatinv") { const bs = { ...(v.batsrc || {}) }, e = t.dataset.e, cur = bs[e] || { src: "", inv: false }; if (t.dataset.f === "vbat") { if (t.value) bs[e] = { src: t.value, inv: t.value.startsWith("binary_sensor.") ? !!cur.inv : false }; else delete bs[e]; } else if (bs[e]) bs[e] = { ...bs[e], inv: t.checked }; v.batsrc = bs; } else if (t.dataset.f === "vnotify") v.notify = t.value; else if (t.dataset.f === "vdays") { const n = Number(String(t.value).replace(",", ".")); v.days = isFinite(n) ? Math.min(60, Math.max(1, Math.round(n))) : 7; } else { const n = Number(String(t.value).replace(",", ".")); v.warn = isFinite(n) ? Math.min(60, Math.max(11, Math.round(n))) : 20; } this._gen.valve = v; this._saveGen(); this._renderModal(); return; }
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("msx") && this._msChange(t)) return;
+      if (t.dataset && t.dataset.f && t.dataset.f.startsWith("mqx") && this._mqChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("lfx") && this._lfChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("ehx") && this._ehChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("wz") && this._wzChange(t)) return;
@@ -127,6 +128,7 @@
     else if (a.startsWith("sts")) this._stsAct(a, b);
     else if (a.startsWith("errx")) this._errAct(a, b);
     else if (a.startsWith("lgx")) this._lgAct(a, b);
+    else if (a.startsWith("mqx")) this._mqAct(a, b);
     else if (a.startsWith("mx") && this._mxAct) this._mxAct(a, b);
     else if (a.startsWith("spx")) this._spAct(a, b);
     else if (a.startsWith("sfx")) this._sfxAct(a, b);

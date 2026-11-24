@@ -2,6 +2,21 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4.4b4] - 2026-11-24
+
+Drei neue Extras für Sponsor Max – die „bald“-Einträge in „Deine Extras“ sind jetzt Schalter (Standard aus). Sponsor und alle anderen sehen dort „🔒 Sponsor Max“ mit kurzer Beschreibung.
+
+### Neu
+- **Wohnklima-Zeugnis:** Schulnoten 1–6 je Raum und für das Haus (nach Fläche gewichtet). Fächer Temperatur (Abstand zum Heizplan), Luftfeuchte (40–60 %), Lüften (Stoßlüften statt Dauerkipp) und Schimmelrisiko (Feuchte über 70 % oder Taupunkt nah an der Wand, zählt doppelt). Gemessen wird alle 5 Minuten, auch in Messräumen. Fehlt ein Sensor, entfällt das Fach; unter 5 Tagen (Monat: 20) gibt es „noch kein Zeugnis“. Karte mit Woche/Monat, Raum-Details mit 8-Wochen-Verlauf und Tipp (nennt den Luftentfeuchter, wenn er im Raum steht). Wochenzeugnis Mo 0:05, Monatszeugnis am 1. – Ereignis `fenster_heizung_wohnklima_zeugnis`, optional als Push. Grenzwerte je Raum einstellbar.
+- **Heizkosten je Raum:** Rangliste in € oder €/m² für Heute, Woche, Monat und Heizsaison mit Prognose für den Monat. Elektroheizer mit Energiezähler am Gerät gelten als gemessen, sonst Leistung × Laufzeit; Thermostat-Räume bekommen ihren Anteil aus Heizlast × Ventilöffnung. Mit Gesamtzähler (Gas, Öl, Wärmepumpe) ergibt die Summe aller Räume genau den Zähler, ohne Zähler wird mit Preis und Wirkungsgrad geschätzt – immer als „ca.“ gekennzeichnet. Fenster-offen-Kosten aus dem Lüftungsverlust (Luftwechsel, Raumvolumen, Außentemperatur). Räume ohne Thermostat und Heizer erscheinen nicht.
+- **Wand-Tablet-Extras** (im Tablet-Modus): Ruhe-Anzeige mit großer Uhr und Raumkacheln, der gewählte Raum zuerst; Nachtdimmung (22–6, 23–6 oder nach Sonne) mit roter oder Teal-Uhr; „Schlafen“ macht nachts ganz dunkel; Einbrennschutz; bis zu 4 Schnellaktionen auf der Startseite; Alarm aus Modul 11 als Vollbild mit Ton am Tablet („Ton stumm 60 s“, „Melder im Plan zeigen“). Mit Fully Kiosk wird die echte Helligkeit gestellt, ohne Fully dunkelt eine Ebene ab. Ladesteckdose hält den Tablet-Akku zwischen 30 und 80 %. Ein Alarm aus Modul 11 schaltet auch das Display ein.
+- **Entitäten** (nur solange das Extra an ist): `sensor.sw_wohnklima_note_haus` / `_<raum>`, `binary_sensor.sw_schimmelrisiko_<raum>`, `sensor.sw_heizkosten_haus_monat`, `sensor.sw_heizkosten_<raum>_heute` / `_monat`, `sensor.sw_heizkosten_fenster_offen_monat`, je Tablet `binary_sensor.sw_tablet_<name>_wach`, `sensor.sw_tablet_<name>_zustand` und `button.sw_tablet_<name>_wecken`.
+- **Morgen-Briefing und Monatsbericht:** montags die Wochennote, sonst Räume mit Schimmelrisiko an mehreren Tagen, Heizkosten von gestern mit dem teuersten offenen Fenster; im Monatsbericht Wohnklima-Note und Heizkosten.
+- **Testlabor (Entwickler-Zugang):** „35 Tage Beispielwerte“ und „Zeugnis jetzt“ in den Einstellungen der Extras.
+
+### Geändert
+- Endet Sponsor Max oder wird ein Extra ausgeschaltet, verschwinden seine Entitäten; Einstellungen und Tageswerte bleiben 30 Tage erhalten.
+
 ## [2026.11.4.4b3] - 2026-11-24
 
 ### Geändert

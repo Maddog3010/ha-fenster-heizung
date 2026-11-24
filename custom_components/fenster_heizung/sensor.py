@@ -27,6 +27,7 @@ from . import abr_ent
 from . import licht_ent
 from . import saison_ent
 from . import gr_ent
+from . import mx_ent
 
 SP_OWNER = "sp_sensor_owner"
 SP_KEYS = ("sp_today", "sp_tomorrow", "sp_rest", "sp_corr", "sp_best")
@@ -54,6 +55,7 @@ async def async_setup_entry(
         abr_ent.register(hass, async_add_entities, AbrSensor, entry.async_on_unload)  # Modul 20: Preise, Ergebnis, Termine (Addon v0.9)
         licht_ent.register(hass, async_add_entities, LichtSensor, entry.async_on_unload)  # Modul 18: Lampen an, Licht heute, Längste an (Addon v0.2)
         gr_ent.register(hass, "sensor", async_add_entities, RaumSensor, entry.async_on_unload)  # Modul 0 Build 9: Raum-Sensoren (nur wenn eingeschaltet)
+        mx_ent.register(hass, "sensor", async_add_entities, MxSensor, entry.async_on_unload)  # Sponsor-Max-Extras 2026.11.4.4b4
     async_add_entities(
         [PausedMinutesSensor(entry, key, scope) for key, scope in SCOPES.items()]
         + [PlanTargetSensor(entry), ModeSensor(entry)]
@@ -667,3 +669,39 @@ class AbrSensor(abr_ent.Base, SensorEntity):
 
     def __init__(self, key: str) -> None:
         abr_ent.Base.__init__(self, key)
+
+
+class MxSensor(mx_ent.MxBase, SensorEntity):
+    """Sponsor-Max-Extras: Wohnklima-Note, Heizkosten, Tablet-Zustand."""
+
+    def __init__(self, key: str, v: dict[str, Any]) -> None:
+        mx_ent.MxBase.__init__(self, key, v)
+        if v.get("eur"):
+            self._attr_device_class = SensorDeviceClass.MONETARY
+            self._attr_native_unit_of_measurement = "EUR"
+            self._attr_state_class = SensorStateClass.TOTAL
+            self._attr_suggested_display_precision = 2
+        elif v.get("opts"):
+            self._attr_device_class = SensorDeviceClass.ENUM
+            self._attr_options = list(v["opts"])
+        else:
+            self._attr_state_class = SensorStateClass.MEASUREMENT
+            self._attr_suggested_display_precision = 1
+
+    @property
+    def native_value(self):
+        v = self._v()
+        return v.get("v") if v else None
+
+    @property
+    def last_reset(self):
+        v = self._v()
+        if not v or not v.get("lr"):
+            return None
+        from datetime import date as _d
+
+        from homeassistant.util import dt as dt_util
+        try:
+            return dt_util.start_of_local_day(_d.fromisoformat(v["lr"]))
+        except ValueError:
+            return None

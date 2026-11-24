@@ -62,6 +62,8 @@
       if (st && st.imp != null && st.exp != null) { const house = (st.pv || 0) + st.imp - st.exp; if (house > 1) R.aut = Math.max(0, Math.min(100, (1 - st.imp / house) * 100)); }
       const H = be && be.heat; if (H) { if (H.amt != null && H.unit) { const F = FUELS[H.fuel] || {}; R.oil = H.amt; R.ou = H.unit; R.on = F.short || "Brennstoff"; } else if (H.kwh > 0) { R.oil = H.kwh; R.ou = "kWh"; R.on = "Wärme"; } }
       if (be && be.gs && be.gs.saved > 0) R.sv = be.gs.saved;
+      if (be && be.wk && be.wk.note != null) R.wk = be.wk;  /* Sponsor-Max-Extras: Wohnklima-Note und Heizkosten */
+      if (be && be.hk && be.hk.eur > 0) R.hk = be.hk;
     } catch (_) { /* fehlende Werte lässt der Bericht weg */ }
     this._s3R[off] = R; this._s3RB = null;
     if (this._loOpen) this._render();
@@ -128,7 +130,8 @@
   _s3Cells(R) {
     if (!R) return [];
     return [R.pv != null ? [`${num(R.pv, 0)}`, "kWh Solar", "#fbbf24"] : null, R.aut != null ? [`${num(R.aut, 0)} %`, "Autarkie", "#2dd4bf"] : null, R.oil > 0 ? [`${num(R.oil, 0)} ${esc(R.ou || "l")}`, `${esc(R.on || "Öl")} gespart`, "#fb923c"] : null,
-      R.sv > 0 ? [`${num(R.sv, 0)} €`, "durch eigenen Strom", "#34d399"] : null].filter(Boolean);
+      R.sv > 0 ? [`${num(R.sv, 0)} €`, "durch eigenen Strom", "#34d399"] : null,
+      R.wk ? [num(R.wk.note, 1), `Wohnklima · ${esc(R.wk.wort || "")}`, "#5eead4"] : null, R.hk ? [`${num(R.hk.eur, 0)} €`, `Heizkosten · meist ${esc(R.hk.top || "")}`, "#fbbf24"] : null].filter(Boolean);
   }
   _s3WishCard(W, mx) {
     const mon = W && W.month ? new Date(W.month + "-15T12:00:00").toLocaleDateString("de-DE", { month: "long" }) : new Date().toLocaleDateString("de-DE", { month: "long" });
@@ -143,13 +146,13 @@
   /* ---- Monatsbericht als Bild (1080 × 1350, zum Teilen und Speichern) ---- */
   _s3RepSvg(R) {
     const W = 1080, H = 1350, cells = this._s3Cells(R), s = this._spnS(), f = "Roboto,system-ui,sans-serif";
-    const cw = 470, chh = 170;
+    const cw = 470, chh = cells.length > 4 ? 112 : 170, fv = cells.length > 4 ? 52 : 66;
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="100%" style="max-width:380px;display:block;margin:0 auto;border-radius:12px">
       <rect width="${W}" height="${H}" fill="#0f1419"/>
       <text x="70" y="110" font-family="${f}" font-size="30" letter-spacing="7" font-weight="700" fill="#5eead4">STROM &amp; WÄRME · MONATSBERICHT</text>
       <text x="66" y="200" font-family="${f}" font-size="74" font-weight="900" fill="#e6edf3">Dein Haus im ${esc(R.mon || "")}</text>
       <g transform="translate(70 250)"><svg width="940" height="500" viewBox="0 0 400 213">${this._s3Scene(400, 213, "s3p").replace(/^<svg[^>]*>/, "").replace(/<\/svg>$/, "")}</svg></g>
-      ${cells.map(([v, l, c], i) => { const x = 70 + (i % 2) * (cw + 0), y = 800 + Math.floor(i / 2) * (chh + 20); return `<rect x="${x}" y="${y}" width="${cw - 20}" height="${chh}" rx="24" fill="#ffffff" fill-opacity=".06"/><text x="${x + 32}" y="${y + 92}" font-family="${f}" font-size="66" font-weight="800" fill="${c}">${v}</text><text x="${x + 32}" y="${y + 138}" font-family="${f}" font-size="28" fill="#9aa7b4">${l}</text>`; }).join("")}
+      ${cells.map(([v, l, c], i) => { const x = 70 + (i % 2) * (cw + 0), y = 800 + Math.floor(i / 2) * (chh + 20); return `<rect x="${x}" y="${y}" width="${cw - 20}" height="${chh}" rx="24" fill="#ffffff" fill-opacity=".06"/><text x="${x + 32}" y="${y + (chh > 120 ? 92 : 62)}" font-family="${f}" font-size="${fv}" font-weight="800" fill="${c}">${v}</text><text x="${x + 32}" y="${y + (chh > 120 ? 138 : 96)}" font-family="${f}" font-size="26" fill="#9aa7b4">${l}</text>`; }).join("")}
       <text x="${W / 2}" y="${H - 60}" text-anchor="middle" font-family="${f}" font-size="26" fill="#9aa7b4">${esc(R.year ? R.mon + " " + R.year : "")} · aus den eigenen Daten · github.com/Maddog3010</text></svg>`;
   }
   _s3RepModal() {

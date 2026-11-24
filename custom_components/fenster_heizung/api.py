@@ -2086,6 +2086,9 @@ async def ws_spn_prefs(hass: HomeAssistant, connection, msg: dict) -> None:
     mgr = _spn(hass, connection, msg)
     if mgr is not None:
         mgr.set_prefs(msg["prefs"])
+        mxx = hass.data.get(DOMAIN, {}).get("mxx")
+        if mxx is not None:
+            mxx.sync()  # Sponsor-Max-Extras: Entitäten anlegen bzw. entfernen
         connection.send_result(msg["id"], mgr.snapshot(True))
 
 
@@ -2547,6 +2550,89 @@ async def ws_heizer_test(hass: HomeAssistant, connection, msg: dict) -> None:
     await _heizer_do(hass, connection, msg, lambda m: m.async_test(msg["entity"], msg["seconds"]))
 
 
+# ---------------------------------------------------------------- Sponsor-Max-Extras (2026.11.4.4b4)
+def _mxx(hass: HomeAssistant, connection, msg: dict):
+    mm = hass.data.get(DOMAIN, {}).get("mxx")
+    if mm is None:
+        connection.send_error(msg["id"], "not_ready", "Die Sponsor-Max-Extras sind noch nicht bereit")
+    return mm
+
+
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/mx_get", vol.Optional("scope", default="month"): vol.In(["day", "week", "month", "season"])})
+@websocket_api.async_response
+async def ws_mx_get(hass: HomeAssistant, connection, msg: dict) -> None:
+    """Wohnklima-Zeugnis, Heizkosten je Raum und Wand-Tablet-Einstellungen (Werte nur, wenn Sponsor Max und Extra an)."""
+    mm = _mxx(hass, connection, msg)
+    if mm is not None:
+        connection.send_result(msg["id"], mm.snapshot(bool(connection.user and connection.user.is_admin), msg["scope"]))
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/mx_set", vol.Required("cfg"): dict})
+@websocket_api.async_response
+async def ws_mx_set(hass: HomeAssistant, connection, msg: dict) -> None:
+    mm = _mxx(hass, connection, msg)
+    if mm is not None:
+        if not mm.is_max():
+            connection.send_error(msg["id"], "not_max", "Nur mit Sponsor Max")
+            return
+        connection.send_result(msg["id"], {"cfg": mm.set_cfg(msg["cfg"])})
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/mx_run", vol.Required("kind"): vol.In(["week", "month"])})
+@websocket_api.async_response
+async def ws_mx_run(hass: HomeAssistant, connection, msg: dict) -> None:
+    """Zeugnis jetzt auslösen (Ereignis, Push) – für das Testlabor."""
+    mm = _mxx(hass, connection, msg)
+    if mm is not None:
+        if not mm.on("wk"):
+            connection.send_error(msg["id"], "off", "Wohnklima-Zeugnis ist aus")
+            return
+        connection.send_result(msg["id"], await mm.async_report(msg["kind"], force=True))
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/mx_demo"})
+@websocket_api.async_response
+async def ws_mx_demo(hass: HomeAssistant, connection, msg: dict) -> None:
+    """Testlabor (nur Entwickler-Zugang): 35 Tage Beispielwerte für Zeugnis und Heizkosten."""
+    mm = _mxx(hass, connection, msg)
+    if mm is None:
+        return
+    sm = hass.data.get(DOMAIN, {}).get("sponsor")
+    if sm is None or sm.snapshot().get("state") != "dev":
+        connection.send_error(msg["id"], "dev_only", "Nur mit Entwickler-Zugang")
+        return
+    connection.send_result(msg["id"], {"rooms": mm.demo()})
+
+
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/mx_tb_set", vol.Required("tid"): str, vol.Required("cfg"): dict, vol.Optional("pin"): str})
+@websocket_api.async_response
+async def ws_mx_tb_set(hass: HomeAssistant, connection, msg: dict) -> None:
+    """Wand-Tablet-Extras eines Tablets speichern – wie die Tablet-Einstellungen: Administrator oder PIN des Tablets."""
+    mm, tm = _mxx(hass, connection, msg), hass.data.get(DOMAIN, {}).get("tablet")
+    if mm is None:
+        return
+    if tm is None or not _tm_allowed(tm, connection, msg):
+        connection.send_error(msg["id"], "denied", "PIN falsch oder Tablet unbekannt")
+        return
+    if not mm.is_max():
+        connection.send_error(msg["id"], "not_max", "Nur mit Sponsor Max")
+        return
+    connection.send_result(msg["id"], {"cfg": mm.set_cfg({"tb": {msg["tid"]: msg["cfg"]}})})
+
+
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/mx_tb", vol.Required("tid"): str, vol.Required("state"): str})
+@websocket_api.async_response
+async def ws_mx_tb(hass: HomeAssistant, connection, msg: dict) -> None:
+    """Wand-Tablet meldet seinen Zustand (wach, ruhe, nacht, schlafen, alarm)."""
+    mm = _mxx(hass, connection, msg)
+    if mm is not None:
+        ok = mm.on("tb") and mm.tb_set_state(msg["tid"], msg["state"])
+        connection.send_result(msg["id"], {"ok": ok, "wake": mm.wake_ts.get(msg["tid"], 0)})
+
+
 def async_register_api(hass: HomeAssistant) -> None:
     for command in (
         ws_get_state, ws_set_layout, ws_haus_get, ws_haus_set, ws_log_get, ws_log_undo, ws_mw_get, ws_set_plan, ws_set_presence, ws_get_options, ws_set_options, ws_heizer_get, ws_heizer_add, ws_heizer_update, ws_heizer_remove, ws_heizer_restore, ws_heizer_purge, ws_heizer_test,
@@ -2556,5 +2642,6 @@ def async_register_api(hass: HomeAssistant) -> None:
         ws_wt_get, ws_wt_save, ws_wt_act, ws_saison_get, ws_saison_set, ws_saison_sim, ws_advent_get, ws_advent_open, ws_advent_set, ws_advent_reset, ws_advent_key, ws_advent_sign, ws_gr_get, ws_gr_set, ws_gr_cfg, ws_gr_hist, ws_gr_restore, ws_sf_get, ws_sf_set, ws_sf_test, ws_sf_tested, ws_sf_press, ws_sf_ack, ws_sf_pause, ws_sf_resume, ws_sf_selftest, ws_sp_get, ws_sp_set, ws_labs_get, ws_mu_get, ws_mu_set, ws_mu_act, ws_mu_test, ws_tg_get, ws_tg_set, ws_tg_act, ws_tg_quick_set, ws_tg_quick, ws_ef_get, ws_ef_set,
         ws_tm_get, ws_tm_hello, ws_tm_set, ws_tm_check, ws_tm_pin, ws_tm_reset, ws_tm_del, ws_lf_get, ws_lf_set, ws_lf_cmd,
         ws_mess_rescue_get, ws_mess_rescue, ws_coach_get, ws_report_get, ws_wa_get, ws_wa_set, ws_ap_get, ws_ap_act, ws_spn_get, ws_spn_redeem, ws_spn_clear, ws_spn_prefs, ws_spn_admin_get, ws_spn_admin_setup, ws_spn_admin_act, ws_spn_gh, ws_support, ws_stats, ws_ef_link, ws_ebuch,
+        ws_mx_get, ws_mx_set, ws_mx_run, ws_mx_demo, ws_mx_tb, ws_mx_tb_set,
     ):
         websocket_api.async_register_command(hass, command)

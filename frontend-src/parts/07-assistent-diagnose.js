@@ -412,6 +412,7 @@
     if (m.type === "sup") { box.innerHTML = this._supModal(); this._supBind(box); return; }
     if (m.type === "errlog") { box.innerHTML = this._errModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "sts") { box.innerHTML = this._stsModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (String(m.type).startsWith("mqx")) { box.innerHTML = this._mqModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["lgbrief", "lgposter", "lgex"].includes(m.type)) { box.innerHTML = this._lgModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["spndlg", "spnadm", "spngh"].includes(m.type)) { box.innerHTML = this._spnModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["tmpin", "tmset", "tmnorm", "tmmore"].includes(m.type)) { box.innerHTML = this._tmModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }

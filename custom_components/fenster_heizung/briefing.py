@@ -114,6 +114,12 @@ class BriefingManager:
                 r = None
             if r:
                 lines.append(r)
+        mxx = D.get("mxx")  # Sponsor-Max-Extras: Wochennote, Schimmelrisiko, Heizkosten von gestern
+        if mxx is not None:
+            try:
+                lines += mxx.brief_lines()
+            except Exception:  # noqa: BLE001
+                _LOGGER.debug("Briefing: Max-Extras fehlgeschlagen", exc_info=True)
         return {"title": "☀️ Guten Morgen – dein Tag", "lines": lines or ["Heute liegen keine Daten für das Briefing vor."]}
 
     async def _sun(self, D: dict) -> str | None:
