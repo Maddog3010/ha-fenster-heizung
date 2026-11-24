@@ -19,7 +19,7 @@ const post = (env, body) => worker.fetch(new Request("https://stats.x.dev/v1/pin
 const dget = (env, path) => worker.fetch(new Request(`https://dash.x.dev${path}`, { headers: { "cf-access-jwt-assertion": tok } }), env);
 const today = new Date().toISOString().slice(0, 10), day = (n) => new Date(Date.parse(today) - n * 864e5).toISOString().slice(0, 10);
 const ID = () => crypto.randomUUID();
-assert.equal(DASH.build, 11);
+assert.ok(DASH.build >= 11);
 const P = (o) => ({ schema: 3, id: ID(), version: "2026.11.5b2", channel: "beta", modules: ["ev", "wx"], ha: "2026.11", ...o });
 
 // Eingang: Module landen in der Tagesliste

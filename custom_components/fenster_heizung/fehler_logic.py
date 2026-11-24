@@ -104,7 +104,7 @@ def empty() -> dict[str, Any]:
 
 
 def add(st: dict[str, Any], *, src: str, kind: str, where: str, msg: str, today: date, version: str, ha: str = "",
-        cmd: str = "", dev: str = "") -> dict[str, Any] | None:
+        cmd: str = "", dev: str = "", chain: list[str] | None = None) -> dict[str, Any] | None:
     """Einen Fehler eintragen (bereinigt). Gibt den Eintrag zurück oder None, wenn er nicht zählt."""
     if src not in SOURCES:
         return None
@@ -130,6 +130,9 @@ def add(st: dict[str, Any], *, src: str, kind: str, where: str, msg: str, today:
         e["ha"] = ha[:20]
     if dev in ("handy", "tablet", "pc", "app"):
         e["dev"][dev] = e["dev"].get(dev, 0) + 1
+    ch = clean_chain(chain)
+    if len(ch) > 1:
+        e["chain"] = ch   # Build 12: letzte Aufrufkette (nur Stellen in Strom & Wärme)
     return e
 
 
@@ -158,6 +161,9 @@ def clean(raw: Any) -> dict[str, Any]:
                                   "vers": [str(v)[:20] for v in (e.get("vers") or [])][-5:], "ha": str(e.get("ha", ""))[:20],
                                   "dev": {str(a): int(b) for a, b in (e.get("dev") or {}).items() if a in ("handy", "tablet", "pc", "app")},
                                   "nd": max(0, int(e.get("nd", 0)))}
+                ch = clean_chain(e.get("chain"))
+                if len(ch) > 1:
+                    st["items"][k]["chain"] = ch
                 srv = clean_srv(e.get("srv"))
                 if srv:
                     st["items"][k]["srv"] = srv
@@ -181,7 +187,7 @@ def as_text(e: dict[str, Any]) -> str:
 
 
 # ------------------------------------------------------------ Build 2: Fehlerberichte senden (eigene Zustimmung)
-SCHEMA = 3          # Build 7: „known“ = schon gesendete Fehler, für die der Server den Status zurückmeldet · Build 6: Bericht auch ohne Fehler (Tages-Meldung „0 Fehler“) und mit den Kurzzeichen der aktiven Module
+SCHEMA = 4          # Build 12: „dev“ = Gerätearten (Handy, Tablet, Computer, App), „chain“ = bis zu 3 Stellen im eigenen Code · Build 7: „known“ = schon gesendete Fehler, für die der Server den Status zurückmeldet · Build 6: Bericht auch ohne Fehler (Tages-Meldung „0 Fehler“) und mit den Kurzzeichen der aktiven Module
 # Module, die man aus- oder einschalten kann (Kurzzeichen wie in der Versions-Statistik, dazu gr = Modul 0 und die Add-ons).
 # Modul 1 und der Kern sind immer an und brauchen kein Kürzel. Eigene Erweiterungen (x…) werden nie gemeldet.
 MOD_KEYS = ("gr", "ww", "en", "gs", "lu", "rb", "wp", "ev", "wx", "ga", "sf", "pl", "bt", "dt", "wa", "sp", "mu", "li", "ef", "ab")
@@ -230,7 +236,9 @@ def build_report(st: dict[str, Any], version: str, ha: str = "", real: bool = Tr
             "mods": [k for k in MOD_KEYS if isinstance(mods, (list, tuple, set)) and k in mods],
             "known": [e["fp"] for e in view(st) if e["fp"] not in skip and e["fp"] not in {x["fp"] for x in rows} and was_sent(e)][:MAX_ENTRIES],
             "errors": [{"fp": e["fp"], "src": e["src"], "mod": e["mod"], "kind": e["kind"], "where": e["where"], "msg": e["msg"],
-                        "n": int(e["nd"]), "first": e["first"], "last": e["last"], "vers": list(e.get("vers") or [])} for e in rows]}
+                        "n": int(e["nd"]), "first": e["first"], "last": e["last"], "vers": list(e.get("vers") or []),
+                        **({"dev": sorted(k for k, v in e["dev"].items() if v)} if any(e.get("dev", {}).values()) else {}),
+                        **({"chain": list(e["chain"])} if e.get("chain") else {})} for e in rows]}
 
 
 def mark_sent(st: dict[str, Any], report: dict[str, Any], now: float) -> None:
@@ -313,3 +321,15 @@ def fix_info(e: dict[str, Any], version: str) -> dict[str, Any] | None:
         out["upd"] = newer and (cur_beta or not out["beta_fix"])   # stabile Nutzer warten auf die nächste stabile Version
         out["wait"] = newer and not out["upd"]
     return out
+
+
+# ------------------------------------------------------------ Build 12: Aufrufkette
+_WHERE = re.compile(r"^[\w./-]{1,80}(?::\d{1,6})?(?: [A-Za-z_]\w{0,60})?$")
+
+
+def clean_chain(raw: Any) -> list[str]:
+    """Höchstens 3 Stellen im Format von where_of („gr_ent.py:171 _sync“) – nie Pfade außerhalb von Strom & Wärme."""
+    if not isinstance(raw, (list, tuple)):
+        return []
+    out = [str(x)[:120] for x in raw if isinstance(x, str) and _WHERE.match(x) and not x.startswith("/") and ".." not in x]
+    return out[:3]

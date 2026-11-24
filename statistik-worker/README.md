@@ -11,7 +11,7 @@ Einrichtung: siehe `Anleitung_Statistik-Cloudflare-Worker.pdf`. Kurz:
     npx wrangler d1 execute stats --remote --file=schema.sql
     npx wrangler deploy                   # danach Access-Anwendung für dash.… anlegen, TEAM_DOMAIN/POLICY_AUD eintragen, erneut deploy
 
-Tests: `node --no-warnings test/test.js && node --no-warnings test/test_fehler.js && node --no-warnings test/test_build6.js && node --no-warnings test/test_build8.js && node --no-warnings test/test_build9.js && node --no-warnings test/test_build10.js && node --no-warnings test/test_build11.js` (Node ≥ 22.5, nutzt `node:sqlite` als D1-Ersatz).
+Tests: `node --no-warnings test/test.js && node --no-warnings test/test_fehler.js && node --no-warnings test/test_build6.js && node --no-warnings test/test_build8.js && node --no-warnings test/test_build9.js && node --no-warnings test/test_build10.js && node --no-warnings test/test_build11.js && node --no-warnings test/test_build12.js` (Node ≥ 22.5, nutzt `node:sqlite` als D1-Ersatz).
 
 ## Fehler-Statistik (ab 2026.11.4.3b1)
 
@@ -123,3 +123,19 @@ Worker und eine neue Spalte – kein Update der Integration:
 - Banner: Dashboard Build 11.
 
 Tests: zusätzlich `node --no-warnings test/test_build11.js`.
+
+## Build 12: Fehler nach Gerät und Aufrufkette (ab 2026.11.5b3)
+
+Worker und zwei neue Spalten, dazu die Beta 2026.11.5b3 der Integration:
+
+    npx wrangler d1 execute stats --remote --file=migrate-build12.sql
+    npx wrangler deploy
+
+(Zuerst ausrollen, dann die Beta veröffentlichen. Ohne die Spalten nimmt der Worker Berichte weiter an und speichert Gerät und Kette nicht.)
+
+- Fehlerbericht Schema 4: je Fehler optional `dev` (Gerätearten `handy`, `tablet`, `pc`, `app`) und `chain` (2–3 Stellen im Format `datei.py:Zeile funktion`, keine absoluten Pfade, kein `..`).
+- Gespeichert in `err_hits.dev` (je Tag und Installation) und `err_groups.chain` (letzte gemeldete Kette; ein Bericht ohne Kette überschreibt sie nicht).
+- Detailseite: „Stelle“ zeigt die Kette mit „aufgerufen von“, neue Zeile „Gerät“ mit Installationen je Geräteart und dem Hinweis „nur Handy“, wenn alle betroffenen Installationen dieselbe Geräteart melden.
+- Banner: Dashboard Build 12.
+
+Tests: zusätzlich `node --no-warnings test/test_build12.js`.

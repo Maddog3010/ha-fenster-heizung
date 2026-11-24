@@ -40,6 +40,16 @@ TIMEOUT = 10
 DEFAULT_URL = "https://stats.stromwaerme.dev"   # Cloudflare-Worker (Build 3: POST /v1/errors, /v1/errors/forget)
 
 
+def _our_frames(tb, n: int = 3) -> list[tuple[str, int, str]]:
+    """Build 12: bis zu n Stellen aus Strom & Wärme, innerste zuerst (die Aufrufkette)."""
+    out = []
+    for fr in traceback.extract_tb(tb):
+        p = fr.filename.replace("\\", "/")
+        if "/fenster_heizung/" in p and not p.endswith("/" + _SELF):
+            out.append((p, fr.lineno or 0, fr.name))
+    return out[::-1][:n]
+
+
 def _our_frame(tb) -> tuple[str, int, str] | None:
     """Innerste Stelle im Stapel, die zu Strom & Wärme gehört."""
     best = None
@@ -61,7 +71,8 @@ class _Handler(logging.Handler):
                 return
             ours = record.name.startswith(_PKG)
             exc = record.exc_info[1] if record.exc_info and record.exc_info[1] is not None else None
-            fr = _our_frame(record.exc_info[2]) if exc is not None else None
+            frs = _our_frames(record.exc_info[2]) if exc is not None else []
+            fr = frs[0] if frs else None
             if exc is None and not (ours and record.levelno >= logging.ERROR):
                 return                                   # Warnungen ohne Ausnahme sind keine Programmfehler
             if exc is not None and not ours and fr is None:
@@ -73,7 +84,8 @@ class _Handler(logging.Handler):
             where = L.where_of(fr[0], fr[1], fr[2]) if fr else ""
             kind = type(exc).__name__ if exc is not None else ("Fehler" if record.levelno >= logging.ERROR else "Warnung")
             msg = str(exc) if exc is not None else record.getMessage()
-            self.owner.record_threadsafe("backend", kind, where, msg)
+            chain = [L.where_of(f[0], f[1], f[2]) for f in frs] if frs else ([where] if where else [])
+            self.owner.record_threadsafe("backend", kind, where, msg, chain=chain)
         except Exception:  # noqa: BLE001 - der Sammler darf nie selbst stören
             pass
 
@@ -117,10 +129,10 @@ class FehlerSammler:
         self._store.async_delay_save(lambda: self._st, 0)
 
     # ---- Eintragen
-    def record_threadsafe(self, src: str, kind: str, where: str, msg: str, cmd: str = "", dev: str = "") -> None:
+    def record_threadsafe(self, src: str, kind: str, where: str, msg: str, cmd: str = "", dev: str = "", chain: list[str] | None = None) -> None:
         with self._lock:
             L.add(self._st, src=src, kind=kind, where=where, msg=msg, today=dt_util.now().date(), version=self._version,
-                  ha=HA_VERSION, cmd=cmd, dev=dev)
+                  ha=HA_VERSION, cmd=cmd, dev=dev, chain=chain)
         try:
             self.hass.loop.call_soon_threadsafe(self._save)
         except RuntimeError:

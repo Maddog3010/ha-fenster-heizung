@@ -5,9 +5,10 @@ CREATE TABLE IF NOT EXISTS daily(day TEXT NOT NULL, id TEXT NOT NULL, version TE
 CREATE INDEX IF NOT EXISTS daily_id ON daily(id);
 -- Fehler-Statistik (Build 3): gleiche Fehler = eine Gruppe (Fingerabdruck), Treffer je Tag, Kennung und Fehler
 CREATE TABLE IF NOT EXISTS err_groups(fp TEXT PRIMARY KEY, src TEXT NOT NULL, mod TEXT NOT NULL, kind TEXT NOT NULL, where_ TEXT,
-  msg TEXT, first_day TEXT NOT NULL, last_day TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'offen', fixed_in TEXT, issue INTEGER, status_day TEXT);
+  msg TEXT, first_day TEXT NOT NULL, last_day TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'offen', fixed_in TEXT, issue INTEGER, status_day TEXT,
+  chain TEXT);   -- chain ab Build 12
 CREATE TABLE IF NOT EXISTS err_hits(day TEXT NOT NULL, fp TEXT NOT NULL, rid TEXT NOT NULL, version TEXT NOT NULL, channel TEXT NOT NULL,
-  ha TEXT, n INTEGER NOT NULL, PRIMARY KEY(day, fp, rid));
+  ha TEXT, n INTEGER NOT NULL, dev TEXT, PRIMARY KEY(day, fp, rid));   -- dev ab Build 12
 CREATE INDEX IF NOT EXISTS err_hits_fp ON err_hits(fp);
 CREATE INDEX IF NOT EXISTS err_hits_rid ON err_hits(rid);
 CREATE TABLE IF NOT EXISTS err_reporters(rid TEXT PRIMARY KEY, last_ts INTEGER NOT NULL, last_day TEXT NOT NULL);
