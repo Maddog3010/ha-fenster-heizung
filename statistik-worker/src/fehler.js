@@ -2,7 +2,7 @@
 // Gleicher Fehler bei vielen Nutzern = eine Zeile (Fingerabdruck fp). Die Integration bereinigt vorher; der Worker prüft jedes
 // Feld noch einmal, schneidet Unbekanntes ab und entfernt Adressen, falls doch welche durchrutschen. Keine IP-Adressen gespeichert.
 
-export const ERR_SCHEMAS = [1, 2, 3];   // Schema 3 (Build 7): „known“ = schon gesendete Fehler, Antwort mit deren Status ·   // Schema 2 (Build 6): auch ohne Fehler („0 Fehler“), dazu „mods“ = aktive Module
+export const ERR_SCHEMAS = [1, 2, 3, 4];   // Schema 4 (Build 12): je Fehler „dev“ (Gerätearten) und „chain“ (bis 3 Stellen im eigenen Code) ·   // Schema 3 (Build 7): „known“ = schon gesendete Fehler, Antwort mit deren Status ·   // Schema 2 (Build 6): auch ohne Fehler („0 Fehler“), dazu „mods“ = aktive Module
 export const ERR_MAX_BODY = 64 * 1024;
 export const ERR_MIN_GAP = 3600;      // höchstens 1 Bericht pro Kennung und Stunde
 export const ERR_KEEP_DAYS = 90;
@@ -17,6 +17,8 @@ export const ERR_MODS = { gr: ["Modul 0", "0 Grundriss"], ww: ["Modul 2", "2 War
   wa: ["Modul 15", "15 Wartung"], sp: ["Modul 16", "16 Prognose"], mu: ["Modul 17", "17 Müll"], li: ["Modul 18", "18 Licht"], ef: ["Modul 19", "19 Hausfluss"], ab: ["Modul 20", "20 Abrechnung"] };
 export const ALWAYS_ON = { "Modul 1": "1 Räume & Heizen", Allgemein: "Allgemein", Statistik: "Statistik", "Weihnachts-Theme": "Weihnachts-Theme", Sponsor: "Sponsor" };
 const SRC = { backend: "Backend", befehl: "Befehl", oberflaeche: "Oberfläche" };
+export const DEVS = { handy: "Handy", tablet: "Tablet", pc: "Computer", app: "App" };   // Build 12
+const CHAIN_RE = /^[\w-][\w./-]{0,79}(?::\d{1,6})?(?: [A-Za-z_]\w{0,60})?$/;
 const channelOf = (v) => (/b\d+$/.test(v || "") ? "beta" : "stable");
 const clean = (s, max) => String(s).replace(/[\u0000-\u001f\u007f]/g, " ")
   .replace(/https?:\/\/\S+|\b[\w.+-]+@[\w-]+\.[\w.-]+\b|\b\d{1,3}(?:\.\d{1,3}){3}(?::\d+)?\b/gi, "<adresse>").slice(0, max);
@@ -43,7 +45,14 @@ export function validErrors(d) {
     if (!Number.isInteger(n) || n < 1 || n > 1e6 || !DAY_RE.test(first) || !DAY_RE.test(last) || first > last) return null;
     if (!Array.isArray(vers) || vers.length > 5 || vers.some((v) => typeof v !== "string" || !VER_RE.test(v))) return null;
     if (out.some((o) => o.fp === fp)) continue;   // doppelt im selben Bericht: einmal reicht
-    out.push({ fp, src, mod, kind, where: clean(where, 120), msg: clean(msg, 200), n, first, last, vers });
+    let dev = null, chain = null;   /* Build 12 */
+    if (d.schema >= 4) {
+      if (x.dev != null && (!Array.isArray(x.dev) || x.dev.length > 4 || x.dev.some((k) => !(k in DEVS)))) return null;
+      if (x.chain != null && (!Array.isArray(x.chain) || x.chain.length > 3 || x.chain.some((c) => typeof c !== "string" || !CHAIN_RE.test(c) || c.includes("..")))) return null;
+      dev = x.dev && x.dev.length ? Object.keys(DEVS).filter((k) => x.dev.includes(k)).join(",") : null;
+      chain = x.chain && x.chain.length > 1 ? JSON.stringify(x.chain) : null;
+    }
+    out.push({ fp, src, mod, kind, where: clean(where, 120), msg: clean(msg, 200), n, first, last, vers, dev, chain });
   }
   let known = [];
   if (d.schema >= 3 && d.known != null) {
@@ -64,17 +73,24 @@ export async function dbErrors(DB, p, nowMs) {
     /* Build 6: jeder Bericht zählt als „heute mit dieser Version aktiv“ – auch der leere */
     DB.prepare("INSERT INTO err_days(day, rid, version, channel, ha, mods) VALUES(?,?,?,?,?,?) ON CONFLICT(day, rid) DO UPDATE SET version=excluded.version, channel=excluded.channel, ha=excluded.ha, mods=COALESCE(excluded.mods, err_days.mods)")
       .bind(day, p.id, p.version, p.channel, p.ha, p.mods ?? null)];
-  for (const x of p.errors) {
-    st.push(DB.prepare(
+  const rows = (b12) => p.errors.flatMap((x) => [
+    b12 ? DB.prepare(
+      "INSERT INTO err_groups(fp, src, mod, kind, where_, msg, first_day, last_day, chain) VALUES(?,?,?,?,?,?,?,?,?) " +
+      "ON CONFLICT(fp) DO UPDATE SET last_day=MAX(err_groups.last_day, excluded.last_day), first_day=MIN(err_groups.first_day, excluded.first_day), where_=excluded.where_, msg=excluded.msg, mod=excluded.mod, chain=COALESCE(excluded.chain, err_groups.chain)"
+    ).bind(x.fp, x.src, x.mod, x.kind, x.where, x.msg, x.first < day ? x.first : day, day, x.chain ?? null) : DB.prepare(
       "INSERT INTO err_groups(fp, src, mod, kind, where_, msg, first_day, last_day) VALUES(?,?,?,?,?,?,?,?) " +
       "ON CONFLICT(fp) DO UPDATE SET last_day=MAX(err_groups.last_day, excluded.last_day), first_day=MIN(err_groups.first_day, excluded.first_day), where_=excluded.where_, msg=excluded.msg, mod=excluded.mod"
-    ).bind(x.fp, x.src, x.mod, x.kind, x.where, x.msg, x.first < day ? x.first : day, day));
-    st.push(DB.prepare(
+    ).bind(x.fp, x.src, x.mod, x.kind, x.where, x.msg, x.first < day ? x.first : day, day),
+    b12 ? DB.prepare(
+      "INSERT INTO err_hits(day, fp, rid, version, channel, ha, n, dev) VALUES(?,?,?,?,?,?,?,?) " +
+      "ON CONFLICT(day, fp, rid) DO UPDATE SET n=err_hits.n+excluded.n, version=excluded.version, ha=excluded.ha, dev=COALESCE(excluded.dev, err_hits.dev)"
+    ).bind(day, x.fp, p.id, p.version, p.channel, p.ha, x.n, x.dev ?? null) : DB.prepare(
       "INSERT INTO err_hits(day, fp, rid, version, channel, ha, n) VALUES(?,?,?,?,?,?,?) " +
       "ON CONFLICT(day, fp, rid) DO UPDATE SET n=err_hits.n+excluded.n, version=excluded.version, ha=excluded.ha"
-    ).bind(day, x.fp, p.id, p.version, p.channel, p.ha, x.n));
-  }
-  await DB.batch(st);
+    ).bind(day, x.fp, p.id, p.version, p.channel, p.ha, x.n),
+  ]);
+  try { await DB.batch([...st, ...rows(true)]); }
+  catch { await DB.batch([...st, ...rows(false)]); }   /* vor migrate-build12.sql: ohne Gerät und Kette – ein Bericht darf daran nie scheitern */
   return "ok";
 }
 export const STATUS = { offen: "offen", arbeit: "in Arbeit", behoben: "behoben", ignoriert: "ignorieren" };
@@ -281,6 +297,7 @@ export async function errLoadOne(DB, fp, todayStr, rel = null) {
   const raw = (await DB.prepare(`SELECT day, fp, rid, version, channel, ha, n FROM err_hits WHERE fp IN (${fam.map(() => "?").join(",")})`).bind(...fam).all()).results;
   const M = applyMerges(groups.filter((g) => fam.includes(g.fp)), raw, merges), g = M.groups.find((x) => x.fp === fp);
   const D = errDetail(g, M.hits, todayStr, rel || (await loadReleases(DB)));
+  await loadB12(DB, D, fam);   /* Build 12 */
   D.cand = mergeCandidates(g, groups.filter((x) => root(x.fp) === x.fp || !by.has(root(x.fp))).filter((x) => !fam.includes(x.fp)));
   return D;
 }
@@ -352,7 +369,7 @@ export function errRenderOne(D, repo) {
   const chart = `<svg viewBox="0 -14 600 104">${markSvg(D.rel || [], xOf, -4, 80, -6)}${D.days.map((x, i) => `<rect x="${i * 20 + 2}" y="${80 - (x.inst / mx) * 70}" width="16" height="${(x.inst / mx) * 70 + 1}" rx="2" fill="${x.inst ? "#f87171" : "#3a3a38"}"><title>${fd(x.d)} · ${x.inst} Installationen · ${x.n}×</title></rect>`).join("")}<text x="2" y="89" fill="#8d8c84" font-size="9">${fd(D.days[0].d)}</text><text x="598" y="89" fill="#8d8c84" font-size="9" text-anchor="end">heute</text></svg>`;
   const mini = (rows, t) => `<table class="mini">${rows.map((x) => `<tr><td>${e(t ? t(x.k) : x.k)}</td><td class="num">${x.inst} Inst.</td><td class="num">${x.n}×</td></tr>`).join("")}</table>`;
   return `<div class="c"><div class="flt"><a href="/fehler">← alle Fehler</a></div><h2 class="m">${e(g.kind)}: ${e(g.msg || "–")}</h2><div class="u">Fehler-ID ${e(g.fp)}</div>
-    <div class="kv"><span>Modul · Quelle</span><b>${e(g.mod)} · ${e(SRC[g.src])}</b><span>Stelle</span><b class="m">${e(g.where || "–")}</b><span>Zuerst · zuletzt</span><b>${e(g.first_day)} · ${e(g.last_day)}</b>
+    <div class="kv"><span>Modul · Quelle</span><b>${e(g.mod)} · ${e(SRC[g.src])}</b><span>Stelle</span>${chainHtml(g, D.chain)}${devHtml(D.dev)}<span>Zuerst · zuletzt</span><b>${e(g.first_day)} · ${e(g.last_day)}</b>
     <span>Betroffen</span><b>${D.inst} Installationen · ${D.hits}× (letzte ${ERR_KEEP_DAYS} Tage)</b><span>Kanal</span><b>${D.ch.map((x) => `${x.k === "beta" ? "Beta" : "Stabil"} ${x.inst}`).join(" · ")}</b></div></div>
     ${st}<div class="g"><div class="c"><h2>Verlauf</h2><div class="u">Installationen pro Tag, 30 Tage${(D.rel || []).length ? " · orange: neue Version erschienen" : ""}</div>${chart}</div>
     <div class="c"><h2>Versionen</h2><div class="u">Strom &amp; Wärme</div>${mini(D.vers)}</div><div class="c"><h2>Home Assistant</h2><div class="u">Version</div>${mini(D.ha)}</div></div>`;
@@ -530,4 +547,31 @@ export function versionErrHtml(P, v) {
   const li = (L, empty) => L.length ? `<table class="mini">${L.slice(0, 10).map((x) => `<tr><td><a class="lga" href="/fehler/${x.fp}"><b>${e(x.kind)}:</b> ${e(String(x.msg || "–").slice(0, 70))}</a><small style="display:block;color:#8d8c84">${e(x.mod)} · ${x.inst_all} Inst.</small></td><td style="text-align:right">${tag2(x)}</td></tr>`).join("")}</table>` : `<div class="empty">${empty}</div>`;
   return `<div class="g"><div class="c"><h2>Neu in dieser Version</h2><div class="u">erst mit ${e(vshort(v))} aufgetaucht${P.neu.length ? ` · <a class="lga" href="/fehler?ver=${encodeURIComponent(v)}">alle in der Fehlerliste</a>` : ""}</div>${li(P.neu, "Keine neuen Fehler.")}</div>
     <div class="c"><h2>In dieser Version behoben</h2><div class="u">als „behoben in ${e(vshort(v))}“ markiert</div>${li(P.fixed, "Noch kein Fehler als behoben in dieser Version markiert.")}</div></div>`;
+}
+
+// ---------------------------------------------------------------- Build 12 · Aufrufkette und Gerät
+/** Kette (letzte gemeldete, vom Haupt-Fehler zuerst) und Gerätearten je Installation. Vor der Migration: nichts. */
+export async function loadB12(DB, D, fam) {
+  const q = fam.map(() => "?").join(",");
+  try {
+    const gs = (await DB.prepare(`SELECT fp, chain FROM err_groups WHERE fp IN (${q}) AND chain IS NOT NULL`).bind(...fam).all()).results;
+    const own = gs.find((x) => x.fp === D.g.fp) || gs[0];
+    const c = own ? JSON.parse(own.chain) : null;
+    D.chain = Array.isArray(c) ? c.filter((x) => typeof x === "string").slice(0, 3) : null;
+  } catch { D.chain = null; }
+  try {
+    const hs = (await DB.prepare(`SELECT rid, dev FROM err_hits WHERE fp IN (${q}) AND dev IS NOT NULL`).bind(...fam).all()).results;
+    const by = new Map();
+    for (const h of hs) { if (!by.has(h.rid)) by.set(h.rid, new Set()); for (const k of String(h.dev).split(",")) if (k in DEVS) by.get(h.rid).add(k); }
+    D.dev = { base: by.size, kinds: Object.keys(DEVS).map((k) => ({ k, n: [...by.values()].filter((s) => s.has(k)).length })).filter((x) => x.n) };
+  } catch { D.dev = null; }
+}
+export function devHtml(dev) {
+  if (!dev || !dev.base) return "";
+  const only = dev.kinds.length === 1 && dev.kinds[0].n === dev.base;
+  return `<span>Gerät</span><b>${only ? `<span class="tg" style="background:#78350f;color:#fde68a">nur ${e(DEVS[dev.kinds[0].k])}</span> ` : ""}${dev.kinds.map((x) => `${e(DEVS[x.k])} ${x.n}`).join(" · ")} <small style="color:#8d8c84;font-weight:400">von ${dev.base} ${dev.base === 1 ? "Installation" : "Installationen"} mit Angabe</small></b>`;
+}
+export function chainHtml(g, chain) {
+  if (!chain || chain.length < 2) return `<b class="m">${e(g.where || "–")}</b>`;
+  return `<b class="m">${chain.map((c, i) => `<div>${i ? '<span style="color:#8d8c84;font-family:inherit;font-weight:400">aufgerufen von </span>' : ""}${e(c)}</div>`).join("")}</b>`;
 }

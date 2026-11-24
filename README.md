@@ -503,6 +503,8 @@ Seit `2026.11.4` fragt die Integration einmalig, ob sie **anonym mitteilen darf,
 
 Ab 2026.11.5b2 enthält der Bericht außerdem die Fehler-IDs schon gesendeter Fehler (`"known"`). Der Server antwortet nur mit dem Status dieser eigenen Fehler (offen, in Arbeit, behoben in …), damit das Fehlerprotokoll „Behoben in … – Update installieren“ anzeigen kann. Weggelassene Fehler werden nie abgefragt.
 
+Ab 2026.11.5b3 enthält ein Fehler außerdem bis zu drei Stellen im Code von Strom & Wärme (`"chain"`, z. B. `gr_ent.py:171 _sync`) und – bei Fehlern der Oberfläche – die Geräteart (`"dev"`: Handy, Tablet, Computer oder App). Keine Pfade außerhalb der Integration, keine Gerätenamen oder Modelle.
+
 **Was nie gesendet wird:** Name, E-Mail, Standort, Räume, Geräte, Sensor- und Verbrauchswerte, Anwesenheit, die Instanz-ID von Home Assistant und Zugangsdaten. Die IP-Adresse wird auf dem Server weder gespeichert noch protokolliert.
 
 **Wohin:** an einen Statistik-Dienst des Entwicklers, der auf Cloudflare läuft (ein kleiner Worker mit Datenbank), nicht bei einem Analyse-Dienst. Gespeichert werden Kennung, Version, Kanal, die Modul-Kurzzeichen, die Home-Assistant-Version (ohne Patch-Stufe) sowie erster und letzter Tag der Meldung, keine IP-Adressen. Cloudflare sieht als Betreiber technisch die Verbindungsdaten, wertet sie aber nicht für diese Statistik aus. Kennungen, die 180 Tage nicht gemeldet haben, werden automatisch gelöscht. Die Auswertung sieht nur der Entwickler (Anmeldung per E-Mail-Code).

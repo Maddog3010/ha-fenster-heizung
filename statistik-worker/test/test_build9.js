@@ -40,7 +40,7 @@ S45.forEach((r, i) => ins("2026.11.4.5", r, i < 5 ? "2026.11.3" : "2026.10.2"));
 B1.forEach((r, i) => ins("2026.11.5b1", r, i < 4 ? "2026.11.3" : "2026.10.1"));
 const grp = (fp, o = {}) => DB.raw.prepare("INSERT INTO err_groups(fp,src,mod,kind,where_,msg,first_day,last_day,status,fixed_in) VALUES(?,?,?,?,?,?,?,?,?,?)")
   .run(fp, "backend", o.mod || "Modul 9", o.kind || "TimeoutError", "w.py:1 f", o.msg || "m", o.first || day(15), today, o.status || "offen", o.fixed || null);
-const hit = (fp, v, rid, d = 1) => DB.raw.prepare("INSERT OR REPLACE INTO err_hits VALUES(?,?,?,?,?,?,?)").run(day(d), fp, rid, v, /b\d+$/.test(v) ? "beta" : "stable", "2026.11.3", 1);
+const hit = (fp, v, rid, d = 1) => DB.raw.prepare("INSERT OR REPLACE INTO err_hits(day, fp, rid, version, channel, ha, n) VALUES(?,?,?,?,?,?,?)").run(day(d), fp, rid, v, /b\d+$/.test(v) ? "beta" : "stable", "2026.11.3", 1);
 grp("aaaaaaaaaaaa", { status: "behoben", fixed: "2026.11.5b1" });
 grp("bbbbbbbbbbbb", { kind: "TypeError", msg: "neu", first: day(2), mod: "Modul 18" });
 hit("aaaaaaaaaaaa", "2026.11.4.5", S45[0], 1); hit("aaaaaaaaaaaa", "2026.11.4.5", S45[0], 2); hit("aaaaaaaaaaaa", "2026.11.4.5", S45[5], 1);

@@ -202,7 +202,7 @@ def test_manager_send_forget_and_404():
         assert m._st["cfg"]["on"] and L._ID.match(m._st["cfg"]["id"])
         r = await m.async_send(force=True)
         assert r == {"sent": False, "n": 0, "why": "noch nicht"} and calls[-1][1]["errors"] == []   # Build 6: Tages-Meldung „0 Fehler“
-        assert calls[-1][1]["schema"] == 3 and calls[-1][1]["mods"] == [] and calls[-1][1]["id"] == m._st["cfg"]["id"]
+        assert calls[-1][1]["schema"] == L.SCHEMA and calls[-1][1]["mods"] == [] and calls[-1][1]["id"] == m._st["cfg"]["id"]
         m.record_threadsafe("backend", "TypeError", "wallbox.py:1 x", "boom 5")
         r = await m.async_send(force=True)
         assert calls[-1][0] == "/v1/errors" and not r["sent"] and r["why"] == "noch nicht"   # Server kennt /v1/errors noch nicht
@@ -218,7 +218,7 @@ def test_manager_send_forget_and_404():
         assert sn["items"][0]["fix"]["upd"] and sn["upd"] == {"n": 1, "to": "2026.11.5b3"}
         idv = m._st["cfg"]["id"]
         s = await m.async_forget()
-        assert calls[-1] == ("/v1/errors/forget", {"schema": 3, "id": idv}) and s["forgotten"] and not s["cfg"]["on"] and s["cfg"]["id"] == ""
+        assert calls[-1] == ("/v1/errors/forget", {"schema": L.SCHEMA, "id": idv}) and s["forgotten"] and not s["cfg"]["on"] and s["cfg"]["id"] == ""
     asyncio.run(run())
 
 
@@ -227,7 +227,7 @@ def test_build6_daily_report_and_modules():
     st = L.empty()
     st["cfg"].update(on=True, id="7f3c1e9a-4b2d-4c5e-9a1f-2d8b6e0c3a41")
     r = L.build_report(st, "2026.11.5b1", "2026.11.3", mods=["ev", "gr", "xmein", "<b>"])
-    assert r["schema"] == 3 and r["errors"] == [] and r["mods"] == ["gr", "ev"]
+    assert r["schema"] == L.SCHEMA and r["errors"] == [] and r["mods"] == ["gr", "ev"]
     assert set(r) == {"schema", "id", "version", "channel", "ha", "mods", "known", "errors"}
     assert L.build_report(st, "2026.11.5b1")["mods"] == []
 
@@ -252,7 +252,7 @@ def test_build7_known_and_status():
     b = L.add(st, src="backend", kind="TypeError", where="b.py:1 f", msg="b", today=D, version="2026.11.5b1")
     c = L.add(st, src="backend", kind="TypeError", where="c.py:1 f", msg="c", today=D, version="2026.11.5b1")
     r = L.build_report(st, "2026.11.5b1")
-    assert r["schema"] == 3 and r["known"] == [] and len(r["errors"]) == 3
+    assert r["schema"] == L.SCHEMA and r["known"] == [] and len(r["errors"]) == 3
     L.mark_sent(st, r, 1.0)
     L.add(st, src="backend", kind="TypeError", where="a.py:1 f", msg="a", today=D, version="2026.11.5b1")   # a ist wieder neu
     st["cfg"]["skip"] = [c["fp"]]
@@ -284,3 +284,26 @@ def test_build7_fix_info():
     assert f["again"] and not f["upd"], "trotz Fix wieder aufgetreten"
     assert L.fix_info({"srv": {"s": "arbeit", "fx": "", "d": ""}}, "2026.11.5b1") == {"s": "arbeit", "fx": "", "upd": False, "again": False, "beta_fix": False}
     assert L.fix_info({}, "2026.11.5b1") is None
+
+
+def test_build12_chain_and_device():
+    """Build 12: Aufrufkette (bis 3 Stellen, nur eigener Code) und Gerätearten im Bericht – Fingerabdruck bleibt gleich."""
+    st = L.empty()
+    st["cfg"].update(on=True, id="7f3c1e9a-4b2d-4c5e-9a1f-2d8b6e0c3a41")
+    ch = ["gr_ent.py:171 _sync", "gr_ent.py:98 _on_plan", "haus.py:412 async_save_plan", "x.py:1 zu_viel"]
+    a = L.add(st, src="backend", kind="RuntimeError", where="gr_ent.py:171 _sync", msg="m", today=D, version="2026.11.5b3", chain=ch)
+    b = L.add(st, src="backend", kind="RuntimeError", where="gr_ent.py:171 _sync", msg="m", today=D, version="2026.11.5b3")
+    assert a is b and a["fp"] == L.fingerprint("backend", "RuntimeError", "gr_ent.py:171 _sync", "m"), "Kette ändert den Fingerabdruck nicht"
+    assert a["chain"] == ch[:3]
+    u = L.add(st, src="oberflaeche", kind="TypeError", where="_rkHtml", msg="x", today=D, version="2026.11.5b3", dev="handy")
+    L.add(st, src="oberflaeche", kind="TypeError", where="_rkHtml", msg="x", today=D, version="2026.11.5b3", dev="handy")
+    L.add(st, src="oberflaeche", kind="TypeError", where="_rkHtml", msg="x", today=D, version="2026.11.5b3", dev="tablet")
+    r = L.build_report(st, "2026.11.5b3")
+    assert r["schema"] == 4
+    by = {x["fp"]: x for x in r["errors"]}
+    assert by[a["fp"]]["chain"] == ch[:3] and "dev" not in by[a["fp"]]
+    assert by[u["fp"]]["dev"] == ["handy", "tablet"] and "chain" not in by[u["fp"]], "nur die Arten, keine Zahlen"
+    for bad in (["/config/custom_components/x.py:1 f", "a.py:1 g"], ["../geheim.py:1 f", "a.py:1 g"], ["a b c d", "x.py:1 f"], "kein Array", [1, 2]):
+        assert len(L.clean_chain(bad)) <= 1, bad
+    assert "chain" in L.clean(st)["items"][a["fp"]] and L.clean(st)["items"][a["fp"]]["chain"] == ch[:3]
+    assert "chain" not in L.add(L.empty(), src="backend", kind="X", where="a.py:1 f", msg="m", today=D, version="2026.11.5b3", chain=["a.py:1 f"]), "eine Stelle allein ist keine Kette"

@@ -4,7 +4,14 @@ Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich a
 
 ## [2026.11.5b3] - unveröffentlicht
 
-Nächste Testversion für 2026.11.5.
+Genauere Fehlerberichte.
+
+### Neu
+- **Fehlerprotokoll · Aufrufkette:** Bei Programmfehlern merkt sich das Protokoll jetzt bis zu drei Stellen im Code von Strom & Wärme statt nur der innersten (z. B. `gr_ent.py:171 _sync ← gr_ent.py:98 _on_plan`). Das hilft, die Ursache schneller zu finden. Gleiche Fehler bleiben ein Eintrag.
+- **Fehlerberichte · Geräteart:** Bei Fehlern der Oberfläche geht mit, auf welcher Geräteart sie auftraten (Handy, Tablet, Computer oder App). So fallen Darstellungsfehler auf, die nur auf dem Handy passieren.
+
+### Datenschutz
+- Neu im Bericht sind nur diese beiden Angaben, und nur mit Zustimmung. Die Code-Stellen enthalten nie Pfade außerhalb von Strom & Wärme, die Geräteart nie Gerätenamen oder Modelle. „Das wird gesendet“ zeigt beides.
 
 ## [2026.11.5b2] - 2026-11-24
 
