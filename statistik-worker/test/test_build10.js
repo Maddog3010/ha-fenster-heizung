@@ -17,7 +17,7 @@ const mkenv = (sql = schema) => { const DB = shim(); DB.exec(sql); return { DB, 
 const dget = (env, path, t = tok) => worker.fetch(new Request(`https://dash.x.dev${path}`, { headers: t ? { "cf-access-jwt-assertion": t } : {} }), env);
 const today = new Date().toISOString().slice(0, 10), day = (n) => new Date(Date.parse(today) - n * 864e5).toISOString().slice(0, 10);
 const ID = () => crypto.randomUUID();
-assert.equal(DASH.build, 10);
+assert.ok(DASH.build >= 10);
 
 // ---------------------------------------------------------------- S4 Verloren nach Update
 {
@@ -61,7 +61,7 @@ assert.equal(DASH.build, 10);
   ids.forEach((id, i) => {
     const v = i < 2 ? "2026.11.5b1" : "2026.11.4.5", from = i < 3 ? 40 : 12;
     env.DB.raw.prepare("INSERT INTO installs VALUES(?,?,?,?,?,?,?,?)").run(id, day(from), today, v, /b/.test(v) ? "beta" : "stable", 0, "ev", "2026.11");
-    for (let k = from; k >= 0; k--) env.DB.raw.prepare("INSERT INTO daily VALUES(?,?,?,?)").run(day(k), id, v, /b/.test(v) ? "beta" : "stable");
+    for (let k = from; k >= 0; k--) env.DB.raw.prepare("INSERT INTO daily(day, id, version, channel) VALUES(?,?,?,?)").run(day(k), id, v, /b/.test(v) ? "beta" : "stable");
   });
   const bf = Z.backfill((await env.DB.prepare("SELECT day, id, version FROM daily").all()).results, today);
   assert.equal(bf[0].day, day(40)); assert.equal(bf.at(-1).day, day(1)); assert.equal(bf.length, 40);

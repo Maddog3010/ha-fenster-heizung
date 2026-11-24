@@ -144,7 +144,7 @@ console.log("Fehler-Tests OK");
   assert.ok(F.lagHtml(L).includes("9 aktive Installationen") && F.lagHtml(L).includes("bisher nur Beta"));
   assert.ok(F.lagHtml(F.laggards([], [])).includes("Noch kein Fehler"));
   // V1: Release-Marken
-  env.DB.raw.prepare("INSERT INTO daily VALUES(?,?,?,?)").run(day(40), ID(), "2026.11.4.1", "stable");
+  env.DB.raw.prepare("INSERT INTO daily(day, id, version, channel) VALUES(?,?,?,?)").run(day(40), ID(), "2026.11.4.1", "stable");
   const rel = await F.loadReleases(env.DB);
   assert.equal(rel.find((x) => x.v === "2026.11.4.1").d, day(40)); assert.equal(rel.find((x) => x.v === "2026.11.4.2").d, today);
   const many = Array.from({ length: 12 }, (_, i) => ({ v: `2026.11.5b${i + 1}`, d: day(12 - i) })).concat([{ v: "2026.11.4.2", d: day(20) }]);

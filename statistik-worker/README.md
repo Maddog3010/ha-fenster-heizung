@@ -11,7 +11,7 @@ Einrichtung: siehe `Anleitung_Statistik-Cloudflare-Worker.pdf`. Kurz:
     npx wrangler d1 execute stats --remote --file=schema.sql
     npx wrangler deploy                   # danach Access-Anwendung für dash.… anlegen, TEAM_DOMAIN/POLICY_AUD eintragen, erneut deploy
 
-Tests: `node --no-warnings test/test.js && node --no-warnings test/test_fehler.js && node --no-warnings test/test_build6.js && node --no-warnings test/test_build8.js && node --no-warnings test/test_build9.js && node --no-warnings test/test_build10.js` (Node ≥ 22.5, nutzt `node:sqlite` als D1-Ersatz).
+Tests: `node --no-warnings test/test.js && node --no-warnings test/test_fehler.js && node --no-warnings test/test_build6.js && node --no-warnings test/test_build8.js && node --no-warnings test/test_build9.js && node --no-warnings test/test_build10.js && node --no-warnings test/test_build11.js` (Node ≥ 22.5, nutzt `node:sqlite` als D1-Ersatz).
 
 ## Fehler-Statistik (ab 2026.11.4.3b1)
 
@@ -108,3 +108,18 @@ Worker und eine neue Tabelle – kein Update der Integration:
 - Banner: Dashboard Build 10.
 
 Tests: zusätzlich `node --no-warnings test/test_build10.js`.
+
+## Build 11: Modul-Nutzung im Verlauf
+
+Worker und eine neue Spalte – kein Update der Integration:
+
+    npx wrangler d1 execute stats --remote --file=migrate-build11.sql
+    npx wrangler deploy
+
+(Nur einmal nötig. Ohne die Spalte nimmt der Worker Meldungen weiter an und speichert die Module dann einfach nicht in der Tagesliste.)
+
+- Jede Versions-Meldung speichert die Module jetzt auch in `daily.modules`.
+- **Modul-Nutzung im Verlauf** (Reiter Versionen): je Modul der Anteil der Installationen mit Modul an – jetzt, Veränderung gegenüber vor 4 Wochen (Prozentpunkte) und Kurve über 12 Wochen. Je Installation und Woche zählt die letzte Meldung. Module, die in 12 Wochen nirgends an waren, stehen in einer Zeile. Export: `/export/modulverlauf.csv`.
+- Banner: Dashboard Build 11.
+
+Tests: zusätzlich `node --no-warnings test/test_build11.js`.
