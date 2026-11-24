@@ -6,11 +6,12 @@
 // Gespeichert wird je Installation: zufällige Kennung, Version, Kanal, erster/letzter Tag. Keine IP-Adresse,
 // kein User-Agent. Die Begrenzung pro Absender übernimmt eine Cloudflare-Rate-Limit-Regel (siehe Anleitung).
 
+import { kindOf, bump, saveCron, sysCleanup, schemaCheck, warnHtml, sysLoad, sysHtml, SYS_CSS } from "./system.js";
 import { snapToday, snapCleanup, loadSnaps, langzeitHtml, lostAfterUpdate, lostHtml, cohorts, cohortHtml, csv, EXPORTS, CSV_CSS, modTrend, modTrendHtml, loadModDaily } from "./langzeit.js";
 import { haMatrixHtml, versionErrPart, versionErrHtml, pc1, dbErrMerge, dbErrSplit, errOwnStatus, validErrors, dbErrors, dbErrForget, dbErrCleanup, errLoad, errLoadOne, errRender, errRenderOne, ERR_CSS, ERR_MAX_BODY, tabs, validStatus, dbErrStatus, loadReleases, releaseMarks, markSvg, weekHtml, laggards, lagHtml } from "./fehler.js";
 /** Build 9: Version dieses Dashboards/Workers – steht im Banner und unter /health. Bei jedem Build hochzählen. */
-export const DASH = { build: 12, date: "2026-11-24" };
-const dashChip = () => `<span class="chip dv" title="Version des Statistik-Workers – nach „wrangler deploy“ prüfen, ob der neue Stand aktiv ist">Dashboard Build ${DASH.build} · ${DASH.date.slice(8, 10)}.${DASH.date.slice(5, 7)}.${DASH.date.slice(0, 4)}</span>`;
+export const DASH = { build: 13, patch: 1, date: "2026-11-24" };   // patch = Korrektur innerhalb eines Builds (Anzeige „Build 13.1“)
+const dashChip = () => `<span class="chip dv" title="Version des Statistik-Workers – nach „wrangler deploy“ prüfen, ob der neue Stand aktiv ist">Dashboard Build ${DASH.build}${DASH.patch ? "." + DASH.patch : ""} · ${DASH.date.slice(8, 10)}.${DASH.date.slice(5, 7)}.${DASH.date.slice(0, 4)}</span>`;
 const banChips = (today) => `<span class="chips">${dashChip()}<span class="chip">nur du · Stand ${e(today)}</span></span>`;
 export const SCHEMAS = [1, 2, 3];   // Schema 1: ohne Module · Schema 2: mit Modulliste · Schema 3 (Build 6): dazu HA-Version „2026.11“
 export const MODULES = { ww: "2 Warmwasser", en: "3 Energie", gs: "4 Gerätestrom", lu: "5 Lüftung", rb: "6 Rollläden", wp: "7 Wärmepumpe", ev: "8 E-Auto", wx: "9 Wetter", ga: "10 Garten", sf: "11 Sicherheit", pl: "12 Pool & Sauna", bt: "13 Batterie", dt: "14 Stromtarif", wa: "15 Wartung", sp: "16 Prognose", ef: "19 Hausfluss" };
@@ -306,7 +307,7 @@ export function render(r, retention = "180", x = {}) {
   const legend = r.week_versions.map((v, k) => `<span><i style="background:${VCOL[k]}"></i>${e(v)}</span>`).join("");
   const t50 = r.t50 !== null ? `${r.t50} Tage` : "–";
   return `<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex"><title>Strom &amp; Wärme · Statistik</title><style>${CSS}${ERR_CSS}${CSV_CSS}</style></head><body><div class="w">
+<meta name="robots" content="noindex"><title>Strom &amp; Wärme · Statistik</title><style>${CSS}${ERR_CSS}${CSV_CSS}${SYS_CSS}</style></head><body><div class="w">
 <div class="ban"><div><h1>Strom &amp; Wärme · Statistik</h1><small>Welche Version ist im Einsatz? · anonym · Version und Module</small></div>${banChips(r.today)}</div>${tabs("v")}${x.week ? weekHtml(x.week) : ""}
 <div class="k"><div class="c"><div class="t">Aktive Installationen</div><div class="n">${r.a30}</div><div class="s">30 Tage · ${r.a7} in den letzten 7 Tagen</div></div>
 <div class="c"><div class="t">Neu diese Woche</div><div class="n">+${r.new7}</div><div class="s">${r.inactive} Installationen seit &gt;14 Tagen inaktiv</div></div>
@@ -426,7 +427,7 @@ const json = (code, body) =>
   new Response(JSON.stringify(body ?? { ok: code < 300 }), { status: code, headers: { "content-type": "application/json", "cache-control": "no-store" } });
 
 async function ingest(req, env, url) {
-  if (req.method === "GET" && url.pathname === "/health") return json(200, { ok: true, build: DASH.build, date: DASH.date });
+  if (req.method === "GET" && url.pathname === "/health") return json(200, { ok: true, build: DASH.build, patch: DASH.patch || 0, date: DASH.date });
   if (req.method !== "POST" || !["/v1/ping", "/v1/forget", "/v1/errors", "/v1/errors/forget"].includes(url.pathname)) return json(404, { ok: false });
   const raw = await req.arrayBuffer();
   if (raw.byteLength === 0 || raw.byteLength > (url.pathname === "/v1/errors" ? ERR_MAX_BODY : MAX_BODY)) return json(413, { ok: false });
@@ -456,18 +457,25 @@ async function ingest(req, env, url) {
 }
 
 const page = (title, body, today, week = null, tab = "f", sub = "Fehlerberichte · freiwillig · bereinigt", foot = "Nur Installationen, die Fehlerberichte eingeschaltet haben. Berichte älter als 90 Tage werden gelöscht.") => `<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex"><title>${title}</title><style>${CSS}${ERR_CSS}${CSV_CSS}</style></head><body><div class="w">
+<meta name="robots" content="noindex"><title>${title}</title><style>${CSS}${ERR_CSS}${CSV_CSS}${SYS_CSS}</style></head><body><div class="w">
 <div class="ban"><div><h1>Strom &amp; Wärme · Statistik</h1><small>${sub}</small></div>${banChips(today)}</div>${tabs(tab)}${weekHtml(week)}${body}
 <div class="f">${foot}</div></div></body></html>`;
+/* Build 13: Hinweis „Datenbank unvollständig“ unter dem Banner aller Reiter */
+const withWarn = (s, checks) => { const w = warnHtml(checks); return w ? s.replace('<div class="tabs">', `${w}<div class="tabs">`) : s; };
 const html = (s, code = 200) => new Response(s, { status: code, headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-robots-tag": "noindex" } });
 
 async function dashboard(req, env, url) {
   const fm = /^\/fehler(?:\/([0-9a-f]{12}))?\/?$/.exec(url.pathname), vm = /^\/version\/([0-9.b]{5,24})\/?$/.exec(url.pathname);
-  const xm = /^\/export\/([a-z]{2,12})\.csv$/.exec(url.pathname);
+  const xm = /^\/export\/([a-z]{2,12})\.csv$/.exec(url.pathname), sm = url.pathname === "/system";
   const post = req.method === "POST" && fm && fm[1];
-  if ((req.method !== "GET" && !post) || (url.pathname !== "/" && !fm && !vm && !(xm && EXPORTS.includes(xm[1])))) return json(404, { ok: false });
+  if ((req.method !== "GET" && !post) || (url.pathname !== "/" && !fm && !vm && !sm && !(xm && EXPORTS.includes(xm[1])))) return json(404, { ok: false });
   if (!(await verifyAccess(req.headers.get("cf-access-jwt-assertion"), env))) return new Response("Zugriff verweigert", { status: 403, headers: { "cache-control": "no-store" } });
   const today = S(Date.now());
+  if (sm) {   /* Build 13 · Reiter System */
+    const X = await sysLoad(env.DB, today, env), wk = (await errLoad(env.DB, today, 7)).week;
+    return html(withWarn(page("System · Strom &amp; Wärme", sysHtml(X, DASH), today, wk, "s", "Zustand des Statistik-Workers", "Zähler ohne Kennungen, 400 Tage aufbewahrt. Was eine Cloudflare-Regel vor dem Worker abweist, wird hier nicht gezählt."), X.checks));
+  }
+  const chk = req.method === "GET" && !xm ? await schemaCheck(env.DB) : null;
   if (post) {   /* Build 4: Status speichern – nur aus dem eigenen Dashboard (gleiche Herkunft), nur hinter Access */
     const origin = req.headers.get("origin"), site = req.headers.get("sec-fetch-site");
     if ((origin && origin !== `https://${env.DASH_HOST}`) || (!origin && site !== "same-origin")) return new Response("Fremde Herkunft", { status: 403, headers: { "cache-control": "no-store" } });
@@ -492,38 +500,49 @@ async function dashboard(req, env, url) {
     const v = decodeURIComponent(vm[1]);
     if (!VER_RE.test(v)) return json(404, { ok: false });
     const R = await versionReport(env.DB, v, today);
-    return R ? html(page(`${e(v)} · Strom &amp; Wärme`, versionHtml(R), today, R.week, "", "Release-Bericht · eine Version auf einen Blick", "Installationen aus der Versions-Statistik, Fehlerquote und fehlerfreie Tage aus den Fehlerberichten (nur mit Zustimmung).")) : html(page("Version · Strom &amp; Wärme", `<div class="c"><div class="empty">Zu ${e(v)} gibt es keine Meldungen.</div></div>`, today, null, ""), 404);
+    return R ? html(withWarn(page(`${e(v)} · Strom &amp; Wärme`, versionHtml(R), today, R.week, "", "Release-Bericht · eine Version auf einen Blick", "Installationen aus der Versions-Statistik, Fehlerquote und fehlerfreie Tage aus den Fehlerberichten (nur mit Zustimmung)."), chk)) : html(page("Version · Strom &amp; Wärme", `<div class="c"><div class="empty">Zu ${e(v)} gibt es keine Meldungen.</div></div>`, today, null, ""), 404);
   }
   if (fm && fm[1]) {
     const D = await errLoadOne(env.DB, fm[1], today);
     if (D && D.redirect) return new Response(null, { status: 302, headers: { location: `/fehler/${D.redirect}`, "cache-control": "no-store" } });
-    return D ? html(page("Fehler · Strom &amp; Wärme", errRenderOne(D, env.GITHUB_REPO), today, (await errLoad(env.DB, today, 7)).week)) : html(page("Fehler · Strom &amp; Wärme", '<div class="c"><div class="empty">Diesen Fehler gibt es nicht (mehr).</div></div>', today), 404);
+    return D ? html(withWarn(page("Fehler · Strom &amp; Wärme", errRenderOne(D, env.GITHUB_REPO), today, (await errLoad(env.DB, today, 7)).week), chk)) : html(page("Fehler · Strom &amp; Wärme", '<div class="c"><div class="empty">Diesen Fehler gibt es nicht (mehr).</div></div>', today), 404);
   }
   if (fm) {
     const q = {}; for (const k of ["tage", "mod", "src", "neu", "alle", "ign", "ver"]) { const v = url.searchParams.get(k); if (v) q[k] = v.slice(0, 40); }
     if (q.ver && !VER_RE.test(q.ver)) delete q.ver;
     const days = [30, 90].includes(+q.tage) ? +q.tage : 7, er = await errLoad(env.DB, today, days);
-    return html(page("Fehler · Strom &amp; Wärme", errRender(er, q), today, er.week));
+    return html(withWarn(page("Fehler · Strom &amp; Wärme", errRender(er, q), today, er.week), chk));
   }
   if (xm) return exportCsv(env.DB, xm[1], today);
   const r = await loadAndCompute(env.DB, today), er = await errLoad(env.DB, today, 7);
   await snapToday(env.DB, today, r, er.reife.list);   /* Build 10: Tageswert speichern (einmal am Tag reicht, mehrfach schadet nicht) */
   const ex = await build10Data(env.DB, today);
-  return html(render(r, env.RETENTION_DAYS || "180", { week: er.week, lag: laggards(er.rows, r.versions), ...ex }));
+  return html(withWarn(render(r, env.RETENTION_DAYS || "180", { week: er.week, lag: laggards(er.rows, r.versions), ...ex }), chk));
 }
 
 export default {
-  async fetch(req, env) {
+  async fetch(req, env, ctx) {
     const url = new URL(req.url);
-    if (url.hostname === env.INGEST_HOST) return ingest(req, env, url);
+    if (url.hostname === env.INGEST_HOST) {
+      const res = await ingest(req, env, url);
+      if (req.method === "POST") {   /* Build 13: zählen, ohne die Antwort aufzuhalten */
+        const b = bump(env.DB, S(Date.now()), kindOf(url.pathname, res.status));
+        if (ctx && ctx.waitUntil) ctx.waitUntil(b); else await b;
+      }
+      return res;
+    }
     if (url.hostname === env.DASH_HOST) return dashboard(req, env, url);
     return json(404, { ok: false });
   },
   async scheduled(_ev, env, ctx) {
     ctx.waitUntil((async () => {
-      const today = S(Date.now());
-      try { const r = await loadAndCompute(env.DB, today), er = await errLoad(env.DB, today, 7); await snapToday(env.DB, today, r, er.reife.list); } catch { /* Statistik darf das Aufräumen nie blockieren */ }
-      await Promise.all([dbCleanup(env.DB, +(env.RETENTION_DAYS || 180), Date.now()), dbErrCleanup(env.DB, Date.now()), snapCleanup(env.DB, Date.now())]);
+      const t0 = Date.now(), today = S(t0);
+      let snap = false, msg = "";
+      try { const r = await loadAndCompute(env.DB, today), er = await errLoad(env.DB, today, 7); snap = await snapToday(env.DB, today, r, er.reife.list); } catch (x) { msg = "Tageswert: " + String((x && x.message) || x).slice(0, 80); }
+      try { await Promise.all([dbCleanup(env.DB, +(env.RETENTION_DAYS || 180), Date.now()), dbErrCleanup(env.DB, Date.now()), snapCleanup(env.DB, Date.now()), sysCleanup(env.DB, Date.now())]); }
+      catch (x) { msg = (msg ? msg + " · " : "") + "Aufräumen: " + String((x && x.message) || x).slice(0, 80); }
+      /* Build 13: letzten Lauf merken (Reiter System) */
+      await saveCron(env.DB, { day: today, time: new Date(t0).toISOString().slice(11, 19), ms: Date.now() - t0, ok: !msg, msg, snap });
     })());
   },
 };

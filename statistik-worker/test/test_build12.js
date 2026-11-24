@@ -19,7 +19,7 @@ const post = (env, body) => worker.fetch(new Request("https://stats.x.dev/v1/err
 const dget = (env, path) => worker.fetch(new Request(`https://dash.x.dev${path}`, { headers: { "cf-access-jwt-assertion": tok } }), env);
 const today = new Date().toISOString().slice(0, 10);
 const ID = () => crypto.randomUUID();
-assert.equal(DASH.build, 12);
+assert.ok(DASH.build >= 12);
 const E = (o = {}) => ({ fp: "a1b2c3d4e5f6", src: "backend", mod: "Modul 0", kind: "RuntimeError", where: "gr_ent.py:171 _sync", msg: "m", n: 1, first: today, last: today, vers: ["2026.11.5b3"], ...o });
 const R = (errors, o = {}) => ({ schema: 4, id: ID(), version: "2026.11.5b3", channel: "beta", ha: "2026.11.3", mods: ["gr"], known: [], errors, ...o });
 const CH = ["gr_ent.py:171 _sync", "gr_ent.py:98 _on_plan", "haus.py:412 async_save_plan"];

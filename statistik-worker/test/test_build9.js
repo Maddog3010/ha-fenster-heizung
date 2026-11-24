@@ -22,8 +22,8 @@ const ID = () => crypto.randomUUID();
 // ---------------------------------------------------------------- Banner und /health
 assert.ok(DASH.build >= 9);
 const hj = await (await worker.fetch(new Request("https://stats.x.dev/health"), env)).json();
-assert.deepEqual(hj, { ok: true, build: DASH.build, date: DASH.date });
-assert.ok((await (await dget("/")).text()).includes(`Dashboard Build ${DASH.build} · ${DASH.date.slice(8, 10)}.`), "Banner Versionen");
+assert.deepEqual(hj, { ok: true, build: DASH.build, patch: DASH.patch || 0, date: DASH.date });
+assert.ok((await (await dget("/")).text()).includes(`Dashboard Build ${DASH.build}${DASH.patch ? "." + DASH.patch : ""} · ${DASH.date.slice(8, 10)}.`), "Banner Versionen");
 assert.ok((await (await dget("/fehler")).text()).includes(`Dashboard Build ${DASH.build}`), "Banner Fehler");
 console.log("Build-9-Banner OK");
 
