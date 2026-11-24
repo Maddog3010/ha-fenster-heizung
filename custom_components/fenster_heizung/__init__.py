@@ -106,7 +106,7 @@ from .const import (
 )
 
 _LOGGER = logging.getLogger(__name__)
-PLATFORMS = ["switch", "sensor", "binary_sensor"]
+PLATFORMS = ["switch", "sensor", "binary_sensor", "button"]
 RECHECK_SECONDS = 300
 
 
@@ -1353,6 +1353,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             sf_services(hass)  # Modul 11: Dienste quittieren, Melder geprüft, Selbsttest
         except Exception:  # noqa: BLE001 - Dienste sind ein Zusatz, der Start darf daran nie scheitern
             _LOGGER.warning("Dienste von Modul 11 nicht angemeldet", exc_info=True)
+    if "mxx" not in store:  # Sponsor-Max-Extras (2026.11.4.4b4): Wohnklima-Zeugnis, Heizkosten je Raum, Wand-Tablet-Extras
+        from .mx_extras import MxExtrasManager
+        store["mxx"] = MxExtrasManager(hass)
+        await store["mxx"].async_start()
+        store["mxx"].sync_later(20)
     if "wartung" not in store:
         from .wartung import WartungManager
         store["wartung"] = WartungManager(hass)
@@ -1468,6 +1473,9 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             cch = hass.data.get(DOMAIN, {}).pop("coach", None)
             if cch is not None:
                 cch.async_stop()
+            mxx = hass.data.get(DOMAIN, {}).pop("mxx", None)
+            if mxx is not None:
+                mxx.async_stop()
             brf = hass.data.get(DOMAIN, {}).pop("briefing", None)
             if brf is not None:
                 brf.async_stop()

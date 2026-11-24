@@ -3701,6 +3701,40 @@ const CSS_SB = `
   .hero.mh.sbx .saiL{z-index:3}
   .sbwa{position:static;transform:none;margin:auto;gap:12px}.sbcal{width:92px}.sbcal em{font-size:2.1rem}.sbrgs{grid-template-columns:repeat(2,44px)}.sbrg{width:44px;height:44px}}
 `;
+/* Sponsor-Max-Extras (2026.11.4.4b4): Wohnklima-Zeugnis, Heizkosten je Raum, Wand-Tablet-Extras */
+const CSS_MQX = `
+.mqnm{background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;text-align:left}.mqnm:hover{text-decoration:underline}
+.mqnew{font-style:normal;font-size:.62rem;font-weight:800;letter-spacing:.04em;color:#2dd4bf;background:rgba(45,212,191,.14);border-radius:8px;padding:1px 6px;margin-left:6px;vertical-align:middle}
+.mqlock{flex:none;font:inherit;font-size:.72rem;font-weight:700;color:#e8b64a;background:rgba(232,182,74,.14);border:0;border-radius:10px;padding:3px 9px;cursor:pointer}
+.mqrow .s3h{flex-wrap:wrap}.mqrow .s3h .gschs{margin-left:auto}
+.mqtop{display:flex;align-items:center;gap:12px;margin:8px 0}.mqtop span{display:flex;flex-direction:column}.mqtop small{color:var(--mut);font-size:.78rem}
+.mqbig{min-width:54px;height:54px;padding:0 8px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:900}.mqbig.eur{min-width:0;height:auto;padding:0;font-size:1.7rem;background:none;white-space:nowrap}
+.mqg{min-width:30px;height:26px;padding:0 6px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:.86rem}
+.mqq0{background:rgba(148,163,184,.14);color:var(--mut)}.mqq1{background:rgba(45,212,191,.16);color:#2dd4bf}.mqq2{background:rgba(132,204,22,.16);color:#84cc16}.mqq3{background:rgba(232,182,74,.18);color:#e8b64a}.mqq4{background:rgba(249,115,22,.18);color:#fb923c}.mqq5,.mqq6{background:rgba(240,106,95,.2);color:#f06a5f}
+.mqlist{display:flex;flex-direction:column;margin:4px 0}
+.mqli{width:100%;display:flex;justify-content:space-between;align-items:center;gap:8px;background:none;border:0;border-bottom:1px solid var(--line,rgba(127,127,127,.15));padding:7px 2px;font:inherit;color:inherit;cursor:pointer;text-align:left;flex-wrap:wrap}.mqli:last-child{border-bottom:0}
+.mqli>span:last-child{display:flex;align-items:center;gap:8px}.mqli.bar>i{flex-basis:100%;height:5px;border-radius:3px;background:rgba(127,127,127,.18);overflow:hidden}.mqli.bar>i>b{display:block;height:100%;border-radius:3px}
+.mqrisk{color:#f06a5f;font-style:normal}.mqup{color:#2dd4bf;font-size:.78rem}.mqdn{color:#f06a5f;font-size:.78rem}.pkc{color:#f472b6}.mqteal{color:#2dd4bf}
+.mqwin{display:block;width:100%;margin:8px 0 4px;text-align:left;background:rgba(244,114,182,.1);border:0;border-radius:10px;padding:8px 10px;font:inherit;color:inherit;cursor:pointer}.mqwin b{color:#f472b6}
+.mqlimi{display:flex;align-items:center;gap:4px;flex-wrap:wrap;justify-content:flex-end;font-size:.8rem;color:var(--mut)}.mqin{text-align:center;padding:4px}
+.mqhist{display:flex;align-items:flex-end;gap:4px;height:70px;margin:6px 0 4px}.mqhist i{flex:1;border-radius:4px 4px 0 0;min-height:3px}.mqhist.cost i{background:#2dd4bf;opacity:.7}.mqhist.cost i.we{opacity:1;background:#5eead4}
+.mqstrip{margin:0 0 14px}.mqtiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.mqtile{background:rgba(255,255,255,.05);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;border-top:2px solid transparent}.mqtile.own{border-top-color:#2dd4bf}
+.mqtile small{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);font-weight:700}.mqtile b{font-size:1.5rem}.mqtile span{font-size:.8rem;color:var(--mut)}.mqtile span.warn{color:#e8b64a}
+.mqtile em{font-style:normal;font-size:.74rem;min-height:1em}.mqtile em.pk{color:#f472b6}.mqtile em.tl{color:#2dd4bf}
+.mqqas{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.mqqa{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.07);border:0;border-radius:12px;padding:10px 14px;font:inherit;color:inherit;font-weight:600;cursor:pointer}
+.mqrest{justify-content:flex-start!important;align-items:stretch!important;padding:5vh 5vw!important;gap:4vh;transition:transform 1s;background:radial-gradient(circle at 22% 18%,#16363a 0,#0b0f12 60%)!important}
+.mqrh{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.mqrs{display:flex;flex-direction:column;align-items:flex-end;gap:6px;color:#9aa7b4}
+.mqclk{font-size:clamp(64px,14vw,170px);font-weight:200;line-height:1;letter-spacing:-2px;color:#e6edf3}
+.mqrest .mqtiles{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}.mqrest .tmrw{margin-top:auto;text-align:center}
+.mqnight{background:#000!important;align-items:center!important;justify-content:center!important}.mqnight .mqclk{color:#7a2a2a}.mqnight.teal .mqclk{color:#1f5f56}.mqnh{color:#4a2020;font-size:.9rem}.mqnight.teal .mqnh{color:#1b4a44}
+.mqsleep{background:#000!important}
+.mqalarm{position:fixed;inset:0;z-index:50;background:#3a1216;color:#ffe4e1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:24px;animation:mqpulse 1.2s infinite alternate}
+.mqalarm>b{font-size:clamp(32px,7vw,72px);font-weight:900;color:#ff8a80}.mqai{font-size:clamp(48px,10vw,96px)}.mqar{font-size:1.3rem}
+.mqab{background:#f06a5f;color:#fff;border:0;border-radius:16px;padding:16px 28px;font:inherit;font-size:1.2rem;font-weight:800;cursor:pointer;margin-top:12px}
+.mqab2{background:none;color:#ffb3ad;border:1px solid #6a2a2e;border-radius:14px;padding:10px 20px;font:inherit;cursor:pointer}.mqan{font-size:.8rem;color:#c99;max-width:420px;margin-top:10px}
+@keyframes mqpulse{from{background:#3a1216}to{background:#521a1f}}
+`;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
     super();
@@ -7705,7 +7739,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _build() {
     const sr = this.shadowRoot;
-    sr.innerHTML = `<style>${CSS_MAIN}${CSS_RK}${CSS_GH}${CSS_SUP}${CSS_STS}${CSS_GOE}${CSS_SF2}${CSS_WT}${CSS_SAI}${CSS_SB}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
+    sr.innerHTML = `<style>${CSS_MAIN}${CSS_RK}${CSS_GH}${CSS_SUP}${CSS_STS}${CSS_GOE}${CSS_SF2}${CSS_WT}${CSS_SAI}${CSS_SB}${CSS_MQX}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
     this._built = true; this._t0 = Date.now();
     /* Aufklappbereiche (<details>) merken: Home Assistant meldet laufend neue Werte, jeder Neuaufbau würde sie sonst wieder zuklappen (2026.11.4.3b5) */
     sr.addEventListener("toggle", (e) => { const d = e.target; if (d && d.tagName === "DETAILS" && !this._dkBusy) { const k = this._dKey(d); if (k) (this._dOpen = this._dOpen || {})[k] = d.open; } }, true);
@@ -7770,6 +7804,7 @@ class FensterHeizungPanel extends HTMLElement {
       if (t.dataset && t.dataset.f === "mwset") { this._mwAssign(t.dataset.k, t.value); return; }
       if (t.dataset && (t.dataset.f === "vnotify" || t.dataset.f === "vwarn" || t.dataset.f === "vdays" || t.dataset.f === "vbat" || t.dataset.f === "vbatinv")) { const v = { ...this._vcfg() }; if (t.dataset.f === "vbat" || t.dataset.f === "vbatinv") { const bs = { ...(v.batsrc || {}) }, e = t.dataset.e, cur = bs[e] || { src: "", inv: false }; if (t.dataset.f === "vbat") { if (t.value) bs[e] = { src: t.value, inv: t.value.startsWith("binary_sensor.") ? !!cur.inv : false }; else delete bs[e]; } else if (bs[e]) bs[e] = { ...bs[e], inv: t.checked }; v.batsrc = bs; } else if (t.dataset.f === "vnotify") v.notify = t.value; else if (t.dataset.f === "vdays") { const n = Number(String(t.value).replace(",", ".")); v.days = isFinite(n) ? Math.min(60, Math.max(1, Math.round(n))) : 7; } else { const n = Number(String(t.value).replace(",", ".")); v.warn = isFinite(n) ? Math.min(60, Math.max(11, Math.round(n))) : 20; } this._gen.valve = v; this._saveGen(); this._renderModal(); return; }
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("msx") && this._msChange(t)) return;
+      if (t.dataset && t.dataset.f && t.dataset.f.startsWith("mqx") && this._mqChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("lfx") && this._lfChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("ehx") && this._ehChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("wz") && this._wzChange(t)) return;
@@ -7832,6 +7867,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a.startsWith("sts")) this._stsAct(a, b);
     else if (a.startsWith("errx")) this._errAct(a, b);
     else if (a.startsWith("lgx")) this._lgAct(a, b);
+    else if (a.startsWith("mqx")) this._mqAct(a, b);
     else if (a.startsWith("mx") && this._mxAct) this._mxAct(a, b);
     else if (a.startsWith("spx")) this._spAct(a, b);
     else if (a.startsWith("sfx")) this._sfxAct(a, b);
@@ -8529,6 +8565,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (m.type === "sup") { box.innerHTML = this._supModal(); this._supBind(box); return; }
     if (m.type === "errlog") { box.innerHTML = this._errModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "sts") { box.innerHTML = this._stsModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (String(m.type).startsWith("mqx")) { box.innerHTML = this._mqModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["lgbrief", "lgposter", "lgex"].includes(m.type)) { box.innerHTML = this._lgModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["spndlg", "spnadm", "spngh"].includes(m.type)) { box.innerHTML = this._spnModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["tmpin", "tmset", "tmnorm", "tmmore"].includes(m.type)) { box.innerHTML = this._tmModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -13549,6 +13586,7 @@ class FensterHeizungPanel extends HTMLElement {
   _tmWarnKey() { try { return this._hzHints().filter((h) => h.c === "bad" && !h.soft).map((h) => h.t).join("|"); } catch (_) { return ""; } }
   _tmTick() {
     if (!this._hass || !this._tmOn()) return;
+    if (this._mqTbTick) this._mqTbTick();  /* Sponsor-Max-Extras: Wand-Tablet (Zustand, Nacht, Alarm, Einbrennschutz) */
     const sr = this.shadowRoot, c = this._tmC(), d = new Date(), idle = Date.now() - (this._tmLast || Date.now());
     sr.querySelectorAll("[data-tmclk]").forEach((e) => { e.textContent = d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }); });
     sr.querySelectorAll("[data-tmdate]").forEach((e) => { e.textContent = d.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" }); });
@@ -13590,8 +13628,8 @@ class FensterHeizungPanel extends HTMLElement {
   _tmStart() {
     const hints = this._hzHints(), mods = this._mdList().filter((x) => x.id !== "st"), bubs = this._labOn("sb") ? this._hzBubs().replace(/data-act="hzbub"/g, 'data-act="tmbub"') : "";
     const rows = hints.slice(0, 3).map((h) => `<div class="tmhint ${h.c || ""}"><span class="tmhi">${ic(ICONS[h.i] ? h.i : "info", 20)}</span><span><b>${h.t}</b>${h.s ? `<small>${h.s}</small>` : ""}</span></div>`).join("");
-    if (this._hzNew()) { const vis = this._hzVis(hints), r2 = vis.slice(0, 3).map((h) => `<div class="tmhint ${h.c || ""}"><span class="tmhi">${ic(ICONS[h.i] ? h.i : "info", 20)}</span><span><b>${h.t}</b>${h.s ? `<small>${h.s}</small>` : ""}</span></div>`).join(""); return this._hzWrap(`${this._hzTmAmp(vis)}${this._muTabCard && this._muOn() ? this._muTabCard() : ""}${this._hzQaRow(true)}${bubs}<div class="tmgrid">${this._hzMods().map((m) => this._hzTile(m).replace('data-act="hzgo"', 'data-act="tmgo"')).join("")}</div>${r2 ? `<div class="tmhints">${r2}</div>` : ""}`); }
-    return `${this._muTabCard && this._muOn() ? this._muTabCard() : ""}${bubs}<div class="tmgrid">${mods.map((m) => this._hzTile(m).replace('data-act="hzgo"', 'data-act="tmgo"')).join("")}</div>${rows ? `<div class="tmhints">${rows}</div>` : ""}`;
+    if (this._hzNew()) { const vis = this._hzVis(hints), r2 = vis.slice(0, 3).map((h) => `<div class="tmhint ${h.c || ""}"><span class="tmhi">${ic(ICONS[h.i] ? h.i : "info", 20)}</span><span><b>${h.t}</b>${h.s ? `<small>${h.s}</small>` : ""}</span></div>`).join(""); return this._hzWrap(`${this._mqStrip ? this._mqStrip() : ""}${this._hzTmAmp(vis)}${this._muTabCard && this._muOn() ? this._muTabCard() : ""}${this._hzQaRow(true)}${bubs}<div class="tmgrid">${this._hzMods().map((m) => this._hzTile(m).replace('data-act="hzgo"', 'data-act="tmgo"')).join("")}</div>${r2 ? `<div class="tmhints">${r2}</div>` : ""}`); }
+    return `${this._mqStrip ? this._mqStrip() : ""}${this._muTabCard && this._muOn() ? this._muTabCard() : ""}${bubs}<div class="tmgrid">${mods.map((m) => this._hzTile(m).replace('data-act="hzgo"', 'data-act="tmgo"')).join("")}</div>${rows ? `<div class="tmhints">${rows}</div>` : ""}`;
   }
   _tmRoom(r) {
     const st = this._hass.states, cl = (r.thermos || []).map((e) => st[e]).filter(Boolean), A = (cl[0] && cl[0].attributes) || {};
@@ -13607,6 +13645,7 @@ class FensterHeizungPanel extends HTMLElement {
     return rooms.length ? `<div class="tmrooms">${rooms.map((r) => this._tmRoom(r)).join("")}</div>` : `<div class="card empty">Noch keine Räume eingerichtet.</div>`;
   }
   _tmSleepHtml() {
+    const mq = this._mqRest ? this._mqRest() : ""; if (mq) return mq;
     const facts = ["wetter", "alarm", "personen", "muell"].map((id) => this._hzBubDef(id)).filter((x) => x && x.i).map((x) => `<div>${ic(x.i, 26)}<span>${esc(x.b)}${x.s ? ` · ${esc(x.s)}` : ""}</span></div>`).join("");
     const ef = this._efxSleep ? this._efxSleep() : "";
     const sc = !ef && this._hzNew() ? this._hzTmSleep() : "";
@@ -13615,6 +13654,7 @@ class FensterHeizungPanel extends HTMLElement {
   _tmRender() {
     const sr = this.shadowRoot, v = this._mdList().some((m) => m.id === this._tmV()) || this._tmV() === "st" ? this._tmV() : "st", m = this._mdList().find((x) => x.id === v), c = this._tmC(), me = this._tmMe();
     this._w = this.clientWidth; this._tmView = v;
+    const al = this._mqAlarm ? this._mqAlarm() : null; if (al && !(Date.now() < (this._mqPlanTs || 0))) { sr.getElementById("main").innerHTML = this._mqAlarmHtml(al); return; }
     if (this._tmSleep) { sr.getElementById("main").innerHTML = this._tmSleepHtml(); return; }
     const sc = { auto: 1, large: 1.15, xl: 1.3 }[c.size] || 1, title = v === "st" ? this._hzGreet().split(" · ")[0] : esc(m ? m.name : ""), hints = v === "st" ? (this._hzNew() ? this._hzVis(this._hzHints()) : this._hzHints()).length : 0;
     const sub = v === "st" ? (hints ? `${hints} ${hints === 1 ? "Hinweis" : "Hinweise"}` : "Alles in Ordnung") : esc(m ? m.tag || "" : "");
@@ -13763,6 +13803,7 @@ class FensterHeizungPanel extends HTMLElement {
       ${row("Display ausschalten nach", "Ohne Bewegung. Nur mit Display-Schalter.", seg("tmoff", c.off_after, [[0, "Nie"], [10, "10 Min."], [30, "30 Min."]]))}
       <div class="vrow"><span>HA-App (Android)<small class="mut" style="display:block">Benachrichtigungsdienst, z. B. mobile_app_tablet. Schaltet nur ein.</small></span><input class="osel" data-f="tmnot" value="${esc(c.notify)}" placeholder="mobile_app_…" style="width:46%;margin:0" ${lock ? "disabled" : ""} aria-label="Benachrichtigungsdienst"></div>
       ${inT ? "" : `<div class="lsec" style="margin-top:14px">${ic("copy", 15)}Fully Kiosk</div><div class="mut sm" style="margin:0 0 6px">Diesen Link in Fully unter Web Content Settings als Start-URL eintragen. Dann startet das Tablet immer im Tablet-Modus.</div><div class="tmurl"><code>${esc(this._tmUrlStr())}</code><button class="ibtn" data-act="tmcopy" aria-label="Kopieren">${ic("copy", 18)}</button></div>`}
+      ${this._mqOn && this._mqOn("tb") ? `<div class="lsec" style="margin-top:14px"><span class="lggd">★</span>&nbsp;Wand-Tablet-Extras</div>${row("Raum, Nacht, Schnellaktionen, Alarm", "Sponsor Max · gilt für dieses Tablet", `<button class="btn2" data-act="mqxset" data-k="tb" style="flex:none">Einstellen</button>`)}` : ""}
       ${list}
       <div class="gbtns" style="margin-top:14px">${inT ? `<button class="btn2" data-act="tmend" ${lock ? "disabled" : ""}>Tablet-Modus beenden</button><button class="btn2 pri" data-act="tmdone">${ic("check", 16)} Fertig</button>` : `<button class="btn2" data-act="close">Schließen</button><button class="btn2 pri" data-act="tmstart" ${lock ? "disabled" : ""}>${ic("tablet", 16)} Tablet-Modus jetzt starten</button>`}</div></div>`;
   }
@@ -14550,22 +14591,21 @@ class FensterHeizungPanel extends HTMLElement {
     const b2 = `<div class="lgt lgnew" id="lgnew" style="--c:#fbbf24"><h4>Neu für dich – vor allen anderen</h4>${nItems.slice(0, 4).join("")}</div>`;
     const seg = (act, cur, opts) => `<span class="gschs">${opts.map(([k, t]) => `<button class="gsch ${String(cur) === String(k) ? "sel" : ""}" data-act="${act}" data-k="${k}">${t}</button>`).join("")}</span>`;
     const li = (t, ctl, small = "") => `<div class="lgli"><span><span>${t}</span>${small ? `<small>${small}</small>` : ""}</span>${ctl}</div>`;
-    const soon = (t) => li(t, `<em class="lgsoon">bald</em>`);
     const b3 = `<div class="lgt" style="--c:#2dd4bf"><h4>Deine Extras</h4>
       ${li("Hausfluss (Modul 19)", sw("labtog", this._mdState().on.ef === true, "Hausfluss", "ef"))}
       ${li("Vorabversionen zuerst", sw("spnearly", P.early, "Vorabversionen"))}
       ${li("Farbverlauf im Kopf", seg("spngrad", P.grad, [["none", "Aus"], ["meer", "Meer"], ["abend", "Abend"]]))}
       ${li("Uhr-Stil im Ruhemodus", seg("spnclk", P.clock, [["standard", "Std."], ["duenn", "Dünn"], ["kraeftig", "Kräftig"], ["digital", "Digital"]]))}
       ${mx ? li(`Morgen-Briefing <span class="lggd">★</span>`, sw("lgxbon1", !!bc.on, "Morgen-Briefing", "", !B || !B.cfg)) : ""}
-      ${li("Energie-Coach", sw("lgxcoach", P.coach !== false, "Energie-Coach"))}${li("Monatsbericht", sw("lgxreport", P.report !== false, "Monatsbericht"))}${soon("Wohnklima-Zeugnis")}${soon("Heizkosten je Raum")}${soon("Wand-Tablet-Extras")}</div>`;
+      ${li("Energie-Coach", sw("lgxcoach", P.coach !== false, "Energie-Coach"))}${li("Monatsbericht", sw("lgxreport", P.report !== false, "Monatsbericht"))}${this._mqRows(mx || dev, P, li, sw)}</div>`;
     const b4a = this._s3WishCard(this._s3W, mx || dev);
     const st = P.badge ? (P.badge_style === "gold" && !mx ? "heart" : P.badge_style) : "off";
     const bd = [["heart", "♥", "Herz", "#f472b6"], ["gold", "★", mx ? "Goldener Stern" : "Goldener Stern · nur Max", "#fbbf24"], ["sun", "☀", "Sonne", "#fbbf24"], ["snow", "❄", "Schneeflocke", "#38bdf8"]];
     const b4b = `<div class="lgt" style="--c:#a78bfa"><h4>Dein Abzeichen</h4><div class="lgbadges">${bd.map(([k, g, t, c]) => `<button class="lgbd ${st === k ? "sel" : ""} ${k === "gold" && !mx ? "lock" : ""}" style="--c:${c}" data-act="lgxbadge" data-k="${k}" aria-pressed="${st === k}" aria-label="${t}" title="${t}" ${this._admin() && (k !== "gold" || mx) ? "" : "disabled"}>${g}</button>`).join("")}</div>
       <div class="lgbdoff">${P.badge ? `<button class="lnk" data-act="lgxbadge" data-k="off">Abzeichen im Kopf ausblenden</button>` : `<span class="mut">Abzeichen ist ausgeblendet – tippe eins an</span>`}</div>
       ${li("Name im Kopf zeigen", sw("lgxname", P.name_head, "Name im Kopf"), first ? `„Hallo ${esc(first)}“ statt „Sponsor“` : "")}</div>`;
-    const up = mx ? "" : `<div class="lgt lgup"><span class="lgstar sm">★</span><span class="n"><b>Sponsor Max</b><small>Haus-Autopilot, Wächter, Woche voraus, Was-wäre-wenn-Rechner, Heizplan-Assistent, Morgen-Briefing, Jahres-Poster und goldener Stern.</small><em class="lgbeta">Beta-Versionen ab 2026.11.2: als Sponsor 3 Tage nach Erscheinen, mit Max sofort</em><em class="lgprice">$3 im Monat · $10 einmalig</em></span><a class="btn2 lggold" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="flex:none;text-decoration:none">Mehr</a></div>`;
-    return `<div class="lgtop">${b1}${b2}</div>${this._supCard(mx || dev)}<div class="lg2 s3row">${this._s3CoachCard(this._s3C, P.coach !== false)}${this._s3ReportCard(this._s3R && this._s3R[-1], P.report !== false)}</div>${mx || dev ? this._mxSection() : ""}<div class="lg3">${b3}${b4a}${b4b}</div>${up}`;
+    const up = mx ? "" : `<div class="lgt lgup"><span class="lgstar sm">★</span><span class="n"><b>Sponsor Max</b><small>Haus-Autopilot, Wächter, Woche voraus, Was-wäre-wenn-Rechner, Heizplan-Assistent, Morgen-Briefing, Jahres-Poster, Wohnklima-Zeugnis, Heizkosten je Raum, Wand-Tablet-Extras und goldener Stern.</small><em class="lgbeta">Beta-Versionen ab 2026.11.2: als Sponsor 3 Tage nach Erscheinen, mit Max sofort</em><em class="lgprice">$3 im Monat · $10 einmalig</em></span><a class="btn2 lggold" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="flex:none;text-decoration:none">Mehr</a></div>`;
+    return `<div class="lgtop">${b1}${b2}</div>${this._supCard(mx || dev)}<div class="lg2 s3row">${this._s3CoachCard(this._s3C, P.coach !== false)}${this._s3ReportCard(this._s3R && this._s3R[-1], P.report !== false)}</div>${mx || dev ? this._mxSection() + this._mqCards() : ""}<div class="lg3">${b3}${b4a}${b4b}</div>${up}`;
   }
   /* ---- ohne Schlüssel: A1 Botschaft, A2 Ersparnis, A3 drei Schritte, A4 Extras als Kacheln ---- */
   _lgOut(s) {
@@ -14586,7 +14626,8 @@ class FensterHeizungPanel extends HTMLElement {
     const T = [["bolt", "Hausfluss (Modul 19)", "Dein Haus als Fluss-Bild mit HD-Bildern", "neu", "ef", "#2dd4bf"], ["forecast", "Vorabversionen", "Neue Funktionen 14 Tage vor allen", "", "early", "#38bdf8"],
       ["sun", "Morgen-Briefing", "Dein Tag jeden Morgen aufs Handy", "max", "brief", "#fbbf24"], ["house", "Jahres-Poster", "Dein Jahr als Poster zum Drucken", "max", "poster", "#fbbf24"],
       ["lamp", "Uhr-Stile & Verläufe", "Für Kopf und Tablet-Ruhemodus", "", "look", "#a78bfa"], ["pvRoof", "Energie-Coach", "Jeden Montag 3 Tipps mit Euro-Betrag", "neu", "coach", "#fbbf24"],
-      ["house", "Monatsbericht", "„Dein Haus im Monat“ als Bild zum Teilen", "neu", "report", "#2dd4bf"], ["person", "Wunsch des Monats", "Abstimmen, was als Nächstes kommt", "neu", "wish", "#f472b6"]];
+      ["house", "Monatsbericht", "„Dein Haus im Monat“ als Bild zum Teilen", "neu", "report", "#2dd4bf"], ["person", "Wunsch des Monats", "Abstimmen, was als Nächstes kommt", "neu", "wish", "#f472b6"],
+      ["humidity", "Wohnklima-Zeugnis", "Schulnoten für jeden Raum, jede Woche", "max", "wk", "#fbbf24"], ["euro", "Heizkosten je Raum", "Welcher Raum wie viel Heizung kostet", "max", "hk", "#fbbf24"], ["tvset", "Wand-Tablet-Extras", "Nachts dunkel, Alarm als Vollbild", "max", "tb", "#fbbf24"]];
     const tag = (t) => t === "neu" ? `<em class="lgtag neu">NEU</em>` : t === "max" ? `<em class="lgtag mx">★ MAX</em>` : t === "bald" ? `<em class="lgtag">BALD</em>` : "";
     const a4 = `<div class="lgh4" id="lgget">Was du bekommst – Auswahl</div><div class="lgget">${T.map(([k, t, sub, tg, id, c]) => `<button class="lgxt2" style="--c:${c}" data-act="lgxex" data-k="${id}">${tag(tg)}${this._gx(k, 36, { on: true, lvl: 80 })}<b>${esc(t)}</b><small>${sub}</small></button>`).join("")}</div>`;
     const tiers = `<div class="lgtiers"><div class="lgt"><b>♥ Sponsor <em class="lgprice">$1 im Monat · $5 einmalig</em></b><small>monatlich oder einmalig (1 Jahr) · alle Extras, Vorabversionen, Hausfluss</small><em class="lgbeta">Ab 2026.11.2: Beta-Versionen 3 Tage nach Erscheinen installierbar</em></div><div class="lgt mx"><b><span class="lggd">★</span> Sponsor Max <em class="lgprice">$3 im Monat · $10 einmalig</em></b><small>monatlich oder einmalig 3 Monate (danach bis 1 Jahr Sponsor) · zusätzlich Haus-Autopilot, Wächter, Woche voraus, Was-wäre-wenn, Heizplan-Assistent, Morgen-Briefing, Jahres-Poster, Beta-Kanal 30 Tage</small><em class="lgbeta mx">Ab 2026.11.2: Beta-Versionen sofort installierbar</em></div></div>`;
@@ -14629,6 +14670,9 @@ class FensterHeizungPanel extends HTMLElement {
     if (m.type === "lgex") {
       const X = { ef: ["bolt", "Hausfluss", "Dein Haus in der Mitte, Solar, Netz, Akku und Geräte als Kacheln drumherum. Die Linien zeigen live, wohin der Strom fließt – mit den neuen HD-Bildern."], brief: ["sun", "Morgen-Briefing ★", "Jeden Morgen eine Meldung aufs Handy: Sonne heute, günstigste Strom-Stunde, beste Startzeit für die Waschmaschine, Auto, Heizung und Auffälligkeiten. Bausteine einzeln wählbar."], poster: ["house", "Jahres-Poster ★", "Im Dezember dein Jahr als Poster: Heizöl gespart, Heizpausen, Gerätestrom mit eigenem Anteil und Ersparnis – A3 zum Drucken oder als Bild."], look: ["lamp", "Uhr-Stile & Verläufe", "Zusätzliche Farbverläufe für den Kopf und vier Uhr-Stile für den Ruhemodus im Tablet-Modus."], early: ["forecast", "Vorabversionen", "Neue Labs siehst du 14 Tage vor allen anderen – mit Datum, ab wann sie für alle kommen."], coach: ["pvRoof", "Energie-Coach", "Jeden Montag drei Tipps aus deinen eigenen Daten mit Euro- oder Liter-Betrag – zum Beispiel: „Spülmaschine lief 3× nachts aus dem Netz. Mittags starten spart ca. 0,36 €.“ Feste Regeln, keine KI, nichts verlässt Home Assistant."],
         report: ["house", "Monatsbericht", "Am Monatsende „Dein Haus im Oktober“ als Bild: Solar, Autarkie und gespartes Heizöl mit deiner Haus-Szene. Teilen nur, wenn du tippst."],
+        wk: ["humidity", "Wohnklima-Zeugnis ★", "Ein Zeugnis wie in der Schule: Jeder Raum bekommt Noten für Temperatur, Luftfeuchte, Lüften und Schimmelrisiko, das Haus eine Gesamtnote – jede Woche und jeden Monat, mit einem Tipp zum schlechtesten Fach."],
+        hk: ["euro", "Heizkosten je Raum ★", "Zeigt in Euro, welcher Raum wie viel Heizung kostet: Elektroheizer gemessen, Thermostate geschätzt und – mit Zähler – genau auf deinen Verbrauch abgeglichen. Dazu, was offene Fenster beim Heizen gekostet haben."],
+        tb: ["tvset", "Wand-Tablet-Extras ★", "Das Tablet an der Wand wacht bei Bewegung auf, zeigt Uhr und Räume, wird nachts dunkel und zeigt einen Alarm aus Modul 11 sofort als Vollbild. Dazu Schnellaktionen und Einbrennschutz."],
         wish: ["person", "Wunsch des Monats", "Sponsoren stimmen jeden Monat auf GitHub ab, was als Nächstes gebaut wird – der Gewinner kommt in die Roadmap. Max-Sponsoren können selbst Wünsche vorschlagen."] }[m.k] || ["plug", "Extra", ""];
       return wrap(X[1], "Beispiel mit Musterdaten", `<div class="lgexd">${this._gx(X[0], 110, { on: true, lvl: 80 })}<p>${X[2]}</p></div><div class="gbtns" style="margin-top:12px"><a class="btn2 spnb pri" href="${esc(this._spnS().url)}" target="_blank" rel="noopener noreferrer" style="flex:none;text-decoration:none">${ic("heart", 16)} Sponsor werden</a></div>`, false);
     }
@@ -14695,6 +14739,349 @@ class FensterHeizungPanel extends HTMLElement {
     if (!w) { this._toast("Bitte Pop-ups für Home Assistant erlauben"); return; }
     w.document.write(`<!DOCTYPE html><html><head><title>Jahres-Poster</title><style>@page{size:A3 portrait;margin:0}html,body{margin:0;background:#0f1419}svg{width:100vw;height:auto;display:block;max-width:none!important;border-radius:0!important}</style></head><body>${this._lgPosterSvg()}<script>setTimeout(function(){print()},400)<\/script></body></html>`);
     w.document.close();
+  }
+  /* ================= Sponsor-Max-Extras (Beta 2026.11.4.4b4) =================
+     Build 1  „Deine Extras“: Schalter für Sponsor Max (Standard aus), Schloss „Sponsor Max“ für alle anderen, Einstellungsseiten.
+     Build 2  Wohnklima-Zeugnis: Karte (Woche/Monat), Raum-Details mit Fächern, 8-Wochen-Verlauf und Tipp.
+     Build 3  Heizkosten je Raum: Rangliste (Heute/Woche/Monat/Saison, € oder €/m²), Raum-Details, Fenster-offen-Kosten.
+     Build 4  Wand-Tablet-Extras: Ruhe-Ansicht mit Räumen (gebundener Raum zuerst), Nacht, Schlafen, Einbrennschutz,
+              Schnellaktionen, Alarm-Vollbild für Modul 11, Helligkeit über Fully Kiosk, Zustand an Home Assistant.
+     Gerechnet wird im Home Assistant (mx_extras.py), hier wird nur angezeigt. Aktionen: mqx…, Felder: data-f="mqx…". */
+  _mqLoad(force, scope) {
+    if (!this._hass || this._mqBusy || (this._mqx && !force && Date.now() - (this._mqTs || 0) < 60000)) return;
+    this._mqBusy = true;
+    const sc = scope || this._mqScope || "month";
+    this._hass.callWS({ type: "fenster_heizung/mx_get", scope: sc }).then((r) => { this._mqx = r; this._mqTs = Date.now(); this._mqScope = sc; })
+      .catch(() => { this._mqx = this._mqx || { max: false, on: {}, err: true }; })
+      .finally(() => { this._mqBusy = false; if (this._loOpen) this._render(); if (this._modal && String(this._modal.type).startsWith("mqx")) this._renderModal(); });
+  }
+  /* laufender Zeitraum, solange er noch keine Note hat: der letzte abgeschlossene */
+  _mqZ(W, per) { const cur = per === "week" ? W.week : W.month, last = per === "week" ? W.last_week : W.last_month; return cur && cur.note == null && last && last.note != null ? { ...last, done: true } : cur; }
+  _mqOn(k) { const s = this._mqx; return !!(s && s.on && s.on[k]); }
+  _mqG(g) { return g == null ? "–" : num(g, 1); }
+  _mqGc(g) { return g == null ? "mqq0" : "mqq" + Math.min(6, Math.max(1, Math.round(g))); }
+  _mqEur(v) { return `${num(v || 0, 2)} €`; }
+  _mqTr(t) { return t == null || Math.abs(t) < 0.05 ? "" : t > 0 ? `<span class="mqup">▲ ${num(t, 1)}</span>` : `<span class="mqdn">▼ ${num(-t, 1)}</span>`; }
+  _mqNames() { return { wk: "Wohnklima-Zeugnis", hk: "Heizkosten je Raum", tb: "Wand-Tablet-Extras" }; }
+
+  /* ---- Build 1: Zeilen in „Deine Extras“ ---- */
+  _mqRows(mx, P, li, sw) {
+    const N = this._mqNames();
+    if (mx && !this._mqx) this._mqLoad();
+    return ["wk", "hk", "tb"].map((k) => mx
+      ? li(`<button class="mqnm" data-act="mqxset" data-k="${k}">${N[k]}</button><em class="mqnew">NEU</em>`, sw("mqxtog", !!P["mx_" + k], N[k], k))
+      : li(`<span class="mut">${N[k]}</span>`, `<button class="mqlock" data-act="mqxinfo" data-k="${k}">🔒 Sponsor Max</button>`)).join("");
+  }
+  /* ---- Karten in der Lounge (nur Max, nur wenn an) ---- */
+  _mqCards() {
+    const S = this._mqx;
+    if (!S || !S.max) return "";
+    const c = [this._mqOn("wk") ? this._mqWkCard(S) : "", this._mqOn("hk") ? this._mqHkCard(S) : ""].filter(Boolean);
+    return c.length ? `<div class="lg2 mqrow">${c.join("")}</div>` : "";
+  }
+  _mqWkCard(S) {
+    const W = S.wk || {}, per = this._mqWkPer || "week", Z = this._mqZ(W, per);
+    const seg = `<span class="gschs"><button class="gsch ${per === "week" ? "sel" : ""}" data-act="mqxper" data-k="week">Woche</button><button class="gsch ${per === "month" ? "sel" : ""}" data-act="mqxper" data-k="month">Monat</button></span>`;
+    const head = `<div class="s3h">${this._gx("humidity", 34, { on: true, lvl: 80 })}<span><b>Wohnklima-Zeugnis</b><small>${Z ? esc(Z.label) + (Z.done ? " · abgeschlossen" : per === "week" ? " · laufend" : " · bis heute") : ""}</small></span></div><div style="margin:4px 0 2px">${seg}</div>`;
+    if (!Z) return `<div class="lgt s3c" style="--c:#2dd4bf">${head}<div class="lgnote2">Lädt …</div></div>`;
+    const rows = Z.rooms.map((r) => `<button class="mqli" data-act="mqxroom" data-k="${esc(r.id)}"><span>${esc(r.name)}${r.risk ? ` <i class="mqrisk" title="Schimmelrisiko">●</i>` : ""}</span><span>${this._mqTr(r.trend)}<b class="mqg ${this._mqGc(r.note)}">${this._mqG(r.note)}</b></span></button>`).join("");
+    const none = Z.note == null ? `<div class="lgnote2">Noch kein Zeugnis: dafür braucht es mindestens ${Z.need} Tage mit Messwerten${per === "week" ? " in dieser Woche" : " im Monat"}. Gemessen wird alle 5 Minuten.</div>` : "";
+    return `<div class="lgt s3c" style="--c:#2dd4bf">${head}
+      <div class="mqtop"><b class="mqbig ${this._mqGc(Z.note)}">${this._mqG(Z.note)}</b><span><b>${esc((Z.wort || "").replace(/^./, (x) => x.toUpperCase())) || "–"}</b><small>Haus gesamt${this._mqTr(Z.trend) ? ` · ${this._mqTr(Z.trend)} zu ${per === "week" ? "Vorwoche" : "Vormonat"}` : ""}</small></span></div>
+      ${none}<div class="mqlist">${rows}</div><div class="lgnote2"><i class="mqrisk">●</i> Schimmelrisiko · Raum antippen für Details</div></div>`;
+  }
+  _mqHkCard(S) {
+    const H = S.hk || {}, u = this._mqUnit || "eur", sc = this._mqScope || "month";
+    const seg = `<span class="gschs">${[["day", "Heute"], ["week", "Woche"], ["month", "Monat"], ["season", "Saison"]].map(([k, t]) => `<button class="gsch ${sc === k ? "sel" : ""}" data-act="mqxscope" data-k="${k}">${t}</button>`).join("")}</span>`;
+    const head = `<div class="s3h">${this._gx("euro", 34, { on: true, lvl: 80 })}<span><b>Heizkosten je Raum</b><small>${H.meter ? "verteilt auf deinen Zähler" : "geschätzt aus Heizlast und Ventilen"}</small></span></div>`;
+    const rooms = H.rooms || [], mx = Math.max(0.01, ...rooms.map((r) => u === "eur" ? r.eur : (r.eur_m2 || 0)));
+    const val = (r) => u === "eur" ? `${r.meas > 0 && r.est === 0 ? "" : "ca. "}${this._mqEur(r.eur)}` : r.eur_m2 != null ? `${num(r.eur_m2, 2)} €/m²` : "–";
+    const rows = rooms.map((r) => `<button class="mqli bar" data-act="mqxcost" data-k="${esc(r.id)}"><span>${esc(r.name)}${r.heater ? " ⚡" : ""}</span><b>${val(r)}</b><i><b style="width:${Math.round((u === "eur" ? r.eur : (r.eur_m2 || 0)) / mx * 100)}%;background:${r.heater ? "#a78bfa" : "#2dd4bf"}"></b></i></button>`).join("");
+    return `<div class="lgt s3c" style="--c:#fbbf24">${head}<div style="margin:4px 0 8px">${seg}</div>
+      <div class="mqtop"><b class="mqbig eur">${this._mqEur(H.eur)}</b><span><b>${sc === "day" ? "heute" : sc === "week" ? "diese Woche" : sc === "season" ? "Heizsaison" : "Monat bis heute"}</b><small>${H.meas > 0 ? `${this._mqEur(H.meas)} gemessen · ` : ""}ca. ${this._mqEur(H.est)} geschätzt${H.prognose ? ` · Prognose ca. ${num(H.prognose, 0)} €` : ""}</small></span></div>
+      ${rooms.length ? `<div class="mqlist">${rows}</div>` : `<div class="lgnote2">Noch keine Werte. Gerechnet wird alle 5 Minuten für Räume mit Thermostat oder Elektroheizer.</div>`}
+      ${H.win > 0 ? `<button class="mqwin" data-act="mqxwin">🪟 Fenster offen beim Heizen: <b>ca. ${this._mqEur(H.win)}</b> ›</button>` : ""}
+      <div class="lgbtns"><span class="gschs"><button class="gsch ${u === "eur" ? "sel" : ""}" data-act="mqxunit" data-k="eur">€</button><button class="gsch ${u === "m2" ? "sel" : ""}" data-act="mqxunit" data-k="m2">€/m²</button></span><span class="mut sm">⚡ Elektroheizer</span></div></div>`;
+  }
+
+  /* ---- Aktionen ---- */
+  _mqAct(a, b) {
+    const k = b.dataset.k, S = this._mqx;
+    if (this._mqTbAct(a, b)) return;
+    if (a === "mqxtog") {
+      if (!this._lgMax() && this._spnS().state !== "dev") return;
+      const P = this._spnS().saved_prefs || {};
+      this._spnPref({ ["mx_" + k]: !P["mx_" + k] });
+      setTimeout(() => this._mqLoad(true), 1500);
+      return;
+    }
+    if (a === "mqxinfo") { this._modal = { type: "mqxinfo", k }; this._renderModal(); return; }
+    if (a === "mqxset") { this._modal = { type: "mqxset", k }; this._mqLoad(true); this._renderModal(); return; }
+    if (a === "mqxper") { this._mqWkPer = k; this._render(); return; }
+    if (a === "mqxscope") { this._mqLoad(true, k); return; }
+    if (a === "mqxunit") { this._mqUnit = k; this._render(); return; }
+    if (a === "mqxroom") { this._modal = { type: "mqxroom", k }; this._renderModal(); return; }
+    if (a === "mqxcost") { this._modal = { type: "mqxcost", k }; this._renderModal(); return; }
+    if (a === "mqxwin") { this._modal = { type: "mqxwin" }; this._renderModal(); return; }
+    if (a === "mqxdemo") { this._hass.callWS({ type: "fenster_heizung/mx_demo" }).then((r) => { this._toast(`Beispielwerte für ${r.rooms} Räume eingespielt`); this._mqLoad(true); }).catch(() => this._toast("Nur mit Entwickler-Zugang")); return; }
+    if (a === "mqxrun") { this._hass.callWS({ type: "fenster_heizung/mx_run", kind: k }).then((z) => this._toast(`Zeugnis ${z.label}: ${this._mqG(z.note)} – Ereignis gesendet`)).catch(() => this._toast("Das ging nicht")); return; }
+    if (!S || !S.cfg) return;
+    const C = JSON.parse(JSON.stringify(S.cfg));
+    if (a === "mqxwk") { C.wk[k] = !C.wk[k]; return this._mqSave(C); }
+    if (a === "mqxwinc") { C.hk.winc = !C.hk.winc; return this._mqSave(C); }
+    if (a === "mqxfuel") { C.hk.fuel = k; C.hk.eff = null; return this._mqSave(C); }
+    const tid = this._tmId(), T = (C.tb[tid] = { ...this._mqTbDef(), ...(C.tb[tid] || {}) });
+    if (a === "mqxtbn") { T.night = k; return this._mqSaveTb(C, T); }
+    if (a === "mqxtbc") { T.nc = k; return this._mqSaveTb(C, T); }
+    if (a === "mqxtbs") { T[k] = !T[k]; return this._mqSaveTb(C, T); }
+    if (a === "mqxtbx") { T.acts = T.acts.filter((x) => x !== k); return this._mqSaveTb(C, T); }
+  }
+  _mqChange(t) {
+    const S = this._mqx, f = t.dataset.f;
+    if (!S || !S.cfg || !f.startsWith("mqx")) return false;
+    const C = JSON.parse(JSON.stringify(S.cfg)), nv = (v) => { const n = Number(String(v).replace(",", ".")); return String(v).trim() === "" || !isFinite(n) ? null : n; };
+    if (f === "mqxlim") { const rid = t.dataset.k, L = (C.wk.lim[rid] = { ...{ td: 1, hlo: 40, hhi: 60, wall: 4 }, ...(C.wk.lim[rid] || {}) }); const v = nv(t.value); if (v != null) L[t.dataset.e] = v; this._mqSave(C); return true; }
+    if (f === "mqxmeter") { C.hk.meter = t.value || ""; this._mqSave(C); return true; }
+    if (f === "mqxprice") { C.hk.price = nv(t.value); this._mqSave(C); return true; }
+    if (f === "mqxeff") { C.hk.eff = nv(t.value); this._mqSave(C); return true; }
+    if (f === "mqxroomf" || f === "mqxroomh") { const rid = t.dataset.k, R = (C.hk.rooms[rid] = { f: null, h: 2.5, ...(C.hk.rooms[rid] || {}) }); R[f === "mqxroomf" ? "f" : "h"] = nv(t.value); this._mqSave(C); return true; }
+    const tid = this._tmId(), T = (C.tb[tid] = { ...this._mqTbDef(), ...(C.tb[tid] || {}) });
+    if (f === "mqxtbroom") { T.room = t.value || ""; this._mqSaveTb(C, T); return true; }
+    if (f === "mqxtbe") { T[t.dataset.k] = t.value || ""; this._mqSaveTb(C, T); return true; }
+    if (f === "mqxtbact") { if (t.value && !T.acts.includes(t.value) && T.acts.length < 4) T.acts.push(t.value); this._mqSaveTb(C, T); return true; }
+    return false;
+  }
+  /* Tablet-Teil: wie die Tablet-Einstellungen auch ohne Admin-Rechte, mit PIN des Tablets */
+  _mqSaveTb(C, T) {
+    this._mqx = { ...this._mqx, cfg: C };
+    if (this._modal) this._renderModal();
+    this._hass.callWS({ type: "fenster_heizung/mx_tb_set", tid: this._tmId(), cfg: T, ...(this._tmPin ? { pin: this._tmPin } : {}) }).then((r) => { this._mqx = { ...this._mqx, cfg: r.cfg }; })
+      .catch((e) => this._toast(e && e.code === "denied" ? "Erst mit der PIN des Tablets entsperren" : "Das ging nicht"));
+  }
+  _mqSave(C) {
+    this._mqx = { ...this._mqx, cfg: C };
+    if (this._modal) this._renderModal();
+    this._hass.callWS({ type: "fenster_heizung/mx_set", cfg: C }).then((r) => { this._mqx = { ...this._mqx, cfg: r.cfg }; this._mqLoad(true); }).catch(() => this._toast("Das ging nicht"));
+  }
+
+  /* ---- Fenster ---- */
+  _mqModal() {
+    const m = this._modal, S = this._mqx || {}, adm = this._admin(), N = this._mqNames(), close = `<button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button>`;
+    const wrap = (t, sub, body, wide = true) => `<div class="ov" data-act="close"></div><div class="sheet ${wide ? "wide" : ""}" role="dialog" aria-modal="true"><div class="sh"><div><b>${t}</b><span>${sub}</span></div>${close}</div>${body}</div>`;
+    const row = (t, s, ctl) => `<div class="vrow"><span>${t}${s ? `<small class="mut" style="display:block">${s}</small>` : ""}</span>${ctl}</div>`;
+    const sw = (act, on, k = "") => `<button class="sw ${on ? "on" : ""}" data-act="${act}" ${k ? `data-k="${k}"` : ""} aria-pressed="${!!on}" ${adm ? "" : "disabled"}></button>`;
+    const seg = (act, cur, opts) => `<span class="gschs">${opts.map(([k, t]) => `<button class="gsch ${String(cur) === String(k) ? "sel" : ""}" data-act="${act}" data-k="${k}" ${adm ? "" : "disabled"}>${t}</button>`).join("")}</span>`;
+    const inp = (f, v, extra = "", w = 64) => `<input class="osel mqin" type="text" inputmode="decimal" data-f="${f}" ${extra} value="${v == null ? "" : esc(String(v).replace(".", ","))}" style="width:${w}px;margin:0" ${adm ? "" : "disabled"}>`;
+    if (m.type === "mqxinfo") {
+      const X = { wk: ["humidity", "Schulnoten 1–6 für jeden Raum und das ganze Haus – jede Woche und jeden Monat, mit Tipp zum schlechtesten Fach."], hk: ["euro", "Welcher Raum wie viel Heizung kostet – Elektroheizer gemessen, Thermostate geschätzt, dazu die Kosten offener Fenster."], tb: ["tvset", "Ruhige Wand-Anzeige: wacht bei Bewegung auf, nachts dunkel, Alarm aus Modul 11 als Vollbild, Schnellaktionen."] }[m.k] || ["plug", ""];
+      return wrap(N[m.k] || "Extra", "★ Sponsor Max", `<div class="lgexd">${this._gx(X[0], 96, { on: true, lvl: 80 })}<p>${X[1]}</p><p class="mut sm">Teil von <b class="lggd">Sponsor Max</b> zusammen mit ${Object.entries(N).filter(([k]) => k !== m.k).map(([, t]) => t).join(" und ")}.</p></div>
+        <div class="gbtns" style="margin-top:12px"><a class="btn2 lggold" href="${esc(this._spnS().url)}" target="_blank" rel="noopener noreferrer" style="flex:none;text-decoration:none">★ Sponsor Max ansehen</a><button class="btn2" data-act="close">Schließen</button></div>`, false);
+    }
+    if (!S.cfg) return wrap(N[m.k] || "Sponsor-Max-Extras", "★ Sponsor Max", `<div class="mut sm">${S.err ? "Die Extras sind noch nicht bereit." : "Lädt …"}</div>`);
+    const rooms = S.rooms || [], dev = !!S.dev, off = (k) => this._mqOn(k) ? "" : `<div class="gst">${ic("info", 15)}<span>Das Extra ist aus. Einstellungen werden schon gespeichert – eingeschaltet wird es in „Deine Extras“.</span></div>`;
+    if (m.type === "mqxset" && m.k === "wk") {
+      const C = S.cfg.wk;
+      const lim = rooms.map((r) => { const L = { td: 1, hlo: 40, hhi: 60, wall: 4, ...(C.lim[r.id] || {}) }; return `<div class="vrow mqlim"><span><b>${esc(r.name)}</b><small class="mut" style="display:block">${r.mess ? "Messraum" : r.hum ? "mit Feuchte" : "ohne Feuchtesensor"}</small></span><span class="mqlimi">±${inp("mqxlim", L.td, `data-k="${esc(r.id)}" data-e="td"`, 44)}°C ${inp("mqxlim", L.hlo, `data-k="${esc(r.id)}" data-e="hlo"`, 44)}–${inp("mqxlim", L.hhi, `data-k="${esc(r.id)}" data-e="hhi"`, 44)} % Wand −${inp("mqxlim", L.wall, `data-k="${esc(r.id)}" data-e="wall"`, 40)} K</span></div>`; }).join("");
+      return wrap("Wohnklima-Zeugnis", "★ Sponsor Max · Einstellungen", `${off("wk")}
+        ${row("Notenskala", "fest", `<b class="mqteal">Schulnoten 1–6</b>`)}
+        ${row("Wochenzeugnis", "Montag 0:05 Uhr für die Vorwoche", sw("mqxwk", C.week, "week"))}${row("Monatszeugnis", "am 1. um 0:10 Uhr", sw("mqxwk", C.month, "month"))}
+        ${row("Im Morgen-Briefing", "Montags die Wochennote, sonst nur Auffälligkeiten", sw("mqxwk", C.brief, "brief"))}${row("Push-Nachricht", "über die Dienste des Morgen-Briefings", sw("mqxwk", C.push, "push"))}
+        <div class="lsec" style="margin-top:12px">${ic("sliders", 15)}Grenzwerte je Raum</div><div class="mut sm" style="margin:0 0 6px">Temperatur-Abstand zum Heizplan, Wohlfühlbereich der Feuchte und Abschlag für die Wandtemperatur (Schimmelrisiko).</div>${lim || `<div class="mut sm">Noch keine Räume.</div>`}
+        <div class="mut sm" style="margin-top:10px">Noten: ≥ 90 % der Zeit im Bereich = 1 · Schimmelrisiko zählt doppelt · fehlt ein Sensor, entfällt das Fach.</div>
+        ${dev ? `<div class="lsec" style="margin-top:12px">${ic("flask", 15)}Testlabor</div><div class="gbtns"><button class="btn2" data-act="mqxdemo">35 Tage Beispielwerte</button><button class="btn2" data-act="mqxrun" data-k="week">Wochenzeugnis jetzt</button><button class="btn2" data-act="mqxrun" data-k="month">Monatszeugnis jetzt</button></div>` : ""}`);
+    }
+    if (m.type === "mqxset" && m.k === "hk") {
+      const C = S.cfg.hk, st = this._hass.states, F = (S.hk_fuel || {}), fuel = C.fuel === "auto" ? (F.fuel || "erdgas") : C.fuel;
+      const meters = Object.keys(st).filter((e) => e.startsWith("sensor.") && (st[e].attributes || {}).device_class === "energy");
+      const hr = rooms.filter((r) => r.thermo || r.heater).map((r) => { const R = { f: null, h: 2.5, ...(C.rooms[r.id] || {}) }; return `<div class="vrow"><span><b>${esc(r.name)}</b><small class="mut" style="display:block">${r.heater ? "⚡ Elektroheizer" : ""}${r.heater && r.thermo ? " · " : ""}${r.thermo ? "Thermostat · geschätzt" : ""}</small></span><span class="mqlimi">Faktor ${inp("mqxroomf", R.f, `data-k="${esc(r.id)}" placeholder="1"`, 44)} Höhe ${inp("mqxroomh", R.h, `data-k="${esc(r.id)}"`, 44)} m</span></div>`; }).join("");
+      const skip = rooms.filter((r) => !r.thermo && !r.heater).map((r) => esc(r.name));
+      return wrap("Heizkosten je Raum", "★ Sponsor Max · Einstellungen", `${off("hk")}
+        <div class="lsec">${ic("flame", 15)}Zentrale Heizung</div>
+        ${row("Wärmequelle", C.fuel === "auto" ? `aus Modul 1: ${esc(fuel)}` : "", seg("mqxfuel", C.fuel, [["auto", "Auto"], ["erdgas", "Gas"], ["heizoel", "Öl"], ["pellets", "Pellets"], ["fern", "Fernwärme"], ["strom", "Wärmepumpe"]]))}
+        ${fuel === "strom" ? row("Strompreis", "aus Modul 19 / Strompreis-Einstellungen", `<span class="mut">${num((S.hk_price || 0) * 100, 1)} ct/kWh</span>`) : row("Preis", "ct je kWh Brennstoff", inp("mqxprice", C.price, `placeholder="${{ erdgas: 12, fluessiggas: 14, heizoel: 11, pellets: 8, fern: 15 }[fuel] || 12}"`))}
+        ${row(fuel === "strom" ? "Jahresarbeitszahl" : "Wirkungsgrad", fuel === "strom" ? "JAZ der Wärmepumpe" : "Gas 0,9 · Öl 0,85 · Fernwärme 1,0", inp("mqxeff", C.eff, `placeholder="${num(F.eff || 0.9, 2)}"`))}
+        <div class="of"><div class="ol"><b>Gesamtzähler Heizung</b><span>kWh-Zähler von Gas, Öl oder Wärmepumpe. Mit Zähler ergibt die Summe aller Räume genau den Zähler.</span></div></div>${this._wzSel(meters, C.meter, "mqxmeter", "", "– kein Zähler (Schätzung) –")}
+        ${row("Fenster-offen-Kosten", "Lüftungsverlust beim Heizen", sw("mqxwinc", C.winc))}
+        <div class="lsec" style="margin-top:12px">${ic("home", 15)}Räume</div><div class="mut sm" style="margin:0 0 6px">Faktor für große oder kleine Heizkörper (1 = normal), Raumhöhe für die Fenster-Kosten.</div>${hr || `<div class="mut sm">Keine Räume mit Thermostat oder Elektroheizer.</div>`}
+        ${skip.length ? `<div class="mut sm" style="margin-top:8px">Nicht gezeigt (ohne Thermostat und Heizer): ${skip.join(", ")}</div>` : ""}
+        ${dev ? `<div class="lsec" style="margin-top:12px">${ic("flask", 15)}Testlabor</div><div class="gbtns"><button class="btn2" data-act="mqxdemo">35 Tage Beispielwerte</button></div>` : ""}`);
+    }
+    if (m.type === "mqxset" && m.k === "tb") {
+      const tid = this._tmId(), T = { ...this._mqTbDef(), ...((S.cfg.tb || {})[tid] || {}) }, st = this._hass.states, tbOn = this._tmOn(), tadm = !(this._tmLocked && this._tmLocked());
+      const sw = (act, on, k = "") => `<button class="sw ${on ? "on" : ""}" data-act="${act}" ${k ? `data-k="${k}"` : ""} aria-pressed="${!!on}" ${tadm ? "" : "disabled"}></button>`;
+      const seg = (act, cur, opts) => `<span class="gschs">${opts.map(([k, t]) => `<button class="gsch ${String(cur) === String(k) ? "sel" : ""}" data-act="${act}" data-k="${k}" ${tadm ? "" : "disabled"}>${t}</button>`).join("")}</span>`;
+      const R = this._collect(true), actOpts = Object.keys(st).filter((e) => /^(scene|script|switch|light|input_boolean|button)\./.test(e));
+      const nums = Object.keys(st).filter((e) => (e.startsWith("number.") && /bright|hellig/i.test(e)) || e.startsWith("light.")), bats = Object.keys(st).filter((e) => e.startsWith("sensor.") && (st[e].attributes || {}).device_class === "battery"), sws = Object.keys(st).filter((e) => e.startsWith("switch."));
+      const list = (S.tablets || []).map((t) => `<div class="vrow"><span><b>${esc(t.name)}${t.id === tid ? " (dieses)" : ""}</b><small class="mut" style="display:block">${{ wach: "wach", ruhe: "Ruhe", nacht: "Nacht", schlafen: "schläft", alarm: "ALARM", aus: "nicht verbunden" }[t.state] || t.state}${t.bat != null ? ` · Akku ${num(t.bat, 0)} %` : ""}</small></span></div>`).join("");
+      return wrap("Wand-Tablet-Extras", "★ Sponsor Max · gilt für dieses Tablet", `${off("tb")}${tadm ? "" : `<div class="gst on">${ic("lock", 15)}<span>Die Einstellungen dieses Tablets sind mit einer PIN geschützt. <button class="lnk" data-act="tmunl">Mit PIN entsperren</button></span></div>`}
+        ${tbOn ? "" : `<div class="gst">${ic("tablet", 15)}<span>Dieses Gerät ist noch nicht im Tablet-Modus. <button class="lnk" data-act="tmopen">Tablet-Modus einrichten</button></span></div>`}
+        <div class="vrow"><span>Raum<small class="mut" style="display:block">steht als erste Kachel</small></span><select class="osel" data-f="mqxtbroom" style="width:46%;margin:0" ${tadm ? "" : "disabled"}><option value="">– keiner –</option>${R.map((r) => `<option value="${esc(r.id)}" ${r.id === T.room ? "selected" : ""}>${esc(r.name)}</option>`).join("")}</select></div>
+        ${row("Nachtdimmung", "nur Uhr, gedimmt", seg("mqxtbn", T.night, [["off", "Aus"], ["22-6", "22–6 Uhr"], ["23-6", "23–6 Uhr"], ["sun", "Sonne"]]))}
+        ${row("Uhrfarbe nachts", "", seg("mqxtbc", T.nc, [["red", "Rot"], ["teal", "Teal"]]))}
+        ${row("Schlafen", "nachts nach 2 Min. ohne Bewegung ganz dunkel", sw("mqxtbs", T.dark, "dark"))}${row("Einbrennschutz", "Inhalt verschiebt sich alle 10 Min. leicht", sw("mqxtbs", T.shift, "shift"))}
+        ${row("Alarm-Vollbild", "nur Rauch- & Sicherheitsmelder aus Modul 11", sw("mqxtbs", T.alarm, "alarm"))}
+        <div class="lsec" style="margin-top:12px">${ic("grid", 15)}Schnellaktionen (bis zu 4)</div>
+        <div class="gschs" style="flex-wrap:wrap;margin-bottom:6px">${T.acts.map((e) => `<button class="gsch sel" data-act="mqxtbx" data-k="${esc(e)}" ${tadm ? "" : "disabled"}>${esc(this._wzName(e))} ✕</button>`).join("") || `<span class="mut sm">Noch keine</span>`}</div>
+        ${T.acts.length < 4 ? this._wzSel(actOpts, "", "mqxtbact", "", "+ Aktion hinzufügen") : ""}
+        <div class="lsec" style="margin-top:12px">${ic("sun", 15)}Helligkeit &amp; Akku</div>
+        <div class="mut sm" style="margin:0 0 6px">Ein normaler Browser darf die echte Helligkeit nicht ändern. Mit Fully Kiosk die Helligkeits-Entität wählen – sonst wird mit einer dunklen Ebene gedimmt.</div>
+        <div class="of"><div class="ol"><b>Helligkeit</b><span>z. B. number.…_screen_brightness (Fully)</span></div></div>${this._wzSel(nums, T.bright, "mqxtbe", `data-k="bright"`, "– dunkle Ebene –")}
+        <div class="of"><div class="ol"><b>Akku des Tablets</b></div></div>${this._wzSel(bats, T.bat, "mqxtbe", `data-k="bat"`, "– keiner –")}
+        <div class="of"><div class="ol"><b>Ladesteckdose</b><span>lädt unter 30 %, aus über 80 %</span></div></div>${this._wzSel(sws, T.charge, "mqxtbe", `data-k="charge"`, "– keine –")}
+        ${list ? `<div class="lsec" style="margin-top:12px">${ic("tablet", 15)}Alle Tablets</div>${list}<div class="mut sm">Für Automationen: binary_sensor.sw_tablet_…_wach, sensor.sw_tablet_…_zustand, button.sw_tablet_…_wecken</div>` : ""}`);
+    }
+    if (m.type === "mqxroom") {
+      const per = this._mqWkPer || "week", Z = this._mqZ(S.wk || {}, per) || {}, r = (Z.rooms || []).find((x) => x.id === m.k);
+      if (!r) return wrap("Wohnklima", "", `<div class="mut sm">Keine Daten.</div>`);
+      const F = { temperatur: ["Temperatur", r.zeit_t != null ? `${r.zeit_t} % im Bereich` : ""], feuchte: ["Luftfeuchte", r.zeit_h != null ? `${r.zeit_h} % im Bereich` : ""], lueften: ["Lüften", `${r.stoss}× Stoßlüften · ${num(r.kipp_h, 0)} h gekippt`], schimmel: ["Schimmelrisiko ×2", `${num(r.risiko_h, 0)} h`] };
+      const H = ((S.wk || {}).hist || {})[r.id] || [];
+      const bars = H.map((g) => `<i class="${this._mqGc(g)}" style="height:${g == null ? 4 : Math.round((7 - g) / 6 * 100)}%"></i>`).join("");
+      return wrap(`${esc(r.name)} · ${esc(Z.label || "")}`, "Wohnklima-Zeugnis", `<div class="mqtop"><b class="mqbig ${this._mqGc(r.note)}">${this._mqG(r.note)}</b><span><b>${esc((r.wort || "noch kein Zeugnis").replace(/^./, (x) => x.toUpperCase()))}</b><small>${r.tage} Tage mit Messwerten${r.trend != null ? ` · ${this._mqTr(r.trend)}` : ""}</small></span></div>
+        ${Object.entries(F).map(([k, [t, sub]]) => { const g = (r.faecher || {})[k]; return `<div class="vrow"><span>${t}<small class="mut" style="display:block">${g == null ? "ohne Note – Sensor fehlt" : sub}</small></span><b class="mqg ${this._mqGc(g)}">${g == null ? "–" : g}</b></div>`; }).join("")}
+        ${H.length ? `<div class="lsec" style="margin-top:12px">${ic("chart", 15)}Verlauf · 8 Wochen</div><div class="mqhist">${bars}</div><div class="mut sm">höher = bessere Note</div>` : ""}
+        ${r.tipp ? `<div class="gst on" style="margin-top:10px">💡 <span>${esc(r.tipp)}</span></div>` : ""}`);
+    }
+    if (m.type === "mqxcost") {
+      const H = S.hk || {}, r = (H.rooms || []).find((x) => x.id === m.k);
+      if (!r) return wrap("Heizkosten", "", `<div class="mut sm">Keine Daten.</div>`);
+      const D = (H.daily || []).map(([d, v]) => [d, v[r.id] || 0]), mx = Math.max(0.01, ...D.map((x) => x[1]));
+      const bars = D.map(([d, v]) => { const we = [0, 6].includes(new Date(d + "T12:00:00").getDay()); return `<i class="${we ? "we" : ""}" title="${esc(d)}: ${this._mqEur(v)}" style="height:${Math.round(v / mx * 100)}%"></i>`; }).join("");
+      return wrap(esc(r.name), `Heizkosten · ${esc(H.from || "")} bis ${esc(H.to || "")}`, `<div class="mqtop"><b class="mqbig eur">${r.est > 0 ? "ca. " : ""}${this._mqEur(r.eur)}</b><span><b>${r.share} % vom Haus</b><small>${r.eur_m2 != null ? `${num(r.eur_m2, 2)} €/m² · ` : ""}${r.meas > 0 ? `${this._mqEur(r.meas)} gemessen` : ""}${r.meas > 0 && r.est > 0 ? " · " : ""}${r.est > 0 ? `ca. ${this._mqEur(r.est)} geschätzt` : ""}</small></span></div>
+        ${D.length > 1 ? `<div class="lsec" style="margin-top:10px">${ic("chart", 15)}Kosten je Tag</div><div class="mqhist cost">${bars}</div><div class="mut sm">hell = Wochenende · Ø ${this._mqEur(r.eur / Math.max(1, D.length))} pro Tag</div>` : ""}
+        <div class="lsec" style="margin-top:10px">${ic("info", 15)}So gerechnet</div>
+        ${row("Wärme (geschätzt)", "Heizlast × Ventilöffnung × Zeit", `<b>${num(r.kwh, 1)} kWh</b>`)}${r.elec > 0 ? row("Elektroheizer", r.meas > 0 ? "Energiezähler des Geräts" : "Leistung × Laufzeit", `<b>${this._mqEur(r.elec)}</b>`) : ""}
+        ${row("Wärmequelle", H.meter ? "Anteil am Gesamtzähler" : "ohne Zähler: Schätzung", `<b>${esc({ erdgas: "Gas", fluessiggas: "Flüssiggas", heizoel: "Heizöl", pellets: "Pellets", fern: "Fernwärme", strom: "Wärmepumpe" }[(S.hk_fuel || {}).fuel] || "")}</b>`)}
+        ${r.win > 0 ? row("davon Fenster offen", `${num(r.wm / 60, 0)} h beim Heizen`, `<b class="pkc">${this._mqEur(r.win)}</b>`) : ""}
+        ${r.what_if > 0 ? `<div class="gst on" style="margin-top:10px">💡 <span>1 °C weniger spart hier ca. <b>${this._mqEur(r.what_if)}</b> im Zeitraum (Faustwert ca. 6 % je °C).</span></div>` : ""}`);
+    }
+    if (m.type === "mqxwin") {
+      const H = S.hk || {}, L = (H.rooms || []).filter((r) => r.win > 0).sort((a, b) => b.win - a.win);
+      return wrap("Fenster offen beim Heizen", `ca. ${this._mqEur(H.win)} im Zeitraum`, `${L.map((r) => row(esc(r.name), `${num(r.wm / 60, 0)} h offen beim Heizen`, `<b class="pkc">${this._mqEur(r.win)}</b>`)).join("")}
+        <div class="mut sm" style="margin-top:8px">Stoßlüften kostet wenig – gekippte Fenster am meisten. Gerechnet mit Luftwechsel (offen 10/h, nach 20 Min. wie gekippt 2/h), Raumvolumen und Außentemperatur. Teil der Raumkosten, keine Extra-Summe.</div>`);
+    }
+    return wrap("Sponsor-Max-Extras", "", "");
+  }
+
+  /* ================= Build 4 · Wand-Tablet-Extras ================= */
+  _mqTbDef() { return { room: "", night: "22-6", nc: "red", dark: false, shift: true, acts: [], alarm: true, bright: "", bat: "", charge: "" }; }
+  _mqTbOn() { return this._tmOn() && this._mqOn("tb"); }
+  _mqTbC() { const S = this._mqx; return { ...this._mqTbDef(), ...(((S && S.cfg && S.cfg.tb) || {})[this._tmId()] || {}) }; }
+  _mqNight(T) {
+    if (T.night === "off") return false;
+    if (T.night === "sun") { const s = this._hass.states["sun.sun"]; return !!s && s.state === "below_horizon"; }
+    const [a, b] = String(T.night).split("-").map(Number), h = new Date().getHours();
+    return a > b ? h >= a || h < b : h >= a && h < b;
+  }
+  _mqAlarm() {
+    if (!this._mqTbOn() || !this._mqTbC().alarm) return null;
+    const e = this._advTk ? this._advTk("sf_status") : null, s = e ? this._hass.states[e] : null;
+    if (!s || s.state !== "alarm") return null;
+    const le = this._advTk("sf_letzter_alarm"), L = le ? (this._hass.states[le] || {}).attributes || {} : {};
+    return { name: L.name || "Melder", raum: L.raum || "", since: le ? (this._hass.states[le] || {}).state : "" };
+  }
+  _mqState() {
+    if (this._mqAlarm()) return "alarm";
+    const T = this._mqTbC(), n = this._mqNight(T);
+    if (!this._tmSleep) return "wach";
+    if (n && T.dark && Date.now() - (this._mqSleepTs || Date.now()) > 120000) return "schlafen";
+    return n ? "nacht" : "ruhe";
+  }
+  /* aus _tmTick: Zustand ermitteln, melden, Helligkeit, Alarm, Einbrennschutz */
+  _mqTbTick() {
+    if (!this._mqTbOn()) { if (this._mqx === undefined && this._tmOn()) this._mqLoad(); return; }
+    if (!this._mqWakeSub && this._hass.connection && this._hass.user && this._hass.user.is_admin) {
+      this._mqWakeSub = true;
+      this._hass.connection.subscribeEvents((ev) => { if (ev.data && ev.data.tid === this._tmId()) this._tmWake(); }, "fenster_heizung_mx_wake").catch(() => { this._mqWakeSub = false; });
+    }
+    if (this._tmSleep && !this._mqSleepTs) this._mqSleepTs = Date.now();
+    if (!this._tmSleep) this._mqSleepTs = 0;
+    const al = this._mqAlarm();
+    if (al && !this._mqAl) { this._mqAl = true; this._mqMuteTs = 0; if (this._tmSleep) this._tmWake(); else this._render(); }
+    if (!al && this._mqAl) { this._mqAl = false; this._mqBeep(false); this._render(); }
+    if (al) this._mqBeep(Date.now() > (this._mqMuteTs || 0));
+    const st = this._mqState();
+    if (st !== this._mqSt || Date.now() - (this._mqStTs || 0) > (this._tmSleep ? 15000 : 60000)) {
+      const changed = st !== this._mqSt; this._mqSt = st; this._mqStTs = Date.now();
+      this._hass.callWS({ type: "fenster_heizung/mx_tb", tid: this._tmId(), state: st }).then((r) => {
+        /* „Tablet wecken“ (Knopf-Entität): ohne Admin-Rechte gibt es kein Ereignis-Abo, darum kommt der Weckruf hier mit */
+        if (r && r.wake && r.wake > (this._mqWk || 0)) { const first = this._mqWk === undefined; this._mqWk = r.wake; if (!first && this._tmSleep) this._tmWake(); }
+      }).catch(() => { /* egal */ });
+      if (changed) { this._mqBright(st); if (this._tmSleep) this._render(); }
+    }
+    if (this._mqTbC().shift && Date.now() - (this._mqShTs || 0) > 600000) {
+      this._mqShTs = Date.now(); this._mqSh = [Math.round(Math.random() * 8 - 4), Math.round(Math.random() * 8 - 4)];
+      const el = this.shadowRoot.querySelector(".mqrest"); if (el) el.style.transform = `translate(${this._mqSh[0]}px,${this._mqSh[1]}px)`;
+    }
+  }
+  _mqBright(st) {
+    const T = this._mqTbC(), e = T.bright, s = e ? this._hass.states[e] : null;
+    if (!s) return;
+    const pct = st === "wach" && this._mqNight(T) ? 30 : ({ wach: 100, alarm: 100, ruhe: 40, nacht: 5, schlafen: 0 }[st] ?? 100);
+    if (e.startsWith("light.")) { this._hass.callService("light", pct ? "turn_on" : "turn_off", pct ? { entity_id: e, brightness_pct: pct } : { entity_id: e }).catch(() => { /* egal */ }); return; }
+    const a = s.attributes || {}, lo = Number(a.min ?? 0), hi = Number(a.max ?? 255);
+    this._hass.callService("number", "set_value", { entity_id: e, value: Math.round(lo + (hi - lo) * pct / 100) }).catch(() => { /* egal */ });
+  }
+  _mqBeep(on) {
+    try {
+      if (!on) { if (this._mqOsc) { this._mqOsc.stop(); this._mqOsc = null; } return; }
+      if (this._mqOsc) return;
+      const C = this._mqAc || (this._mqAc = new (window.AudioContext || window.webkitAudioContext)()), o = C.createOscillator(), g = C.createGain(), l = C.createOscillator(), lg = C.createGain();
+      o.frequency.value = 3100; l.frequency.value = 2; lg.gain.value = 0.5; g.gain.value = 0.5; l.connect(lg); lg.connect(g.gain); o.connect(g); g.connect(C.destination); o.start(); l.start();
+      this._mqOsc = { stop: () => { try { o.stop(); l.stop(); } catch (_) { /* egal */ } } };
+    } catch (_) { /* ohne Ton */ }
+  }
+  _mqAlarmHtml(al) {
+    const muted = Date.now() < (this._mqMuteTs || 0);
+    return `<div class="mqalarm"><div class="mqai">🔥</div><b>RAUCHALARM</b><div class="mqar">${esc(al.name)}${al.raum ? ` · ${esc(al.raum)}` : ""}</div><div class="mut">Modul 11${al.since ? ` · seit ${esc(new Date(al.since).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }))}` : ""}</div>
+      <button class="mqab" data-act="mqxmute">${muted ? "Ton ist stumm" : "Ton stumm 60 s"}</button><button class="mqab2" data-act="mqxplan">Melder im Plan zeigen</button>
+      <div class="mqan">Volle Helligkeit · Ton nur am Tablet, der Melder bleibt laut. Verschwindet, wenn Modul 11 Entwarnung gibt.</div></div>`;
+  }
+  _mqTiles(n = 5) {
+    const T = this._mqTbC(), S = this._mqx || {}, st = this._hass.states;
+    let R = this._collect();
+    const i = R.findIndex((r) => r.id === T.room); if (i > 0) R = [R[i], ...R.slice(0, i), ...R.slice(i + 1)];
+    const tile = (r) => {
+      const th = (r.thermos || []).map((e) => st[e]).filter(Boolean), cur = th.map((x) => parseFloat(x.attributes.current_temperature)).filter(isFinite);
+      const t = r.rtVal != null ? r.rtVal : cur.length ? cur.reduce((a, b) => a + b, 0) / cur.length : NaN, h = r.humEid && st[r.humEid] ? parseFloat(st[r.humEid].state) : NaN;
+      const open = r.mode === "heizung_pausiert" || (r.windows || []).some((e) => st[e] && ["on", "open"].includes(st[e].state)), heat = th.some((x) => x.attributes.hvac_action === "heating");
+      return `<div class="mqtile ${r.id === T.room ? "own" : ""}"><small>${esc(r.name)}</small><b>${isFinite(t) ? num(t, 1) + "°" : "–"}</b>${isFinite(h) ? `<span class="${h > 70 ? "warn" : ""}">${num(h, 0)} %</span>` : ""}<em class="${open ? "pk" : heat ? "tl" : ""}">${open ? "🪟 offen" : heat ? "heizt" : ""}</em></div>`;
+    };
+    const extra = [];
+    if (this._mqOn("hk") && S.hk && this._mqScope === "day") extra.push(`<div class="mqtile"><small>Heizung heute</small><b>${this._mqEur(S.hk.eur)}</b></div>`);
+    return R.slice(0, Math.max(1, n - extra.length)).map(tile).join("") + extra.join("");
+  }
+  /* Ruhe / Nacht / Schlafen statt der normalen Ruhe-Uhr */
+  _mqRest() {
+    if (!this._mqTbOn()) return "";
+    const T = this._mqTbC(), st = this._mqState(), now = new Date(), clk = now.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }), S = this._mqx || {};
+    const sh = this._mqSh ? `style="transform:translate(${this._mqSh[0]}px,${this._mqSh[1]}px)"` : "";
+    if (st === "schlafen") return `<div class="tmrest mqrest mqsleep" ${sh}></div>`;
+    if (st === "nacht") {
+      const open = this._collect().filter((r) => r.mode === "heizung_pausiert").map((r) => `${esc(r.name)} 🪟 offen`).slice(0, 2).join(" · ");
+      return `<div class="tmrest mqrest mqnight ${T.nc}" ${sh}><div class="mqclk" data-tmclk>${clk}</div>${open ? `<div class="mqnh">${open}</div>` : ""}</div>`;
+    }
+    const Zw = S.wk ? this._mqZ(S.wk, "week") : null, wk = this._mqOn("wk") && Zw && Zw.note != null ? ` · Zeugnis ${this._mqG(Zw.note)}` : "";
+    return `<div class="tmrest mqrest" ${sh}><div class="mqrh"><div><div class="mqclk" data-tmclk>${clk}</div><div class="tmrd" data-tmdate>${now.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}</div></div><div class="mqrs">${T.room ? `<em class="lgchip">📍 ${esc((this._collect(true).find((r) => r.id === T.room) || {}).name || "")}</em>` : ""}<small>${wk.replace(/^ · /, "")}</small></div></div>
+      <div class="mqtiles">${this._mqTiles(5)}</div><div class="tmrw">Antippen zum Aufwecken</div></div>`;
+  }
+  /* Leiste oben auf der Startseite im Tablet-Modus: Räume (eigener zuerst) und Schnellaktionen */
+  _mqStrip() {
+    if (!this._mqTbOn()) return "";
+    if (this._mqScope !== "day" && this._mqOn("hk") && !this._mqBusy && Date.now() - (this._mqTs || 0) > 300000) this._mqLoad(true, "day");
+    const T = this._mqTbC(), st = this._hass.states;
+    const acts = T.acts.map((e) => `<button class="mqqa" data-act="mqxqa" data-k="${esc(e)}">${ic(e.startsWith("scene.") ? "palette" : e.startsWith("script.") ? "play" : e.startsWith("light.") ? "lamp" : "plug", 18)}<span>${esc(this._wzName(e))}</span></button>`).join("");
+    return `<div class="mqstrip"><div class="mqtiles">${this._mqTiles(5)}</div>${acts ? `<div class="mqqas">${acts}</div>` : ""}</div>`;
+  }
+  _mqTbAct(a, b) {
+    if (a === "mqxmute") { this._mqMuteTs = Date.now() + 60000; this._mqBeep(false); this._render(); return true; }
+    if (a === "mqxplan") { this._mqPlanTs = Date.now() + 120000; this._tmView = this._mdList().some((m) => m.id === "sf") ? "sf" : this._mdList().some((m) => m.id === "gr") ? "gr" : "st"; this._render(); return true; }
+    if (a === "mqxqa") {
+      const e = b.dataset.k, d = e.split(".")[0];
+      const svc = d === "scene" ? ["scene", "turn_on"] : d === "script" ? ["script", "turn_on"] : d === "button" ? ["button", "press"] : [d === "input_boolean" ? "input_boolean" : d, "toggle"];
+      this._hass.callService(svc[0], svc[1], { entity_id: e }).then(() => this._toast(`${this._wzName(e)} ✓`)).catch(() => this._toast("Das ging nicht"));
+      return true;
+    }
+    return false;
   }
   /* „Tags & Karten“ (fest eingebaut, bis 2026.11.1b15 ein Lab): RFID-Karten und NFC-Sticker lösen feste Aktionen aus, auch die NFC-Tags am Stellplatz des Luftentfeuchters. Die Tags und ihre Aktionen liegen im Backend (tags.py),
      hier stehen nur Anzeige und Bedienung. Es gibt keine freien Dienstaufrufe, nur die feste Liste des Backends. */
@@ -16563,6 +16950,8 @@ class FensterHeizungPanel extends HTMLElement {
       if (st && st.imp != null && st.exp != null) { const house = (st.pv || 0) + st.imp - st.exp; if (house > 1) R.aut = Math.max(0, Math.min(100, (1 - st.imp / house) * 100)); }
       const H = be && be.heat; if (H) { if (H.amt != null && H.unit) { const F = FUELS[H.fuel] || {}; R.oil = H.amt; R.ou = H.unit; R.on = F.short || "Brennstoff"; } else if (H.kwh > 0) { R.oil = H.kwh; R.ou = "kWh"; R.on = "Wärme"; } }
       if (be && be.gs && be.gs.saved > 0) R.sv = be.gs.saved;
+      if (be && be.wk && be.wk.note != null) R.wk = be.wk;  /* Sponsor-Max-Extras: Wohnklima-Note und Heizkosten */
+      if (be && be.hk && be.hk.eur > 0) R.hk = be.hk;
     } catch (_) { /* fehlende Werte lässt der Bericht weg */ }
     this._s3R[off] = R; this._s3RB = null;
     if (this._loOpen) this._render();
@@ -16629,7 +17018,8 @@ class FensterHeizungPanel extends HTMLElement {
   _s3Cells(R) {
     if (!R) return [];
     return [R.pv != null ? [`${num(R.pv, 0)}`, "kWh Solar", "#fbbf24"] : null, R.aut != null ? [`${num(R.aut, 0)} %`, "Autarkie", "#2dd4bf"] : null, R.oil > 0 ? [`${num(R.oil, 0)} ${esc(R.ou || "l")}`, `${esc(R.on || "Öl")} gespart`, "#fb923c"] : null,
-      R.sv > 0 ? [`${num(R.sv, 0)} €`, "durch eigenen Strom", "#34d399"] : null].filter(Boolean);
+      R.sv > 0 ? [`${num(R.sv, 0)} €`, "durch eigenen Strom", "#34d399"] : null,
+      R.wk ? [num(R.wk.note, 1), `Wohnklima · ${esc(R.wk.wort || "")}`, "#5eead4"] : null, R.hk ? [`${num(R.hk.eur, 0)} €`, `Heizkosten · meist ${esc(R.hk.top || "")}`, "#fbbf24"] : null].filter(Boolean);
   }
   _s3WishCard(W, mx) {
     const mon = W && W.month ? new Date(W.month + "-15T12:00:00").toLocaleDateString("de-DE", { month: "long" }) : new Date().toLocaleDateString("de-DE", { month: "long" });
@@ -16644,13 +17034,13 @@ class FensterHeizungPanel extends HTMLElement {
   /* ---- Monatsbericht als Bild (1080 × 1350, zum Teilen und Speichern) ---- */
   _s3RepSvg(R) {
     const W = 1080, H = 1350, cells = this._s3Cells(R), s = this._spnS(), f = "Roboto,system-ui,sans-serif";
-    const cw = 470, chh = 170;
+    const cw = 470, chh = cells.length > 4 ? 112 : 170, fv = cells.length > 4 ? 52 : 66;
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="100%" style="max-width:380px;display:block;margin:0 auto;border-radius:12px">
       <rect width="${W}" height="${H}" fill="#0f1419"/>
       <text x="70" y="110" font-family="${f}" font-size="30" letter-spacing="7" font-weight="700" fill="#5eead4">STROM &amp; WÄRME · MONATSBERICHT</text>
       <text x="66" y="200" font-family="${f}" font-size="74" font-weight="900" fill="#e6edf3">Dein Haus im ${esc(R.mon || "")}</text>
       <g transform="translate(70 250)"><svg width="940" height="500" viewBox="0 0 400 213">${this._s3Scene(400, 213, "s3p").replace(/^<svg[^>]*>/, "").replace(/<\/svg>$/, "")}</svg></g>
-      ${cells.map(([v, l, c], i) => { const x = 70 + (i % 2) * (cw + 0), y = 800 + Math.floor(i / 2) * (chh + 20); return `<rect x="${x}" y="${y}" width="${cw - 20}" height="${chh}" rx="24" fill="#ffffff" fill-opacity=".06"/><text x="${x + 32}" y="${y + 92}" font-family="${f}" font-size="66" font-weight="800" fill="${c}">${v}</text><text x="${x + 32}" y="${y + 138}" font-family="${f}" font-size="28" fill="#9aa7b4">${l}</text>`; }).join("")}
+      ${cells.map(([v, l, c], i) => { const x = 70 + (i % 2) * (cw + 0), y = 800 + Math.floor(i / 2) * (chh + 20); return `<rect x="${x}" y="${y}" width="${cw - 20}" height="${chh}" rx="24" fill="#ffffff" fill-opacity=".06"/><text x="${x + 32}" y="${y + (chh > 120 ? 92 : 62)}" font-family="${f}" font-size="${fv}" font-weight="800" fill="${c}">${v}</text><text x="${x + 32}" y="${y + (chh > 120 ? 138 : 96)}" font-family="${f}" font-size="26" fill="#9aa7b4">${l}</text>`; }).join("")}
       <text x="${W / 2}" y="${H - 60}" text-anchor="middle" font-family="${f}" font-size="26" fill="#9aa7b4">${esc(R.year ? R.mon + " " + R.year : "")} · aus den eigenen Daten · github.com/Maddog3010</text></svg>`;
   }
   _s3RepModal() {

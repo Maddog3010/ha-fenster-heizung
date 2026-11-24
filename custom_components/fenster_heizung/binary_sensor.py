@@ -10,6 +10,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from . import muell_ent
 from . import saison_ent
 from . import gr_ent
+from . import mx_ent
 from .const import DOMAIN
 
 OWNER = "bs_owner"
@@ -22,6 +23,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
         muell_ent.register(hass, "binary_sensor", async_add_entities, MuellBinary, entry.async_on_unload)
         async_add_entities([SaisonBinary()])
         gr_ent.register(hass, "binary_sensor", async_add_entities, RaumBinary, entry.async_on_unload)  # Modul 0 Build 9: Fenster offen, belegt
+        mx_ent.register(hass, "binary_sensor", async_add_entities, MxBinary, entry.async_on_unload)  # Sponsor-Max-Extras 2026.11.4.4b4
 
 
 class MuellBinary(muell_ent._Base, BinarySensorEntity):
@@ -57,3 +59,17 @@ class SaisonBinary(saison_ent.Base, BinarySensorEntity):
     def is_on(self) -> bool | None:
         r = saison_ent.real(self.hass)
         return bool(r["in_saison"]) if r else None
+
+
+class MxBinary(mx_ent.MxBase, BinarySensorEntity):
+    """Sponsor-Max-Extras: Schimmelrisiko je Raum, Tablet wach."""
+
+    def __init__(self, key: str, v: dict) -> None:
+        mx_ent.MxBase.__init__(self, key, v)
+        if v.get("dc"):
+            self._attr_device_class = v["dc"]
+
+    @property
+    def is_on(self) -> bool | None:
+        v = self._v()
+        return bool(v.get("v")) if v else None

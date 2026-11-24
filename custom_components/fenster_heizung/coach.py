@@ -242,4 +242,10 @@ class CoachManager:
                     tot += row[0] + row[1] + row[2]
             if tot > 0:
                 out["gs"] = {"saved": round(sv, 2), "own": round(own / tot * 100, 1), "kwh": round(tot, 2)}
+        mxx = self.hass.data.get(DOMAIN, {}).get("mxx")  # Sponsor-Max-Extras: Wohnklima und Heizkosten im Monatsbericht
+        if mxx is not None:
+            try:
+                out.update(mxx.month(ym))
+            except Exception:  # noqa: BLE001
+                _LOGGER.debug("Monatsbericht: Max-Extras fehlen", exc_info=True)
         return out

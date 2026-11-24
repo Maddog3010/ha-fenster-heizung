@@ -43,6 +43,7 @@
   _tmWarnKey() { try { return this._hzHints().filter((h) => h.c === "bad" && !h.soft).map((h) => h.t).join("|"); } catch (_) { return ""; } }
   _tmTick() {
     if (!this._hass || !this._tmOn()) return;
+    if (this._mqTbTick) this._mqTbTick();  /* Sponsor-Max-Extras: Wand-Tablet (Zustand, Nacht, Alarm, Einbrennschutz) */
     const sr = this.shadowRoot, c = this._tmC(), d = new Date(), idle = Date.now() - (this._tmLast || Date.now());
     sr.querySelectorAll("[data-tmclk]").forEach((e) => { e.textContent = d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }); });
     sr.querySelectorAll("[data-tmdate]").forEach((e) => { e.textContent = d.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" }); });
@@ -84,8 +85,8 @@
   _tmStart() {
     const hints = this._hzHints(), mods = this._mdList().filter((x) => x.id !== "st"), bubs = this._labOn("sb") ? this._hzBubs().replace(/data-act="hzbub"/g, 'data-act="tmbub"') : "";
     const rows = hints.slice(0, 3).map((h) => `<div class="tmhint ${h.c || ""}"><span class="tmhi">${ic(ICONS[h.i] ? h.i : "info", 20)}</span><span><b>${h.t}</b>${h.s ? `<small>${h.s}</small>` : ""}</span></div>`).join("");
-    if (this._hzNew()) { const vis = this._hzVis(hints), r2 = vis.slice(0, 3).map((h) => `<div class="tmhint ${h.c || ""}"><span class="tmhi">${ic(ICONS[h.i] ? h.i : "info", 20)}</span><span><b>${h.t}</b>${h.s ? `<small>${h.s}</small>` : ""}</span></div>`).join(""); return this._hzWrap(`${this._hzTmAmp(vis)}${this._muTabCard && this._muOn() ? this._muTabCard() : ""}${this._hzQaRow(true)}${bubs}<div class="tmgrid">${this._hzMods().map((m) => this._hzTile(m).replace('data-act="hzgo"', 'data-act="tmgo"')).join("")}</div>${r2 ? `<div class="tmhints">${r2}</div>` : ""}`); }
-    return `${this._muTabCard && this._muOn() ? this._muTabCard() : ""}${bubs}<div class="tmgrid">${mods.map((m) => this._hzTile(m).replace('data-act="hzgo"', 'data-act="tmgo"')).join("")}</div>${rows ? `<div class="tmhints">${rows}</div>` : ""}`;
+    if (this._hzNew()) { const vis = this._hzVis(hints), r2 = vis.slice(0, 3).map((h) => `<div class="tmhint ${h.c || ""}"><span class="tmhi">${ic(ICONS[h.i] ? h.i : "info", 20)}</span><span><b>${h.t}</b>${h.s ? `<small>${h.s}</small>` : ""}</span></div>`).join(""); return this._hzWrap(`${this._mqStrip ? this._mqStrip() : ""}${this._hzTmAmp(vis)}${this._muTabCard && this._muOn() ? this._muTabCard() : ""}${this._hzQaRow(true)}${bubs}<div class="tmgrid">${this._hzMods().map((m) => this._hzTile(m).replace('data-act="hzgo"', 'data-act="tmgo"')).join("")}</div>${r2 ? `<div class="tmhints">${r2}</div>` : ""}`); }
+    return `${this._mqStrip ? this._mqStrip() : ""}${this._muTabCard && this._muOn() ? this._muTabCard() : ""}${bubs}<div class="tmgrid">${mods.map((m) => this._hzTile(m).replace('data-act="hzgo"', 'data-act="tmgo"')).join("")}</div>${rows ? `<div class="tmhints">${rows}</div>` : ""}`;
   }
   _tmRoom(r) {
     const st = this._hass.states, cl = (r.thermos || []).map((e) => st[e]).filter(Boolean), A = (cl[0] && cl[0].attributes) || {};
@@ -101,6 +102,7 @@
     return rooms.length ? `<div class="tmrooms">${rooms.map((r) => this._tmRoom(r)).join("")}</div>` : `<div class="card empty">Noch keine Räume eingerichtet.</div>`;
   }
   _tmSleepHtml() {
+    const mq = this._mqRest ? this._mqRest() : ""; if (mq) return mq;
     const facts = ["wetter", "alarm", "personen", "muell"].map((id) => this._hzBubDef(id)).filter((x) => x && x.i).map((x) => `<div>${ic(x.i, 26)}<span>${esc(x.b)}${x.s ? ` · ${esc(x.s)}` : ""}</span></div>`).join("");
     const ef = this._efxSleep ? this._efxSleep() : "";
     const sc = !ef && this._hzNew() ? this._hzTmSleep() : "";
@@ -109,6 +111,7 @@
   _tmRender() {
     const sr = this.shadowRoot, v = this._mdList().some((m) => m.id === this._tmV()) || this._tmV() === "st" ? this._tmV() : "st", m = this._mdList().find((x) => x.id === v), c = this._tmC(), me = this._tmMe();
     this._w = this.clientWidth; this._tmView = v;
+    const al = this._mqAlarm ? this._mqAlarm() : null; if (al && !(Date.now() < (this._mqPlanTs || 0))) { sr.getElementById("main").innerHTML = this._mqAlarmHtml(al); return; }
     if (this._tmSleep) { sr.getElementById("main").innerHTML = this._tmSleepHtml(); return; }
     const sc = { auto: 1, large: 1.15, xl: 1.3 }[c.size] || 1, title = v === "st" ? this._hzGreet().split(" · ")[0] : esc(m ? m.name : ""), hints = v === "st" ? (this._hzNew() ? this._hzVis(this._hzHints()) : this._hzHints()).length : 0;
     const sub = v === "st" ? (hints ? `${hints} ${hints === 1 ? "Hinweis" : "Hinweise"}` : "Alles in Ordnung") : esc(m ? m.tag || "" : "");
@@ -257,6 +260,7 @@
       ${row("Display ausschalten nach", "Ohne Bewegung. Nur mit Display-Schalter.", seg("tmoff", c.off_after, [[0, "Nie"], [10, "10 Min."], [30, "30 Min."]]))}
       <div class="vrow"><span>HA-App (Android)<small class="mut" style="display:block">Benachrichtigungsdienst, z. B. mobile_app_tablet. Schaltet nur ein.</small></span><input class="osel" data-f="tmnot" value="${esc(c.notify)}" placeholder="mobile_app_…" style="width:46%;margin:0" ${lock ? "disabled" : ""} aria-label="Benachrichtigungsdienst"></div>
       ${inT ? "" : `<div class="lsec" style="margin-top:14px">${ic("copy", 15)}Fully Kiosk</div><div class="mut sm" style="margin:0 0 6px">Diesen Link in Fully unter Web Content Settings als Start-URL eintragen. Dann startet das Tablet immer im Tablet-Modus.</div><div class="tmurl"><code>${esc(this._tmUrlStr())}</code><button class="ibtn" data-act="tmcopy" aria-label="Kopieren">${ic("copy", 18)}</button></div>`}
+      ${this._mqOn && this._mqOn("tb") ? `<div class="lsec" style="margin-top:14px"><span class="lggd">★</span>&nbsp;Wand-Tablet-Extras</div>${row("Raum, Nacht, Schnellaktionen, Alarm", "Sponsor Max · gilt für dieses Tablet", `<button class="btn2" data-act="mqxset" data-k="tb" style="flex:none">Einstellen</button>`)}` : ""}
       ${list}
       <div class="gbtns" style="margin-top:14px">${inT ? `<button class="btn2" data-act="tmend" ${lock ? "disabled" : ""}>Tablet-Modus beenden</button><button class="btn2 pri" data-act="tmdone">${ic("check", 16)} Fertig</button>` : `<button class="btn2" data-act="close">Schließen</button><button class="btn2 pri" data-act="tmstart" ${lock ? "disabled" : ""}>${ic("tablet", 16)} Tablet-Modus jetzt starten</button>`}</div></div>`;
   }
