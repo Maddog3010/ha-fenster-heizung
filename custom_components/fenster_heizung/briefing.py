@@ -114,8 +114,8 @@ class BriefingManager:
                 r = None
             if r:
                 lines.append(r)
-        mxx = D.get("mxx")  # Sponsor-Max-Extras: Wochennote, Schimmelrisiko, Heizkosten von gestern
-        if mxx is not None:
+        mxx = D.get("mxx")  # Sponsor-Max-Extras: Wochennote, Schimmelrisiko, Heizkosten von gestern (nur morgens)
+        if mxx is not None and kind == "morning":
             try:
                 lines += mxx.brief_lines()
             except Exception:  # noqa: BLE001

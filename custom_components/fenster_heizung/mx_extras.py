@@ -209,12 +209,15 @@ class MxExtrasManager:
         for k in EXTRAS:
             if self.on(k):
                 changed |= self.off_since.pop(k, None) is not None
-            elif k not in self.off_since:
+                continue
+            if k not in self.off_since:
                 self.off_since[k] = now
                 changed = True
-                self._drop_entities(k)
+            if not self._pref(k):
+                self._drop_entities(k)  # selbst ausgeschaltet: Entitäten gleich weg
         for k, ts in list(self.off_since.items()):
             if now - ts > GRACE_DAYS * 86400:
+                self._drop_entities(k)  # Max seit 30 Tagen vorbei: jetzt auch Entitäten und Tageswerte löschen
                 if k == "wk" and self.wk:
                     self.wk = {}
                     changed = True
@@ -341,6 +344,13 @@ class MxExtrasManager:
         on_wk, on_hk = self.on("wk"), self.on("hk")
         if not on_wk and not on_hk:
             return
+        if on_wk and "layout" not in self.hass.data.get(DOMAIN, {}):
+            try:  # Messräume stehen im Layout, das sonst erst beim Öffnen des Dashboards geladen wird
+                from .api import _layout
+
+                await _layout(self.hass)
+            except Exception:  # noqa: BLE001
+                _LOGGER.debug("Max-Extras: Layout nicht geladen", exc_info=True)
         try:
             self._sample_now(on_wk, on_hk)
         except Exception:  # noqa: BLE001
@@ -417,9 +427,10 @@ class MxExtrasManager:
                 row["ce"] = round(row["ce"] + q / eff * p_in, 4)
             if hcfg:
                 ek, meas = self._heater_delta(rid, hcfg.get("entity") or "", ctrl)
+                pv = self._pv_delta(rid, ctrl)
                 if ek > 0:
                     row["ek"] = round(row["ek"] + ek, 4)
-                    row["ee"] = round(row["ee"] + ek * p_el, 4)
+                    row["ee"] = round(row["ee"] + max(ek - pv, 0.0) * p_el, 4)  # Anteil aus eigenem PV-Strom kostet nichts
                 row["em"] = row["em"] or meas
             if w_open and heating and self.cfg["hk"]["winc"]:
                 mins = (now.timestamp() - self._open[rid]["since"]) / 60.0
@@ -427,7 +438,7 @@ class MxExtrasManager:
                 t_out = _f(ctrl._outdoor_temp()) if hasattr(ctrl, "_outdoor_temp") else None  # noqa: SLF001
                 q = L.window_kwh(L.ach("", mins), area, rc.get("h") or L.ROOM_H, t if t is not None else (tg or 20.0), t_out if t_out is not None else 5.0, dt_h)
                 row["wk"] = round(row["wk"] + q, 4)
-                row["we"] = round(row["we"] + q / eff * (p_in if thermos else p_el), 4)
+                row["we"] = round(row["we"] + (q / eff * p_in if thermos else q * p_el), 4)  # Elektroheizer: 1 kWh Wärme = 1 kWh Strom
                 row["wm"] = row["wm"] + L.SAMPLE_MIN
         if on_wk:
             for m in self._mess():
@@ -472,6 +483,16 @@ class MxExtrasManager:
         if v is None or prev is None:
             return 0.0, False
         return (v - prev if v >= prev else v), False  # Tageswechsel: Zähler beginnt bei 0
+
+    def _pv_delta(self, rid: str, ctrl: Any) -> float:
+        """PV-Anteil des Elektroheizers seit der letzten Probe (heater.pv_kwh, beginnt täglich bei 0)."""
+        v = _f(getattr(getattr(ctrl, "heater", None), "pv_kwh", None))
+        key = f"pv:{rid}"
+        prev = self._last.get(key)
+        self._last[key] = v
+        if v is None or prev is None:
+            return 0.0
+        return v - prev if v >= prev else v
 
     def _trim(self, today: date) -> None:
         cut = (today - timedelta(days=KEEP_DAYS)).isoformat()
