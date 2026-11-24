@@ -2,7 +2,7 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
-## [2026.11.5b1] - unveröffentlicht
+## [2026.11.5b1] - 2026-11-24
 
 Erste Testversion für 2026.11.5 (Branch `beta`). Hotfixes der stabilen Version 2026.11.4.x entstehen auf `main` und werden danach hierher übernommen.
 
