@@ -73,11 +73,19 @@
     const defs = heat ? `<defs><linearGradient id="${id}h" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fdba74"/><stop offset=".5" stop-color="#f97316"/><stop offset="1" stop-color="#ea580c"/></linearGradient><linearGradient id="${id}g" x1="0" y1="${sd > 0 ? 0 : 1}" x2="0" y2="${sd > 0 ? 1 : 0}"><stop offset="0" stop-color="#f97316" stop-opacity=".42"/><stop offset="1" stop-color="#f97316" stop-opacity="0"/></linearGradient></defs>` : "";
     const valve = `<rect x="${x + w / 2}" y="${y - h * 0.3}" width="${Math.max(3, h * 0.55)}" height="${h * 0.6}" rx="1.5" fill="${heat ? "#fdba74" : hell ? "#fff" : "#e5e7eb"}" stroke="${edge}" stroke-width="1"/>`;
     /* Beschriftung: im Raum neben dem Heizkörper, mit Abstand je nach Lage (waagerecht: darunter/darüber, senkrecht: daneben) */
-    const lab = S && S.t ? S.t : "", lw = lab.length * 5.4 + 12, off2 = h / 2 + 5 + Math.abs(R.nx) * (lw / 2) + Math.abs(R.ny) * 7.5;
-    const cx = x + R.nx * sd * off2, cy = y + R.ny * sd * off2;
+    const lab = S && S.t ? S.t : "", B = this._grRadChip(i, P || this._sfPl(), sc, lab), lw = B ? B.lw : 0, cx = B ? B.cx : x, cy = B ? B.cy : y;
     const chip = lab ? `<g pointer-events="none"><rect x="${cx - lw / 2}" y="${cy - 7.5}" width="${lw}" height="15" rx="7.5" fill="${hell ? "#fff" : "#0b1220"}" opacity=".92"/><text x="${cx}" y="${cy + 3.5}" text-anchor="middle" font-size="9.5" font-weight="700" fill="${heat ? "#f97316" : T.sub}">${esc(lab)}</text></g>` : "";
     const tit = `<title>Heizkörper ${num(L, 0)} × ${num(D, 0)} cm${i.e ? ` · ${esc(this._wzName(i.e))}` : ""}${lab ? ` · ${esc(lab)}` : ""}${heat ? " · heizt" : ""}</title>`;
     return { under: defs + glow, over: `<g>${tit}<g${rot}><rect x="${x - w / 2}" y="${y - h / 2}" width="${w}" height="${h}" rx="${Math.min(2.5, h / 3)}" fill="${body}" stroke="${edge}" stroke-width="1.2"/><path d="${ribs}" stroke="${heat ? "#c2410c" : edge}" stroke-opacity=".55" stroke-width=".8"/>${valve}</g>${chip}</g>` };
+  }
+  /* Lage der Temperatur am Heizkörper – auch als Hindernis für Raumnamen (2026.11.4.4b3) */
+  _grRadChip(i, P, sc, lab) {
+    if (!lab) return null;
+    const { D } = this._grRadDim(i), h = Math.max(6, (D / 100) * sc), R = this._grRoomSide(P, i, h / 2 + 14), lw = lab.length * 5.4 + 12, off2 = h / 2 + 5 + Math.abs(R.nx) * (lw / 2) + Math.abs(R.ny) * 7.5;
+    return { cx: i.x + R.nx * R.side * off2, cy: i.y + R.ny * R.side * off2, lw };
+  }
+  _grRadObs(P, fl, sc) {
+    return (P.items || []).filter((i) => i.t === "h" && i.hk === "heizkoerper" && i.fl === fl && i.e).map((i) => { const S = this._grTechState(i), B = this._grRadChip(i, P, sc, S && S.t ? S.t : ""); return B ? [B.cx - B.lw / 2 - 3, B.cy - 10, B.cx + B.lw / 2 + 3, B.cy + 10] : null; }).filter(Boolean);
   }
   _grTechSvg(P, fl, T, q, u, hell, only) {
     const K = this._grTK(), sc = P.scale > 0 ? P.scale : 40; let d = "", over = "";

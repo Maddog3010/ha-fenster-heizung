@@ -200,6 +200,7 @@
   _grB10Act(a, b) {
     const v = b && b.dataset ? b.dataset.v : "", s = b && b.dataset ? Number(b.dataset.s || 0) : 0, k = b && b.dataset ? b.dataset.k : "";
     if (a === "grxsunnow") { this._grSunH = null; this._render(); return true; }
+    if (a === "grxbig") { this._grBig = !this._grBigOn(); try { localStorage.setItem("fh_gr_big", this._grBig ? "1" : "0"); } catch (_) {} this._render(); return true; }
     if (this._grKAct && this._grKAct(a, b)) return true;   /* 2026.11.4.4b1: Fenster- und Türkontakte */
     const ed = this._sfEd; if (!ed) return false;
     const P = ed.plan;

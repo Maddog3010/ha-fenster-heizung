@@ -141,6 +141,7 @@
     /* 2026.11.4.1: Handy – Status-Leiste je Raum (Temperatur, Geräte, Melder, Lampen); die Symbole erscheinen dann nur dort */
     const SP = o.strip && this._grStrip ? this._grStrip(P, fl, rs, items, o, T, vb) : null;
     if (SP) o = { ...o, upx: SP.upx, skip: SP.skip, obs: (o.obs || []).concat(SP.boxes) };
+    if (o.layers && o.layers.ht && this._grRadObs) { const RO = this._grRadObs(P, fl, sc); if (RO.length) o = { ...o, obs: (o.obs || []).concat(RO) }; }   /* Raumnamen nicht unter die Heizkörper-Temperatur legen */
     this._grChipAt = {}; const nowSvg = o.now ? this._grNow(P, fl, rs, SP ? { ...o, noChip: true } : o, T) : "";   /* merkt sich, wo Temperatur-Marken sitzen */
     if (o.labels) d += this._grLabels(rs, items, o, T, kinds, NF, sc, f1, q);
     d += nowSvg;
