@@ -143,5 +143,48 @@ export function cohortHtml(C) {
 // ---------------------------------------------------------------- S10 Export als CSV
 const cv = (x) => { if (x == null) return ""; if (typeof x === "number") return String(Math.round(x * 10000) / 10000).replace(".", ","); const s = String(x); return /[;"\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
 export const csv = (head, rows) => "﻿" + [head, ...rows].map((r) => r.map(cv).join(";")).join("\r\n") + "\r\n";
-export const EXPORTS = ["versionen", "reife", "fehler", "verlauf", "verloren", "treue", "module", "ha"];
-export const CSV_CSS = `.csv{color:#8d8c84;font-size:.74rem;text-decoration:none;border:1px solid #3a3a38;border-radius:99px;padding:1px 9px;align-self:flex-start;white-space:nowrap}.csv:hover{color:#5eead4;border-color:#2dd4bf}.c.wide{grid-column:1/-1}`;
+export const EXPORTS = ["versionen", "reife", "fehler", "verlauf", "verloren", "treue", "module", "ha", "modulverlauf"];
+export const CSV_CSS = `.csv{color:#8d8c84;font-size:.74rem;text-decoration:none;border:1px solid #3a3a38;border-radius:99px;padding:1px 9px;align-self:flex-start;white-space:nowrap}.csv:hover{color:#5eead4;border-color:#2dd4bf}.c.wide{grid-column:1/-1}.g2m{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:4px 24px;align-items:start}`;
+
+// ---------------------------------------------------------------- Build 11 · S7 Modul-Nutzung im Verlauf
+/** Tagesliste mit Modulen (ab Build 11). null = Spalte fehlt noch (vor migrate-build11.sql). */
+export async function loadModDaily(DB, todayStr, weeks = 12) {
+  try { return (await DB.prepare("SELECT day, id, modules FROM daily WHERE modules IS NOT NULL AND day>=?").bind(S(D(todayStr) - weeks * 7 * dayMs - 7 * dayMs)).all()).results; } catch { return null; }
+}
+/** Je Woche (Montag) und Modul: Anteil der Installationen mit Modul an – je Installation zählt die letzte Meldung der Woche. */
+export function modTrend(rows, todayStr, labels, weeks = 12) {
+  const today = D(todayStr), mon = (t) => t - ((new Date(t).getUTCDay() + 6) % 7) * dayMs, w0 = mon(today) - (weeks - 1) * 7 * dayMs;
+  const W = Array.from({ length: weeks }, (_, i) => ({ w: S(w0 + i * 7 * dayMs), last: new Map() }));
+  for (const x of rows) {
+    const i = Math.floor((D(x.day) - w0) / (7 * dayMs));
+    if (i < 0 || i >= weeks) continue;
+    const o = W[i].last.get(x.id);
+    if (!o || x.day > o.day) W[i].last.set(x.id, x);
+  }
+  const weeksOut = W.map((w) => ({ w: w.w, n: w.last.size }));
+  const mods = Object.entries(labels).map(([k, label]) => {
+    const pts = W.map((w) => (w.last.size ? [...w.last.values()].filter((x) => String(x.modules).split(",").includes(k)).length / w.last.size : null));
+    const have = pts.map((q, i) => [q, i]).filter(([q]) => q != null), now = have.length ? have.at(-1)[0] : null;
+    const ago = have.length > 1 ? (have.find(([, i]) => i >= have.at(-1)[1] - 4) || have[0])[0] : null;
+    return { k, label, pts, now, delta: now != null && ago != null ? now - ago : null };
+  }).filter((m) => m.now != null);
+  mods.sort((a, b) => b.now - a.now);
+  return { weeks: weeksOut, mods, filled: weeksOut.filter((w) => w.n).length };
+}
+function spark(pts, w = 150, h = 26) {
+  const P = pts.map((q, i) => [q, i]).filter(([q]) => q != null);
+  if (P.length < 2) return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}"><circle cx="${w - 3}" cy="${h / 2}" r="2.5" fill="#3987e5"/></svg>`;
+  const X = (i) => 3 + ((w - 6) * i) / (pts.length - 1), Y = (q) => h - 3 - (h - 6) * q;
+  return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}"><line x1="3" x2="${w - 3}" y1="${Y(0.5)}" y2="${Y(0.5)}" stroke="#3a3a38" stroke-dasharray="2 3"/><polyline points="${P.map(([q, i]) => `${X(i).toFixed(1)},${Y(q).toFixed(1)}`).join(" ")}" fill="none" stroke="#3987e5" stroke-width="2"/><circle cx="${X(P.at(-1)[1]).toFixed(1)}" cy="${Y(P.at(-1)[0]).toFixed(1)}" r="2.5" fill="#3987e5"/></svg>`;
+}
+export function modTrendHtml(T) {
+  const head = `<div style="display:flex;justify-content:space-between;gap:8px"><h2>Modul-Nutzung im Verlauf</h2><a class="csv" href="/export/modulverlauf.csv">CSV</a></div>`;
+  if (T == null) return `<div class="c wide">${head}<div class="empty">Noch nicht eingerichtet: einmal <code>migrate-build11.sql</code> ausführen.</div></div>`;
+  if (!T.mods.length) return `<div class="c wide">${head}<div class="empty">Sammelt ab heute – mit jeder Versions-Meldung kommen die Module dazu. Nach ein paar Wochen stehen hier die Kurven.</div></div>`;
+  const dl = (d) => (d == null ? '<span style="color:#5b5a55">–</span>' : Math.abs(d) < 0.005 ? '<span style="color:#8d8c84">±0</span>' : `<span style="color:${d > 0 ? "#5eead4" : "#f87171"}">${d > 0 ? "+" : "−"}${Math.round(Math.abs(d) * 100)}</span>`);
+  const row = (m) => `<tr><td>${e(m.label)}</td><td class="num"><b>${Math.round(m.now * 100)} %</b></td><td class="num">${dl(m.delta)}</td><td style="padding-left:14px">${spark(m.pts)}</td></tr>`;
+  const used = T.mods.filter((m) => m.pts.some((q) => q)), never = T.mods.filter((m) => !m.pts.some((q) => q));
+  const half = Math.ceil(used.length / 2), tbl = (L) => `<table class="mini"><tr><th style="text-align:left">Modul</th><th class="num">jetzt</th><th class="num">4 Wo.</th><th style="text-align:left;padding-left:14px">12 Wochen</th></tr>${L.map(row).join("")}</table>`;
+  return `<div class="c wide">${head}<div class="u">Anteil der Installationen mit Modul an, je Woche · „4 Wo.“ = Veränderung in Prozentpunkten gegenüber vor 4 Wochen${T.filled < 4 ? ` · erst ${T.filled} ${T.filled === 1 ? "Woche" : "Wochen"} gesammelt` : ""}</div>
+    <div class="g2m">${tbl(used.slice(0, half))}${used.length > 1 ? tbl(used.slice(half)) : ""}</div>${never.length ? `<div class="u" style="margin:8px 0 0">In 12 Wochen nirgends eingeschaltet: ${never.map((m) => e(m.label)).join(" · ")}</div>` : ""}</div>`;
+}

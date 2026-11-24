@@ -87,7 +87,7 @@ if (ref) {
   // Auch die Dashboard-Antwort über die D1-Schnittstelle
   const DB = shim(); DB.exec(schema);
   for (const x of ins) DB.raw.prepare("INSERT INTO installs VALUES(?,?,?,?,?,0,?)").run(...x);
-  for (const x of dl) DB.raw.prepare("INSERT INTO daily VALUES(?,?,?,?)").run(...x);
+  for (const x of dl) DB.raw.prepare("INSERT INTO daily(day, id, version, channel) VALUES(?,?,?,?)").run(...x);
   const viaD1 = await loadAndCompute(DB, today);
   assert.deepEqual(norm(viaD1.versions), py.versions);
   assert.deepEqual(norm(viaD1.weeks), py.weeks);

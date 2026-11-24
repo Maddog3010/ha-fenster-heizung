@@ -31,7 +31,7 @@ console.log("Build-9-Banner OK");
 const ins = (v, rid, ha, d = 1) => {
   DB.raw.prepare("INSERT OR REPLACE INTO installs VALUES(?,?,?,?,?,?,?,?)").run(rid, day(20), day(d), v, /b\d+$/.test(v) ? "beta" : "stable", 0, "ev", ha.slice(0, 7));
   for (let k = d; k <= d + 3; k++) {
-    DB.raw.prepare("INSERT OR REPLACE INTO daily VALUES(?,?,?,?)").run(day(k), rid, v, /b\d+$/.test(v) ? "beta" : "stable");
+    DB.raw.prepare("INSERT OR REPLACE INTO daily(day, id, version, channel) VALUES(?,?,?,?)").run(day(k), rid, v, /b\d+$/.test(v) ? "beta" : "stable");
     DB.raw.prepare("INSERT OR REPLACE INTO err_days VALUES(?,?,?,?,?,?)").run(day(k), rid, v, /b\d+$/.test(v) ? "beta" : "stable", ha, "ev");
   }
 };

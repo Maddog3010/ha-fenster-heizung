@@ -6,10 +6,10 @@
 // Gespeichert wird je Installation: zufällige Kennung, Version, Kanal, erster/letzter Tag. Keine IP-Adresse,
 // kein User-Agent. Die Begrenzung pro Absender übernimmt eine Cloudflare-Rate-Limit-Regel (siehe Anleitung).
 
-import { snapToday, snapCleanup, loadSnaps, langzeitHtml, lostAfterUpdate, lostHtml, cohorts, cohortHtml, csv, EXPORTS, CSV_CSS } from "./langzeit.js";
+import { snapToday, snapCleanup, loadSnaps, langzeitHtml, lostAfterUpdate, lostHtml, cohorts, cohortHtml, csv, EXPORTS, CSV_CSS, modTrend, modTrendHtml, loadModDaily } from "./langzeit.js";
 import { haMatrixHtml, versionErrPart, versionErrHtml, pc1, dbErrMerge, dbErrSplit, errOwnStatus, validErrors, dbErrors, dbErrForget, dbErrCleanup, errLoad, errLoadOne, errRender, errRenderOne, ERR_CSS, ERR_MAX_BODY, tabs, validStatus, dbErrStatus, loadReleases, releaseMarks, markSvg, weekHtml, laggards, lagHtml } from "./fehler.js";
 /** Build 9: Version dieses Dashboards/Workers – steht im Banner und unter /health. Bei jedem Build hochzählen. */
-export const DASH = { build: 10, date: "2026-11-24" };
+export const DASH = { build: 11, date: "2026-11-24" };
 const dashChip = () => `<span class="chip dv" title="Version des Statistik-Workers – nach „wrangler deploy“ prüfen, ob der neue Stand aktiv ist">Dashboard Build ${DASH.build} · ${DASH.date.slice(8, 10)}.${DASH.date.slice(5, 7)}.${DASH.date.slice(0, 4)}</span>`;
 const banChips = (today) => `<span class="chips">${dashChip()}<span class="chip">nur du · Stand ${e(today)}</span></span>`;
 export const SCHEMAS = [1, 2, 3];   // Schema 1: ohne Module · Schema 2: mit Modulliste · Schema 3 (Build 6): dazu HA-Version „2026.11“
@@ -68,13 +68,15 @@ export async function dbPing(DB, p, nowMs) {
   const day = S(nowMs);
   const row = await DB.prepare("SELECT last_ts FROM installs WHERE id=?").bind(p.id).first();
   if (row && now - row.last_ts < PING_MIN_GAP) return "too_many";
-  await DB.batch([
-    DB.prepare(
-      "INSERT INTO installs(id, first_day, last_day, version, channel, last_ts, modules, ha) VALUES(?,?,?,?,?,?,?,?) " +
-      "ON CONFLICT(id) DO UPDATE SET last_day=excluded.last_day, version=excluded.version, channel=excluded.channel, last_ts=excluded.last_ts, modules=excluded.modules, ha=excluded.ha"
-    ).bind(p.id, day, day, p.version, p.channel, now, p.modules, p.ha ?? null),
-    DB.prepare("INSERT OR REPLACE INTO daily(day, id, version, channel) VALUES(?,?,?,?)").bind(day, p.id, p.version, p.channel),
-  ]);
+  const ins = () => DB.prepare(
+    "INSERT INTO installs(id, first_day, last_day, version, channel, last_ts, modules, ha) VALUES(?,?,?,?,?,?,?,?) " +
+    "ON CONFLICT(id) DO UPDATE SET last_day=excluded.last_day, version=excluded.version, channel=excluded.channel, last_ts=excluded.last_ts, modules=excluded.modules, ha=excluded.ha"
+  ).bind(p.id, day, day, p.version, p.channel, now, p.modules, p.ha ?? null);
+  try {   /* Build 11: Module auch in der Tagesliste (für „Modul-Nutzung im Verlauf“) */
+    await DB.batch([ins(), DB.prepare("INSERT OR REPLACE INTO daily(day, id, version, channel, modules) VALUES(?,?,?,?,?)").bind(day, p.id, p.version, p.channel, p.modules)]);
+  } catch {   /* vor migrate-build11.sql: ohne Spalte – eine Meldung darf daran nie scheitern */
+    await DB.batch([ins(), DB.prepare("INSERT OR REPLACE INTO daily(day, id, version, channel) VALUES(?,?,?,?)").bind(day, p.id, p.version, p.channel)]);
+  }
   return "ok";
 }
 export async function dbForget(DB, id) {
@@ -314,7 +316,7 @@ export function render(r, retention = "180", x = {}) {
 <div class="c"><h2>Verlauf: Versionen pro Woche</h2><div class="u">Neueste Version je Installation und Woche</div>${columns(r.weeks, r.week_versions, r.rel, r.week_from)}<div class="l">${legend}${(r.rel || []).length ? '<span><i style="background:#d95926"></i>neue Version erschienen</span>' : ""}</div></div>
 <div class="c"><h2>Kanal &amp; Aktivität</h2><div class="u">Kanal (30 Tage)</div>${kan}<div class="u" style="margin-top:10px">Zuletzt gesehen</div>${bars(r.seen, "#3987e5", 78)}</div>
 <div class="c"><h2>Update-Tempo</h2><div class="u">Anteil auf neuer Version nach x Tagen</div>${curvesSvg(r.curves)}</div>
-<div class="c"><div style="display:flex;justify-content:space-between;gap:8px"><h2>Modul-Nutzung</h2><a class="csv" href="/export/module.csv">CSV</a></div><div class="u">Installationen mit Modul an · Basis ${r.mod_base} (30 Tage)</div>${modBars(r.modules, r.mod_base)}</div>${haHtml(r.ha)}${x.lag ? lagHtml(x.lag) : ""}${x.lost ? lostHtml(x.lost) : ""}${x.coh ? cohortHtml(x.coh) : ""}${x.lz !== undefined ? langzeitHtml(x.lz, x.rel) : ""}</div>
+<div class="c"><div style="display:flex;justify-content:space-between;gap:8px"><h2>Modul-Nutzung</h2><a class="csv" href="/export/module.csv">CSV</a></div><div class="u">Installationen mit Modul an · Basis ${r.mod_base} (30 Tage)</div>${modBars(r.modules, r.mod_base)}</div>${haHtml(r.ha)}${x.lag ? lagHtml(x.lag) : ""}${x.lost ? lostHtml(x.lost) : ""}${x.coh ? cohortHtml(x.coh) : ""}${x.mt !== undefined ? modTrendHtml(x.mt) : ""}${x.lz !== undefined ? langzeitHtml(x.lz, x.rel) : ""}</div>
 <div class="f">Nur Teilnehmende zählen: Die Zahlen sind Untergrenzen und zeigen Trends, keine absolute Nutzerzahl. Kennungen ohne Meldung seit ${e(retention)} Tagen werden gelöscht.</div></div></body></html>`;
 }
 
@@ -359,13 +361,18 @@ export function versionHtml(R) {
 export async function build10Data(DB, today) {
   const dl = (await DB.prepare("SELECT day, id, version FROM daily").all()).results;
   const ins = (await DB.prepare("SELECT first_day, last_day FROM installs").all()).results;
-  return { lz: await loadSnaps(DB, today), lost: lostAfterUpdate(dl, today), coh: cohorts(ins, today), rel: await loadReleases(DB) };
+  const md = await loadModDaily(DB, today);   /* Build 11 */
+  return { lz: await loadSnaps(DB, today), lost: lostAfterUpdate(dl, today), coh: cohorts(ins, today), rel: await loadReleases(DB), mt: md == null ? null : modTrend(md, today, MODULES) };
 }
 const csvRes = (name, body) => new Response(body, { headers: { "content-type": "text/csv; charset=utf-8", "content-disposition": `attachment; filename="stromwaerme-${name}-${S(Date.now())}.csv"`, "cache-control": "no-store", "x-robots-tag": "noindex" } });
 export async function exportCsv(DB, name, today) {
   const pc = (q) => (q == null ? null : Math.round(q * 1000) / 10);
   if (name === "verlauf") return csvRes(name, csv(["Tag", "aktiv 30 Tage", "aktiv 7 Tage", "Beta", "neueste Version", "Anteil neueste %", "mit Fehler-Zustimmung", "Fehlerquote %", "fehlerfreie Tage %", "Quelle"],
     ((await loadSnaps(DB, today, 730)) || []).map((x) => [x.day, x.a30, x.a7, x.beta, x.newest, x.newest_share, x.rep, pc(x.quote), pc(x.clean), x.src === "r" ? "nachgerechnet" : "Tageswert"])));
+  if (name === "modulverlauf") {
+    const md = await loadModDaily(DB, today), T = md == null ? null : modTrend(md, today, MODULES);
+    return csvRes(name, csv(["Modul", ...(T ? T.weeks.map((w) => `Woche ab ${w.w} %`) : [])], T ? T.mods.map((m) => [m.label, ...m.pts.map((q) => (q == null ? null : Math.round(q * 1000) / 10))]) : []));
+  }
   if (name === "verloren" || name === "treue") {
     const B = await build10Data(DB, today);
     if (name === "verloren") return csvRes(name, csv(["Version", "aktualisiert", "verstummt", "Anteil %", "jünger als 7 Tage"], B.lost.map((x) => [x.v, x.upd, x.lost, pc(x.q), x.open])));
