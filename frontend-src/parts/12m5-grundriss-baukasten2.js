@@ -28,7 +28,8 @@
     return { ...best, a: best.t - hw, b: best.L - best.t - hw };
   }
   /* ---- Zeichnen: Türen und Fenster in allen Arten (für _grDraw) */
-  _grOpenSvg(i, T, WI, fill, sc, st) {
+  _grOpenSvg(i, T, WI, fill, sc, st, P, hell) {
+    const KS = this._grKState ? this._grKState(i) : null, kc = KS ? this._grKCol(KS.k) : "", chip = KS && P && this._grKChip ? this._grKChip(i, P, T, hell) : "";
     const x = i.x, y = i.y, h = this._grHw(i, sc), rot = i.r ? `rotate(${i.r} ${x} ${y})` : "", mir = i.mh || i.mv ? ` translate(${x} ${y}) scale(${i.mh ? -1 : 1} ${i.mv ? -1 : 1}) translate(${-x} ${-y})` : "";
     if (i.t === "d") {
       const gap = `<rect x="${x - h}" y="${y - 9}" width="${2 * h}" height="18" fill="${fill}"/>`, jamb = `<path d="M${x - h} ${y - 9}v18M${x + h} ${y - 9}v18" stroke="${WI}" stroke-width="3"/>`;
@@ -45,14 +46,23 @@
         default: s = leaf(`M${x - h} ${y}V${y - 2 * h}`) + arc(`M${x + h} ${y}A${2 * h} ${2 * h} 0 0 0 ${x - h} ${y - 2 * h}`);
       }
       const exA = i.ex === 1 ? `<path d="M${x - 6} ${y + 16}l6 6l6-6" fill="none" stroke="${T.accent}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>` : "";
-      return `<g transform="${rot}${mir}">${gap}${s}${exA}</g>`;
+      if (KS && KS.k === "zu" && i.dk !== "garage") s = `<path d="M${x - h + 1} ${y}H${x + h - 1}" stroke="${T.leaf}" stroke-width="3.4" stroke-linecap="round"/>`;   /* Kontakt: zu → Blatt in der Wand */
+      else if (KS && KS.k === "zu" && i.dk === "garage") s = `<path d="M${x - h} ${y}H${x + h}" stroke="${T.leaf}" stroke-width="4"/>`;
+      else if (KS && kc) s = `<g style="--k:${kc}">${s.replace(/stroke="[^"]*"/g, `stroke="${kc}"`)}</g>` + (KS.k === "offen" && !i.dk ? `<path d="M${x - h} ${y}L${x + h} ${y}A${2 * h} ${2 * h} 0 0 0 ${x - h} ${y - 2 * h}Z" fill="${kc}" fill-opacity=".1"/>` : "") + (KS.k === "?" ? `<text x="${x}" y="${y - 12}" text-anchor="middle" font-size="11" font-weight="800" fill="${kc}">?</text>` : "");
+      const ttlD = KS ? `<title>${{ glas: "Terrassentür", garage: "Garagentor" }[i.dk] || "Tür"} · ${esc(this._wzName(i.e))} · ${{ zu: "zu", offen: "offen", gekippt: "gekippt", "?": "liefert nichts" }[KS.k]}</title>` : "";
+      return `<g transform="${rot}${mir}">${ttlD}${gap}${s}${exA}</g>${chip}`;
     }
-    const open = !!(i.e && st && st[i.e] && st[i.e].state === "on"), c = open ? T.open : T.glass, ttl = `<title>${{ boden: "Fenster bodentief", dach: "Dachfenster", rollo: "Fenster mit Rollladen" }[i.fk] || "Fenster"}${i.e ? ` · ${esc(this._wzName(i.e))} · ${open ? "offen" : "zu"}` : ""}</title>`;
+    const k = KS ? KS.k : "", open = k === "offen", tilt = k === "gekippt", unk = k === "?", c = kc || T.glass, ttl = `<title>${{ boden: "Fenster bodentief", dach: "Dachfenster", rollo: "Fenster mit Rollladen" }[i.fk] || "Fenster"}${i.e ? ` · ${esc(this._wzName(i.e))} · ${{ zu: "zu", offen: "offen", gekippt: "gekippt", "?": "liefert nichts" }[k] || ""}` : ""}</title>`;
     if (i.fk === "dach") return `<g transform="${rot}">${ttl}<rect x="${x - h}" y="${y - h * 0.7}" width="${2 * h}" height="${h * 1.4}" fill="${c}" fill-opacity=".18" stroke="${T.frame}" stroke-width="1.6" stroke-dasharray="6 3"/><path d="M${x - h} ${y - h * 0.7}L${x + h} ${y + h * 0.7}M${x + h} ${y - h * 0.7}L${x - h} ${y + h * 0.7}" stroke="${c}" stroke-width="1" opacity=".7"/></g>`;
-    const frame = `<rect x="${x - h}" y="${y - 6}" width="${2 * h}" height="12" fill="${T.bg}"/><rect x="${x - h}" y="${y - 6}" width="${2 * h}" height="12" fill="none" stroke="${T.frame}" stroke-width="1.6"/>`;
+    const frame = `<rect x="${x - h}" y="${y - 6}" width="${2 * h}" height="12" fill="${T.bg}"/><rect x="${x - h}" y="${y - 6}" width="${2 * h}" height="12" fill="none" stroke="${kc || T.frame}" stroke-width="1.6"${unk ? ' stroke-dasharray="3 2"' : ""}/>`;
     const glass = i.fk === "boden" ? `<path d="M${x - h} ${y - 2}H${x + h}M${x - h} ${y + 2}H${x + h}" stroke="${c}" stroke-width="2.2"/><path d="M${x - h + 3} ${y + 9}h${2 * h - 6}" stroke="${T.frame}" stroke-width="1" stroke-dasharray="2 2"/>` : `<path d="M${x - h} ${y}H${x + h}" stroke="${c}" stroke-width="3"/>`;
     const rollo = i.fk === "rollo" ? `<rect x="${x - h}" y="${y - 12}" width="${2 * h}" height="4" rx="1" fill="${T.sub}" opacity=".85"/>` : "";
-    return `<g transform="${rot}">${ttl}${frame}${glass}${rollo}${open ? `<path d="M${x - h + 2} ${y - 6}L${x - h + 14} ${y - 20}" stroke="${c}" stroke-width="2.4" stroke-linecap="round"/>` : ""}</g>`;
+    /* Kontakt: offen → zwei Flügel aufgeschwenkt (Raumseite), gekippt → schmaler Spalt, ? → gestrichelt mit Fragezeichen */
+    const sd = P && this._grRoomSide ? this._grRoomSide(P, i, 20).side : 1, Y = (v) => y + sd * v;
+    const sash = open ? `<path d="M${x - h} ${Y(6)}A${h} ${h} 0 0 ${sd > 0 ? 0 : 1} ${x} ${Y(6 + h)}M${x + h} ${Y(6)}A${h} ${h} 0 0 ${sd > 0 ? 1 : 0} ${x} ${Y(6 + h)}" fill="${c}" fill-opacity=".12" stroke="${c}" stroke-width="1" stroke-dasharray="3 3"/><path d="M${x - h} ${Y(6)}L${x - h * 0.35} ${Y(6 + h * 0.92)}M${x + h} ${Y(6)}L${x + h * 0.35} ${Y(6 + h * 0.92)}" stroke="${c}" stroke-width="2.6" stroke-linecap="round"/>`
+      : tilt ? `<path d="M${x - h + 2} ${Y(6)}L${x + h - 2} ${Y(6)}L${x + h - 5} ${Y(13)}L${x - h + 5} ${Y(13)}Z" fill="${c}" fill-opacity=".22" stroke="${c}" stroke-width="1.3" stroke-dasharray="3 2"/>`
+      : unk ? `<text x="${x}" y="${Y(17) + (sd > 0 ? 0 : 6)}" text-anchor="middle" font-size="11" font-weight="800" fill="${c}">?</text>` : "";
+    return `<g transform="${rot}">${ttl}${frame}${glass}${rollo}${sash}</g>${chip}`;
   }
   /* ---- Eigenschaften für Türen und Fenster */
   _grOpenProps(sel) {
@@ -66,7 +76,7 @@
     return `${kinds}
       <div class="vrow" style="margin:6px 0"><span>Breite</span><div class="step" style="flex:none"><button data-act="grxob" data-s="-5" aria-label="schmaler">${ic("minus", 16)}</button><b>${num(b / 100, 2)} m</b><button data-act="grxob" data-s="5" aria-label="breiter">${ic("plus", 16)}</button></div></div>
       <div class="vrow" style="margin:6px 0"><span>Winkel</span><div class="step" style="flex:none"><button data-act="grxor" data-s="-15" aria-label="15 Grad zurück">${ic("minus", 16)}</button><input class="grang" type="number" min="0" max="359" step="1" data-f="grxang" value="${sel.r || 0}" aria-label="Winkel in Grad"><button data-act="grxor" data-s="15" aria-label="15 Grad weiter">${ic("plus", 16)}</button></div></div>
-      <div class="grseg" style="margin:2px 0 8px"><button data-act="grxor" data-s="90">↻ 90°</button><button data-act="grxor" data-s="180">Umdrehen</button></div>${where}`;
+      <div class="grseg" style="margin:2px 0 8px"><button data-act="grxor" data-s="90">↻ 90°</button><button data-act="grxor" data-s="180">Umdrehen</button></div>${where}${this._grKProps ? this._grKProps(sel) : ""}`;
   }
   /* ---- Maße im Plan beim Bearbeiten (über allem, nicht anklickbar) */
   _grPill(x, y, t, warn) { const w = t.length * 6.3 + 14; return `<rect x="${x - w / 2}" y="${y - 9}" width="${w}" height="18" rx="9" fill="#0b1220" stroke="${warn ? "#f59e0b" : "#2dd4bf"}" opacity=".95"/><text x="${x}" y="${y + 4}" text-anchor="middle" font-size="11" font-weight="700" fill="${warn ? "#fcd34d" : "#5eead4"}">${esc(t)}</text>`; }

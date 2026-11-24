@@ -24,7 +24,7 @@
       ["kamin", "Kamin / Ofen", "heizen", "fire", ["sensor:temperature", "climate"]], ["therme", "Therme", "heizen", "boiler", ["climate", "water_heater", "sensor:temperature"]], ["wp", "Wärmepumpe", "heizen", "hp", ["climate", "sensor:power"]], ["speicher", "Warmwasserspeicher", "heizen", "boiler", ["water_heater", "sensor:temperature"]],
       ["steckdose", "Steckdose", "strom", "plug", ["switch"]], ["schalter", "Schalter / Taster", "strom", "switch", ["switch", "light", "event"]], ["sicherung", "Sicherungskasten", "notfall", "fuse", []], ["zaehler", "Zähler", "strom", "meter", ["sensor:power", "sensor:energy"]],
       ["wechselrichter", "Wechselrichter", "strom", "inv", ["sensor:power"]], ["akku", "Batteriespeicher", "strom", "batt", ["sensor:battery", "sensor:power"]], ["wallbox", "Wallbox", "strom", "ev", ["sensor:power", "switch"]],
-      ["temp", "Temperatur / Feuchte", "sensor", "temp", ["sensor:temperature", "sensor:humidity"]], ["bewegung", "Bewegungsmelder", "sensor", "motion", ["binary_sensor:motion", "binary_sensor:occupancy", "binary_sensor:presence"]], ["kontakt", "Tür-/Fensterkontakt", "sensor", "contact", ["binary_sensor:window", "binary_sensor:door", "binary_sensor:opening"]],
+      ["temp", "Temperatur / Feuchte", "sensor", "temp", ["sensor:temperature", "sensor:humidity"]], ["bewegung", "Bewegungsmelder", "sensor", "motion", ["binary_sensor:motion", "binary_sensor:occupancy", "binary_sensor:presence"]], ["kontakt", "Kontakt (frei)", "sensor", "contact", ["binary_sensor:window", "binary_sensor:door", "binary_sensor:opening"]],
       ["wasser", "Wassermelder", "sensor", "drop", ["binary_sensor:moisture"]], ["luft", "Luftqualität", "sensor", "air", ["sensor:carbon_dioxide", "sensor:pm25", "sensor:volatile_organic_compounds", "sensor:aqi"]], ["hell", "Helligkeit", "sensor", "sun", ["sensor:illuminance"]],
       ["wlan", "WLAN-Zugangspunkt", "netz", "wifi", []], ["router", "Zigbee/Thread-Router", "netz", "mesh", []], ["kamera", "Kamera", "netz", "cam", ["camera"]], ["klingel", "Klingel", "netz", "bell", ["binary_sensor", "event"]], ["lautsprecher", "Lautsprecher", "netz", "spk", ["media_player"]], ["tv", "TV", "netz", "tv", ["media_player"]],
       ["haupthahn_w", "Haupthahn Wasser", "notfall", "valve", ["valve", "switch"]], ["haupthahn_g", "Haupthahn Gas", "notfall", "gas", ["valve", "switch"]], ["feuerloescher", "Feuerlöscher", "notfall", "ext", []], ["notausgang", "Notausgang", "notfall", "exit", []], ["sammelpunkt", "Sammelpunkt", "notfall", "meet", []], ["erstehilfe", "Erste Hilfe", "notfall", "aid", []],
@@ -53,24 +53,37 @@
   }
   /* Heizkörper wie in echt: Länge × Tiefe in cm, Lamellen, Thermostatkopf am Ende. Heizt er (hvac_action heating), glüht er und strahlt Wärme in den Raum. */
   _grRadDim(i) { return { L: Math.max(30, Math.min(300, i.lw || 100)), D: Math.max(6, Math.min(30, i.dp || 10)) }; }
-  _grRadSvg(i, S, sc, T, hell, u) {
+  /* Zu welcher Seite liegt der Raum? +1 = lokale y-Richtung nach Drehung, −1 = Gegenseite (für Wärmeschein und Beschriftung) */
+  _grRoomSide(P, i, dist) {
+    const an = ((i.r || 0) * Math.PI) / 180, nx = -Math.sin(an), ny = Math.cos(an), rs = (P.items || []).filter((q) => q.t === "r" && q.fl === i.fl);
+    const inR = (x, y) => rs.some((q) => (this._sfInRoom ? this._sfInRoom(q, x, y) : x > q.x && x < q.x + q.w && y > q.y && y < q.y + q.h));
+    /* mehrere Abstände prüfen: liegt das Teil nah an einer Wand im Raum, ist die Seite mit mehr Raum die Raumseite */
+    const ds = [dist, dist * 2, dist * 3 + 10], hit = (sg) => ds.reduce((n, d) => n + (inR(i.x + nx * sg * d, i.y + ny * sg * d) ? 1 : 0), 0), a = hit(1), b = hit(-1);
+    return { nx, ny, side: b > a ? -1 : 1 };
+  }
+  /* Heizkörper wie in echt (2026.11.4.4b1): Körper an der Wand, Wärmeschein nur zur Raumseite, Temperatur neben dem Heizkörper im Raum – nicht quer darüber */
+  _grRadSvg(i, S, sc, T, hell, u, P) {
     const { L, D } = this._grRadDim(i), w = (L / 100) * sc, h = Math.max(6, (D / 100) * sc), x = i.x, y = i.y, rot = i.r ? ` transform="rotate(${i.r} ${x} ${y})"` : "";
     const s = this._hass.states[i.e], a = (s && s.attributes) || {}, heat = !!(S && a.hvac_action === "heating"), off = !s || ["off", "unavailable", "unknown"].includes(s.state), id = `${u || "g"}rad${String(i.id).replace(/[^a-z0-9]/gi, "")}`;
-    const body = heat ? `url(#${id}h)` : off ? (hell ? "#d1d5db" : "#4b5563") : hell ? "#f8fafc" : "#cbd5e1", edge = heat ? "#f97316" : off ? (hell ? "#9ca3af" : "#6b7280") : "#94a3b8";
+    const R = this._grRoomSide(P || this._sfPl(), i, h / 2 + 14), sd = R.side;
+    const body = heat ? `url(#${id}h)` : off ? (hell ? "#d1d5db" : "#4b5563") : hell ? "#f8fafc" : "#cbd5e1", edge = heat ? "#ea580c" : off ? (hell ? "#9ca3af" : "#6b7280") : "#94a3b8";
     const n = Math.max(3, Math.min(60, Math.round(w / Math.max(3, (6 / 100) * sc)))), ribs = Array.from({ length: n - 1 }, (_, j) => x - w / 2 + ((j + 1) * w) / n).map((rx) => `M${rx.toFixed(1)} ${(y - h / 2 + 1).toFixed(1)}V${(y + h / 2 - 1).toFixed(1)}`).join("");
-    const glow = heat ? `<g pointer-events="none"${rot}><rect x="${x - w / 2 - h}" y="${y - h * 2.6}" width="${w + 2 * h}" height="${h * 5.2}" rx="${h * 2.6}" fill="url(#${id}g)"><animate attributeName="opacity" values=".55;.9;.55" dur="3s" repeatCount="indefinite"/></rect></g>` : "";
-    const defs = heat ? `<defs><linearGradient id="${id}h" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fdba74"/><stop offset=".5" stop-color="#f97316"/><stop offset="1" stop-color="#ea580c"/></linearGradient><radialGradient id="${id}g"><stop offset="0" stop-color="#f97316" stop-opacity=".45"/><stop offset="1" stop-color="#f97316" stop-opacity="0"/></radialGradient></defs>` : "";
-    const valve = `<circle cx="${x + w / 2 + h * 0.55}" cy="${y}" r="${Math.max(2.5, h * 0.55)}" fill="${heat ? "#fdba74" : hell ? "#fff" : "#e5e7eb"}" stroke="${edge}" stroke-width="1.2"/>`;
-    const lab = S && S.t ? S.t : "", lw = lab.length * 5.6 + 12, ly = y + Math.max(h, 10) / 2 + 4;
-    const chip = lab ? `<rect x="${x - lw / 2}" y="${ly}" width="${lw}" height="15" rx="7.5" fill="${hell ? "#fff" : "#0b1220"}" opacity=".92"/><text x="${x}" y="${ly + 11}" text-anchor="middle" font-size="9.5" font-weight="700" fill="${heat ? "#f97316" : T.sub}">${esc(lab)}</text>` : "";
+    const gh = Math.min(Math.max(h * 3, 0.35 * sc), 0.8 * sc), gy = sd > 0 ? y + h / 2 : y - h / 2 - gh;
+    const glow = heat ? `<g pointer-events="none"${rot}><rect x="${x - w / 2}" y="${gy}" width="${w}" height="${gh}" fill="url(#${id}g)"><animate attributeName="opacity" values=".6;1;.6" dur="3s" repeatCount="indefinite"/></rect></g>` : "";
+    const defs = heat ? `<defs><linearGradient id="${id}h" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fdba74"/><stop offset=".5" stop-color="#f97316"/><stop offset="1" stop-color="#ea580c"/></linearGradient><linearGradient id="${id}g" x1="0" y1="${sd > 0 ? 0 : 1}" x2="0" y2="${sd > 0 ? 1 : 0}"><stop offset="0" stop-color="#f97316" stop-opacity=".42"/><stop offset="1" stop-color="#f97316" stop-opacity="0"/></linearGradient></defs>` : "";
+    const valve = `<rect x="${x + w / 2}" y="${y - h * 0.3}" width="${Math.max(3, h * 0.55)}" height="${h * 0.6}" rx="1.5" fill="${heat ? "#fdba74" : hell ? "#fff" : "#e5e7eb"}" stroke="${edge}" stroke-width="1"/>`;
+    /* Beschriftung: im Raum neben dem Heizkörper, mit Abstand je nach Lage (waagerecht: darunter/darüber, senkrecht: daneben) */
+    const lab = S && S.t ? S.t : "", lw = lab.length * 5.4 + 12, off2 = h / 2 + 5 + Math.abs(R.nx) * (lw / 2) + Math.abs(R.ny) * 7.5;
+    const cx = x + R.nx * sd * off2, cy = y + R.ny * sd * off2;
+    const chip = lab ? `<g pointer-events="none"><rect x="${cx - lw / 2}" y="${cy - 7.5}" width="${lw}" height="15" rx="7.5" fill="${hell ? "#fff" : "#0b1220"}" opacity=".92"/><text x="${cx}" y="${cy + 3.5}" text-anchor="middle" font-size="9.5" font-weight="700" fill="${heat ? "#f97316" : T.sub}">${esc(lab)}</text></g>` : "";
     const tit = `<title>Heizkörper ${num(L, 0)} × ${num(D, 0)} cm${i.e ? ` · ${esc(this._wzName(i.e))}` : ""}${lab ? ` · ${esc(lab)}` : ""}${heat ? " · heizt" : ""}</title>`;
-    return { under: defs + glow, over: `<g>${tit}<g${rot}><rect x="${x - w / 2}" y="${y - h / 2}" width="${w}" height="${h}" rx="${Math.min(3, h / 3)}" fill="${body}" stroke="${edge}" stroke-width="1.4"/><path d="${ribs}" stroke="${heat ? "#c2410c" : edge}" stroke-opacity=".7" stroke-width="1"/>${valve}</g>${chip}</g>` };
+    return { under: defs + glow, over: `<g>${tit}<g${rot}><rect x="${x - w / 2}" y="${y - h / 2}" width="${w}" height="${h}" rx="${Math.min(2.5, h / 3)}" fill="${body}" stroke="${edge}" stroke-width="1.2"/><path d="${ribs}" stroke="${heat ? "#c2410c" : edge}" stroke-opacity=".55" stroke-width=".8"/>${valve}</g>${chip}</g>` };
   }
   _grTechSvg(P, fl, T, q, u, hell, only) {
     const K = this._grTK(), sc = P.scale > 0 ? P.scale : 40; let d = "", over = "";
     (P.items || []).filter((i) => i.t === "h" && i.fl === fl && (!only || this._grTk(i).g === only)).forEach((i) => {
       const k = this._grTk(i), S = this._grTechState(i), c = S && S.al ? "#ef4444" : k.c, on = !!(S && S.on), x = i.x, y = i.y, nf = k.g === "notfall";
-      if (k.k === "heizkoerper") { const R = this._grRadSvg(i, S, sc, T, hell, u); d += R.under; over += R.over; return; }   /* 2026.11.4.3b5: Heizkörper maßstäblich statt Symbol */
+      if (k.k === "heizkoerper") { const R = this._grRadSvg(i, S, sc, T, hell, u, P); d += R.under; over += R.over; return; }   /* 2026.11.4.3b5: Heizkörper maßstäblich statt Symbol */
       if (k.k === "bewegung" || k.k === "kamera") {
         const R = (i.rg || (k.k === "kamera" ? 8 : 6)) * sc, fov = i.fov || (k.k === "kamera" ? 90 : 110), a0 = (((i.r || 0) - 90 - fov / 2) * Math.PI) / 180, a1 = (((i.r || 0) - 90 + fov / 2) * Math.PI) / 180;
         d += `<path d="M${x} ${y}L${x + R * Math.cos(a0)} ${y + R * Math.sin(a0)}A${R} ${R} 0 ${fov > 180 ? 1 : 0} 1 ${x + R * Math.cos(a1)} ${y + R * Math.sin(a1)}Z" fill="${c}" fill-opacity="${on ? 0.22 : 0.08}" stroke="${c}" stroke-opacity=".45" stroke-dasharray="4 4"/>`;

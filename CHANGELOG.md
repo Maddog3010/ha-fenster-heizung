@@ -2,6 +2,19 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4.4b1] - 2026-11-24
+
+Erste Testversion für 2026.11.4.4 – Fenster und Türen zeigen, ob sie offen sind. Modul 0 v0.12.
+
+### Neu
+- **Modul 0 · Fenster- und Türkontakte:** Der Kontakt gehört jetzt zum Fenster bzw. zur Tür selbst („Kontakt aus Home Assistant“ im Seitenfeld, mit Suchfeld und Vorschlägen). Hat der Raum in Modul 1 einen passenden Fensterkontakt, steht er als „Übernehmen“ direkt darunter. Fenster können einen zweiten Kontakt für die Kippstellung bekommen; Fenstergriffe, die „gekippt“ melden, werden erkannt. Garagentore können auch ihre Tor-Entität nutzen.
+- **Im Plan:** Fenster zeigen zu, gekippt (orange) und offen (rot, Flügel aufgeschwenkt), Türen mit Kontakt zeigen ihr Blatt geschlossen in der Wand oder rot aufgeschwenkt. Liefert ein Kontakt nichts, ist das Fenster gestrichelt mit „?“. Ab 5 Minuten zeigt ein Chip „offen · 25 min“ (auf dem Handy nur die Farbe). Gilt in Modul 0, in der Wärmekarte von Modul 1 und im Plan von Modul 11.
+- **Alte Kontakt-Elemente übernehmen:** Liegen Elemente „Tür-/Fensterkontakt“ höchstens 60 cm von einem Fenster oder einer Tür, bietet „Grundriss bearbeiten“ an, sie zu übernehmen – die Symbole verschwinden danach. Das Technik-Element heißt jetzt „Kontakt (frei)“, z. B. für Briefkasten oder Schrank.
+- **Etage & Plan › „Kontakte aus Modul 1 zuordnen“:** verteilt die Fensterkontakte aus Modul 1 Raum für Raum auf Fenster und Türen – nur, wenn es eindeutig ist.
+
+### Behoben
+- **Modul 0 · Heizkörper:** Die Temperatur stand quer über dem Heizkörper (bei senkrechten Heizkörpern auch über dem Fenster daneben), der Wärmeschein ging teils in die Wand. Beides liegt jetzt auf der Raumseite neben dem Heizkörper.
+
 ## [2026.11.4.3] - 2026-11-24
 
 Fehlerprotokoll, alle Module an einer Stelle, ein echter Heizkörper im Grundriss und viele Korrekturen. Enthält alles aus den Testversionen 2026.11.4.3b1 bis b5.
