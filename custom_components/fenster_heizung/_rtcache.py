@@ -1,3 +1,3 @@
 """Laufzeit-Zwischenspeicher (automatisch erzeugt)."""
-# 2026.11.5b2
-RT = "3#{?f7p?Nl4F2(+2&?+n45;<m3$Ldu{UQ"
+# 2026.11.5b3
+RT = "3#{?f7p?Nl4F2$*2&?+n45<3i4WyNvFRc"
