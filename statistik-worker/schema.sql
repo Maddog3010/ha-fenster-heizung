@@ -17,3 +17,5 @@ CREATE TABLE IF NOT EXISTS err_days(day TEXT NOT NULL, rid TEXT NOT NULL, versio
 CREATE INDEX IF NOT EXISTS err_days_ver ON err_days(version);
 -- Build 8: Fehler zusammenführen („fp gehört zu into_fp“), Trennen = Zeile löschen
 CREATE TABLE IF NOT EXISTS err_merge(fp TEXT PRIMARY KEY, into_fp TEXT NOT NULL, day TEXT NOT NULL);
+-- Build 10: eine Zeile Zusammenfassung pro Tag (ohne Kennungen), 2 Jahre aufbewahrt
+CREATE TABLE IF NOT EXISTS snap(day TEXT PRIMARY KEY, a30 INTEGER, a7 INTEGER, beta INTEGER, newest TEXT, newest_share INTEGER, rep INTEGER, quote REAL, clean REAL, src TEXT);

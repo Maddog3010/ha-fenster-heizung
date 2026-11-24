@@ -20,11 +20,11 @@ const today = new Date().toISOString().slice(0, 10), day = (n) => new Date(Date.
 const ID = () => crypto.randomUUID();
 
 // ---------------------------------------------------------------- Banner und /health
-assert.equal(DASH.build, 9);
+assert.ok(DASH.build >= 9);
 const hj = await (await worker.fetch(new Request("https://stats.x.dev/health"), env)).json();
-assert.deepEqual(hj, { ok: true, build: 9, date: DASH.date });
-assert.ok((await (await dget("/")).text()).includes(`Dashboard Build 9 · ${DASH.date.slice(8, 10)}.`), "Banner Versionen");
-assert.ok((await (await dget("/fehler")).text()).includes("Dashboard Build 9"), "Banner Fehler");
+assert.deepEqual(hj, { ok: true, build: DASH.build, date: DASH.date });
+assert.ok((await (await dget("/")).text()).includes(`Dashboard Build ${DASH.build} · ${DASH.date.slice(8, 10)}.`), "Banner Versionen");
+assert.ok((await (await dget("/fehler")).text()).includes(`Dashboard Build ${DASH.build}`), "Banner Fehler");
 console.log("Build-9-Banner OK");
 
 // ---------------------------------------------------------------- Daten: 4.5 stabil (10), 5b1 Beta (6), HA 2026.10/2026.11
@@ -77,7 +77,7 @@ console.log("Build-9-HA×Version OK");
 
 // ---------------------------------------------------------------- S1 Release-Bericht
 let h = await (await dget("/version/2026.11.5b1")).text();
-for (const t of ["2026.11.5b1", "Beta", "Fehlerquote", "17 %", "Fehlerfreie Tage", "Neu in dieser Version", "TypeError:", "In dieser Version behoben", "TimeoutError:", "Verbreitung", "Home Assistant", "2026.11", "neueste Version", "Dashboard Build 9"])
+for (const t of ["2026.11.5b1", "Beta", "Fehlerquote", "17 %", "Fehlerfreie Tage", "Neu in dieser Version", "TypeError:", "In dieser Version behoben", "TimeoutError:", "Verbreitung", "Home Assistant", "2026.11", "neueste Version", `Dashboard Build ${DASH.build}`])
   assert.ok(h.includes(t), t);
 h = await (await dget("/version/2026.11.4.5")).text();
 assert.ok(h.includes("Stabil") && h.includes("neuere Versionen") && h.includes("/version/2026.11.5b1") && h.includes("Noch kein Fehler als behoben"));
