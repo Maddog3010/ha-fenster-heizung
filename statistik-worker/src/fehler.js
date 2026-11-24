@@ -2,7 +2,7 @@
 // Gleicher Fehler bei vielen Nutzern = eine Zeile (Fingerabdruck fp). Die Integration bereinigt vorher; der Worker prüft jedes
 // Feld noch einmal, schneidet Unbekanntes ab und entfernt Adressen, falls doch welche durchrutschen. Keine IP-Adressen gespeichert.
 
-export const ERR_SCHEMAS = [1];
+export const ERR_SCHEMAS = [1, 2];   // Schema 2 (Build 6): auch ohne Fehler („0 Fehler“), dazu „mods“ = aktive Module
 export const ERR_MAX_BODY = 64 * 1024;
 export const ERR_MIN_GAP = 3600;      // höchstens 1 Bericht pro Kennung und Stunde
 export const ERR_KEEP_DAYS = 90;
@@ -10,6 +10,12 @@ const ID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{
 const VER_RE = /^(\d{4})\.(\d{1,2})\.(\d{1,2})(?:\.(\d{1,2}))?(?:b(\d{1,3}))?$/;
 const HA_RE = /^\d{4}\.\d{1,2}(?:\.\d{1,2})?(?:b\d{1,3}|\.dev\d{0,12})?$/;
 const DAY_RE = /^\d{4}-\d{2}-\d{2}$/;
+/** Build 6: Kurzzeichen der Module, die man an- und ausschalten kann → Name im Fehlerbericht und Anzeige. Modul 1 und der Kern sind immer an. */
+export const ERR_MODS = { gr: ["Modul 0", "0 Grundriss"], ww: ["Modul 2", "2 Warmwasser"], en: ["Modul 3", "3 Energie"], gs: ["Modul 4", "4 Gerätestrom"],
+  lu: ["Modul 5", "5 Lüftung"], rb: ["Modul 6", "6 Rollläden"], wp: ["Modul 7", "7 Wärmepumpe"], ev: ["Modul 8", "8 Wallbox"], wx: ["Modul 9", "9 Wetter"],
+  ga: ["Modul 10", "10 Garten"], sf: ["Modul 11", "11 Sicherheit"], pl: ["Modul 12", "12 Pool & Sauna"], bt: ["Modul 13", "13 Batterie"], dt: ["Modul 14", "14 Stromtarif"],
+  wa: ["Modul 15", "15 Wartung"], sp: ["Modul 16", "16 Prognose"], mu: ["Modul 17", "17 Müll"], li: ["Modul 18", "18 Licht"], ef: ["Modul 19", "19 Hausfluss"], ab: ["Modul 20", "20 Abrechnung"] };
+export const ALWAYS_ON = { "Modul 1": "1 Räume & Heizen", Allgemein: "Allgemein", Statistik: "Statistik", "Weihnachts-Theme": "Weihnachts-Theme", Sponsor: "Sponsor" };
 const SRC = { backend: "Backend", befehl: "Befehl", oberflaeche: "Oberfläche" };
 const channelOf = (v) => (/b\d+$/.test(v || "") ? "beta" : "stable");
 const clean = (s, max) => String(s).replace(/[\u0000-\u001f\u007f]/g, " ")
@@ -20,7 +26,13 @@ export function validErrors(d) {
   const { id, version, channel, ha, errors } = d;
   if (typeof id !== "string" || !ID_RE.test(id) || typeof version !== "string" || !VER_RE.test(version) || channel !== channelOf(version)) return null;
   if (ha != null && ha !== "" && (typeof ha !== "string" || !HA_RE.test(ha))) return null;
-  if (!Array.isArray(errors) || errors.length < 1 || errors.length > 50) return null;
+  if (!Array.isArray(errors) || errors.length < (d.schema >= 2 ? 0 : 1) || errors.length > 50) return null;
+  let mods = null;   // null = Schema 1 (keine Tages-Meldung, keine Module)
+  if (d.schema >= 2) {
+    const m = d.mods ?? [];
+    if (!Array.isArray(m) || m.length > Object.keys(ERR_MODS).length || m.some((x) => typeof x !== "string" || !(x in ERR_MODS))) return null;
+    mods = Object.keys(ERR_MODS).filter((k) => m.includes(k)).join(",");
+  }
   const out = [];
   for (const x of errors) {
     if (!x || typeof x !== "object") return null;
@@ -33,7 +45,7 @@ export function validErrors(d) {
     if (out.some((o) => o.fp === fp)) continue;   // doppelt im selben Bericht: einmal reicht
     out.push({ fp, src, mod, kind, where: clean(where, 120), msg: clean(msg, 200), n, first, last, vers });
   }
-  return { id, version, channel, ha: ha || "", errors: out };
+  return { id, version, channel, ha: ha || "", errors: out, mods };
 }
 
 const S = (ms) => new Date(ms).toISOString().slice(0, 10);
@@ -43,7 +55,10 @@ export async function dbErrors(DB, p, nowMs) {
   const now = Math.floor(nowMs / 1000), day = S(nowMs);
   const row = await DB.prepare("SELECT last_ts FROM err_reporters WHERE rid=?").bind(p.id).first();
   if (row && now - row.last_ts < ERR_MIN_GAP) return "too_many";
-  const st = [DB.prepare("INSERT INTO err_reporters(rid, last_ts, last_day) VALUES(?,?,?) ON CONFLICT(rid) DO UPDATE SET last_ts=excluded.last_ts, last_day=excluded.last_day").bind(p.id, now, day)];
+  const st = [DB.prepare("INSERT INTO err_reporters(rid, last_ts, last_day) VALUES(?,?,?) ON CONFLICT(rid) DO UPDATE SET last_ts=excluded.last_ts, last_day=excluded.last_day").bind(p.id, now, day),
+    /* Build 6: jeder Bericht zählt als „heute mit dieser Version aktiv“ – auch der leere */
+    DB.prepare("INSERT INTO err_days(day, rid, version, channel, ha, mods) VALUES(?,?,?,?,?,?) ON CONFLICT(day, rid) DO UPDATE SET version=excluded.version, channel=excluded.channel, ha=excluded.ha, mods=COALESCE(excluded.mods, err_days.mods)")
+      .bind(day, p.id, p.version, p.channel, p.ha, p.mods ?? null)];
   for (const x of p.errors) {
     st.push(DB.prepare(
       "INSERT INTO err_groups(fp, src, mod, kind, where_, msg, first_day, last_day) VALUES(?,?,?,?,?,?,?,?) " +
@@ -71,12 +86,12 @@ export async function dbErrStatus(DB, fp, s, nowMs) {
   return !!(r && (r.changes ?? (r.meta && r.meta.changes)));
 }
 export async function dbErrForget(DB, rid) {
-  await DB.batch([DB.prepare("DELETE FROM err_hits WHERE rid=?").bind(rid), DB.prepare("DELETE FROM err_reporters WHERE rid=?").bind(rid),
+  await DB.batch([DB.prepare("DELETE FROM err_hits WHERE rid=?").bind(rid), DB.prepare("DELETE FROM err_reporters WHERE rid=?").bind(rid), DB.prepare("DELETE FROM err_days WHERE rid=?").bind(rid),
     DB.prepare("DELETE FROM err_groups WHERE fp NOT IN (SELECT DISTINCT fp FROM err_hits)")]);
 }
 export async function dbErrCleanup(DB, todayMs) {
   const cut = S(todayMs - ERR_KEEP_DAYS * dayMs);
-  await DB.batch([DB.prepare("DELETE FROM err_hits WHERE day<?").bind(cut), DB.prepare("DELETE FROM err_reporters WHERE last_day<?").bind(cut),
+  await DB.batch([DB.prepare("DELETE FROM err_hits WHERE day<?").bind(cut), DB.prepare("DELETE FROM err_reporters WHERE last_day<?").bind(cut), DB.prepare("DELETE FROM err_days WHERE day<?").bind(cut),
     DB.prepare("DELETE FROM err_groups WHERE fp NOT IN (SELECT DISTINCT fp FROM err_hits)")]);
 }
 
@@ -134,7 +149,8 @@ export function weekHtml(w) {
   const p = (n, t, bg, fg, href) => (n ? `<a class="tg wkp" href="${href}" style="background:${bg};color:${fg}">${n} ${t}</a>` : "");
   const items = p(w.neu, "neu", "#7f1d1d", "#fecaca", "/fehler?neu=1") + p(w.back, "wieder da", "#b91c1c", "#fff", "/fehler?alle=1") +
     p(w.fixed, "behoben", "#134e4a", "#5eead4", "/fehler?alle=1") + p(w.stale, "in Arbeit seit über 14 Tagen", "#1e3a8a", "#bfdbfe", "/fehler?alle=1");
-  return `<div class="c wk"><b>Diese Woche</b>${items || '<span class="u" style="margin:0">keine neuen Fehler, nichts wieder aufgetaucht</span>'}</div>`;
+  const rf = w.reife ? (() => { const x = AMP[w.reife.amp] || AMP.abwarten; return `<a class="tg wkp" href="/fehler#reife" style="margin-left:auto;background:${x[1]};color:${x[2]}">${channelOf(w.reife.v) === "beta" ? "Beta" : "Stabil"} ${e(vshort(w.reife.v))} · ${e(x[0])}</a>`; })() : "";
+  return `<div class="c wk"><b>Diese Woche</b>${items || '<span class="u" style="margin:0">keine neuen Fehler, nichts wieder aufgetaucht</span>'}${rf}</div>`;
 }
 /** Build 5 · Release-Marken: erster Tag je Version (aus Versions-Statistik und Fehlerberichten) */
 export async function loadReleases(DB) {
@@ -188,7 +204,11 @@ export function errDetail(g, hits, todayStr, rel = []) {
 export async function errLoad(DB, todayStr, days) {
   const groups = (await DB.prepare("SELECT fp, src, mod, kind, where_ AS \"where\", msg, first_day, last_day, status, fixed_in, issue, status_day FROM err_groups").all()).results;
   const hits = (await DB.prepare("SELECT day, fp, rid, version, channel, ha, n FROM err_hits").all()).results;
-  return errCompute(groups, hits, todayStr, days);
+  const r = errCompute(groups, hits, todayStr, days), dd = await loadDays(DB, todayStr);
+  r.reife = releaseReady(r.rows, hits, dd, await loadReleases(DB), todayStr);   /* Build 6 */
+  r.mods = modErrors(r.rows, hits, dd, todayStr);
+  r.week.reife = r.reife.top ? { v: r.reife.top.v, amp: r.reife.top.amp } : null;
+  return r;
 }
 export async function errLoadOne(DB, fp, todayStr, rel = null) {
   const g = await DB.prepare("SELECT fp, src, mod, kind, where_ AS \"where\", msg, first_day, last_day, status, fixed_in, issue, status_day FROM err_groups WHERE fp=?").bind(fp).first();
@@ -209,6 +229,7 @@ export const ERR_CSS = `.tabs{display:flex;gap:6px;margin:10px 0}.tabs a{color:#
 .rb{display:inline-flex;align-items:center;gap:5px;border:1px solid #3a3a38;border-radius:99px;padding:3px 11px;font-size:.82rem;cursor:pointer}.rb input{accent-color:#2dd4bf;margin:0}
 .sfr{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:.84rem;color:#c3c2b7}.sfr input{background:#111110;color:#f0efec;border:1px solid #3a3a38;border-radius:8px;padding:5px 8px;font:inherit}
 .sfr button{background:#2dd4bf;color:#042f2e;border:0;border-radius:99px;padding:6px 16px;font-weight:700;cursor:pointer}.warnb{background:#450a0a;color:#fecaca;border-radius:10px;padding:8px 12px;margin:6px 0 10px;font-size:.86rem}
+.rkk{grid-template-columns:repeat(auto-fit,minmax(160px,1fr));margin:6px 0 12px}.rk{padding:10px 12px}.rk .n{font-size:1.5rem}
 .lga{color:#f0efec;text-decoration:none;font-size:.84rem;word-break:break-word}.lga:hover{text-decoration:underline}.wk{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 16px;margin:0 0 10px}.wkp{text-decoration:none}
 @media(max-width:700px){.et .hide{display:none}.kv{grid-template-columns:1fr}}`;
 const spark = (a, w = 84, h = 18) => { const mx = Math.max(1, ...a); return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">${a.map((v, i) => `<rect x="${(i * w) / a.length + 0.5}" y="${h - (v / mx) * (h - 2) - 1}" width="${w / a.length - 1.5}" height="${(v / mx) * (h - 2) + 1}" rx="1" fill="${v ? "#f87171" : "#3a3a38"}"/>`).join("")}</svg>`; };
@@ -225,11 +246,11 @@ export function errRender(r, q = {}) {
   const body = rows.length ? `<table class="et"><tr><th></th><th>Fehler</th><th>Modul</th><th class="num">Installationen</th><th class="num hide">Anzahl</th><th class="hide">Versionen</th><th class="hide">14 Tage</th><th>zuletzt</th></tr>
     ${rows.map((x) => `<tr><td>${tag(x.tag)}${x.status === "behoben" && x.fixed_in ? `<small>${e(x.fixed_in)}</small>` : ""}${x.issue ? `<small>#${x.issue}</small>` : ""}</td><td><a href="/fehler/${x.fp}"><b class="m">${e(x.kind)}: ${e(x.msg || "–")}</b></a><small>${e(SRC[x.src])}${x.where ? " · " + e(x.where) : ""}${x.first_ver ? ` · seit ${e(vshort(x.first_ver))}` : ""}</small></td><td>${e(x.mod)}</td><td class="num">${x.inst}</td><td class="num hide">${x.hits}</td><td class="hide">${e(x.vers.slice(-2).join(" · "))}</td><td class="hide">${spark(x.spark)}</td><td>${fd(x.last_day)}</td></tr>`).join("")}</table>`
     : '<div class="empty">Keine Fehler in diesem Zeitraum – oder noch keine Berichte.</div>';
-  return `<div class="c"><h2>Fehler · letzte ${r.days} Tage</h2><div class="u">${r.reporters} Installationen haben berichtet · neueste Version ${e(r.newest || "–")} · gleicher Fehler = eine Zeile</div>
+  return `${!q.ver && r.reife ? `<div id="reife">${reifeHtml(r.reife)}</div>` : ""}<div class="c"><h2>Fehler · letzte ${r.days} Tage</h2><div class="u">${r.reporters} Installationen haben berichtet · neueste Version ${e(r.newest || "–")} · gleicher Fehler = eine Zeile</div>
     <div class="flt">${ln("tage", "", "7 Tage", r.days === 7)}${ln("tage", "30", "30 Tage", r.days === 30)}${ln("tage", "90", "90 Tage", r.days === 90)}<span style="width:8px"></span>${ln("neu", q.neu ? "" : "1", "nur neu / steigt", !!q.neu)}${ln("alle", q.alle ? "" : "1", "auch ruhige", !!q.alle)}${ln("ign", q.ign ? "" : "1", "auch ignorierte", !!q.ign)}</div>
     <div class="flt">${ln("mod", "", "alle Module", !q.mod)}${mods.map((m) => ln("mod", m, m, q.mod === m)).join("")}<span style="width:8px"></span>${ln("src", "", "alle Quellen", !q.src)}${Object.entries(SRC).map(([k, t]) => ln("src", k, t, q.src === k)).join("")}</div>
     ${(r.intro || []).length ? `<div class="flt"><span class="u" style="margin:4px 4px 0 2px">Neu in Version:</span>${ln("ver", "", "alle", !q.ver)}${r.intro.map(([v, n]) => ln("ver", v, `${vshort(v)} · ${n}`, q.ver === v)).join("")}</div>` : ""}
-    ${body}</div>`;
+    ${body}</div>${!q.ver && r.mods ? modErrHtml(r.mods) : ""}`;
 }
 export function issueUrl(D, repo = "Maddog3010/ha-fenster-heizung") {
   const g = D.g, src = SRC[g.src];
@@ -256,4 +277,112 @@ export function errRenderOne(D, repo) {
     <span>Betroffen</span><b>${D.inst} Installationen · ${D.hits}× (letzte ${ERR_KEEP_DAYS} Tage)</b><span>Kanal</span><b>${D.ch.map((x) => `${x.k === "beta" ? "Beta" : "Stabil"} ${x.inst}`).join(" · ")}</b></div></div>
     ${st}<div class="g"><div class="c"><h2>Verlauf</h2><div class="u">Installationen pro Tag, 30 Tage${(D.rel || []).length ? " · orange: neue Version erschienen" : ""}</div>${chart}</div>
     <div class="c"><h2>Versionen</h2><div class="u">Strom &amp; Wärme</div>${mini(D.vers)}</div><div class="c"><h2>Home Assistant</h2><div class="u">Version</div>${mini(D.ha)}</div></div>`;
+}
+
+// ---------------------------------------------------------------- Build 6 · F1 Release-Reife je Version
+/** Schwellen der Ampel (Konzept: mindestens 3 Tage live und 5 Installationen) */
+export const REIFE = { minDays: 3, minInst: 5, window: 30 };
+const AMP = { bereit: ["bereit", "#134e4a", "#5eead4"], gut: ["gut", "#134e4a", "#5eead4"], abwarten: ["abwarten", "#78350f", "#fde68a"],
+  "nicht freigeben": ["nicht freigeben", "#7f1d1d", "#fecaca"], "Hotfix prüfen": ["Hotfix prüfen", "#7f1d1d", "#fecaca"],
+  "Update empfehlen": ["Update empfehlen", "#7c2d12", "#fdba74"], abgelöst: ["abgelöst", "#262624", "#8d8c84"], älter: ["älter", "#262624", "#8d8c84"] };
+const dOf = (s) => Date.parse(s + "T00:00:00Z");
+
+/**
+ * rows: errCompute().rows · hits: err_hits · days: err_days (Tages-Meldungen) · rel: erster Tag je Version.
+ * Installationen einer Version = Tages-Meldungen ∪ Fehlerberichte (letzte 30 Tage). Eine Quote gibt es erst,
+ * wenn die Version Tages-Meldungen schickt (ab Build 6) – vorher würden nur Installationen mit Fehlern zählen.
+ */
+export function releaseReady(rows, hits, days, rel, todayStr, o = REIFE) {
+  const today = dOf(todayStr), from = S(today - (o.window - 1) * dayMs);
+  const ign = new Set(rows.filter((x) => x.status === "ignoriert").map((x) => x.fp));
+  const H = hits.filter((h) => h.day >= from && !ign.has(h.fp)), Dd = (days || []).filter((d) => d.day >= from);
+  const vers = [...new Set([...Dd.map((d) => d.version), ...H.map((h) => h.version)])].filter((v) => VER_RE.test(v)).sort(vcmp);
+  const relDay = new Map((rel || []).map((x) => [x.v, x.d]));
+  const list = vers.map((v) => {
+    const daily = new Set(Dd.filter((d) => d.version === v && d.mods != null).map((d) => d.rid));
+    const err = new Set(H.filter((h) => h.version === v).map((h) => h.rid));
+    const inst = new Set([...daily, ...err]).size, counted = daily.size > 0;
+    const intro = rows.filter((x) => x.first_ver === v && x.status !== "ignoriert");
+    const back = rows.filter((x) => x.status === "behoben" && x.fixed_in && vcmp(v, x.fixed_in) >= 0 && H.some((h) => h.fp === x.fp && h.version === v)).length;
+    const d0 = relDay.get(v) || [...Dd, ...H].filter((x) => x.version === v).map((x) => x.day).sort()[0];
+    const live = d0 ? Math.max(0, Math.round((today - dOf(d0)) / dayMs)) : 0;
+    const lastNew = intro.map((x) => x.first_day).sort().pop();
+    return { v, ch: channelOf(v), inst, err: err.size, counted, quote: counted && inst ? err.size / inst : null,
+      neu: intro.filter((x) => x.status !== "behoben").length, newOpen: intro.filter((x) => (x.status || "offen") === "offen").length,
+      newWork: intro.filter((x) => x.status === "arbeit").length, back, live, quiet: lastNew ? Math.max(0, Math.round((today - dOf(lastNew)) / dayMs)) : live };
+  });
+  const stables = list.filter((x) => x.ch === "stable" && x.counted), newestStable = list.filter((x) => x.ch === "stable").pop() || null;
+  const pct = (q) => `${Math.round(q * 100)} %`;
+  for (const x of list) {
+    const newer = list.some((y) => vcmp(y.v, x.v) > 0 && (x.ch === "beta" || y.ch === "stable"));
+    const ref = [...stables].reverse().find((y) => vcmp(y.v, x.v) < 0) || null;
+    x.ref = ref ? ref.v : "";
+    const problem = x.newOpen || x.back;
+    if (newer) {
+      if (x.ch === "beta") [x.amp, x.why] = ["abgelöst", "es gibt eine neuere Version"];
+      else if (problem || (x.quote != null && newestStable && newestStable.quote != null && x.quote > newestStable.quote))
+        [x.amp, x.why] = ["Update empfehlen", `${newestStable.v} ist besser`];
+      else [x.amp, x.why] = ["älter", `neuere stabile Version: ${newestStable.v}`];
+    } else if (problem) [x.amp, x.why] = [x.ch === "beta" ? "nicht freigeben" : "Hotfix prüfen", x.back ? `${x.back} behobener Fehler wieder da` : `${x.newOpen} neuer offener Fehler`];
+    else if (!x.counted) [x.amp, x.why] = ["abwarten", "noch keine Tages-Meldungen (ab Build 6)"];
+    else if (x.live < o.minDays) [x.amp, x.why] = ["abwarten", `erst ${x.live} ${x.live === 1 ? "Tag" : "Tage"} live, mindestens ${o.minDays}`];
+    else if (x.inst < o.minInst) [x.amp, x.why] = ["abwarten", `erst ${x.inst} Installationen, mindestens ${o.minInst}`];
+    else if (x.newWork) [x.amp, x.why] = ["abwarten", `${x.newWork} neuer Fehler in Arbeit`];
+    else if (ref && ref.quote != null && x.quote > ref.quote) [x.amp, x.why] = ["abwarten", `Quote ${pct(x.quote)} höher als ${vshort(ref.v)} (${pct(ref.quote)})`];
+    else [x.amp, x.why] = [x.ch === "beta" ? "bereit" : "gut", ref ? `Quote nicht höher als ${vshort(ref.v)}` : "keine neuen Fehler"];
+  }
+  const desc = [...list].reverse(), betas = desc.filter((x) => x.ch === "beta");
+  const top = betas[0] && betas[0].amp !== "abgelöst" ? betas[0] : desc[0] || null;
+  return { list: desc, hero: [betas[0], betas[1], desc.find((x) => x.ch === "stable")].filter(Boolean), top, o };
+}
+const amp = (a) => { const x = AMP[a] || AMP.abwarten; return `<span class="tg" style="background:${x[1]};color:${x[2]}">${e(x[0])}</span>`; };
+const pq = (x) => (x.quote == null ? "–" : `${Math.round(x.quote * 100)} %`);
+export function reifeHtml(R) {
+  if (!R || !R.list.length) return `<div class="c"><h2>Release-Reife</h2><div class="empty">Noch keine Berichte in den letzten ${REIFE.window} Tagen.</div></div>`;
+  const tile = (x, t) => `<div class="c rk"><div class="t">${e(t)} ${e(vshort(x.v))}</div><div class="n">${pq(x)}</div><div class="s">${x.counted ? `${x.err} von ${x.inst} Installationen mit Fehler` : `${x.err} mit Fehler · Quote ab Tages-Meldungen`}</div><div style="margin-top:6px">${amp(x.amp)}</div></div>`;
+  const heroes = R.hero.map((x, i) => tile(x, x.ch === "stable" ? "Stabil" : i === 0 ? "Beta" : "vorher")).join("");
+  const rows = R.list.slice(0, 8).map((x) => `<tr><td><a href="/fehler?ver=${encodeURIComponent(x.v)}" class="lga"><b>${e(x.v)}</b></a></td><td>${x.ch === "beta" ? "Beta" : "Stabil"}</td><td class="num">${x.inst}</td><td class="num">${x.err}</td><td class="num">${pq(x)}</td><td class="num">${x.neu}</td><td class="num hide">${x.live}</td><td class="num hide">${x.quiet}</td><td>${amp(x.amp)}<small style="display:block;color:#8d8c84;font-family:inherit">${e(x.why)}</small></td></tr>`).join("");
+  return `<div class="c"><h2>Release-Reife</h2><div class="u">Installationen mit Fehler-Zustimmung · letzte ${R.o.window} Tage · Ampel: mindestens ${R.o.minDays} Tage live, ${R.o.minInst} Installationen, keine neuen offenen Fehler, Quote nicht höher als die letzte stabile Version</div>
+    <div class="k rkk">${heroes}</div>
+    <table class="et"><tr><th>Version</th><th>Kanal</th><th class="num">Installationen</th><th class="num">mit Fehler</th><th class="num">Quote</th><th class="num">neue Fehler</th><th class="num hide">Tage live</th><th class="num hide">ohne neuen Fehler</th><th>Ampel</th></tr>${rows}</table></div>`;
+}
+
+// ---------------------------------------------------------------- Build 6 · F4 Fehler je Modul
+/** Betroffene Installationen ÷ Installationen mit Modul an (letzte 30 Tage, nur Tages-Meldungen mit Modulliste). */
+export function modErrors(rows, hits, days, todayStr, window = 30) {
+  const from = S(dOf(todayStr) - (window - 1) * dayMs);
+  const last = new Map();
+  for (const d of days || []) if (d.day >= from && d.mods != null) { const o = last.get(d.rid); if (!o || d.day > o.day) last.set(d.rid, d); }
+  const has = (rid, k) => String(last.get(rid).mods || "").split(",").includes(k);
+  const modOf = new Map(rows.filter((x) => x.status !== "ignoriert").map((x) => [x.fp, x.mod])), aff = new Map();
+  for (const h of hits) {
+    const m = modOf.get(h.fp);
+    if (h.day < from || !m || !last.has(h.rid)) continue;
+    if (!aff.has(m)) aff.set(m, new Set());
+    aff.get(m).add(h.rid);
+  }
+  const all = last.size, out = [];
+  for (const [k, [name, label]] of Object.entries(ERR_MODS)) {
+    const on = [...last.keys()].filter((rid) => has(rid, k)).length;
+    const a = [...(aff.get(name) || [])].filter((rid) => has(rid, k)).length;
+    if (on) out.push({ k, label, on, aff: a, q: a / on });
+  }
+  for (const [name, label] of Object.entries(ALWAYS_ON)) {
+    const a = (aff.get(name) || new Set()).size;
+    if (all && (a || name === "Modul 1")) out.push({ k: name, label, on: all, aff: a, q: a / all, always: true });
+  }
+  out.sort((a, b) => b.q - a.q || b.aff - a.aff || b.on - a.on);
+  return { base: all, list: out };
+}
+export function modErrHtml(M) {
+  if (!M || !M.base) return `<div class="c"><h2>Fehler je Modul</h2><div class="empty">Sobald Installationen ab Build 6 ihre Tages-Meldung schicken, steht hier die Fehlerquote je Modul.</div></div>`;
+  const L = M.list.filter((x) => x.aff || x.k === "Modul 1").slice(0, 14), Z = M.list.filter((x) => !x.aff && x.k !== "Modul 1"), mx = Math.max(0.01, ...L.map((x) => x.q));
+  const svg = `<svg viewBox="0 0 460 ${26 * L.length}" role="img" aria-label="Fehler je Modul">${L.map((x, n) => { const w = Math.max(3, (200 * x.q) / mx), y = n * 26;
+    return `<text x="0" y="${y + 17}" fill="#c3c2b7" font-size="12">${e(x.label)}${x.always ? " *" : ""}</text><rect x="140" y="${y + 4}" width="${w.toFixed(1)}" height="16" rx="4" fill="${x.aff ? "#f87171" : "#3a3a38"}"/>` +
+      `<text x="${(140 + w + 8).toFixed(1)}" y="${y + 17}" fill="#f0efec" font-size="12">${Math.round(x.q * 100)} % · ${x.aff} von ${x.on}</text>`; }).join("")}</svg>`;
+  const zero = Z.length ? `<div class="u" style="margin:8px 0 0">Ohne Fehler: ${Z.map((x) => `${e(x.label)} (${x.on})`).join(" · ")}</div>` : "";
+  return `<div class="c"><h2>Fehler je Modul</h2><div class="u">betroffene Installationen ÷ Installationen mit Modul an · 30 Tage · Basis ${M.base} Installationen${L.some((x) => x.always) ? " · * immer an" : ""}</div><div style="max-width:620px">${svg}</div>${zero}</div>`;
+}
+export async function loadDays(DB, todayStr, window = 30) {
+  return (await DB.prepare("SELECT day, rid, version, channel, ha, mods FROM err_days WHERE day>=?").bind(S(dOf(todayStr) - (window - 1) * dayMs)).all()).results;
 }

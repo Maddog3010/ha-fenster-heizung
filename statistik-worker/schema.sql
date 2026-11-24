@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS installs(id TEXT PRIMARY KEY, first_day TEXT NOT NULL, last_day TEXT NOT NULL,
-  version TEXT NOT NULL, channel TEXT NOT NULL, last_ts INTEGER NOT NULL, modules TEXT);
+  version TEXT NOT NULL, channel TEXT NOT NULL, last_ts INTEGER NOT NULL, modules TEXT, ha TEXT);
 CREATE TABLE IF NOT EXISTS daily(day TEXT NOT NULL, id TEXT NOT NULL, version TEXT NOT NULL, channel TEXT NOT NULL,
   PRIMARY KEY(day, id));
 CREATE INDEX IF NOT EXISTS daily_id ON daily(id);
@@ -11,3 +11,7 @@ CREATE TABLE IF NOT EXISTS err_hits(day TEXT NOT NULL, fp TEXT NOT NULL, rid TEX
 CREATE INDEX IF NOT EXISTS err_hits_fp ON err_hits(fp);
 CREATE INDEX IF NOT EXISTS err_hits_rid ON err_hits(rid);
 CREATE TABLE IF NOT EXISTS err_reporters(rid TEXT PRIMARY KEY, last_ts INTEGER NOT NULL, last_day TEXT NOT NULL);
+-- Build 6: eine Zeile je Tag und Kennung, auch ohne Fehler („0 Fehler“) – Grundlage für Fehlerquote und Fehler je Modul
+CREATE TABLE IF NOT EXISTS err_days(day TEXT NOT NULL, rid TEXT NOT NULL, version TEXT NOT NULL, channel TEXT NOT NULL, ha TEXT,
+  mods TEXT, PRIMARY KEY(day, rid));
+CREATE INDEX IF NOT EXISTS err_days_ver ON err_days(version);

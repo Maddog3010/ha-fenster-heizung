@@ -131,11 +131,11 @@ console.log("Fehler-Tests OK");
   assert.ok(h.includes("/fehler/222222222222") && !h.includes("/fehler/111111111111") && h.includes("Neu in Version:") && h.includes("seit 11.4.3b3"));
   assert.ok(!F.errRender(r, { ver: "2026.11.4.3b3", mod: "Modul 9" }).includes("/fehler/222222222222"), "Filter kombinierbar");
   // F6: Wochenblick
-  assert.deepEqual(r.week, { neu: 3, back: 0, fixed: 0, stale: 0 });
+  assert.deepEqual({ ...r.week, reife: undefined }, { neu: 3, back: 0, fixed: 0, stale: 0, reife: undefined });
   env.DB.raw.prepare("UPDATE err_groups SET status='behoben', fixed_in='2026.11.4.3b2', status_day=? WHERE fp='a1b2c3d4e5f6'").run(today);
   env.DB.raw.prepare("UPDATE err_groups SET status='arbeit', status_day=? WHERE fp='111111111111'").run(day(20));
   r = await F.errLoad(env.DB, today, 7);
-  assert.deepEqual(r.week, { neu: 2, back: 0, fixed: 1, stale: 1 }, "neu bleibt neu, auch wenn in Arbeit");
+  assert.deepEqual({ ...r.week, reife: undefined }, { neu: 2, back: 0, fixed: 1, stale: 1, reife: undefined }, "neu bleibt neu, auch wenn in Arbeit");
   assert.ok(F.weekHtml(r.week).includes("1 behoben") && F.weekHtml(r.week).includes("seit über 14 Tagen"));
   assert.ok(F.weekHtml({ neu: 0, back: 0, fixed: 0, stale: 0 }).includes("keine neuen Fehler"));
   // V3: Nachzügler – Fehler seit 4.2, behoben in 4.3b2 → 4.2 und 4.3b1 betroffen, 4.3b3 nicht

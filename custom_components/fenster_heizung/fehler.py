@@ -6,6 +6,9 @@ Quellen:
 - Befehle und Oberfläche: meldet das Dashboard über fenster_heizung/err_report (Schema-Fehler wie „expected str at 'id'“,
   unbekannte Befehle, Anzeigefehler).
 Nur Programmfehler – keine Geräte-Diagnose. Alles wird bereinigt (fehler_logic.sanitize) und bleibt in Build 1 lokal.
+
+Build 6 (Statistik): Mit Zustimmung geht einmal am Tag ein Bericht raus – auch ohne Fehler („0 Fehler“), mit Version, Kanal,
+Home-Assistant-Version und den Kurzzeichen der aktiven Module. Daraus entstehen Fehlerquote je Version und Fehler je Modul.
 """
 from __future__ import annotations
 
@@ -142,7 +145,7 @@ class FehlerSammler:
         with self._lock:
             items = [dict(e, text=L.as_text(e)) for e in L.view(self._st)]
             c = dict(self._st["cfg"])
-            rep = L.build_report(self._st, self._version, HA_VERSION, real=c["on"]) or {}
+            rep = L.build_report(self._st, self._version, HA_VERSION, real=c["on"], mods=self._mods()) or {}
         sts = self.hass.data.get(DOMAIN, {}).get("stats")
         return {"items": items, "version": self._version, "ha": HA_VERSION, "keep_days": L.KEEP_DAYS,
                 "cfg": {"asked": c["asked"], "on": c["on"], "id": (c["id"][:4] + "…" + c["id"][-4:]) if c["id"] else "",
@@ -191,6 +194,16 @@ class FehlerSammler:
         self._cfg_save()
         return self.snapshot()
 
+    def _mods(self) -> list[str]:
+        """Aktive Module als Kurzzeichen (Build 6, für „Fehler je Modul“). Fehlt etwas, ist die Liste eben kürzer."""
+        d = self.hass.data.get(DOMAIN, {})
+        on: Any = {}
+        try:
+            on = d["wasser"].modules["on"]
+        except (KeyError, AttributeError, TypeError):
+            pass
+        return L.active_mods(on, getattr(d.get("addons"), "inst", None))
+
     async def _post(self, path: str, body: dict[str, Any]) -> int:
         try:
             sess = async_get_clientsession(self.hass)
@@ -200,16 +213,15 @@ class FehlerSammler:
             return 0
 
     async def async_send(self, force: bool = False) -> dict[str, Any]:
-        """Bericht senden – nur wenn eingeschaltet und es seit dem letzten Mal neue Fehler gibt."""
+        """Bericht senden – nur wenn eingeschaltet. Build 6: auch ohne neue Fehler (Tages-Meldung „0 Fehler“)."""
         c = self._st["cfg"]
         if not c["on"] or self._busy:
             return {"sent": False, "why": "aus" if not c["on"] else "läuft"}
+        mods = self._mods()
         with self._lock:
-            rep = L.build_report(self._st, self._version, HA_VERSION)
-        if not rep or not rep["errors"]:
-            c["last_try"] = time.time() if not force else c["last_try"]
-            self._cfg_save()
-            return {"sent": False, "why": "nichts"}
+            rep = L.build_report(self._st, self._version, HA_VERSION, mods=mods)
+        if not rep:
+            return {"sent": False, "why": "aus"}
         self._busy = True
         try:
             st = await self._post("/v1/errors", rep)

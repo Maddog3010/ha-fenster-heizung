@@ -1,9 +1,13 @@
 """Versions-Statistik: freiwillig, anonym, nur Version und Kanal.
 
 Nach ausdrücklicher Zustimmung (Popup oder Einstellungen → System → Versions-Statistik) meldet diese Integration
-höchstens einmal pro Tag drei Werte an den Statistik-Server des Entwicklers:
+höchstens einmal pro Tag diese Werte an den Statistik-Server des Entwicklers:
 
-    {"schema": 1, "id": "<zufällige Kennung>", "version": "2026.11.4", "channel": "stable" | "beta"}
+    {"schema": 3, "id": "<zufällige Kennung>", "version": "2026.11.4", "channel": "stable" | "beta",
+     "modules": ["ww", "en"], "ha": "2026.11"}
+
+„ha“ ist die Home-Assistant-Version ohne Patch-Stufe (Build 6): Daraus sieht der Entwickler, ab wann eine alte
+Home-Assistant-Version nicht mehr unterstützt werden muss.
 
 Nicht gesendet werden: Name, Standort, Räume, Geräte, Sensorwerte, die Home-Assistant-Instanz-ID. Die Kennung ist eine
 zufällige UUID, die erst bei „Ja“ erzeugt wird und mit nichts anderem zusammenhängt. Beim Ausschalten (und bei
@@ -23,6 +27,7 @@ from datetime import timedelta
 from typing import Any
 
 import aiohttp
+from homeassistant.const import __version__ as HA_VERSION
 from homeassistant.core import CALLBACK_TYPE, HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.event import async_call_later, async_track_time_interval
@@ -100,12 +105,12 @@ class VersionStats:
 
     async def snapshot(self) -> dict[str, Any]:
         ver = await self._version()
-        pay = build_payload(self.id, ver, self._modules()) if self.on else None
+        pay = build_payload(self.id, ver, self._modules(), HA_VERSION) if self.on else None
         return {
             "ok": True, "asked": self.asked, "on": self.on, "version": ver, "channel": channel_of(ver),
             "id": (self.id[:4] + "…" + self.id[-4:]) if self.id else "", "last_ok": self.last_ok, "last_try": self.last_try,
             "next": next_due(self.last_ok, self.last_try) if self.on else 0, "err": self.err,
-            "url_dev": self.url_dev, "payload": pay or build_payload("7f3c1e9a-4b2d-4c5e-9a1f-2d8b6e0c3a41", ver, self._modules()),
+            "url_dev": self.url_dev, "payload": pay or build_payload("7f3c1e9a-4b2d-4c5e-9a1f-2d8b6e0c3a41", ver, self._modules(), HA_VERSION),
             "payload_real": bool(pay), "now": time.time(),
         }
 
@@ -168,7 +173,7 @@ class VersionStats:
     async def async_send(self) -> bool:
         if not self.on or self._busy:
             return False
-        pay = build_payload(self.id, await self._version(), self._modules())
+        pay = build_payload(self.id, await self._version(), self._modules(), HA_VERSION)
         if pay is None:
             return False
         self._busy = True

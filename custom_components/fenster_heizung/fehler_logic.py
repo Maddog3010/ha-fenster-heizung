@@ -178,7 +178,11 @@ def as_text(e: dict[str, Any]) -> str:
 
 
 # ------------------------------------------------------------ Build 2: Fehlerberichte senden (eigene Zustimmung)
-SCHEMA = 1
+SCHEMA = 2          # Build 6: Bericht auch ohne Fehler (Tages-Meldung „0 Fehler“) und mit den Kurzzeichen der aktiven Module
+# Module, die man aus- oder einschalten kann (Kurzzeichen wie in der Versions-Statistik, dazu gr = Modul 0 und die Add-ons).
+# Modul 1 und der Kern sind immer an und brauchen kein Kürzel. Eigene Erweiterungen (x…) werden nie gemeldet.
+MOD_KEYS = ("gr", "ww", "en", "gs", "lu", "rb", "wp", "ev", "wx", "ga", "sf", "pl", "bt", "dt", "wa", "sp", "mu", "li", "ef", "ab")
+ADDON_KEYS = {"muell": "mu", "licht": "li", "abrechnung": "ab"}
 MAX_SEND = 50
 INTERVAL = 24 * 3600
 _ID = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$")
@@ -199,8 +203,20 @@ def channel_of(version: str) -> str:
     return "beta" if re.search(r"b\d+$", str(version or "")) else "stable"
 
 
-def build_report(st: dict[str, Any], version: str, ha: str = "", real: bool = True) -> dict[str, Any] | None:
-    """Der komplette Bericht – genau das wird gesendet. Nur Fehler seit dem letzten Senden (nd > 0), ohne „weglassen“."""
+def active_mods(on: Any, addons: Any = None) -> list[str]:
+    """Kurzzeichen der eingeschalteten Module (nur echtes True) und der installierten, nicht pausierten Add-ons – feste Reihenfolge."""
+    on = on if isinstance(on, dict) else {}
+    got = {k for k in MOD_KEYS if on.get(k) is True}
+    if isinstance(addons, dict):
+        got |= {ADDON_KEYS[a] for a, v in addons.items() if a in ADDON_KEYS and isinstance(v, dict) and not v.get("paused")}
+    return [k for k in MOD_KEYS if k in got]
+
+
+def build_report(st: dict[str, Any], version: str, ha: str = "", real: bool = True, mods: Any = None) -> dict[str, Any] | None:
+    """Der komplette Bericht – genau das wird gesendet. Nur Fehler seit dem letzten Senden (nd > 0), ohne „weglassen“.
+
+    Build 6: Auch ohne neue Fehler wird einmal am Tag ein Bericht mit „errors: []“ geschickt. Nur so weiß die Statistik,
+    wie viele Installationen eine Version fehlerfrei nutzen (Fehlerquote je Version). Dazu die aktiven Module als Kurzzeichen."""
     c = st.get("cfg") or clean_cfg(None)
     if real and not (c["on"] and c["id"]):
         return None
@@ -208,6 +224,7 @@ def build_report(st: dict[str, Any], version: str, ha: str = "", real: bool = Tr
     rows = [e for e in view(st) if e.get("nd", 0) > 0 and e["fp"] not in skip][:MAX_SEND]
     return {"schema": SCHEMA, "id": c["id"] if real else "7f3c1e9a-4b2d-4c5e-9a1f-2d8b6e0c3a41", "version": str(version)[:20],
             "channel": channel_of(version), "ha": str(ha)[:20],
+            "mods": [k for k in MOD_KEYS if isinstance(mods, (list, tuple, set)) and k in mods],
             "errors": [{"fp": e["fp"], "src": e["src"], "mod": e["mod"], "kind": e["kind"], "where": e["where"], "msg": e["msg"],
                         "n": int(e["nd"]), "first": e["first"], "last": e["last"], "vers": list(e.get("vers") or [])} for e in rows]}
 

@@ -7,7 +7,7 @@
 // kein User-Agent. Die Begrenzung pro Absender übernimmt eine Cloudflare-Rate-Limit-Regel (siehe Anleitung).
 
 import { validErrors, dbErrors, dbErrForget, dbErrCleanup, errLoad, errLoadOne, errRender, errRenderOne, ERR_CSS, ERR_MAX_BODY, tabs, validStatus, dbErrStatus, loadReleases, releaseMarks, markSvg, weekHtml, laggards, lagHtml } from "./fehler.js";
-export const SCHEMAS = [1, 2];   // Schema 1: ohne Module · Schema 2: mit Modulliste
+export const SCHEMAS = [1, 2, 3];   // Schema 1: ohne Module · Schema 2: mit Modulliste · Schema 3 (Build 6): dazu HA-Version „2026.11“
 export const MODULES = { ww: "2 Warmwasser", en: "3 Energie", gs: "4 Gerätestrom", lu: "5 Lüftung", rb: "6 Rollläden", wp: "7 Wärmepumpe", ev: "8 E-Auto", wx: "9 Wetter", ga: "10 Garten", sf: "11 Sicherheit", pl: "12 Pool & Sauna", bt: "13 Batterie", dt: "14 Stromtarif", wa: "15 Wartung", sp: "16 Prognose", ef: "19 Hausfluss" };
 const MAX_BODY = 1024;
 const PING_MIN_GAP = 3600;
@@ -36,13 +36,18 @@ export function validPing(d) {
   if (typeof version !== "string" || !VER_RE.test(version) || typeof channel !== "string") return null;
   if (channel !== channelOf(version)) return null;
   let modules = null; // null = Schema 1 / nicht gemeldet
-  if (d.schema === 2) {
+  let ha = null;      // null = vor Schema 3 / nicht gemeldet
+  if (d.schema >= 3) {
+    if (d.ha != null && d.ha !== "" && (typeof d.ha !== "string" || !/^\d{4}\.\d{1,2}$/.test(d.ha))) return null;
+    ha = d.ha ? d.ha.replace(/\.0(\d)$/, ".$1") : null;
+  }
+  if (d.schema >= 2) {
     const m = d.modules;
     const keys = Object.keys(MODULES);
     if (!Array.isArray(m) || m.length > keys.length || m.some((x) => typeof x !== "string" || !keys.includes(x))) return null;
     modules = keys.filter((k) => m.includes(k)).join(","); // feste Reihenfolge, Duplikate fallen weg
   }
-  return { id, version, channel, modules };
+  return { id, version, channel, modules, ha };
 }
 
 // ---------------------------------------------------------------- Datum (UTC, als Text JJJJ-MM-TT)
@@ -60,9 +65,9 @@ export async function dbPing(DB, p, nowMs) {
   if (row && now - row.last_ts < PING_MIN_GAP) return "too_many";
   await DB.batch([
     DB.prepare(
-      "INSERT INTO installs(id, first_day, last_day, version, channel, last_ts, modules) VALUES(?,?,?,?,?,?,?) " +
-      "ON CONFLICT(id) DO UPDATE SET last_day=excluded.last_day, version=excluded.version, channel=excluded.channel, last_ts=excluded.last_ts, modules=excluded.modules"
-    ).bind(p.id, day, day, p.version, p.channel, now, p.modules),
+      "INSERT INTO installs(id, first_day, last_day, version, channel, last_ts, modules, ha) VALUES(?,?,?,?,?,?,?,?) " +
+      "ON CONFLICT(id) DO UPDATE SET last_day=excluded.last_day, version=excluded.version, channel=excluded.channel, last_ts=excluded.last_ts, modules=excluded.modules, ha=excluded.ha"
+    ).bind(p.id, day, day, p.version, p.channel, now, p.modules, p.ha ?? null),
     DB.prepare("INSERT OR REPLACE INTO daily(day, id, version, channel) VALUES(?,?,?,?)").bind(day, p.id, p.version, p.channel),
   ]);
   return "ok";
@@ -105,6 +110,7 @@ export function compute(installs, daily, todayStr, releases = []) {
   for (const r of withm) for (const k of String(r[5]).split(",")) if (k && MODULES[k]) mc[MODULES[k]] = (mc[MODULES[k]] || 0) + 1;
   out.mod_base = withm.length;
   out.modules = Object.entries(mc).sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
+  out.ha = haStats(act30);   // Build 6 · V2
   out.seen = [
     ["heute", installs.filter((r) => age(r) === 0).length],
     ["2–7 Tage", installs.filter((r) => age(r) >= 1 && age(r) <= 6).length],
@@ -175,8 +181,28 @@ export function compute(installs, daily, todayStr, releases = []) {
   return out;
 }
 
+/** Build 6 · V2: Home-Assistant-Versionen aller aktiven Installationen (r[6] = „2026.11“), neueste zuerst, mit „diese oder neuer“ */
+const haKey = (v) => v.split(".").map(Number);
+const haCmp = (a, b) => { const x = haKey(a), y = haKey(b); return x[0] - y[0] || x[1] - y[1]; };
+export function haStats(act30, share = 95) {
+  const c = {};
+  for (const r of act30) if (typeof r[6] === "string" && /^\d{4}\.\d{1,2}$/.test(r[6])) c[r[6]] = (c[r[6]] || 0) + 1;
+  const base = Object.values(c).reduce((a, b) => a + b, 0);
+  let cum = 0;
+  const rows = Object.entries(c).sort((a, b) => haCmp(b[0], a[0])).map(([v, n]) => { cum += n; return [v, n, base ? Math.round((1000 * cum) / base) / 10 : 0]; });
+  const hit = rows.find((x) => x[2] >= share) || null;
+  return { base, rows, min: hit ? { v: hit[0], p: Math.floor(hit[2]) } : null };
+}
+function haHtml(h) {
+  if (!h || !h.base) return '<div class="c"><h2>Home Assistant</h2><div class="u">alle aktiven Installationen</div><div class="empty">Ab Build 6 meldet die Versions-Statistik die Home-Assistant-Version mit (ohne Patch-Stufe).</div></div>';
+  const rows = h.rows.slice(0, 10), mx = Math.max(...rows.map((x) => x[1]));
+  const svg = `<svg viewBox="0 0 460 ${26 * rows.length}" role="img" aria-label="Home-Assistant-Versionen">${rows.map(([v, n, c], k) => { const w = Math.max(3, (210 * n) / mx), y = k * 26;
+    return `<text x="0" y="${y + 17}" fill="#c3c2b7" font-size="12">${e(v)}</text><rect x="70" y="${y + 4}" width="${f1(w)}" height="16" rx="4" fill="#3987e5"/><text x="${f1(70 + w + 8)}" y="${y + 17}" fill="#f0efec" font-size="12">${n} · ${Math.round((100 * n) / h.base)} %</text><text x="458" y="${y + 17}" fill="#8d8c84" font-size="11" text-anchor="end">${f1(c).replace(".", ",")} % ≥</text>`; }).join("")}</svg>`;
+  return `<div class="c"><h2>Home Assistant</h2><div class="u">alle aktiven Installationen (30 Tage) · Basis ${h.base}${h.min ? ` · <b style="color:#5eead4">${h.min.p} % auf ${e(h.min.v)} oder neuer</b>` : ""}</div>${svg}<div class="l">rechts: Anteil auf dieser oder neuerer Version – Grundlage für die Mindestversion in hacs.json</div></div>`;
+}
+
 export async function loadAndCompute(DB, todayStr) {
-  const ins = await DB.prepare("SELECT id, first_day, last_day, version, channel, modules FROM installs").all();
+  const ins = await DB.prepare("SELECT id, first_day, last_day, version, channel, modules, ha FROM installs").all();
   const since = S(D(todayStr) - 60 * dayMs - 8 * 7 * dayMs); // großzügig; compute() filtert selbst
   const dl = await DB.prepare("SELECT day, id, version, channel FROM daily WHERE day>=?").bind(since).all();
   const a = (rs) => rs.results.map((r) => Object.values(r));
@@ -281,7 +307,7 @@ export function render(r, retention = "180", x = {}) {
 <div class="c"><h2>Verlauf: Versionen pro Woche</h2><div class="u">Neueste Version je Installation und Woche</div>${columns(r.weeks, r.week_versions, r.rel, r.week_from)}<div class="l">${legend}${(r.rel || []).length ? '<span><i style="background:#d95926"></i>neue Version erschienen</span>' : ""}</div></div>
 <div class="c"><h2>Kanal &amp; Aktivität</h2><div class="u">Kanal (30 Tage)</div>${kan}<div class="u" style="margin-top:10px">Zuletzt gesehen</div>${bars(r.seen, "#3987e5", 78)}</div>
 <div class="c"><h2>Update-Tempo</h2><div class="u">Anteil auf neuer Version nach x Tagen</div>${curvesSvg(r.curves)}</div>
-<div class="c"><h2>Modul-Nutzung</h2><div class="u">Installationen mit Modul an · Basis ${r.mod_base} (30 Tage)</div>${modBars(r.modules, r.mod_base)}</div>${x.lag ? lagHtml(x.lag) : ""}</div>
+<div class="c"><h2>Modul-Nutzung</h2><div class="u">Installationen mit Modul an · Basis ${r.mod_base} (30 Tage)</div>${modBars(r.modules, r.mod_base)}</div>${haHtml(r.ha)}${x.lag ? lagHtml(x.lag) : ""}</div>
 <div class="f">Nur Teilnehmende zählen: Die Zahlen sind Untergrenzen und zeigen Trends, keine absolute Nutzerzahl. Kennungen ohne Meldung seit ${e(retention)} Tagen werden gelöscht.</div></div></body></html>`;
 }
 

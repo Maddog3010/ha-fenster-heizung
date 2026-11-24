@@ -34,7 +34,7 @@ from collections import defaultdict
 from datetime import date, datetime, timedelta, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
-SCHEMA = (1, 2)   # Schema 1: ohne Module · Schema 2: mit Modulliste
+SCHEMA = (1, 2, 3)   # Schema 1: ohne Module · Schema 2: mit Modulliste · Schema 3: dazu HA-Version (hier nicht ausgewertet)
 MODULES = {"ww": "2 Warmwasser", "en": "3 Energie", "gs": "4 Gerätestrom", "lu": "5 Lüftung", "rb": "6 Rollläden", "wp": "7 Wärmepumpe", "ev": "8 E-Auto", "wx": "9 Wetter", "ga": "10 Garten", "sf": "11 Sicherheit", "pl": "12 Pool & Sauna", "bt": "13 Batterie", "dt": "14 Stromtarif", "wa": "15 Wartung", "sp": "16 Prognose", "ef": "19 Hausfluss"}
 MAX_BODY = 1024
 ID_RE = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$")
@@ -73,7 +73,7 @@ def valid_ping(d: object) -> dict | None:
     if c != channel_of(v):
         return None
     mods = None            # None = Schema 1 / nicht gemeldet
-    if d.get("schema") == 2:
+    if d.get("schema") in (2, 3):
         m = d.get("modules")
         if not isinstance(m, list) or len(m) > len(MODULES) or any(not isinstance(x, str) or x not in MODULES for x in m):
             return None

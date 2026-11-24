@@ -55,8 +55,8 @@
     if (m.mode === "ask") {
       return wrap(`${ic("alert", 18)} Fehlerberichte an den Entwickler?`, "",
         `<p class="stsp">Darf Strom &amp; Wärme Programmfehler einmal am Tag anonym an den Entwickler schicken? So werden Fehler gefunden und behoben, bevor du sie melden musst.</p>
-         <div class="stsbox"><b class="stsh">Das wird gesendet (höchstens 1× pro Tag, nur wenn es neue Fehler gibt)</b>
-           <ul><li>Zufällige Kennung – eine eigene, ohne Bezug zur Versions-Statistik</li><li>Version von Strom &amp; Wärme und Home Assistant</li><li>Je Fehler: Modul, Fehlerart, Stelle im Code, bereinigte Meldung, Anzahl, erstes und letztes Datum</li></ul></div>
+         <div class="stsbox"><b class="stsh">Das wird gesendet (1× pro Tag – ohne neue Fehler nur „0 Fehler“)</b>
+           <ul><li>Zufällige Kennung – eine eigene, ohne Bezug zur Versions-Statistik</li><li>Version von Strom &amp; Wärme und Home Assistant</li><li>Welche Module an sind, nur als Kurzzeichen (z. B. gr, ev, wx)</li><li>Je Fehler: Modul, Fehlerart, Stelle im Code, bereinigte Meldung, Anzahl, erstes und letztes Datum</li></ul></div>
          <div class="mut sm">Nicht gesendet: Entitäten, Raum- und Gerätenamen, Werte, Adressen, Standort. Du siehst vorher jede Zeile und kannst einzelne weglassen. Probleme der Geräte-Diagnose werden nie gesendet.</div>
          <div class="gbtns"><button class="btn2 pri" data-act="errxyes">Ja, Fehlerberichte senden</button><button class="btn2" data-act="errxno">Nein danke</button></div>
          <div class="mut sm" style="text-align:center;margin:2px 0 0">Jederzeit änderbar: Einstellungen → System → Fehlerprotokoll</div>`, "errxno");
@@ -65,7 +65,7 @@
       const R = D && D.report, real = C.on;
       return wrap("Das wird gesendet", real ? "Nächster Bericht, genau so" : "So sähe der Bericht aus (Beispiel-Kennung)",
         `<pre class="stsjs" aria-label="Bericht">${esc(JSON.stringify(R && R.errors && R.errors.length ? R : { ...(R || {}), errors: [] }, null, 2))}</pre>
-         <div class="mut sm" style="margin:2px 0 10px">${R && R.errors && R.errors.length ? `${R.errors.length} ${R.errors.length === 1 ? "Fehler" : "Fehler"} seit dem letzten Bericht.` : "Gerade gibt es nichts zu senden – ohne neue Fehler wird auch nichts geschickt."} Weggelassene Fehler fehlen hier.</div>
+         <div class="mut sm" style="margin:2px 0 10px">${R && R.errors && R.errors.length ? `${R.errors.length} ${R.errors.length === 1 ? "Fehler" : "Fehler"} seit dem letzten Bericht.` : "Keine neuen Fehler – gesendet wird nur „0 Fehler“ mit Version und Modulen. So zählt deine Installation bei der Fehlerquote als fehlerfrei."} Weggelassene Fehler fehlen hier.</div>
          <div class="gbtns"><button class="btn2 pri" data-act="errxback">Zurück</button></div>`, "errxback");
     }
     if (m.mode === "del") {
@@ -73,7 +73,7 @@
         <div class="gbtns"><button class="btn2" data-act="errxback">Abbrechen</button><button class="btn2 stsdan" data-act="errxdelok">Löschen und ausschalten</button></div>`, "errxback");
     }
     const skip = new Set(C.skip || []), on = !!C.on, when = (t, n) => this._stsWhen(t, n);
-    const send = D ? `<div class="errsend"><div class="vrow"><span><b>Fehlerberichte senden</b><small class="mut" style="display:block">${on ? "1× am Tag anonym an den Entwickler – nur neue Fehler, bereinigt." : "Aus. Das Protokoll bleibt auf deinem Home Assistant."}</small></span><button class="sw ${on ? "on" : ""}" data-act="${on ? "errxoff" : "errxask"}" role="switch" aria-checked="${on}" aria-label="Fehlerberichte senden"></button></div>
+    const send = D ? `<div class="errsend"><div class="vrow"><span><b>Fehlerberichte senden</b><small class="mut" style="display:block">${on ? "1× am Tag anonym an den Entwickler – neue Fehler oder „0 Fehler“, bereinigt." : "Aus. Das Protokoll bleibt auf deinem Home Assistant."}</small></span><button class="sw ${on ? "on" : ""}" data-act="${on ? "errxoff" : "errxask"}" role="switch" aria-checked="${on}" aria-label="Fehlerberichte senden"></button></div>
         ${on ? `<div class="stsrows" style="margin-top:8px"><div><span>Zuletzt gesendet</span><b>${esc(when(C.last_ok))}${C.last_ok ? " ✓" : ""}</b></div><div><span>Nächster Bericht</span><b>${esc(when(C.next, true))}</b></div><div><span>Kennung</span><b>${esc(C.id)}</b></div></div>
           ${C.err && C.last_try > C.last_ok ? `<div class="stsnote">${C.err === "noch nicht" ? "Der Server nimmt Fehlerberichte noch nicht an. Die Berichte bleiben hier und werden später nachgeschickt." : "Der Server war zuletzt nicht erreichbar. Nichts geht verloren – der nächste Versuch kommt von selbst."}</div>` : ""}
           <div class="gbtns"><button class="btn2" data-act="errxdata">Das wird gesendet</button><button class="btn2" data-act="errxsend"${m.busy ? " disabled" : ""}>${m.busy ? "Sendet …" : "Jetzt senden"}</button></div>
@@ -116,7 +116,7 @@
     else if (a === "errxskip") cfg("skip", { fp: k, on: b.dataset.v === "1" }).then(re).catch(fail);
     else if (a === "errxdata") { m.back = m.mode || "main"; m.mode = "data"; this._renderModal(); }
     else if (a === "errxback") { m.mode = m.back && m.back !== "data" && m.back !== "del" ? m.back : "main"; m.back = ""; this._renderModal(); }
-    else if (a === "errxsend") { m.busy = true; this._renderModal(); cfg("send").then((r) => { m.busy = false; re(); const S = r.send || {}; this._toast(S.sent ? `${S.n} ${S.n === 1 ? "Fehler" : "Fehler"} gesendet` : S.why === "nichts" ? "Nichts Neues zu senden" : S.why === "noch nicht" ? "Server nimmt Fehlerberichte noch nicht an" : S.why === "zu oft" ? "Gerade erst gesendet – in einer Stunde wieder möglich" : "Server nicht erreichbar – später erneut"); }).catch(() => { m.busy = false; re(); fail(); }); }
+    else if (a === "errxsend") { m.busy = true; this._renderModal(); cfg("send").then((r) => { m.busy = false; re(); const S = r.send || {}; this._toast(S.sent ? (S.n ? `${S.n} Fehler gesendet` : "Gemeldet: keine neuen Fehler") : S.why === "nichts" ? "Nichts Neues zu senden" : S.why === "noch nicht" ? "Server nimmt Fehlerberichte noch nicht an" : S.why === "zu oft" ? "Gerade erst gesendet – in einer Stunde wieder möglich" : "Server nicht erreichbar – später erneut"); }).catch(() => { m.busy = false; re(); fail(); }); }
     else if (a === "errxdel") { m.mode = "del"; this._renderModal(); }
     else if (a === "errxdelok") cfg("forget").then((r) => { m.mode = "main"; re(); this._toast(r.forgotten ? "Gelöscht, Senden aus" : "Hier gelöscht, Server nicht erreichbar"); }).catch(fail);
   }
