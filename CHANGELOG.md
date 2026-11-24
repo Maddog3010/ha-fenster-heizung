@@ -2,18 +2,28 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
-## [2026.11.4.4b5] - 2026-11-24
+## [2026.11.4.4] - 2026-11-24
 
-Korrekturen an den Sponsor-Max-Extras aus 2026.11.4.4b4.
+Drei neue Extras für Sponsor Max, Fenster- und Türkontakte im Grundriss und eine bessere Handy-Ansicht von Modul 0. Enthält alles aus den Testversionen 2026.11.4.4b1 bis b4 und die Korrekturen danach.
+
+### Neu
+- **Wohnklima-Zeugnis (Sponsor Max):** Schulnoten 1–6 je Raum und für das Haus – Temperatur, Luftfeuchte, Lüften und Schimmelrisiko (zählt doppelt). Wochenzeugnis montags, Monatszeugnis am 1., mit Tipp zum schlechtesten Fach, im Morgen-Briefing und Monatsbericht, optional als Push. Gilt auch für Messräume.
+- **Heizkosten je Raum (Sponsor Max):** Euro je Raum für Heute, Woche, Monat und Heizsaison, auch als €/m². Elektroheizer gemessen (nur der Netzbezug, eigener Solarstrom zählt nicht), Thermostat-Räume geschätzt und – mit Gesamtzähler – genau auf den Zähler verteilt. Dazu die Kosten für Heizen bei offenem Fenster.
+- **Wand-Tablet-Extras (Sponsor Max):** Ruhe-Anzeige mit Uhr und Räumen (eigener Raum zuerst), Nachtdimmung, Schlafen, Einbrennschutz, bis zu 4 Schnellaktionen, Alarm aus Modul 11 als Vollbild, Helligkeit über Fully Kiosk, Ladesteckdose für den Tablet-Akku (30–80 %).
+- **Entitäten für Automationen:** `sensor.sw_wohnklima_note_…`, `binary_sensor.sw_schimmelrisiko_…`, `sensor.sw_heizkosten_…`, je Tablet `…_wach`, `…_zustand` und `button.sw_tablet_…_wecken` – nur solange das Extra an ist.
+- **Modul 0 · Fenster- und Türkontakte:** Kontakt direkt am Fenster bzw. an der Tür, zweiter Kontakt für die Kippstellung, Anzeige zu / gekippt / offen im Plan (auch in Modul 1 und Modul 11), Übernahme alter Kontakt-Elemente und „Kontakte aus Modul 1 zuordnen“.
+
+### Geändert
+- **„Deine Extras“:** Statt „bald“ gibt es jetzt Schalter (Standard aus); ohne Sponsor Max steht dort „🔒 Sponsor Max“ mit kurzer Beschreibung.
+- **Handy · Modul 0:** Der Plan sieht aus wie im Bearbeiten-Modus, alle Details an ihrem Platz. Die große Darstellung gibt es weiter unter **Ansicht ▾ › 🔍 Groß**.
 
 ### Behoben
-- **Entitäten verschwanden beim Neustart:** War der Sponsor-Schlüssel nach dem Start noch nicht geladen, wurden die Entitäten der Extras gelöscht und neu angelegt. Jetzt werden sie nur sofort entfernt, wenn man das Extra selbst ausschaltet. Endet Sponsor Max, sind sie „nicht verfügbar“ und werden erst nach 30 Tagen gelöscht.
-- **Wieder einschalten:** Nach Aus und wieder An werden die Entitäten zuverlässig neu angelegt, ohne Fehlermeldung „ID existiert schon“.
-- **Messräume im Zeugnis:** Nach einem Neustart fehlten sie, bis das Dashboard einmal geöffnet wurde.
-- **Elektroheizer mit PV-Überschuss:** Der Anteil aus eigenem Solarstrom wurde zum Netzpreis gerechnet. Jetzt zählt nur der Netzbezug.
-- **Fenster-offen-Kosten bei Elektroheizern:** wurden durch den Wirkungsgrad der Zentralheizung geteilt und in Räumen nur mit Elektroheizer auf 0 gekappt.
-- **Wand-Tablet:** Kacheln zeigen die Temperatur des Raumsensors wie Modul 1 (vorher nur Thermostat). Konnten die Werte nicht geladen werden, lud die Leiste auf der Startseite in einer Schleife. Das Tablet holt Schalter und Einstellungen jetzt alle 10 Minuten neu.
-- **Abend-Briefing:** Die Zeilen der Extras (Wochennote, Heizkosten von gestern) erscheinen nur noch morgens.
+- **Modul 0 · Handy:** Plan und Seite sind nicht mehr breiter als der Bildschirm.
+- **Modul 0 · Heizkörper:** Temperatur und Wärmeschein liegen auf der Raumseite, Raumnamen überdecken die Temperatur nicht mehr.
+- **Sponsor-Max-Extras** (gegenüber 2026.11.4.4b4): Entitäten wurden beim Neustart teils gelöscht und neu angelegt; nach Aus und An fehlten sie oder es gab „ID existiert schon“; Messräume fehlten nach einem Neustart im Zeugnis; Solarstrom des Elektroheizers wurde zum Netzpreis gerechnet; Fenster-Kosten in Räumen nur mit Elektroheizer standen auf 0 €; Tablet-Kacheln ohne Raumsensor-Temperatur und Ladeschleife bei Verbindungsfehlern; Zeilen der Extras erschienen auch im Abend-Briefing.
+
+### Wichtig beim Update
+- Update im Marketplace, danach Home Assistant neu starten und die Seite neu laden (in der App die App ganz schließen). Einstellungen, Pläne und Zuordnungen bleiben erhalten. Die neuen Extras sind zunächst aus.
 
 ## [2026.11.4.4b4] - 2026-11-24
 
