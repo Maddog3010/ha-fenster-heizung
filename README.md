@@ -387,6 +387,8 @@ Addons installierst du unter **Einstellungen → Addons** und kannst sie dort je
 
 Für Tablets an der Wand: große Knöpfe, Uhr im Kopf, untere Leiste mit den aktiven Modulen. Die Einstellungen gelten nur für das jeweilige Gerät.
 
+**Neu ab 2026.11.5b4 (Testversion):** quer eine Modulleiste an der Seite (hochkant unten) mit Start, vier wählbaren Modulen und „Mehr“. Die Startseite passt ohne Scrollen auf eine Seite. Der bisherige Aufbau lässt sich in den Tablet-Einstellungen wieder wählen.
+
 - **Einschalten:** Knopf im Kopf (ab 600 px Breite), Einstellung „Automatisch“ oder Direktlink `?tablet=1`, zum Beispiel als Start-URL in Fully Kiosk.
 - **PIN:** sechs Ziffern schützen die Einstellungen. Nach fünf falschen Eingaben ist die Eingabe 60 Sekunden gesperrt.
 - **Ruhemodus** mit dunkler Uhr, Wetter, Alarm und Personen. Eine Warnung weckt das Tablet auf.

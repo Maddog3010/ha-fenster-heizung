@@ -2,6 +2,25 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.5b4] - 2026-11-25
+
+Tablet-Modus neu aufgebaut, erste Stufe: Leiste an der Seite und eine Startseite ohne Scrollen.
+
+### Neu
+- **Tablet-Modus · Modulleiste:** quer links, hochkant unten: Start, bis zu vier Module und „Mehr“. Welche vier Module in der Leiste stehen, wählst du je Tablet in den Einstellungen (mit PIN).
+- **Tablet-Modus · Startseite auf einer Seite:** Haus mit Gesamt-Ampel, Bubbles (mit dem Lab „Start-Bubbles“), Modulkacheln und Hinweise passen ohne Scrollen auf den Bildschirm. Weitere Kacheln und Hinweise erreichst du mit den Pfeilen oder durch Wischen.
+- **Tablet-Modus · „Mehr“:** alle eingeschalteten Module auf einen Blick.
+- **Tablet-Modus · Ruhebild:** Uhr, Haus und bis zu drei Hinweise.
+
+### Geändert
+- **Größe „Groß“ und „Sehr groß“:** Die Startseite zeigt weniger Kacheln, statt zu scrollen.
+- **Müllabfuhr auf der Tablet-Startseite:** Statt der eigenen Karte steht ein Hinweis mit Knopf „Steht draußen“ bzw. „Wieder drin“ da.
+- **Schalter „Aufbau: Neu / Wie bisher“** in den Einstellungen des Tablet-Modus. Handy- und Computer-Ansicht bleiben unverändert.
+
+### Noch offen
+- Die Modulseiten selbst bekommen ihre Aufteilung ohne Scrollen in den nächsten Stufen und scrollen bis dahin teilweise noch.
+- Getestet im Browser mit Beispieldaten, noch nicht auf einem echten Tablet.
+
 ## [2026.11.5b3] - 2026-11-24
 
 Genauere Fehlerberichte.

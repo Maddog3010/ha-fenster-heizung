@@ -31,6 +31,7 @@ SIZES = ("auto", "large", "xl")
 IDLE_HOME = (0, 2, 5, 15)
 SLEEP = (0, 5, 15, 30)
 OFF_AFTER = (0, 10, 30)
+LOOKS = ("new", "classic")
 MAX_TABLETS = 20
 ITER = 60000
 FAILS_MAX = 5
@@ -42,6 +43,7 @@ def default_cfg() -> dict[str, Any]:
     return {
         "size": "auto", "idle_home": 2, "sleep": 15, "wake_warn": True,
         "motion": "", "screen": "", "notify": "", "off_after": 0, "dock_hide": [],
+        "look": "new", "rail": [],
     }
 
 
@@ -60,6 +62,8 @@ def clean_cfg(raw: Any) -> dict[str, Any]:
     raw = raw if isinstance(raw, dict) else {}
     d = default_cfg()
     hide = [str(x)[:16] for x in (raw.get("dock_hide") or []) if isinstance(x, str)][:20]
+    rail = raw.get("rail")
+    rail = [str(x)[:16] for x in rail if isinstance(x, str) and x not in ("", "st")] if isinstance(rail, list) else []
     notify = raw.get("notify")
     return {
         "size": _pick(raw.get("size"), SIZES, d["size"]),
@@ -71,6 +75,8 @@ def clean_cfg(raw: Any) -> dict[str, Any]:
         "notify": notify if isinstance(notify, str) and SVC_RE.match(notify) else "",
         "off_after": _pick(raw.get("off_after"), OFF_AFTER, d["off_after"]),
         "dock_hide": list(dict.fromkeys(hide)),
+        "look": _pick(raw.get("look"), LOOKS, d["look"]),
+        "rail": list(dict.fromkeys(rail))[:4],
     }
 
 

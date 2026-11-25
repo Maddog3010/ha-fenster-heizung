@@ -3735,6 +3735,87 @@ const CSS_MQX = `
 .mqab2{background:none;color:#ffb3ad;border:1px solid #6a2a2e;border-radius:14px;padding:10px 20px;font:inherit;cursor:pointer}.mqan{font-size:.8rem;color:#c99;max-width:420px;margin-top:10px}
 @keyframes mqpulse{from{background:#3a1216}to{background:#521a1f}}
 `;
+/* Tablet-Modus · Neuer Aufbau (Stufe 1): Leiste links bzw. unten, Startseite auf einer Seite */
+const CSS_TM2 = `
+.tmw.tm2.land{flex-direction:row}
+.tm2main{flex:1;min-width:0;min-height:0;display:flex;flex-direction:column}
+.tm2rail{width:104px;flex:none;display:flex;flex-direction:column;align-items:center;gap:8px;padding:calc(8px + env(safe-area-inset-top,0px)) 8px calc(10px + env(safe-area-inset-bottom,0px)) calc(8px + env(safe-area-inset-left,0px));border-right:1px solid var(--line);background:var(--card)}
+.tm2rail .blogo{width:50px;height:50px;flex:none}
+.tm2rl{flex:1;min-height:0;width:100%;display:flex;flex-direction:column;gap:8px}
+.tm2rail .tmdk{flex:1 1 0;min-height:44px;max-height:86px;height:auto;width:100%;overflow:hidden}
+.tm2 .tm2h{padding:calc(8px + env(safe-area-inset-top,0px)) 16px 2px;min-height:62px}
+.tm2 .tm2h .blogo{width:44px;height:44px}
+.tm2h .tmht span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tm2 .tmclk span{font-size:2.2rem}.tm2 .tmclk small{margin-top:1px;font-size:.78rem}
+.tm2.port .tm2dock{gap:6px;padding:8px 10px calc(10px + env(safe-area-inset-bottom,0px))}.tm2.port .tm2dock .tmdk{height:72px;border-radius:16px}
+.tm2 .tmbody{padding:8px 16px 14px}
+/* Startseite: füllt genau die Resthöhe */
+.tm2 .tmbody.tm2fit{display:flex;flex-direction:column;overflow:hidden}
+.tm2fit>.hzpg{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px}
+.tm2fit .mqstrip,.tm2fit .hzqa{flex:none;margin:0}
+.tm2fit .mqqa{min-height:44px}
+.tm2sc{flex:1 1 0;min-height:0;position:relative;overflow:hidden;border-radius:20px;background:var(--card)}
+.tm2sc svg.hzsc{position:absolute;right:0;top:0;width:100%;height:100%;display:block}
+.tm2sc.plain{flex:0 0 auto;border:1px solid var(--line)}.tm2sc.plain .tm2amp{position:static;margin:8px;background:none;color:inherit}.tm2sc.plain small{color:var(--mut)}
+.tm2amp{position:absolute;left:14px;bottom:14px;max-width:min(54%,520px);display:flex;gap:12px;align-items:flex-start;padding:12px 18px;border-radius:16px;background:rgba(9,17,27,.74);color:#fff}
+.tm2amp i{width:14px;height:14px;border-radius:50%;background:var(--zc);box-shadow:0 0 12px var(--zc);flex:none;margin-top:8px}
+.tm2amp b{display:block;font-size:1.5rem;line-height:1.2}.tm2amp small{display:block;font-size:.95rem;color:#d5e0ea;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}.tm2amp small.d{color:#a9bccb;font-size:.85rem}
+.tm2bubs{flex:none;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:8px}
+.tm2.port .tm2bubs{grid-template-columns:repeat(4,minmax(0,1fr))}
+.tm2b{min-width:0;height:54px;display:flex;align-items:center;gap:8px;padding:0 10px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:inherit;font:inherit;text-align:left;cursor:pointer}
+.tm2b.z-warn,.tm2b.z-hint{border-color:color-mix(in srgb,var(--zc) 65%,transparent)}
+.tm2b svg{flex:none}.tm2b span{min-width:0}.tm2b b{display:block;font-size:.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tm2b small{display:block;font-size:.72rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tm2low{flex:2.1 1 0;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 320px;grid-template-rows:minmax(0,1fr);gap:10px}
+.tm2col{min-width:0;min-height:0;display:flex;flex-direction:column;gap:8px;touch-action:pan-y}
+.tm2grid{flex:1;min-height:0;display:grid;grid-template-columns:repeat(var(--c),minmax(0,1fr));grid-template-rows:repeat(var(--r),minmax(0,1fr));gap:10px}
+.tm2t{position:relative;min-width:0;min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:3px;padding:10px 14px;border-radius:18px;border:1px solid var(--line);border-bottom:3px solid var(--zc);background:var(--card);color:inherit;font:inherit;text-align:left;cursor:pointer}
+.tm2tp{display:block;flex:0 1 auto;min-height:0;color:var(--zc)}.tm2tp svg{display:block;max-height:100%}
+.tm2t b{font-size:1.05rem;line-height:1.2;max-width:100%;flex:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tm2t small{font-size:.85rem;line-height:1.25;color:var(--mut);flex:none;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.tm2t:not(.z-off) small{color:var(--zc)}
+.tm2t em{position:absolute;top:8px;right:10px;font-style:normal;font-size:.66rem;font-weight:700;text-transform:uppercase;color:var(--mut)}
+.tm2t:active,.tm2b:active,.tm2hm:active,.tm2m:active{filter:brightness(1.15)}
+.tm2side{min-width:0;min-height:0;display:flex;flex-direction:column;gap:8px;touch-action:pan-y}
+.tm2hl{flex:1;min-height:0;display:grid;grid-template-rows:repeat(var(--h),minmax(0,1fr));gap:10px}
+.tm2h1{min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:center;border-radius:18px;border:1px solid var(--line);background:var(--card)}
+.tm2h1.z-hint,.tm2h1.z-warn{border-color:color-mix(in srgb,var(--zc) 60%,transparent);background:color-mix(in srgb,var(--zc) 9%,var(--card))}
+.tm2hm{flex:1;min-height:0;display:flex;align-items:center;gap:12px;padding:6px 12px;border:0;background:none;color:inherit;font:inherit;text-align:left}button.tm2hm{cursor:pointer}
+.tm2hp{flex:none;display:grid;place-items:center;width:42px;color:var(--zc)}
+.tm2hx{min-width:0}.tm2hx b{font-size:.98rem;line-height:1.25;font-weight:600;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}.tm2hx small{font-size:.8rem;color:var(--mut);overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical}
+.tm2hb{flex:none;min-height:44px;margin:0 10px 8px;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:12px;border:1px solid color-mix(in srgb,var(--teal) 50%,transparent);background:color-mix(in srgb,var(--teal) 13%,transparent);color:var(--teal);font:inherit;font-weight:700;cursor:pointer}
+.tm2ok{grid-row:1/-1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;border-radius:18px;border:1px solid var(--line);background:var(--card);text-align:center;padding:12px}
+.tm2later{flex:none;min-height:44px;display:flex;align-items:center;justify-content:center;gap:8px;border:0;background:none;color:var(--mut);font:inherit;font-size:.85rem;cursor:pointer}
+.tm2pg{flex:none;display:flex;align-items:center;justify-content:center;gap:12px;min-height:44px}
+.tm2pg button{width:56px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:inherit;display:grid;place-items:center;cursor:pointer}.tm2pg button:disabled{opacity:.3}
+.tm2pg button:first-child svg{transform:none}.tm2pg button:last-of-type svg{transform:rotate(-90deg)}
+.tm2dots{display:flex;gap:7px}.tm2dots i{width:8px;height:8px;border-radius:999px;background:var(--line)}.tm2dots i.on{width:24px;background:var(--teal)}
+.tm2pg small{font-size:.78rem;color:var(--mut)}
+/* Hochkant: Hinweise unter den Kacheln */
+.tm2.port .tm2sc{flex:1.1 1 0}
+.tm2.port .tm2low{flex:3 1 0;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,2.2fr) minmax(154px,1fr)}
+.tm2.port .tm2amp{max-width:54%;top:12px;bottom:auto}
+.tm2.port .tm2t,.tm2.short .tm2t{justify-content:flex-start;align-items:center;display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-rows:auto auto;align-content:center;column-gap:12px}
+.tm2.port .tm2tp,.tm2.short .tm2tp{grid-row:1/span 2}
+.tm2.port .tm2h1{flex-direction:row;align-items:center}.tm2.port .tm2hm{align-self:stretch}.tm2.port .tm2hb{margin:0 10px 0 0;padding:0 14px}
+.tm2.port .tm2low.nohint{grid-template-rows:minmax(0,3fr) minmax(0,.7fr)}
+@media(max-width:1100px) and (orientation:landscape){.tm2b{padding:0 6px;gap:5px}.tm2b svg{width:22px;height:22px}.tm2b b{font-size:.84rem}.tm2b small{font-size:.66rem}}
+/* Größe */
+.tm2.sz-large .tm2t b{font-size:1.25rem}.tm2.sz-large .tm2t small{font-size:1rem}.tm2.sz-large .tm2hx b{font-size:1.12rem}.tm2.sz-large .tm2b b{font-size:1.1rem}
+.tm2.sz-xl .tm2t b{font-size:1.45rem}.tm2.sz-xl .tm2t small{font-size:1.15rem}.tm2.sz-xl .tm2hx b{font-size:1.25rem}.tm2.sz-xl .tm2hx small{font-size:.95rem}.tm2.sz-xl .tm2b b{font-size:1.15rem}.tm2.sz-xl .tmdk{font-size:.92rem}
+/* „Mehr“ */
+@media(min-width:720px){.sheet.wide.tm2all{width:min(1060px,94vw);max-height:94vh}}
+.tm2all .sh>div{flex:1}.tm2ed{flex:none;margin-right:10px}
+.tm2mg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:6px 0 10px;touch-action:pan-y}
+@media(max-width:900px){.tm2mg{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tm2m{min-width:0;min-height:84px;display:flex;align-items:center;gap:12px;padding:8px 12px;border-radius:16px;border:1px solid var(--line);background:rgba(127,127,127,.07);color:inherit;font:inherit;text-align:left;cursor:pointer}
+.tm2m.inr{border-color:color-mix(in srgb,var(--teal) 45%,var(--line))}.tm2m.sel{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 13%,transparent)}
+.tm2m svg{flex:none}.tm2m span{min-width:0}.tm2m b{display:block;font-size:.98rem;line-height:1.2}.tm2m small{display:block;font-size:.76rem;color:var(--mut)}
+/* Ruhebild */
+.tmrest.hzst.tm2r{padding-top:5vh}.tmrest.hzst.tm2r>.tmsc{height:43%}.tmrest.hzst.tm2r .tmrw{color:#fff;opacity:.85;text-shadow:0 1px 4px #000}
+.tmrest .tm2rh{order:3}.tm2rh{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:12px;padding:0 20px;max-width:1100px}
+.tm2rh>div{display:flex;align-items:center;gap:10px;max-width:340px;padding:10px 16px;border-radius:14px;background:rgba(13,19,27,.88);border:1px solid rgba(255,255,255,.1);text-align:left;color:#d7dde4}
+.tm2rh i{width:10px;height:10px;border-radius:50%;background:var(--zc);flex:none}.tm2rh b{display:block;font-size:.98rem;font-weight:600}.tm2rh small{display:block;font-size:.8rem;color:#98a4af}
+`;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
     super();
@@ -7741,7 +7822,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _build() {
     const sr = this.shadowRoot;
-    sr.innerHTML = `<style>${CSS_MAIN}${CSS_RK}${CSS_GH}${CSS_SUP}${CSS_STS}${CSS_GOE}${CSS_SF2}${CSS_WT}${CSS_SAI}${CSS_SB}${CSS_MQX}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
+    sr.innerHTML = `<style>${CSS_MAIN}${CSS_RK}${CSS_GH}${CSS_SUP}${CSS_STS}${CSS_GOE}${CSS_SF2}${CSS_WT}${CSS_SAI}${CSS_SB}${CSS_MQX}${CSS_TM2}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
     this._built = true; this._t0 = Date.now();
     /* Aufklappbereiche (<details>) merken: Home Assistant meldet laufend neue Werte, jeder Neuaufbau würde sie sonst wieder zuklappen (2026.11.4.3b5) */
     sr.addEventListener("toggle", (e) => { const d = e.target; if (d && d.tagName === "DETAILS" && !this._dkBusy) { const k = this._dKey(d); if (k) (this._dOpen = this._dOpen || {})[k] = d.open; } }, true);
@@ -13571,7 +13652,7 @@ class FensterHeizungPanel extends HTMLElement {
   _tmModeSet(m) { try { localStorage.setItem("fh_tm_mode", m); } catch (_) { /* privater Modus */ } this._tmSleep = false; this._tmLast = Date.now(); }
   _tmOn() { const m = this._tmMode(); return m === "on" || (m === "auto" && this._tmTouch() && window.innerWidth >= 600); }
   _tmMe() { const id = this._tmId(), t = ((this._tm && this._tm.tablets) || []).find((x) => x.id === id); return t || { id, name: "Tablet", has_pin: false, cfg: {} }; }
-  _tmC() { return { size: "auto", idle_home: 2, sleep: 15, wake_warn: true, motion: "", screen: "", notify: "", off_after: 0, dock_hide: [], ...(this._tmMe().cfg || {}) }; }
+  _tmC() { return { size: "auto", idle_home: 2, sleep: 15, wake_warn: true, motion: "", screen: "", notify: "", off_after: 0, dock_hide: [], look: "new", rail: [], ...(this._tmMe().cfg || {}) }; }
   async _tmLoad() {
     if (this._tmBound !== true) { this._tmBound = true; this._tmBind(); }
     const k = this._tmKind();
@@ -13601,7 +13682,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (this._tmSleep) { if (moved || newWarn) this._tmWake(); return; }
     if (newWarn && !this._modal) { this._tmView = "st"; this._tmLast = Date.now(); this._render(); return; }
     if (c.sleep && idle >= c.sleep * 60000) { this._tmSleep = true; this._modal = null; this._renderModal(); this._render(); return; }
-    if (c.idle_home && idle >= c.idle_home * 60000 && !this._tmHomed) { this._tmHomed = true; if (this._tmV() !== "st" && !this._modal) { this._tmView = "st"; this._render(); } }
+    if (c.idle_home && idle >= c.idle_home * 60000 && !this._tmHomed) { this._tmHomed = true; const paged = Object.values(this._tmPg || {}).some(Boolean); if (!this._modal) this._tmPg = {}; if ((this._tmV() !== "st" || paged) && !this._modal) { this._tmView = "st"; this._render(); } }
   }
   _tmV() { return this._tmView || "st"; }
   _tmItems() {
@@ -13630,6 +13711,7 @@ class FensterHeizungPanel extends HTMLElement {
     return `<div class="card empty">${ic("puzzle", 36)}<div style="margin:10px 0 4px;font-weight:700">${esc(m.name)}</div>Dieses Modul gibt es im Tablet-Modus noch nicht.</div>`;
   }
   _tmStart() {
+    if (this._tm2On()) return this._tm2Start();
     const hints = this._hzHints(), mods = this._mdList().filter((x) => x.id !== "st"), bubs = this._labOn("sb") ? this._hzBubs().replace(/data-act="hzbub"/g, 'data-act="tmbub"') : "";
     const rows = hints.slice(0, 3).map((h) => `<div class="tmhint ${h.c || ""}"><span class="tmhi">${ic(ICONS[h.i] ? h.i : "info", 20)}</span><span><b>${h.t}</b>${h.s ? `<small>${h.s}</small>` : ""}</span></div>`).join("");
     if (this._hzNew()) { const vis = this._hzVis(hints), r2 = vis.slice(0, 3).map((h) => `<div class="tmhint ${h.c || ""}"><span class="tmhi">${ic(ICONS[h.i] ? h.i : "info", 20)}</span><span><b>${h.t}</b>${h.s ? `<small>${h.s}</small>` : ""}</span></div>`).join(""); return this._hzWrap(`${this._mqStrip ? this._mqStrip() : ""}${this._hzTmAmp(vis)}${this._muTabCard && this._muOn() ? this._muTabCard() : ""}${this._hzQaRow(true)}${bubs}<div class="tmgrid">${this._hzMods().map((m) => this._hzTile(m).replace('data-act="hzgo"', 'data-act="tmgo"')).join("")}</div>${r2 ? `<div class="tmhints">${r2}</div>` : ""}`); }
@@ -13652,14 +13734,16 @@ class FensterHeizungPanel extends HTMLElement {
     const mq = this._mqRest ? this._mqRest() : ""; if (mq) return mq;
     const facts = ["wetter", "alarm", "personen", "muell"].map((id) => this._hzBubDef(id)).filter((x) => x && x.i).map((x) => `<div>${ic(x.i, 26)}<span>${esc(x.b)}${x.s ? ` · ${esc(x.s)}` : ""}</span></div>`).join("");
     const ef = this._efxSleep ? this._efxSleep() : "";
-    const sc = !ef && this._hzNew() ? this._hzTmSleep() : "";
-    return `<div class="tmrest${ef ? " efst" : ""}${sc ? " hzst" : ""}">${ef}${sc}<div class="tmrc ${this._spnEarlyClock()}" data-tmclk>${new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</div><div class="tmrd" data-tmdate>${new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}</div><div class="tmrf">${facts}</div><div class="tmrw">Antippen zum Aufwecken</div></div>`;
+    let sc = !ef && this._hzNew() ? this._hzTmSleep() : "";
+    if (sc && this._tm2On()) sc = this._tm2Wide(sc.replace('viewBox="0 0 360 200"', 'viewBox="0 40 360 162"'), "xMidYMax");
+    return `<div class="tmrest${ef ? " efst" : ""}${sc ? " hzst" : ""}${this._tm2On() ? " tm2r" : ""}">${ef}${sc}<div class="tmrc ${this._spnEarlyClock()}" data-tmclk>${new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</div><div class="tmrd" data-tmdate>${new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}</div><div class="tmrf">${this._tm2On() && this._hzNew() ? "" : facts}</div>${this._tm2RestHints()}<div class="tmrw">Antippen zum Aufwecken</div></div>`;
   }
   _tmRender() {
     const sr = this.shadowRoot, v = this._mdList().some((m) => m.id === this._tmV()) || this._tmV() === "st" ? this._tmV() : "st", m = this._mdList().find((x) => x.id === v), c = this._tmC(), me = this._tmMe();
     this._w = this.clientWidth; this._tmView = v;
     const al = this._mqAlarm ? this._mqAlarm() : null; if (al && !(Date.now() < (this._mqPlanTs || 0))) { sr.getElementById("main").innerHTML = this._mqAlarmHtml(al); return; }
     if (this._tmSleep) { sr.getElementById("main").innerHTML = this._tmSleepHtml(); return; }
+    if (this._tm2On()) { this._tm2Render(v, m); return; }
     const sc = { auto: 1, large: 1.15, xl: 1.3 }[c.size] || 1, title = v === "st" ? this._hzGreet().split(" · ")[0] : esc(m ? m.name : ""), hints = v === "st" ? (this._hzNew() ? this._hzVis(this._hzHints()) : this._hzHints()).length : 0;
     const sub = v === "st" ? (hints ? `${hints} ${hints === 1 ? "Hinweis" : "Hinweise"}` : "Alles in Ordnung") : esc(m ? m.tag || "" : "");
     const x = sr.querySelector(".tmbody"), keep = x && this._tmVOld === v ? x.scrollTop : 0; this._tmVOld = v;
@@ -13718,10 +13802,11 @@ class FensterHeizungPanel extends HTMLElement {
   _tmStartNow() { const me = this._tmMe(); if (!me.has_pin) { this._tmPinOpen("new", "start"); return; } this._tmModeSet("on"); this._tmView = "st"; this._modal = null; this._renderModal(); this._render(); }
   _tmAct(a, b) {
     const k = b.dataset.k, m = this._modal;
-    if (a === "tmgo") { this._tmView = k; this._tmHomed = false; this._render(); }
+    if (a.startsWith("tm2")) { this._tm2Act(a, b); return; }
+    if (a === "tmgo") { if (k === "st") this._tmPg = {}; this._tmView = k; this._tmHomed = false; this._render(); }
     else if (a === "tmbub") { const d = this._hzBubDef(k) || {}; if (d.mod && this._mdList().some((x) => x.id === d.mod)) { this._tmView = d.mod; this._render(); } }
     else if (a === "tmgomore") { this._tmView = k; this._tmHomed = false; this._modal = null; this._renderModal(); this._render(); }
-    else if (a === "tmmore") { this._modal = { type: "tmmore" }; this._renderModal(); }
+    else if (a === "tmmore") { if (this._tmPg) this._tmPg.more = 0; this._modal = { type: "tmmore" }; this._renderModal(); }
     else if (a === "tmlock") { this._tmPin = ""; const me = this._tmMe(); if (me.has_pin) this._tmPinOpen("unlock"); else this._tmPinOpen("new"); }
     else if (a === "tmopen") { this._modal = { type: "tmnorm" }; this._renderModal(); if (this._admin()) this._tmAdminList(); }
     else if (a === "tmstart") this._tmStartNow();
@@ -13773,6 +13858,7 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="tmdots">${dots}</div><div class="tmerr" role="alert">${esc(m.err || "")}</div>
         <div class="tmkeys">${keys}<button class="z" data-act="tmpinx">Abbrechen</button><button data-act="tmkey" data-k="0" aria-label="0">0</button><button class="z" data-act="tmkey" data-k="back" aria-label="Löschen">⌫</button></div></div>`;
     }
+    if (m.type === "tmmore" && this._tm2On()) return this._tm2More();
     if (m.type === "tmmore") {
       const rest = this._tmItems();
       return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Weitere Module</b><span>Tablet-Modus</span></div>${close}</div>
@@ -13795,11 +13881,15 @@ class FensterHeizungPanel extends HTMLElement {
       ${inT ? "" : row("Tablet-Modus", "Ersetzt die normale Ansicht. Automatisch: auf Touchgeräten ab 600 px Breite.", seg("tmmode", mode, [["off", "Aus"], ["auto", "Automatisch"], ["on", "Immer an"]]))}
       <div class="vrow"><span>Name dieses Tablets<small class="mut" style="display:block">Erkannt: ${esc(kd.label)}, ${window.innerWidth} × ${window.innerHeight}</small></span><input class="osel" data-f="tmname" value="${esc(me.name)}" maxlength="24" style="width:46%;margin:0" ${lock ? "disabled" : ""} aria-label="Name"></div>
       ${row("Größe", "Bedienelemente und Schrift", seg("tmsz", c.size, [["auto", "Auto"], ["large", "Groß"], ["xl", "Sehr groß"]]))}
+      ${row("Aufbau", "Neu: Leiste links, Start ohne Scrollen", seg("tm2look", c.look, [["new", "Neu"], ["classic", "Wie bisher"]]))}
       ${row("Zurück zu Start nach", "Ohne Berührung", seg("tmih", c.idle_home, [[0, "Aus"], [2, "2 Min."], [5, "5 Min."], [15, "15 Min."]]))}
       ${row("Ruhemodus nach", "Dunkle Uhr statt Inhalt. Berühren oder Bewegung weckt auf.", seg("tmsl", c.sleep, [[0, "Aus"], [5, "5 Min."], [15, "15 Min."], [30, "30 Min."]]))}
       ${row("Warnungen wecken auf", "Zum Beispiel ein ausgelöster Alarm", sw("tmww", c.wake_warn, "Warnungen wecken auf"))}
-      <div class="lsec" style="margin-top:12px">${ic("grid", 15)}Untere Leiste</div>
-      <div class="mut sm" style="margin:0 0 6px">Start ist immer dabei. Bei schmalen Bildschirmen steht der Rest unter „Mehr“.</div>
+      ${this._tm2On() ? `<div class="lsec" style="margin-top:12px">${ic("grid", 15)}Modulleiste</div>
+      <div class="mut sm" style="margin:0 0 6px">Quer links, hochkant unten: Start, bis zu vier Module und „Mehr“.</div>
+      <div class="gschs" style="flex-wrap:wrap">${this._tm2Rail(this._tmItems()).length ? this._tmItems().filter((x) => x.id !== "st").map((x) => { const on = this._tm2Rail(this._tmItems()).some((y) => y.id === x.id); return `<button class="gsch ${on ? "sel" : ""}" data-act="tm2rail" data-k="${x.id}" aria-pressed="${on}" ${lock ? "disabled" : ""}>${esc(this._tm2Name(x))}</button>`; }).join("") : ""}</div>` : ""}
+      <div class="lsec" style="margin-top:12px">${ic("grid", 15)}${this._tm2On() ? "Module anzeigen" : "Untere Leiste"}</div>
+      <div class="mut sm" style="margin:0 0 6px">${this._tm2On() ? "Abgewählte Module erscheinen weder in der Leiste noch unter „Mehr“." : "Start ist immer dabei. Bei schmalen Bildschirmen steht der Rest unter „Mehr“."}</div>
       <div class="gschs" style="flex-wrap:wrap">${mods.map((x) => `<button class="gsch ${c.dock_hide.includes(x.id) ? "" : "sel"}" data-act="tmdock" data-k="${x.id}" aria-pressed="${!c.dock_hide.includes(x.id)}" ${lock ? "disabled" : ""}>${esc(x.short || x.name)}</button>`).join("")}</div>
       <div class="lsec" style="margin-top:14px">${ic("eye", 15)}Bewegung und Display</div>
       <div class="mut sm" style="margin:0 0 6px">Der Bewegungsmelder wird im Home Assistant überwacht und funktioniert auch bei ausgeschaltetem Display. Bei Bewegung geht das Display an, ohne Bewegung nach der eingestellten Zeit wieder aus.</div>
@@ -13810,6 +13900,193 @@ class FensterHeizungPanel extends HTMLElement {
       ${this._mqOn && this._mqOn("tb") ? `<div class="lsec" style="margin-top:14px"><span class="lggd">★</span>&nbsp;Wand-Tablet-Extras</div>${row("Raum, Nacht, Schnellaktionen, Alarm", "Sponsor Max · gilt für dieses Tablet", `<button class="btn2" data-act="mqxset" data-k="tb" style="flex:none">Einstellen</button>`)}` : ""}
       ${list}
       <div class="gbtns" style="margin-top:14px">${inT ? `<button class="btn2" data-act="tmend" ${lock ? "disabled" : ""}>Tablet-Modus beenden</button><button class="btn2 pri" data-act="tmdone">${ic("check", 16)} Fertig</button>` : `<button class="btn2" data-act="close">Schließen</button><button class="btn2 pri" data-act="tmstart" ${lock ? "disabled" : ""}>${ic("tablet", 16)} Tablet-Modus jetzt starten</button>`}</div></div>`;
+  }
+  /* ================= Tablet-Modus · Neuer Aufbau, Stufe 1 (Konzept „Tabletmodus neu“) =================
+     Ein Modul, eine Seite. Quer: Modulleiste links, hochkant: unten. Schlanke Kopfzeile mit einem Zustandssatz.
+     Die Startseite passt ohne Scrollen auf einen Bildschirm: Haus-Kopf, Bubbles, Modulkacheln, Hinweise.
+     Mehr Kacheln oder Hinweise = weitere Seiten (Pfeile und Wischen). „Groß“ zeigt weniger Kacheln.
+     Die Modulseiten bekommen ihre Aufteilung in den nächsten Stufen und scrollen bis dahin wie bisher.
+     Je Tablet gespeichert: cfg.look = "new" | "classic" (wie bisher), cfg.rail = bis zu 4 Module in der Leiste. */
+  _tm2On() { return this._tmC().look !== "classic"; }
+  _tm2Land() { return window.innerWidth >= 900 && window.innerWidth > window.innerHeight; }
+  static TM2_N = { fh: "Heizung", ww: "Wasser", en: "Energie", gs: "Geräte", ev: "E-Auto", wx: "Wetter", sf: "Melder", dt: "Tarif", wa: "Wartung", sp: "Prognose", mu: "Müll", li: "Licht", ef: "Hausfluss", gr: "Grundriss", abrechnung: "Abrechnung", saugroboter: "Sauger" };
+  _tm2Name(x) { return this.constructor.TM2_N[x.id] || x.name; }
+  /* Die bis zu vier Module der Leiste: eigene Wahl, sonst Modul 1–4, aufgefüllt mit den nächsten eingeschalteten */
+  _tm2Rail(items) {
+    const rest = items.filter((x) => x.id !== "st"), by = (id) => rest.find((x) => x.id === id), pick = (this._tmC().rail || []).map(by).filter(Boolean);
+    if (pick.length) return pick.slice(0, 4);
+    const r = ["fh", "ww", "en", "gs"].map(by).filter(Boolean);
+    rest.forEach((x) => { if (r.length < 4 && !r.includes(x) && x.id !== "gr") r.push(x); });
+    return r;
+  }
+  _tm2Nav(land) {
+    const items = this._tmItems(), v = this._tmV(), cur = items.find((x) => x.id === v);
+    let r = this._tm2Rail(items);
+    /* Ein anderes Modul ist offen: es rückt auf den letzten Platz */
+    if (cur && v !== "st" && !r.some((x) => x.id === v)) r = [...r.slice(0, 3), cur];
+    const bad = this._wwProblems && this._mdState().on.ww && this._wwProblems().some((p) => p[0] === "bad" || p[0] === "warn");
+    const btn = (x) => `<button class="tmdk ${v === x.id ? "sel" : ""}" data-act="tmgo" data-k="${x.id}" aria-pressed="${v === x.id}">${ic(x.icon, 28)}<span>${esc(this._tm2Name(x))}</span>${x.id === "ww" && bad ? `<i class="tmdot"></i>` : ""}</button>`;
+    const list = [items[0], ...r].map(btn).join("") + `<button class="tmdk" data-act="tmmore">${ic("grid", 28)}<span>Mehr</span></button>`;
+    return land ? `<nav class="tm2rail" aria-label="Module"><img class="blogo" src="${LOGO_URL}" alt="" draggable="false"><div class="tm2rl">${list}</div>${this._tm2Lock()}</nav>` : `<nav class="tmdock tm2dock" aria-label="Module">${list}</nav>`;
+  }
+  _tm2Lock() { const me = this._tmMe(); return `<button class="tmgear" data-act="tmlock" aria-label="${me.has_pin ? "Einstellungen (PIN)" : "Einstellungen"}">${ic(me.has_pin ? "lock" : "sliders", 22)}</button>`; }
+  /* Zustandssatz für die Kopfzeile einer Modulseite */
+  _tm2Status(m) {
+    if (!m) return "";
+    try {
+      const K = this._hzK(m);
+      if (K && K.z !== "off" && K.l1) return K.u === "%" && K.v != null ? `${esc(String(K.v))} % ${K.l1}` : [K.v != null && !K.tx ? `${esc(String(K.v))}${K.u ? ` ${esc(K.u)}` : ""}` : "", K.l1].filter(Boolean).join(" · ");
+    } catch (_) { /* Modul noch nicht geladen */ }
+    return esc(m.tag || "");
+  }
+  _tm2Render(v, m) {
+    const sr = this.shadowRoot, c = this._tmC(), land = this._tm2Land(), fit = v === "st";
+    const zoom = { auto: 1, large: 1.15, xl: 1.3 }[c.size] || 1;
+    let title, sub;
+    if (fit) {   /* gleich gezählt wie in der Gesamt-Ampel auf dem Haus-Kopf */
+      const L = this._hzLevel(this._hzNew() ? this._hzVis(this._hzHints()) : this._hzHints()); title = this._hzGreet().split(" · ")[0];
+      sub = [L.n ? `${L.n} ${L.n === 1 ? "Hinweis" : "Hinweise"}` : "", L.info ? `${L.info} ${L.info === 1 ? "Info" : "Infos"}` : ""].filter(Boolean).join(" · ") || "Alles in Ordnung";
+    }
+    else { title = esc(m ? m.name : ""); sub = this._tm2Status(m); }
+    const x = sr.querySelector(".tmbody"), keep = x && this._tmVOld === v ? x.scrollTop : 0; this._tmVOld = v;
+    const d = new Date(), nav = this._tm2Nav(land);
+    sr.getElementById("main").innerHTML = `<div class="tmw tm2 ${land ? "land" : "port"}${land && window.innerHeight < 700 ? " short" : ""} sz-${esc(c.size)}">${land ? nav : ""}<div class="tm2main">
+      <header class="tmh tm2h">${land ? "" : `<img class="blogo" src="${LOGO_URL}" alt="" draggable="false">`}<div class="tmht"><b>${title}</b><span>${sub}</span></div>
+      <div class="tmclk"><span data-tmclk>${d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</span><small data-tmdate>${d.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}</small></div>${land ? "" : this._tm2Lock()}</header>
+      <div class="tmbody${fit ? " tm2fit" : ""}"${fit ? "" : ` style="zoom:${zoom}"`}>${this._tmBody(v)}</div></div>${land ? "" : nav}</div>`;
+    const nb = sr.querySelector(".tmbody"); if (nb && keep && !fit) nb.scrollTop = keep;
+    this._tm2Bind();
+  }
+  /* Wie viel auf eine Seite passt: Kacheln (Spalten × Zeilen) und Hinweise */
+  _tm2Cap() {
+    const size = this._tmC().size, land = this._tm2Land(), W = window.innerWidth, H = window.innerHeight;
+    let t = size === "xl" ? 4 : size === "large" ? 6 : 8, h = size === "xl" ? 2 : 3;
+    if (land) { if (W < 1150 || H < 720) t = Math.min(t, 6); if (H < 640) { t = Math.min(t, 4); h = 2; } }
+    else { if (H < 1150 || W < 700) { t = Math.min(t, 6); h = Math.min(h, 2); } if (W < 600 || H < 900) { t = Math.min(t, 4); h = Math.min(h, 2); } }
+    const cols = land ? (t === 8 ? 4 : t === 6 ? 3 : 2) : 2;
+    return { t, h, cols, rows: Math.ceil(t / cols) };
+  }
+  /* Seitenblättern: key = Bereich, n = Einträge, per = je Seite */
+  _tm2Page(key, n, per) {
+    const P = this._tmPg || (this._tmPg = {}), pages = Math.max(1, Math.ceil(n / per)), i = Math.min(Math.max(0, P[key] || 0), pages - 1);
+    P[key] = i; return { i, pages, from: i * per, to: Math.min(n, i * per + per), n };
+  }
+  _tm2Pager(key, p, label) {
+    if (p.pages < 2) return "";
+    return `<div class="tm2pg"><button data-act="tm2pg" data-k="${key}" data-d="-1" ${p.i ? "" : "disabled"} aria-label="Vorherige Seite">${ic("back", 22)}</button><span class="tm2dots" aria-label="Seite ${p.i + 1} von ${p.pages}">${Array.from({ length: p.pages }, (_, i) => `<i class="${i === p.i ? "on" : ""}"></i>`).join("")}</span><button data-act="tm2pg" data-k="${key}" data-d="1" ${p.i < p.pages - 1 ? "" : "disabled"} aria-label="Nächste Seite">${ic("chev", 22)}</button>${label ? `<small>${label} ${p.from + 1}–${p.to} von ${p.n}</small>` : ""}</div>`;
+  }
+  /* ---------- Startseite ---------- */
+  /* Haus-Szene ganz zeigen statt beschneiden; Himmel und Boden laufen dabei bis an die Ränder weiter */
+  _tm2Wide(svg, align) {
+    return svg.replace('preserveAspectRatio="xMidYMid slice"', `preserveAspectRatio="${align} meet"`)
+      .replace('<rect width="360" height="200"', '<rect x="-3000" width="6400" height="200"').replace('<rect x="-2" y="150" width="364"', '<rect x="-3000" y="150" width="6400"').replace('M-2 150 h364', 'M-3000 150 h6400');
+  }
+  _tm2Scene(hints) {
+    const L = this._hzLevel(hints); let svg = "", bg = "";
+    if (this._hzNew()) {
+      try {
+        /* Ausschnitt ab Dachhöhe, rechtsbündig und ganz sichtbar; der Himmel läuft als Verlauf weiter */
+        svg = this._tm2Wide(this._hzScSvg({ vb: "100 34 262 166" }), "xMaxYMax");
+        bg = String(this._hzScBg || "").replace(/81%/g, `${((150 - 34) / 166 * 100).toFixed(1)}%`);
+      } catch (_) { svg = ""; }
+    }
+    const day = this._hzDayLine ? this._hzDayLine() : "";
+    return `<div class="tm2sc${svg ? "" : " plain"} z-${L.z}"${bg ? ` style="background:${bg}"` : ""}>${svg}<div class="tm2amp"><i aria-hidden="true"></i><div><b>${esc(L.t)}</b><small>${esc(L.s)}</small>${day ? `<small class="d">${esc(day)}</small>` : ""}</div></div></div>`;
+  }
+  _tm2Bubbles() {
+    if (!this._labOn("sb")) return "";
+    const c = this._hzCfg().bub, hd = { wetter: "weather", personen: "people", alarm: "shield", solar: "pvRoof", batterie: "battery", auto: "car", fenster: "windowOpen", muell: "bin", warmwasser: "boiler", preis: "price" };
+    const items = c.ids.map((id) => { const d = this._hzBubDef(id); return d && d.i ? this._hzBubX({ id, ...d }) : null; }).filter(Boolean);
+    if (!items.length) return "";
+    return `<div class="tm2bubs" style="--n:${items.length}">${items.map((x) => `<button class="tm2b ${c.warn ? "z-" + this._hzZ(x.c || "") : ""}" data-act="tmbub" data-k="${x.id}" aria-label="${esc(x.s)}: ${esc(x.b)}">${this._hzNew() && hd[x.id] ? this._gx(hd[x.id], 30, x.o || {}) : ic(x.i, 22)}<span><b>${esc(x.b)}</b><small>${esc(x.s)}</small></span></button>`).join("")}</div>`;
+  }
+  _tm2Tile(m) {
+    let K = { z: "off", v: null, u: "", l1: "", o: {} };
+    try { K = this._hzK(m) || K; } catch (_) { /* Modul noch nicht geladen */ }
+    const hd = K.hd || (this._hzNew() ? this._hzHdFor(m) : "");
+    const pic = this._hzNew() && K.pic ? K.pic : hd && this._hzNew() ? this._gx(hd, 52, K.o || {}) : ic(m.icon, 40);
+    const val = K.v == null || K.z === "off" ? "" : `${esc(String(K.v))}${K.u ? ` ${esc(K.u)}` : ""}`;
+    const line = K.u === "%" && val && K.l1 ? `${val} ${K.l1}` : [val, K.l1].filter(Boolean).join(" · ");
+    const stg = modSt(m) && modSt(m) !== "stabil" && STG[modSt(m)] ? `<em>${({ dev: "Entwicklung", vorab: "Vorab" })[modSt(m)] || STG[modSt(m)].t}</em>` : "";
+    return `<button class="tm2t z-${K.z}" data-act="tmgo" data-k="${m.id}" aria-label="${esc(m.short)}: ${esc(this.constructor.HZ_ZT[K.z] || "")}"><span class="tm2tp">${pic}</span><b>${esc(m.short)}</b><small>${line}</small>${stg}</button>`;
+  }
+  _tm2Hint(h) {
+    const HD = { fh: "windowOpen", ww: "boiler", mu: "bin", wx: "weather", sf: "smoke", ev: "car", gs: "plug", en: "pvRoof" };
+    const hd = h.hd || (h.i === "alert" && /Batterie/.test(h.t) ? "smoke" : HD[h.mod] || (h.blk === "alarm" ? "shield" : ""));
+    const pic = hd && this._hzNew() ? this._gx(hd, 40, { alarm: !!h.alarm, frost: !!h.frost, k: h.c === "bad" ? "bad" : "ok" }) : ic(ICONS[h.i] ? h.i : "info", 24);
+    /* Müllabfuhr: derselbe Knopf wie auf der bisherigen Wandkarte */
+    let act = "";
+    if (h.mod === "mu" && this._muOn() && (h.k === "mu" || h.k === "mu:back")) {
+      const back = h.k === "mu:back", ok = back || this._hzMu().some((x) => ["out", "today"].includes(x.state));
+      if (ok) act = `<button class="tm2hb" data-act="${back ? "muxinall" : "muxdoneall"}">${ic("check", 18)}<span>${back ? "Wieder drin" : "Steht draußen"}</span></button>`;
+    }
+    const tag = h.mod ? "button" : "div";
+    return `<div class="tm2h1 z-${this._hzZ(h.c || "in")}"><${tag} class="tm2hm"${h.mod ? ` data-act="tmgo" data-k="${h.mod}"` : ""}><span class="tm2hp">${pic}</span><span class="tm2hx"><b>${h.t}</b>${h.s ? `<small>${h.s}</small>` : ""}</span></${tag}>${act}</div>`;
+  }
+  _tm2Start() {
+    const nw = this._hzNew(), all = this._hzHints(), vis = nw ? this._hzVis(all) : all, cap = this._tm2Cap();
+    const mods = nw ? this._hzMods(false) : this._mdList().filter((x) => x.id !== "st");
+    if (mods.some((x) => x.id === "mu") && this._muOn()) this._muLoad();
+    const strip = this._mqStrip ? this._mqStrip() : "";          /* Sponsor Max: Räume und Schnellaktionen auf dem Wandtablet */
+    const qa = nw && this._hzQaRow ? this._hzQaRow(true) : "";
+    const pt = this._tm2Page("tiles", mods.length, cap.t), ph = this._tm2Page("hints", vis.length, cap.h), hid = all.length - vis.length;
+    /* Passen alle Module auf eine Seite, nutzen sie den Platz ganz */
+    const cols = pt.pages > 1 ? cap.cols : Math.min(cap.cols, Math.max(2, Math.ceil(mods.length / (this._tm2Land() ? 2 : cap.rows)))), rows = pt.pages > 1 ? cap.rows : Math.max(1, Math.ceil(mods.length / cols));
+    const tiles = mods.length ? `<div class="tm2grid" style="--c:${cols};--r:${rows}">${mods.slice(pt.from, pt.to).map((x) => this._tm2Tile(x)).join("")}</div>` : `<div class="card empty">Keine Kacheln ausgewählt.</div>`;
+    const hints = vis.length ? vis.slice(ph.from, ph.to).map((h) => this._tm2Hint(h)).join("") : `<div class="tm2ok">${nw ? this._gx("shield", 56, { k: "ok" }) : ic("check", 40)}<b>Keine offenen Hinweise</b></div>`;
+    const later = hid ? `<button class="tm2later" data-act="hzlaterclr">${ic("clock", 16)}${hid} auf später · wieder zeigen</button>` : "";
+    return this._hzWrap(`${strip || this._tm2Scene(vis)}${qa}${this._tm2Bubbles()}<div class="tm2low${vis.length ? "" : " nohint"}">
+      <section class="tm2col" data-sw="tiles">${tiles}${this._tm2Pager("tiles", pt, "Module")}</section>
+      <section class="tm2side" data-sw="hints" style="--h:${cap.h}"><div class="tm2hl">${hints}</div>${later}${this._tm2Pager("hints", ph, "")}</section></div>`);
+  }
+  /* ---------- „Mehr“: alle Module ---------- */
+  _tm2More() {
+    const items = this._tmItems().filter((x) => x.id !== "st"), L = this._mdList(), rail = this._tm2Rail(this._tmItems()).map((x) => x.id), land = this._tm2Land();
+    const per = land ? (window.innerHeight < 720 ? 12 : 16) : window.innerHeight < 1000 ? 8 : 12, p = this._tm2Page("more", items.length, per);
+    const card = (x) => {
+      const m = L.find((y) => y.id === x.id) || {}, hd = this._hzNew() ? this._hzHdFor(m) : "", num0 = m.n || m.num0;
+      return `<button class="tm2m ${this._tmV() === x.id ? "sel" : ""} ${rail.includes(x.id) ? "inr" : ""}" data-act="tmgomore" data-k="${x.id}">${hd ? this._gx(hd, 46, {}) : ic(x.icon, 32)}<span><b>${esc(m.short || x.name)}</b><small>${num0 ? `Modul ${m.n}` : "Modul"}${rail.includes(x.id) ? " · in der Leiste" : ""}</small></span></button>`;
+    };
+    return `<div class="ov" data-act="close"></div><div class="sheet wide tm2all" role="dialog" aria-modal="true"><div class="sh"><div><b>Alle Module</b><span>Antippen zum Öffnen</span></div><button class="btn2 tm2ed" data-act="tmlock">${ic(this._tmMe().has_pin ? "lock" : "sliders", 18)} Leiste anpassen</button><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div data-sw="more"><div class="tm2mg">${items.slice(p.from, p.to).map(card).join("")}</div>${this._tm2Pager("more", p, "Module")}</div></div>`;
+  }
+  /* Ruhebild: bis zu drei Hinweise unter der Uhr (Konzept: Variante B als Ruhebild) */
+  _tm2RestHints() {
+    if (!this._tm2On() || !this._hzNew()) return "";
+    const H = this._hzVis(this._hzHints()).slice(0, 3);
+    return H.length ? `<div class="tm2rh">${H.map((h) => `<div class="z-${this._hzZ(h.c || "in")}"><i></i><span><b>${h.t}</b>${h.s ? `<small>${h.s}</small>` : ""}</span></div>`).join("")}</div>` : "";
+  }
+  /* ---------- Bedienung ---------- */
+  _tm2Turn(key, d) {
+    const P = this._tmPg || (this._tmPg = {}); P[key] = Math.max(0, (P[key] || 0) + d); this._tmLast = Date.now(); this._tmHomed = false;
+    if (key === "more") this._renderModal(); else this._render();
+  }
+  /* Wischen nach links oder rechts blättert, wie die Pfeile */
+  _tm2Bind() {
+    if (this._tm2Bound) return; this._tm2Bound = true;
+    const sr = this.shadowRoot;
+    sr.addEventListener("pointerdown", (e) => { this._tm2Sw = false; const a = e.target.closest && e.target.closest("[data-sw]"); this._tm2P = a ? { k: a.dataset.sw, x: e.clientX, y: e.clientY, t: Date.now() } : null; }, true);
+    sr.addEventListener("pointercancel", () => { this._tm2P = null; }, true);
+    sr.addEventListener("pointerup", (e) => {
+      const s = this._tm2P; this._tm2P = null; if (!s || !this._tmOn() || this._tmSleep) return;
+      const dx = e.clientX - s.x, dy = e.clientY - s.y;
+      if (Math.abs(dx) < 60 || Math.abs(dx) < 1.5 * Math.abs(dy) || Date.now() - s.t > 900) return;
+      this._tm2Sw = true; setTimeout(() => this._tm2Turn(s.k, dx < 0 ? 1 : -1), 0);
+    }, true);
+    /* Der Klick, der auf eine Wischgeste folgt, öffnet nichts */
+    sr.addEventListener("click", (e) => { if (this._tm2Sw && e.detail !== 0) { this._tm2Sw = false; e.stopPropagation(); e.preventDefault(); } }, true);
+  }
+  _tm2Act(a, b) {
+    const k = b.dataset.k;
+    if (a === "tm2pg") { this._tm2Turn(k, +b.dataset.d); return true; }
+    if (a === "tm2look") { this._tmSave({ look: k === "classic" ? "classic" : "new" }); return true; }
+    if (a === "tm2rail") {
+      const cur = this._tm2Rail(this._tmItems()).map((x) => x.id), next = cur.includes(k) ? cur.filter((x) => x !== k) : [...cur, k];
+      if (next.length > 4) { this._toast("In die Leiste passen vier Module. Erst eines abwählen."); return true; }
+      if (!next.length) { this._toast("Mindestens ein Modul bleibt in der Leiste."); return true; }
+      this._tmSave({ rail: next }); return true;
+    }
+    return false;
   }
   /* ================= Sponsor-Bereich (3.0.2.13) =================
      Die Integration bleibt kostenlos. Mit einem Sponsor-Schlüssel gibt es Schönes obendrauf: Abzeichen, Farbverläufe,

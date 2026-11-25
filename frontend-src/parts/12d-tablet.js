@@ -24,7 +24,7 @@
   _tmModeSet(m) { try { localStorage.setItem("fh_tm_mode", m); } catch (_) { /* privater Modus */ } this._tmSleep = false; this._tmLast = Date.now(); }
   _tmOn() { const m = this._tmMode(); return m === "on" || (m === "auto" && this._tmTouch() && window.innerWidth >= 600); }
   _tmMe() { const id = this._tmId(), t = ((this._tm && this._tm.tablets) || []).find((x) => x.id === id); return t || { id, name: "Tablet", has_pin: false, cfg: {} }; }
-  _tmC() { return { size: "auto", idle_home: 2, sleep: 15, wake_warn: true, motion: "", screen: "", notify: "", off_after: 0, dock_hide: [], ...(this._tmMe().cfg || {}) }; }
+  _tmC() { return { size: "auto", idle_home: 2, sleep: 15, wake_warn: true, motion: "", screen: "", notify: "", off_after: 0, dock_hide: [], look: "new", rail: [], ...(this._tmMe().cfg || {}) }; }
   async _tmLoad() {
     if (this._tmBound !== true) { this._tmBound = true; this._tmBind(); }
     const k = this._tmKind();
@@ -54,7 +54,7 @@
     if (this._tmSleep) { if (moved || newWarn) this._tmWake(); return; }
     if (newWarn && !this._modal) { this._tmView = "st"; this._tmLast = Date.now(); this._render(); return; }
     if (c.sleep && idle >= c.sleep * 60000) { this._tmSleep = true; this._modal = null; this._renderModal(); this._render(); return; }
-    if (c.idle_home && idle >= c.idle_home * 60000 && !this._tmHomed) { this._tmHomed = true; if (this._tmV() !== "st" && !this._modal) { this._tmView = "st"; this._render(); } }
+    if (c.idle_home && idle >= c.idle_home * 60000 && !this._tmHomed) { this._tmHomed = true; const paged = Object.values(this._tmPg || {}).some(Boolean); if (!this._modal) this._tmPg = {}; if ((this._tmV() !== "st" || paged) && !this._modal) { this._tmView = "st"; this._render(); } }
   }
   _tmV() { return this._tmView || "st"; }
   _tmItems() {
@@ -83,6 +83,7 @@
     return `<div class="card empty">${ic("puzzle", 36)}<div style="margin:10px 0 4px;font-weight:700">${esc(m.name)}</div>Dieses Modul gibt es im Tablet-Modus noch nicht.</div>`;
   }
   _tmStart() {
+    if (this._tm2On()) return this._tm2Start();
     const hints = this._hzHints(), mods = this._mdList().filter((x) => x.id !== "st"), bubs = this._labOn("sb") ? this._hzBubs().replace(/data-act="hzbub"/g, 'data-act="tmbub"') : "";
     const rows = hints.slice(0, 3).map((h) => `<div class="tmhint ${h.c || ""}"><span class="tmhi">${ic(ICONS[h.i] ? h.i : "info", 20)}</span><span><b>${h.t}</b>${h.s ? `<small>${h.s}</small>` : ""}</span></div>`).join("");
     if (this._hzNew()) { const vis = this._hzVis(hints), r2 = vis.slice(0, 3).map((h) => `<div class="tmhint ${h.c || ""}"><span class="tmhi">${ic(ICONS[h.i] ? h.i : "info", 20)}</span><span><b>${h.t}</b>${h.s ? `<small>${h.s}</small>` : ""}</span></div>`).join(""); return this._hzWrap(`${this._mqStrip ? this._mqStrip() : ""}${this._hzTmAmp(vis)}${this._muTabCard && this._muOn() ? this._muTabCard() : ""}${this._hzQaRow(true)}${bubs}<div class="tmgrid">${this._hzMods().map((m) => this._hzTile(m).replace('data-act="hzgo"', 'data-act="tmgo"')).join("")}</div>${r2 ? `<div class="tmhints">${r2}</div>` : ""}`); }
@@ -105,14 +106,16 @@
     const mq = this._mqRest ? this._mqRest() : ""; if (mq) return mq;
     const facts = ["wetter", "alarm", "personen", "muell"].map((id) => this._hzBubDef(id)).filter((x) => x && x.i).map((x) => `<div>${ic(x.i, 26)}<span>${esc(x.b)}${x.s ? ` · ${esc(x.s)}` : ""}</span></div>`).join("");
     const ef = this._efxSleep ? this._efxSleep() : "";
-    const sc = !ef && this._hzNew() ? this._hzTmSleep() : "";
-    return `<div class="tmrest${ef ? " efst" : ""}${sc ? " hzst" : ""}">${ef}${sc}<div class="tmrc ${this._spnEarlyClock()}" data-tmclk>${new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</div><div class="tmrd" data-tmdate>${new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}</div><div class="tmrf">${facts}</div><div class="tmrw">Antippen zum Aufwecken</div></div>`;
+    let sc = !ef && this._hzNew() ? this._hzTmSleep() : "";
+    if (sc && this._tm2On()) sc = this._tm2Wide(sc.replace('viewBox="0 0 360 200"', 'viewBox="0 40 360 162"'), "xMidYMax");
+    return `<div class="tmrest${ef ? " efst" : ""}${sc ? " hzst" : ""}${this._tm2On() ? " tm2r" : ""}">${ef}${sc}<div class="tmrc ${this._spnEarlyClock()}" data-tmclk>${new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</div><div class="tmrd" data-tmdate>${new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}</div><div class="tmrf">${this._tm2On() && this._hzNew() ? "" : facts}</div>${this._tm2RestHints()}<div class="tmrw">Antippen zum Aufwecken</div></div>`;
   }
   _tmRender() {
     const sr = this.shadowRoot, v = this._mdList().some((m) => m.id === this._tmV()) || this._tmV() === "st" ? this._tmV() : "st", m = this._mdList().find((x) => x.id === v), c = this._tmC(), me = this._tmMe();
     this._w = this.clientWidth; this._tmView = v;
     const al = this._mqAlarm ? this._mqAlarm() : null; if (al && !(Date.now() < (this._mqPlanTs || 0))) { sr.getElementById("main").innerHTML = this._mqAlarmHtml(al); return; }
     if (this._tmSleep) { sr.getElementById("main").innerHTML = this._tmSleepHtml(); return; }
+    if (this._tm2On()) { this._tm2Render(v, m); return; }
     const sc = { auto: 1, large: 1.15, xl: 1.3 }[c.size] || 1, title = v === "st" ? this._hzGreet().split(" · ")[0] : esc(m ? m.name : ""), hints = v === "st" ? (this._hzNew() ? this._hzVis(this._hzHints()) : this._hzHints()).length : 0;
     const sub = v === "st" ? (hints ? `${hints} ${hints === 1 ? "Hinweis" : "Hinweise"}` : "Alles in Ordnung") : esc(m ? m.tag || "" : "");
     const x = sr.querySelector(".tmbody"), keep = x && this._tmVOld === v ? x.scrollTop : 0; this._tmVOld = v;
@@ -171,10 +174,11 @@
   _tmStartNow() { const me = this._tmMe(); if (!me.has_pin) { this._tmPinOpen("new", "start"); return; } this._tmModeSet("on"); this._tmView = "st"; this._modal = null; this._renderModal(); this._render(); }
   _tmAct(a, b) {
     const k = b.dataset.k, m = this._modal;
-    if (a === "tmgo") { this._tmView = k; this._tmHomed = false; this._render(); }
+    if (a.startsWith("tm2")) { this._tm2Act(a, b); return; }
+    if (a === "tmgo") { if (k === "st") this._tmPg = {}; this._tmView = k; this._tmHomed = false; this._render(); }
     else if (a === "tmbub") { const d = this._hzBubDef(k) || {}; if (d.mod && this._mdList().some((x) => x.id === d.mod)) { this._tmView = d.mod; this._render(); } }
     else if (a === "tmgomore") { this._tmView = k; this._tmHomed = false; this._modal = null; this._renderModal(); this._render(); }
-    else if (a === "tmmore") { this._modal = { type: "tmmore" }; this._renderModal(); }
+    else if (a === "tmmore") { if (this._tmPg) this._tmPg.more = 0; this._modal = { type: "tmmore" }; this._renderModal(); }
     else if (a === "tmlock") { this._tmPin = ""; const me = this._tmMe(); if (me.has_pin) this._tmPinOpen("unlock"); else this._tmPinOpen("new"); }
     else if (a === "tmopen") { this._modal = { type: "tmnorm" }; this._renderModal(); if (this._admin()) this._tmAdminList(); }
     else if (a === "tmstart") this._tmStartNow();
@@ -226,6 +230,7 @@
         <div class="tmdots">${dots}</div><div class="tmerr" role="alert">${esc(m.err || "")}</div>
         <div class="tmkeys">${keys}<button class="z" data-act="tmpinx">Abbrechen</button><button data-act="tmkey" data-k="0" aria-label="0">0</button><button class="z" data-act="tmkey" data-k="back" aria-label="Löschen">⌫</button></div></div>`;
     }
+    if (m.type === "tmmore" && this._tm2On()) return this._tm2More();
     if (m.type === "tmmore") {
       const rest = this._tmItems();
       return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Weitere Module</b><span>Tablet-Modus</span></div>${close}</div>
@@ -248,11 +253,15 @@
       ${inT ? "" : row("Tablet-Modus", "Ersetzt die normale Ansicht. Automatisch: auf Touchgeräten ab 600 px Breite.", seg("tmmode", mode, [["off", "Aus"], ["auto", "Automatisch"], ["on", "Immer an"]]))}
       <div class="vrow"><span>Name dieses Tablets<small class="mut" style="display:block">Erkannt: ${esc(kd.label)}, ${window.innerWidth} × ${window.innerHeight}</small></span><input class="osel" data-f="tmname" value="${esc(me.name)}" maxlength="24" style="width:46%;margin:0" ${lock ? "disabled" : ""} aria-label="Name"></div>
       ${row("Größe", "Bedienelemente und Schrift", seg("tmsz", c.size, [["auto", "Auto"], ["large", "Groß"], ["xl", "Sehr groß"]]))}
+      ${row("Aufbau", "Neu: Leiste links, Start ohne Scrollen", seg("tm2look", c.look, [["new", "Neu"], ["classic", "Wie bisher"]]))}
       ${row("Zurück zu Start nach", "Ohne Berührung", seg("tmih", c.idle_home, [[0, "Aus"], [2, "2 Min."], [5, "5 Min."], [15, "15 Min."]]))}
       ${row("Ruhemodus nach", "Dunkle Uhr statt Inhalt. Berühren oder Bewegung weckt auf.", seg("tmsl", c.sleep, [[0, "Aus"], [5, "5 Min."], [15, "15 Min."], [30, "30 Min."]]))}
       ${row("Warnungen wecken auf", "Zum Beispiel ein ausgelöster Alarm", sw("tmww", c.wake_warn, "Warnungen wecken auf"))}
-      <div class="lsec" style="margin-top:12px">${ic("grid", 15)}Untere Leiste</div>
-      <div class="mut sm" style="margin:0 0 6px">Start ist immer dabei. Bei schmalen Bildschirmen steht der Rest unter „Mehr“.</div>
+      ${this._tm2On() ? `<div class="lsec" style="margin-top:12px">${ic("grid", 15)}Modulleiste</div>
+      <div class="mut sm" style="margin:0 0 6px">Quer links, hochkant unten: Start, bis zu vier Module und „Mehr“.</div>
+      <div class="gschs" style="flex-wrap:wrap">${this._tm2Rail(this._tmItems()).length ? this._tmItems().filter((x) => x.id !== "st").map((x) => { const on = this._tm2Rail(this._tmItems()).some((y) => y.id === x.id); return `<button class="gsch ${on ? "sel" : ""}" data-act="tm2rail" data-k="${x.id}" aria-pressed="${on}" ${lock ? "disabled" : ""}>${esc(this._tm2Name(x))}</button>`; }).join("") : ""}</div>` : ""}
+      <div class="lsec" style="margin-top:12px">${ic("grid", 15)}${this._tm2On() ? "Module anzeigen" : "Untere Leiste"}</div>
+      <div class="mut sm" style="margin:0 0 6px">${this._tm2On() ? "Abgewählte Module erscheinen weder in der Leiste noch unter „Mehr“." : "Start ist immer dabei. Bei schmalen Bildschirmen steht der Rest unter „Mehr“."}</div>
       <div class="gschs" style="flex-wrap:wrap">${mods.map((x) => `<button class="gsch ${c.dock_hide.includes(x.id) ? "" : "sel"}" data-act="tmdock" data-k="${x.id}" aria-pressed="${!c.dock_hide.includes(x.id)}" ${lock ? "disabled" : ""}>${esc(x.short || x.name)}</button>`).join("")}</div>
       <div class="lsec" style="margin-top:14px">${ic("eye", 15)}Bewegung und Display</div>
       <div class="mut sm" style="margin:0 0 6px">Der Bewegungsmelder wird im Home Assistant überwacht und funktioniert auch bei ausgeschaltetem Display. Bei Bewegung geht das Display an, ohne Bewegung nach der eingestellten Zeit wieder aus.</div>
