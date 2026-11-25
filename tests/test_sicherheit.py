@@ -854,3 +854,15 @@ def test_clean_plan_keeps_rotated_long_item_in_place():
     assert S.clean_plan(p)["items"][0]["x"] == -270  # bleibt auch beim zweiten Speichern
     far = S.clean_plan({"floors": [{"id": "ga", "n": "Außen", "ga": 1}], "items": [{**z, "x": -5000}]})["items"][0]
     assert far["x"] + far["w"] / 2 >= -51  # die Mitte bleibt im Plan (±1 durch Runden)
+
+
+def test_clean_plan_window_rollladen_and_height():
+    """2026.11.4.8: Rollladen bei jeder Fensterart (auch bodentief), Höhe je Fenster; alte Art „rollo“ wird übernommen."""
+    fl = [{"id": "eg", "n": "EG"}]
+    its = [{"id": "f1", "fl": "eg", "t": "f", "x": 10, "y": 10, "fk": "boden", "ro": 1, "hh": 215, "b": 120},
+           {"id": "f2", "fl": "eg", "t": "f", "x": 20, "y": 10, "fk": "rollo"},
+           {"id": "f3", "fl": "eg", "t": "f", "x": 30, "y": 10, "hh": 9999}]
+    p = {i["id"]: i for i in S.clean_plan({"floors": fl, "items": its})["items"]}
+    assert p["f1"]["fk"] == "boden" and p["f1"]["ro"] == 1 and p["f1"]["hh"] == 215 and p["f1"]["b"] == 120
+    assert "fk" not in p["f2"] and p["f2"]["ro"] == 1
+    assert p["f3"]["hh"] == 400 and "ro" not in p["f3"]

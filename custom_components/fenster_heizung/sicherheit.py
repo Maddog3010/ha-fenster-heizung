@@ -67,7 +67,7 @@ BHIST_GAP_S = 20 * 3600
 ITEM_T = ("r", "w", "d", "f", "s", "x", "m", "l", "g", "a", "h", "o")  # l = Lampe (Modul 18, ab 2026.11.4b51), g = mobiles Gerät, a = Markise (Modul 0 Build 7), h = Haustechnik (Build 9)
 LAMP_K = ("decke", "steh", "spot", "streifen", "aussen", "tisch")  # tisch ab Modul 18 Build 7
 DOOR_K = ("doppel", "schiebe", "pendel", "falt", "garage", "glas")  # Modul 0 Build 7: Arten der Tür (ohne = Drehtür)
-WIN_K = ("boden", "dach", "rollo")  # Modul 0 Build 7: Arten des Fensters (ohne = normal)
+WIN_K = ("boden", "dach")  # Modul 0 Build 7: Arten des Fensters (ohne = normal); Rollladen ist seit 2026.11.4.8 ein eigener Schalter (ro)
 STAIR_K = ("l", "u", "wendel", "boden")  # Modul 0 Build 7: L-Treppe, U-Treppe (halbgewendelt), Wendeltreppe, Dachbodentreppe (ohne = gerade)
 DEV_K = ("heizer", "entf")  # Modul 0 Build 7: mobiler Heizer, mobiler Luftentfeuchter (aus Modul 1)
 DEV_DOM = ("switch", "climate", "humidifier", "fan", "input_boolean", "water_heater")
@@ -298,8 +298,13 @@ def clean_plan(raw: Any) -> dict[str, Any]:
             o["b"] = int(_num(it.get("b"), 40, 600, 90))  # Breite in cm
         if it["t"] == "d" and it.get("dk") in DOOR_K:
             o["dk"] = it["dk"]
-        if it["t"] == "f" and it.get("fk") in WIN_K:
-            o["fk"] = it["fk"]
+        if it["t"] == "f":
+            if it.get("fk") in WIN_K:
+                o["fk"] = it["fk"]
+            if it.get("fk") == "rollo" or it.get("ro") in (1, True):  # früher eine eigene Art „mit Rollladen“ – jetzt zu jeder Art
+                o["ro"] = 1
+            if it.get("hh") is not None:
+                o["hh"] = int(_num(it.get("hh"), 30, 400, 120))  # Höhe in cm
         if it["t"] == "s" and it.get("sk") in STAIR_K:
             o["sk"] = it["sk"]
         o["n"] = str(it.get("n") or "").strip()[:30]

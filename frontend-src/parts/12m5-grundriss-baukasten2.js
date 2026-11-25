@@ -1,7 +1,7 @@
   /* ================= Modul 0 Build 7: Baukasten 2.0 – genau statt ungefähr =================
      Raster in Zentimetern (5/10/25/50 cm), Wände rasten auf 15°-Schritte ein, Maße beim Bearbeiten im Plan.
      Türen und Fenster sitzen auf Wänden in jedem Winkel (auch schräg), sind frei drehbar, haben eine Breite und eine Art
-     (Drehtür, Doppeltür, Schiebetür, Pendeltür, Falttür, Terrassentür, Garagentor · Fenster, bodentief, Dachfenster, mit Rollladen).
+     (Drehtür, Doppeltür, Schiebetür, Pendeltür, Falttür, Terrassentür, Garagentor · Fenster, bodentief, Dachfenster; Rollladen und Höhe zu jedem Fenster).
      Abstand zur Ecke wird angezeigt, beim Verschieben eines Raums wandern seine Türen und Fenster mit.
      Plan-Check (Räume ohne Tür, Fenster neben der Wand, Überlappungen, ohne Namen/Bereich, kein Ausgang) mit Beheben per Tipp.
      Maßstab messen: zwei Punkte im Plan (z. B. auf dem Bauplan-Foto) und die echte Länge eingeben. Etage kopieren. Tastatur am PC. */
@@ -52,11 +52,11 @@
       const ttlD = KS ? `<title>${{ glas: "Terrassentür", garage: "Garagentor" }[i.dk] || "Tür"} · ${esc(this._wzName(i.e))} · ${{ zu: "zu", offen: "offen", gekippt: "gekippt", "?": "liefert nichts" }[KS.k]}</title>` : "";
       return `<g transform="${rot}${mir}">${ttlD}${gap}${s}${exA}</g>${chip}`;
     }
-    const k = KS ? KS.k : "", open = k === "offen", tilt = k === "gekippt", unk = k === "?", c = kc || T.glass, ttl = `<title>${{ boden: "Fenster bodentief", dach: "Dachfenster", rollo: "Fenster mit Rollladen" }[i.fk] || "Fenster"}${i.e ? ` · ${esc(this._wzName(i.e))} · ${{ zu: "zu", offen: "offen", gekippt: "gekippt", "?": "liefert nichts" }[k] || ""}` : ""}</title>`;
+    const k = KS ? KS.k : "", open = k === "offen", tilt = k === "gekippt", unk = k === "?", c = kc || T.glass, ttl = `<title>${{ boden: "Fenster bodentief", dach: "Dachfenster" }[i.fk] || "Fenster"}${this._grWinRo(i) ? " mit Rollladen" : ""} · ${num((i.b || 90) / 100, 2)} × ${num(this._grWinH(i) / 100, 2)} m${i.e ? ` · ${esc(this._wzName(i.e))} · ${{ zu: "zu", offen: "offen", gekippt: "gekippt", "?": "liefert nichts" }[k] || ""}` : ""}</title>`;
     if (i.fk === "dach") return `<g transform="${rot}">${ttl}<rect x="${x - h}" y="${y - h * 0.7}" width="${2 * h}" height="${h * 1.4}" fill="${c}" fill-opacity=".18" stroke="${T.frame}" stroke-width="1.6" stroke-dasharray="6 3"/><path d="M${x - h} ${y - h * 0.7}L${x + h} ${y + h * 0.7}M${x + h} ${y - h * 0.7}L${x - h} ${y + h * 0.7}" stroke="${c}" stroke-width="1" opacity=".7"/></g>`;
     const frame = `<rect x="${x - h}" y="${y - 6}" width="${2 * h}" height="12" fill="${T.bg}"/><rect x="${x - h}" y="${y - 6}" width="${2 * h}" height="12" fill="none" stroke="${kc || T.frame}" stroke-width="1.6"${unk ? ' stroke-dasharray="3 2"' : ""}/>`;
     const glass = i.fk === "boden" ? `<path d="M${x - h} ${y - 2}H${x + h}M${x - h} ${y + 2}H${x + h}" stroke="${c}" stroke-width="2.2"/><path d="M${x - h + 3} ${y + 9}h${2 * h - 6}" stroke="${T.frame}" stroke-width="1" stroke-dasharray="2 2"/>` : `<path d="M${x - h} ${y}H${x + h}" stroke="${c}" stroke-width="3"/>`;
-    const rollo = i.fk === "rollo" ? `<rect x="${x - h}" y="${y - 12}" width="${2 * h}" height="4" rx="1" fill="${T.sub}" opacity=".85"/>` : "";
+    const rollo = this._grWinRo(i) ? `<rect x="${x - h}" y="${y - 12}" width="${2 * h}" height="4" rx="1" fill="${T.sub}" opacity=".85"/>` : "";
     /* Kontakt: offen → zwei Flügel aufgeschwenkt (Raumseite), gekippt → schmaler Spalt, ? → gestrichelt mit Fragezeichen */
     const sd = P && this._grRoomSide ? this._grRoomSide(P, i, 20).side : 1, Y = (v) => y + sd * v;
     const sash = open ? `<path d="M${x - h} ${Y(6)}A${h} ${h} 0 0 ${sd > 0 ? 0 : 1} ${x} ${Y(6 + h)}M${x + h} ${Y(6)}A${h} ${h} 0 0 ${sd > 0 ? 1 : 0} ${x} ${Y(6 + h)}" fill="${c}" fill-opacity=".12" stroke="${c}" stroke-width="1" stroke-dasharray="3 3"/><path d="M${x - h} ${Y(6)}L${x - h * 0.35} ${Y(6 + h * 0.92)}M${x + h} ${Y(6)}L${x + h * 0.35} ${Y(6 + h * 0.92)}" stroke="${c}" stroke-width="2.6" stroke-linecap="round"/>`
@@ -64,17 +64,22 @@
       : unk ? `<text x="${x}" y="${Y(17) + (sd > 0 ? 0 : 6)}" text-anchor="middle" font-size="11" font-weight="800" fill="${c}">?</text>` : "";
     return `<g transform="${rot}">${ttl}${frame}${glass}${rollo}${sash}</g>${chip}`;
   }
+  /* 2026.11.4.8: Rollladen zu jeder Fensterart (früher eigene Art „rollo“) und Höhe je Fenster */
+  _grWinRo(i) { return !!(i && (i.ro || i.fk === "rollo")); }
+  _grWinH(i) { return i && i.hh ? i.hh : i && i.fk === "boden" ? 220 : i && i.fk === "dach" ? 100 : 120; }
   /* ---- Eigenschaften für Türen und Fenster */
   _grOpenProps(sel) {
     const isD = sel.t === "d", b = sel.b || (isD ? 80 : 90), sc = this._sfScale(), inf = this._grOpenInfo(sel);
-    const K = isD ? [["", "Drehtür"], ["doppel", "Doppeltür"], ["schiebe", "Schiebetür"], ["pendel", "Pendeltür"], ["falt", "Falttür"], ["glas", "Terrassentür"], ["garage", "Garagentor"]] : [["", "Fenster"], ["boden", "bodentief"], ["dach", "Dachfenster"], ["rollo", "mit Rollladen"]];
-    const cur = isD ? sel.dk || "" : sel.fk || "";
+    const K = isD ? [["", "Drehtür"], ["doppel", "Doppeltür"], ["schiebe", "Schiebetür"], ["pendel", "Pendeltür"], ["falt", "Falttür"], ["glas", "Terrassentür"], ["garage", "Garagentor"]] : [["", "Fenster"], ["boden", "bodentief"], ["dach", "Dachfenster"]];
+    const cur = isD ? sel.dk || "" : sel.fk === "rollo" ? "" : sel.fk || "";
     const kinds = isD && sel.dg ? "" : `<div class="sffld"><label>${isD ? "Bauart" : "Art des Fensters"}</label><div class="grseg">${K.map(([k, t]) => `<button class="${cur === k ? "on" : ""}" data-act="grxok" data-v="${k}">${t}</button>`).join("")}</div></div>`;
     const where = sel.fk === "dach" ? `<div class="grwall ok">${ic("info", 14)}<span>Dachfenster liegen in der Dachfläche, nicht auf einer Wand.</span></div>`
       : inf ? `<div class="grwall ok">${ic("check", 14)}<span>Auf der Wand · Abstand zur Ecke <b>${num(Math.max(0, inf.a) / sc, 2)} m</b> und <b>${num(Math.max(0, inf.b) / sc, 2)} m</b> · Wand ${num(inf.L / sc, 2)} m</span></div>`
       : `<div class="grwall">${ic("alert", 14)}<span>Liegt nicht auf einer Wand.</span><button class="grb" data-act="grxosnap">An Wand einrasten</button></div>`;
     return `${kinds}
       <div class="vrow" style="margin:6px 0"><span>Breite</span><div class="step" style="flex:none"><button data-act="grxob" data-s="-5" aria-label="schmaler">${ic("minus", 16)}</button><b>${num(b / 100, 2)} m</b><button data-act="grxob" data-s="5" aria-label="breiter">${ic("plus", 16)}</button></div></div>
+      ${isD ? "" : `<div class="vrow" style="margin:6px 0"><span>Höhe</span><div class="step" style="flex:none"><button data-act="grxfh" data-s="-5" aria-label="niedriger">${ic("minus", 16)}</button><b>${num(this._grWinH(sel) / 100, 2)} m</b><button data-act="grxfh" data-s="5" aria-label="höher">${ic("plus", 16)}</button></div></div>
+      <div class="vrow" style="margin:6px 0"><span>Rollladen<small class="mut" style="display:block">bei jeder Fensterart möglich</small></span><button class="sw ${this._grWinRo(sel) ? "on" : ""}" data-act="grxfro" aria-pressed="${this._grWinRo(sel)}" aria-label="Rollladen"></button></div>`}
       <div class="vrow" style="margin:6px 0"><span>Winkel</span><div class="step" style="flex:none"><button data-act="grxor" data-s="-15" aria-label="15 Grad zurück">${ic("minus", 16)}</button><input class="grang" type="number" min="0" max="359" step="1" data-f="grxang" value="${sel.r || 0}" aria-label="Winkel in Grad"><button data-act="grxor" data-s="15" aria-label="15 Grad weiter">${ic("plus", 16)}</button></div></div>
       <div class="grseg" style="margin:2px 0 8px"><button data-act="grxor" data-s="90">↻ 90°</button><button data-act="grxor" data-s="180">Umdrehen</button></div>${where}${this._grKProps ? this._grKProps(sel) : ""}`;
   }
@@ -203,7 +208,9 @@
     }
     if (a === "grxor" && cur && cur.t === "s") { this._sfSnap(); cur.r = ((cur.r || 0) + 90) % 360; this._render(); return true; }
     if (!cur || !["d", "f", "a"].includes(cur.t)) return false;
-    if (a === "grxok") { this._sfSnap(); if (cur.t === "d") { if (v) cur.dk = v; else delete cur.dk; } else { if (v) cur.fk = v; else delete cur.fk; } this._render(); return true; }
+    if (a === "grxok") { this._sfSnap(); if (cur.t === "d") { if (v) cur.dk = v; else delete cur.dk; } else { if (cur.fk === "rollo") cur.ro = 1; if (v) cur.fk = v; else delete cur.fk; } this._render(); return true; }
+    if (a === "grxfro" && cur.t === "f") { this._sfSnap(); const on = !this._grWinRo(cur); if (cur.fk === "rollo") delete cur.fk; if (on) cur.ro = 1; else delete cur.ro; this._render(); return true; }
+    if (a === "grxfh" && cur.t === "f") { this._sfSnap(); cur.hh = Math.max(30, Math.min(400, this._grWinH(cur) + Number(b.dataset.s || 0))); this._render(); return true; }
     if (a === "grxob") { this._sfSnap(); cur.b = Math.max(40, Math.min(cur.t === "a" ? 800 : 600, (cur.b || (cur.t === "d" ? 80 : cur.t === "a" ? 400 : 90)) + Number(b.dataset.s || 0))); this._render(); return true; }
     if (a === "grxor") { this._sfSnap(); const s = Number(b.dataset.s || 0); cur.r = ((((cur.r || 0) + s) % 360) + 360) % 360; if (Math.abs(s) === 15) cur.r = Math.round(cur.r / 15) * 15 % 360; this._render(); return true; }
     if (a === "grxosnap") { this._sfSnap(); const sn = this._sfSnapOpen(cur.fl, cur.x, cur.y, 60, cur); if (sn) { cur.x = sn.x; cur.y = sn.y; cur.r = sn.r; } else this._toast("Keine Wand in der Nähe"); this._render(); return true; }
