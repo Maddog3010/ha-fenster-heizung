@@ -2,6 +2,14 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.5b7] - 2026-11-25
+
+Modul 0 (v0.12 Build 4): Fenster im Grundriss genauer – dieselbe Änderung wie in der stabilen Version 2026.11.4.8.
+
+### Geändert
+- **Fenster: Breite und Höhe.** Neben der Breite hat jedes Fenster jetzt auch eine Höhe (Grundriss bearbeiten → Fenster antippen). Vorgabe: 1,20 m, bodentief 2,20 m, Dachfenster 1,00 m. Breite × Höhe steht auch im Hinweis beim Darüberfahren.
+- **Rollladen bei jedem Fenster:** „Rollladen“ ist jetzt ein eigener Schalter statt einer eigenen Fensterart – also auch **bodentief mit Rollladen** oder Dachfenster mit Rollladen. Fenster, die bisher „mit Rollladen“ waren, behalten ihren Rollladen und gelten als normales Fenster.
+
 ## [2026.11.5b6] - 2026-11-25
 
 Korrektur eines gemeldeten Fehlers – dieselbe wie in der stabilen Version 2026.11.4.7.
