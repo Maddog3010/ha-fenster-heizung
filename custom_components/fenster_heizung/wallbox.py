@@ -169,6 +169,9 @@ class WallboxManager:
         self._cal: dict[str, tuple[float, list[dict[str, Any]]]] = {}  # Kalender-Termine je Kalender (5 Minuten zwischengespeichert)
         self._cal_said = ""
         self._who_seen = False
+        self._calm_until = 0.0  # kurz nach einer verspäteten Bestätigung nicht „von Hand umgestellt“ melden
+        self._cmd_note_ts = 0.0  # letzte Handy-Meldung „Wallbox reagiert nicht“
+        self._cap_said = False
         self._who_set: str | None = None  # von Hand gewählt, wer gerade lädt („guest“ oder Fahrzeug-ID) – gilt bis zum Abstecken
         self.lock_open = False  # „Nur mit Karte“ an, aber die Wallbox lädt auch ohne Karte (Kartenpflicht aus)
         self._lock_said = False
@@ -921,7 +924,7 @@ class WallboxManager:
         cfg = self._eff_cfg(who)
         # Jemand hat von Hand umgestellt: nicht dagegen regeln
         pending = self._pend_check(cur, cl.kind, now_ts)
-        if not pending and manual_change(self._last_set, cur, cl.kind, self._set_ts, now_ts):
+        if not pending and now_ts >= self._calm_until and manual_change(self._last_set, cur, cl.kind, self._set_ts, now_ts):
             self._hold_until = now_ts + EXTERN_HOLD_S
             self._last_set = {}
             self._add("Wallbox von Hand umgestellt: Die Regelung pausiert 30 Minuten.")
@@ -963,6 +966,7 @@ class WallboxManager:
             self.info["car_text"] = "kurze Pause"  # go-e meldet „fertig“, das Auto startet aber gleich wieder
         self._guard(cfg, wb_w)
         self._dim()
+        self._cap_want(cl)
         if q:
             self.want["quick"] = q["k"]
         cmd = commands(self.want, cur)
@@ -1308,7 +1312,42 @@ class WallboxManager:
             self._n["long"] = True
             await self._notify("long", "Auto steckt ohne Ladung", f"{who} steckt seit über 12 Stunden an der Wallbox und hat nicht geladen.")
 
+    def _amp_cap(self) -> int | None:
+        """Höchststrom, den die go-e selbst zulässt: eingestellter Höchststrom (ama) und Ladekabel (cbl). None = unbekannt."""
+        vals = []
+        for k in ("ama", "cable"):
+            v = self.info.get(k)
+            if isinstance(v, (int, float)) and not isinstance(v, bool) and 6 <= v <= 80:
+                vals.append(int(v))
+        return min(vals) if vals else None
+
+    def _cap_want(self, cl: Any) -> None:
+        """Nie mehr Strom verlangen, als die go-e selbst zulässt (Höchststrom in der App, Ladekabel) – sonst kommt der Befehl nie an."""
+        cap = self._amp_cap() if cl.kind == "goe" else None
+        w = self.want
+        if cap is not None and isinstance(w.get("amp"), int) and w["amp"] > cap:
+            w["amp"] = cap
+            if not self._cap_said:
+                self._cap_said = True
+                self._add(f"Die go-e lässt höchstens {cap} A zu (Höchststrom in der go-e-App bzw. Ladekabel). Es wird mit {cap} A statt mehr geladen.")
+
+    def _resend_wait(self, cmd: dict[str, int]) -> bool:
+        """Derselbe Befehl kam noch nicht an: nicht in jedem Takt neu senden (vorher alle 10 s – 49 gleiche Einträge).
+        Erst nach 8 s, ab dem 3. Versuch jede Minute. „Laden aus“ wird weiter alle 8 s wiederholt (Ladelimit)."""
+        p = self._pend
+        if not p:
+            return False
+        keep = {k: v for k, v in cmd.items() if (k == "frc" and v in (1, 2)) or (k == "amp" and cmd.get("frc") != 1)}
+        if keep != p["cmd"]:
+            return False
+        if p["cmd"].get("frc") == 1:
+            return time.time() - p["ts"] < CMD_WAIT_S  # „Laden aus“ (z. B. am Ladelimit) weiter zügig wiederholen
+        gap = 60 if p["tries"] >= CMD_RETRIES else CMD_WAIT_S
+        return time.time() - p["ts"] < gap
+
     async def _apply(self, cl: GoeAdapter | HaAdapter, cmd: dict[str, int], why: str) -> None:
+        if self._resend_wait(cmd):
+            return
         try:
             await cl.set(cmd, self.cfg["maxA"])
         except WallboxError as err:
@@ -1357,6 +1396,10 @@ class WallboxManager:
             self._cmd["last"] = {"t": dt_util.now().isoformat(timespec="seconds"), "ok": True, "s": round(now_ts - p["first"], 1), "tries": p["tries"]}
             if p["warned"]:
                 self._add("Befehl jetzt übernommen – die Wallbox reagiert wieder.", "cmd")
+            # Was die Wallbox jetzt meldet, ist unser Stand – sonst wertet der nächste Vergleich einen älteren Wunsch als „von Hand umgestellt“
+            self._last_set = {k: cur[k] for k in ("frc", "amp") if cur.get(k) is not None}
+            if p["tries"] > 1:  # nur nach einer verspäteten Bestätigung kurz Ruhe
+                self._calm_until = now_ts + 120
             return False
         wait = CMD_WAIT_S if kind == "goe" else 45  # Werte von Wallboxen über Home Assistant kommen verzögert
         if now_ts - p["ts"] < wait and p["tries"] < CMD_RETRIES:
@@ -1366,10 +1409,15 @@ class WallboxManager:
             self._cmd["fail"] += 1
             self._cmd["last"] = {"t": dt_util.now().isoformat(timespec="seconds"), "ok": False, "s": round(now_ts - p["first"], 1), "tries": p["tries"]}
             what = "Laden aus" if p["cmd"].get("frc") == 1 else "Laden an" if p["cmd"].get("frc") == 2 else f"{p['cmd'].get('amp')} A"
-            self._add(f"Befehl „{what}“ kommt nicht an ({p['tries']} Versuche). Es wird weiter gesendet.", "err")
-            self.hass.async_create_task(self._notify("cmd", "Wallbox reagiert nicht",
-                                                     f"Der Befehl „{what}“ kam nach {p['tries']} Versuchen nicht an. "
-                                                     + ("Das Auto lädt womöglich über das Ladelimit. Bitte die Wallbox prüfen." if p["cmd"].get("frc") == 1 else "Bitte die Wallbox prüfen.")))
+            seen = f"Die Wallbox meldet weiter {cur.get('amp')} A" if "amp" in p["cmd"] and cur.get("amp") is not None else ""
+            if "amp" in p["cmd"] and self.info.get("ama") is not None:
+                seen += f" (Höchststrom in der go-e-App {self.info.get('ama')} A{', Ladekabel ' + str(self.info.get('cable')) + ' A' if self.info.get('cable') else ''})"
+            self._add(f"Befehl „{what}“ kommt nicht an ({p['tries']} Versuche). {seen + '. ' if seen else ''}Es wird {'weiter' if p['cmd'].get('frc') == 1 else 'jede Minute'} erneut gesendet.", "err")
+            if now_ts - self._cmd_note_ts > 3 * 3600:  # höchstens alle 3 Stunden aufs Handy, nicht bei jedem Versuch
+                self._cmd_note_ts = now_ts
+                self.hass.async_create_task(self._notify("cmd", "Wallbox reagiert nicht",
+                                                         f"Der Befehl „{what}“ kam nach {p['tries']} Versuchen nicht an. " + (seen + ". " if seen else "")
+                                                         + ("Das Auto lädt womöglich über das Ladelimit. Bitte die Wallbox prüfen." if p["cmd"].get("frc") == 1 else "Bitte die Wallbox prüfen.")))
         self._last_set = {}  # nicht als Handumstellung werten – der nächste Takt sendet erneut
         return True
 

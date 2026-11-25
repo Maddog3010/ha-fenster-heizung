@@ -2,6 +2,18 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4.6b1] - 2026-11-25
+
+Testversion mit Korrekturen für Modul 8 (v1.0.2).
+
+### Behoben
+- **Modul 8: „Wallbox reagiert nicht – der Befehl „16 A“ kam nach 3 Versuchen nicht an“ mehrmals in der Nacht.** Übernahm die go-e einen Befehl nicht sofort, wurde er in jedem Takt (alle 10 Sekunden) neu gesendet – im Verlauf standen dann Dutzende gleiche „16 A“-Einträge, und jede neue Runde schickte wieder eine Meldung aufs Handy. Jetzt:
+  - Derselbe Befehl wird erst nach 8 Sekunden wiederholt, ab dem 3. Versuch nur noch jede Minute, „Laden aus“ (z. B. am Ladelimit) weiter alle 8 Sekunden.
+  - Die Meldung aufs Handy kommt höchstens alle 3 Stunden und nennt, was die Wallbox stattdessen meldet (z. B. „meldet weiter 10 A, Höchststrom in der go-e-App 10 A“).
+  - Modul 8 verlangt nie mehr Strom, als die go-e selbst zulässt (Höchststrom in der go-e-App und Ladekabel) – ein solcher Befehl könnte nie ankommen. Steht einmal im Verlauf.
+- **Modul 8: „Wallbox von Hand umgestellt“ direkt nach „Befehl jetzt übernommen“.** Kam ein Befehl verspätet an, wurde der nächste Vergleich mit einem älteren Wunsch als Handumstellung gewertet und die Regelung pausierte 30 Minuten. Jetzt gilt der bestätigte Stand als eigener Stand, und zwei Minuten danach wird keine Handumstellung erkannt.
+- **Modul 8 · „Heute“: Eine Ladung, die gestern Abend begonnen hat und noch läuft, fehlte** („0 Ladungen“, „Heute wurde noch nicht geladen“, obwohl kWh gezählt waren). Sie erscheint jetzt als „gestern 21:15 – jetzt“.
+
 ## [2026.11.4.5] - 2026-11-24
 
 Korrekturen zu gemeldeten Fehlern.

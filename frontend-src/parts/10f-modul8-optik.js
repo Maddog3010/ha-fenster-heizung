@@ -220,7 +220,9 @@
     this._wbStatLoad(); this._wbFcLoad();
     const T = (this._wbStD && this._wbStD.data) || {}, F = (this._wbFcD && this._wbFcD.data) || {}, now = new Date(), d0 = new Date(now); d0.setHours(0, 0, 0, 0);
     const tm = (t) => t.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }), isToday = (t) => t.toDateString() === now.toDateString();
-    const raw = (T.sessions || []).filter((x) => isToday(new Date(x.start))).map((x) => { const a0 = new Date(x.start); return { a: a0, b: x.running ? now : new Date(a0.getTime() + Math.max(1, x.min || 1) * 6e4), kwh: x.kwh || 0, pv: x.pv || 0, cost: x.cost || 0, run: !!x.running, n: 1 }; }).sort((p, q) => p.a - q.a);
+    /* Auch Ladungen, die gestern begonnen haben und heute noch laufen bzw. heute endeten (z. B. Nachtladung ab 21 Uhr) */
+    const raw = (T.sessions || []).map((x) => { const a0 = new Date(x.start), b = x.running ? now : new Date(a0.getTime() + Math.max(1, x.min || 1) * 6e4); return { a0, a: a0 < d0 ? new Date(d0) : a0, b, kwh: x.kwh || 0, pv: x.pv || 0, cost: x.cost || 0, run: !!x.running, n: 1, y: a0 < d0 }; })
+      .filter((x) => x.b >= d0 && x.a0 < new Date(d0.getTime() + 864e5)).sort((p, q) => p.a - q.a);
     const ses = []; raw.forEach((x) => { const l = ses[ses.length - 1]; if (l && x.a - l.b <= 15 * 6e4) { l.b = new Date(Math.max(l.b, x.b)); l.kwh += x.kwh; l.pv += x.pv; l.cost += x.cost; l.run = l.run || x.run; l.n++; } else ses.push({ ...x }); });
     const P = F.plan || {}, H = F.hours || [], SL = (F.slot_min || 60) / 60;
     const plan = (P.wins || []).map((w) => { const a1 = H[w.s] && new Date(H[w.s].t), b1 = a1 && new Date(a1.getTime() + (w.e - w.s) * SL * 36e5); return a1 && isToday(a1) && b1 > now ? { a: new Date(Math.max(a1, now)), b: b1, kwh: w.kwh, sh: w.share } : null; }).filter(Boolean);
@@ -238,8 +240,8 @@
     const pbar = (x) => { const l = pos(x.a), w = Math.max(1.2, pos(x.b) - l); return `<div class="evtp" style="left:${l}%;width:${w}%" title="geplant ${tm(x.a)}–${tm(x.b)} · ${num(x.kwh, 1)} kWh">${w > (this._evNarrow() ? 30 : 14) ? `<span>${num(x.kwh, 1)} kWh</span>` : ""}</div>`; };
     const lane = (lbl, inner) => `<div class="evtln"><span class="evtll">${lbl}</span><div class="evtlt">${ticks.map((h) => `<i class="g" style="left:${(h - h0) / (h1 - h0) * 100}%"></i>`).join("")}${inner}<i class="n" style="left:${pos(now)}%"></i></div></div>`;
     const k = (l, v, sub, c) => `<div class="evtk" style="--a:${c}"><small>${l}</small><b>${v}</b>${sub ? `<span>${sub}</span>` : ""}</div>`;
-    const list = ses.slice().reverse().map((x) => { const sp = x.kwh > 0 ? x.pv / x.kwh * 100 : 0, mins = Math.round((x.b - x.a) / 6e4);
-      return `<div class="evtr"><span class="evtrt"><b>${tm(x.a)} – ${x.run ? "jetzt" : tm(x.b)}</b><small>${mins >= 60 ? num(mins / 60, 1) + " h" : mins + " Min."}${x.run ? " · läuft" : ""}</small></span><span class="evtrb"><i style="width:${sp}%"></i></span><span class="evtrv"><b>${num(x.kwh, 1)} kWh</b><small>${num(sp, 0)} % Sonne · ${num(x.cost, 2)} €</small></span></div>`; }).join("");
+    const list = ses.slice().reverse().map((x) => { const sp = x.kwh > 0 ? x.pv / x.kwh * 100 : 0, mins = Math.round((x.b - (x.a0 || x.a)) / 6e4);
+      return `<div class="evtr"><span class="evtrt"><b>${x.y ? "gestern " + tm(x.a0) : tm(x.a)} – ${x.run ? "jetzt" : tm(x.b)}</b><small>${mins >= 60 ? num(mins / 60, 1) + " h" : mins + " Min."}${x.run ? " · läuft" : ""}</small></span><span class="evtrb"><i style="width:${sp}%"></i></span><span class="evtrv"><b>${num(x.kwh, 1)} kWh</b><small>${num(sp, 0)} % Sonne · ${num(x.cost, 2)} €</small></span></div>`; }).join("");
     return `<div class="card evday"><h2>${this._gx("schedule", 24)}Heute</h2>
       <div class="evtks">${k("Geladen", `${num(kwh, 1)} kWh`, `${ses.length} ${ses.length === 1 ? "Ladung" : "Ladungen"}`, "#2dd4bf")}${k("Sonne", `${num(sh, 0)} %`, `${num(pvk, 1)} kWh`, "#facc15")}${k("Kosten", `${num(cost, 2)} €`, "nur Netzstrom", "#f59e0b")}${plan.length ? k("Geplant", `${num(plan.reduce((s2, x) => s2 + (x.kwh || 0), 0), 1)} kWh`, `ab ${tm(plan[0].a)}`, "#60a5fa") : ""}</div>
       ${ses.length || plan.length ? `<div class="evtw">${lane("Geladen", ses.map((x) => bar(x)).join(""))}${plan.length ? lane("Geplant", plan.map(pbar).join("")) : ""}
