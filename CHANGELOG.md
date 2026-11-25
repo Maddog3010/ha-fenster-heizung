@@ -2,6 +2,38 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.5b5] - 2026-11-25
+
+Korrekturen für Modul 8 (v1.0.2) und Modul 0 (v0.12 Build 3) – dieselben wie in der stabilen Version 2026.11.4.6.
+
+### Behoben
+- **Modul 8: „Wallbox reagiert nicht – der Befehl „16 A“ kam nach 3 Versuchen nicht an“ mehrmals in der Nacht.** Übernahm die go-e einen Befehl nicht sofort, wurde er in jedem Takt (alle 10 Sekunden) neu gesendet – im Verlauf standen dann Dutzende gleiche „16 A“-Einträge, und jede neue Runde schickte wieder eine Meldung aufs Handy. Jetzt:
+  - Derselbe Befehl wird erst nach 8 Sekunden wiederholt, ab dem 3. Versuch nur noch jede Minute, „Laden aus“ (z. B. am Ladelimit) weiter alle 8 Sekunden.
+  - Die Meldung aufs Handy kommt höchstens alle 3 Stunden und nennt, was die Wallbox stattdessen meldet (z. B. „meldet weiter 10 A, Höchststrom in der go-e-App 10 A“).
+  - Modul 8 verlangt nie mehr Strom, als die go-e selbst zulässt (Höchststrom in der go-e-App und Ladekabel) – ein solcher Befehl könnte nie ankommen. Steht einmal im Verlauf.
+- **Modul 8: „Wallbox von Hand umgestellt“ direkt nach „Befehl jetzt übernommen“.** Kam ein Befehl verspätet an, wurde der nächste Vergleich mit einem älteren Wunsch als Handumstellung gewertet und die Regelung pausierte 30 Minuten. Jetzt gilt der bestätigte Stand als eigener Stand, und zwei Minuten danach wird keine Handumstellung erkannt.
+- **Modul 0: Der Zaun verschob sich immer wieder.** Gedrehte Elemente (z. B. ein Zaun mit ↻ 90° am Grundstücksrand) werden um ihre Mitte gedreht; gespeichert wird aber die ungedrehte linke obere Ecke. Bei einem langen Zaun liegt die weit außerhalb des Plans – sie wurde beim Speichern auf den Rand begrenzt, und der Zaun sprang bei jedem Speichern ein Stück. Jetzt muss nur die Mitte im Plan liegen. Außerdem bleibt beim Ändern von Breite, Tiefe oder „Normgröße“ die Mitte an ihrem Platz (vorher wuchs das Element nach rechts unten und wanderte, wenn es gedreht war), und das Sichtfeld des Baukastens rechnet gedrehte Elemente richtig ein.
+  Die Markierung eines gedrehten Elements war außerdem ungedreht (ein senkrechter Zaun wurde als waagerechter Strich mit Anfasser markiert) – jetzt liegt sie genau auf dem Element; die Größe gedrehter Elemente ändert man über Breite und Tiefe.
+  Bereits verschobene Zäune bitte einmal an ihren Platz ziehen und speichern – danach bleiben sie dort.
+- **Modul 8 · „Heute“: Eine Ladung, die gestern Abend begonnen hat und noch läuft, fehlte** („0 Ladungen“, „Heute wurde noch nicht geladen“, obwohl kWh gezählt waren). Sie erscheint jetzt als „gestern 21:15 – jetzt“.
+
+
+### Neu
+- **Modul 17 · Müllabfuhr ist stabil (v1.0, Addon).** Vier Stufen auf einmal:
+  - **v0.6 Erinnern:** **Knöpfe in der Meldung** der Home-Assistant-App („Steht draußen“, „Später“, „Wieder drin“), **Erinnerung am Morgen** des Abholtags (nur wenn die Tonne noch nicht draußen steht), **Tonne reinholen** nach der Abholung mit Meldung, Licht mit wählbarer Helligkeit, wechselnder Farbe bei mehreren Tonnen und danach **wieder wie vorher**, große Karte auf dem **Wandtablet**.
+  - **v0.8 Haushalt:** **Wer ist dran?** (Personen im Wechsel je Abholung oder Woche, Meldung an die Person, die dran und zu Hause ist, Tauschen mit einem Tipp), **Diesmal nicht** (Leerung auslassen), **Verlauf** je Abholung (wann, wie, wer), **Kosten** wahlweise nur für Tonnen, die draußen standen, Hinweis vor dem **Urlaub** (Modul 1), bei **Sturm** wahlweise erst morgens erinnern (Modul 9), Hitze-Tipp für die Biotonne.
+  - **v0.9:** **Jahresübersicht** je Abfallart, **Vorrat Säcke** mit Meldung, **Labs „Automatisch erkennen“** (Sensor an der Tonne oder am Stellplatz), Ereignis `strom_waerme_muell`.
+  - **v1.0:** **Echte Entitäten** im Gerät „Strom & Wärme · Müllabfuhr“: nächste Abholung, Tage je Abfallart, Vorrat, Binärsensoren „Tonne rausstellen“ und „Tonne reinholen“ (Entitäts-IDs `…strom_waerme_muell_…` wie bisher).
+- **Startseite:** Hinweise für „Reinholen“ (mit „Wieder drin“), Sondertermine, Urlaub und Vorrat.
+- **Tags & Karten:** neue Aktion „Tonne ist wieder drin“; Scans landen als „per Tag“ im Verlauf.
+- README: Abschnitt „Modul 17 im Detail“.
+
+### Geändert
+- Neue Plattform **binary_sensor** für die Integration. Nach dem Update Home Assistant einmal neu starten.
+
+### Behoben
+- Modul 17 auf dem Handy: Die 14-Tage-Leiste machte die Seite zu breit, Banner und Knopf wurden abgeschnitten.
+
 ## [2026.11.5b4] - 2026-11-25
 
 Tablet-Modus neu aufgebaut, erste Stufe: Leiste an der Seite und eine Startseite ohne Scrollen.

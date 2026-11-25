@@ -277,9 +277,22 @@ def clean_plan(raw: Any) -> dict[str, Any]:
             continue
         seen.add(iid)
         o = {"id": iid, "fl": fl, "t": it["t"]}
-        for k in ("x", "y", "w", "h", "x2", "y2"):
+        for k in ("x2", "y2"):
             if k in it:
                 o[k] = int(_num(it[k], -50, 1200, 0))
+        for k in ("w", "h"):
+            if k in it:
+                o[k] = int(_num(it[k], 0, 3000, 0))
+        for k in ("x", "y"):
+            if k in it:
+                o[k] = int(_num(it[k], -3000, 3000, 0))
+        # 2026.11.4.6: Nicht die linke obere Ecke, sondern die Mitte muss im Plan liegen. Ein langer, gedrehter Zaun hat
+        # seine (ungedrehte) Ecke weit links oben – vorher wurde sie auf −50 begrenzt und der Zaun sprang beim Speichern.
+        for k, dk in (("x", "w"), ("y", "h")):
+            if k in o:
+                half = o.get(dk, 0) / 2
+                c = min(1200.0, max(-50.0, o[k] + half))
+                o[k] = int(round(c - half))
         o["r"] = int(round(_num(it.get("r"), -360, 720, 0))) % 360  # Modul 0 Build 7: frei drehbar (0–359°)
         if it["t"] in ("d", "f", "a") and it.get("b") is not None:
             o["b"] = int(_num(it.get("b"), 40, 600, 90))  # Breite in cm

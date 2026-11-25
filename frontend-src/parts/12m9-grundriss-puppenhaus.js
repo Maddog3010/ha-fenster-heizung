@@ -210,9 +210,11 @@
     const cur = P.items.find((x) => x.id === ed.sel); if (!cur || cur.t !== "o") return false;
     const sc = this._sfScale(), px = (cm) => Math.max(4, Math.round((cm / 100) * sc));
     if (a === "grxok2") { this._sfSnap(); const kk = this._grMK().by[v]; if (kk) { const cx = cur.x + cur.w / 2, cy = cur.y + cur.h / 2; cur.ok = v; cur.w = px(kk.w); cur.h = px(kk.h); cur.x = Math.round(cx - cur.w / 2); cur.y = Math.round(cy - cur.h / 2); if (!kk.d.length) cur.e = ""; } this._grOkLast = v; this._render(); return true; }
-    if (a === "grxow" || a === "grxoh") { this._sfSnap(); const key = a === "grxow" ? "w" : "h", cm = Math.max(10, Math.round(((cur[key] || 40) / sc) * 100) + s); cur[key] = px(cm); this._render(); return true; }
+    /* 2026.11.4.6: Größe ändern, ohne dass das Element wandert – die Mitte bleibt (gedreht wird um die Mitte) */
+    const keepC = (fn) => { const cx = cur.x + (cur.w || 0) / 2, cy = cur.y + (cur.h || 0) / 2; fn(); cur.x = Math.round(cx - (cur.w || 0) / 2); cur.y = Math.round(cy - (cur.h || 0) / 2); };
+    if (a === "grxow" || a === "grxoh") { this._sfSnap(); const key = a === "grxow" ? "w" : "h", cm = Math.max(10, Math.round(((cur[key] || 40) / sc) * 100) + s); keepC(() => { cur[key] = px(cm); }); this._render(); return true; }
     if (a === "grxorot") { this._sfSnap(); cur.r = ((((cur.r || 0) + s) % 360) + 360) % 360; this._render(); return true; }
-    if (a === "grxosz") { this._sfSnap(); const kk = this._grMk(cur); cur.w = px(kk.w); cur.h = px(kk.h); this._render(); return true; }
+    if (a === "grxosz") { this._sfSnap(); const kk = this._grMk(cur); keepC(() => { cur.w = px(kk.w); cur.h = px(kk.h); }); this._render(); return true; }
     if (a === "grxoe") { this._sfSnap(); cur.e = v; this._render(); return true; }
     return false;
   }
@@ -225,7 +227,8 @@
   _grEdVB(fl) {
     const ed = this._sfEd, its = ed ? ed.plan.items.filter((i) => i.fl === fl) : [];
     let x0 = 0, y0 = 0, x1 = 800, y1 = 480;
-    its.forEach((i) => { const a = [i.x, i.x2, i.x + (i.w || 0)].filter((v) => v != null), b = [i.y, i.y2, i.y + (i.h || 0)].filter((v) => v != null); x0 = Math.min(x0, ...a.map((v) => v - 20)); y0 = Math.min(y0, ...b.map((v) => v - 20)); x1 = Math.max(x1, ...a.map((v) => v + 20)); y1 = Math.max(y1, ...b.map((v) => v + 20)); });
+    its.forEach((i) => { const rb = i.r && i.w && i.h ? (() => { const cx = i.x + i.w / 2, cy = i.y + i.h / 2, t = i.r * Math.PI / 180, ex = Math.abs(i.w / 2 * Math.cos(t)) + Math.abs(i.h / 2 * Math.sin(t)), ey = Math.abs(i.w / 2 * Math.sin(t)) + Math.abs(i.h / 2 * Math.cos(t)); return [cx - ex, cx + ex, cy - ey, cy + ey]; })() : null;   /* gedrehte Elemente: tatsächliche Ausdehnung */
+      const a = rb ? [rb[0], rb[1]] : [i.x, i.x2, i.x + (i.w || 0)].filter((v) => v != null), b = rb ? [rb[2], rb[3]] : [i.y, i.y2, i.y + (i.h || 0)].filter((v) => v != null); x0 = Math.min(x0, ...a.map((v) => v - 20)); y0 = Math.min(y0, ...b.map((v) => v - 20)); x1 = Math.max(x1, ...a.map((v) => v + 20)); y1 = Math.max(y1, ...b.map((v) => v + 20)); });
     x0 = Math.max(-50, x0); y0 = Math.max(-50, y0); x1 = Math.min(1200, x1); y1 = Math.min(1200, y1);
     return [x0, y0, x1 - x0, y1 - y0];
   }

@@ -306,6 +306,50 @@ def test_real_manual_change_still_pauses():
     assert m.want.get("state") == "pausiert"
 
 
+def test_amp_not_arriving_is_not_resent_every_tick_and_notifies_once():
+    """2026.11.4.6: „16 A“ kam nicht an – vorher alle 10 s neu gesendet (49 Einträge) und mehrere Handy-Meldungen."""
+    m, box, hass = make(vehicles=[{"id": "v1", "name": "BYD", "ids": [4], "mode": "now", "limit": 100, "plug": "last"}])
+    box.amp = 10
+    box.ignore = {"amp"}
+    tick(m)
+    box.plug(card=4)
+    tick(m, 60)  # 10 Minuten
+    amps = [s for s in box.sets if s.get("amp") == 16]
+    assert 3 <= len(amps) <= 14, len(amps)
+    notes = [c for c in hass.services.calls if c[0] == "notify" and "reagiert nicht" in c[2]["title"]]
+    assert len(notes) == 1 and "meldet weiter 10 A" in notes[0][2]["message"]
+
+
+def test_late_confirmation_is_not_manual_change():
+    m, box, _ = make(vehicles=[{"id": "v1", "name": "BYD", "ids": [4], "mode": "now", "limit": 100, "plug": "last"}])
+    box.amp = 10
+    box.ignore = {"amp"}
+    tick(m)
+    box.plug(card=4)
+    tick(m, 12)
+    box.ignore = set()
+    tick(m, 8)
+    assert box.amp == 16
+    assert not any("von Hand umgestellt" in e["x"] for e in m.log)
+    assert m.want.get("state") != "pausiert"
+
+
+def test_amp_capped_by_goe_max():
+    m, box, _ = make(vehicles=[{"id": "v1", "name": "BYD", "ids": [4], "mode": "now", "limit": 100, "plug": "last"}])
+    orig = box.read
+
+    async def read():
+        r = await orig()
+        r["info"]["ama"] = 13
+        return r
+    box.read = read
+    tick(m)
+    box.plug(card=4)
+    tick(m, 3)
+    assert box.amp == 13 and not any(s.get("amp", 0) > 13 for s in box.sets)
+    assert any("höchstens 13 A" in e["x"] for e in m.log)
+
+
 def test_cmd_match():
     C = sys.modules["fh8sim.wallbox_calc"]
     assert C.cmd_match({"frc": 2, "amp": 10}, {"frc": 2, "amp": 10}, "goe")
