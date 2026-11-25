@@ -54,7 +54,7 @@
     if (this._tmSleep) { if (moved || newWarn) this._tmWake(); return; }
     if (newWarn && !this._modal) { this._tmView = "st"; this._tmLast = Date.now(); this._render(); return; }
     if (c.sleep && idle >= c.sleep * 60000) { this._tmSleep = true; this._modal = null; this._renderModal(); this._render(); return; }
-    if (c.idle_home && idle >= c.idle_home * 60000 && !this._tmHomed) { this._tmHomed = true; const paged = Object.values(this._tmPg || {}).some(Boolean); if (!this._modal) this._tmPg = {}; if ((this._tmV() !== "st" || paged) && !this._modal) { this._tmView = "st"; this._render(); } }
+    if (c.idle_home && idle >= c.idle_home * 60000 && !this._tmHomed) { this._tmHomed = true; this._tm2Unl = 0; const paged = Object.values(this._tmPg || {}).some(Boolean) || Object.keys(this._tm2T || {}).length > 0; if (!this._modal) { this._tmPg = {}; this._tm2T = {}; } if ((this._tmV() !== "st" || paged) && !this._modal) { this._tmView = "st"; this._render(); } }
   }
   _tmV() { return this._tmView || "st"; }
   _tmItems() {
@@ -167,6 +167,7 @@
   }
   _tmAfterPin(fresh) {
     const then = this._tmPinThen; this._tmPinThen = "";
+    if (typeof then === "function") { this._tm2Unl = Date.now() + 120000; this._tmPin = ""; this._modal = this._tm2Back || null; this._tm2Back = null; this._renderModal(); then(); this._render(); return; }
     if (then === "start") { this._tmModeSet("on"); this._tmView = "st"; this._modal = null; this._renderModal(); this._render(); return; }
     this._modal = { type: this._tmOn() ? "tmset" : "tmnorm" }; this._renderModal(); if (this._modal.type === "tmnorm" && this._admin()) this._tmAdminList();
     if (fresh) this._render();
@@ -175,11 +176,11 @@
   _tmAct(a, b) {
     const k = b.dataset.k, m = this._modal;
     if (a.startsWith("tm2")) { this._tm2Act(a, b); return; }
-    if (a === "tmgo") { if (k === "st") this._tmPg = {}; this._tmView = k; this._tmHomed = false; this._render(); }
+    if (a === "tmgo") { this._tmPg = {}; this._tm2T = {}; this._tmView = k; this._tmHomed = false; this._render(); }
     else if (a === "tmbub") { const d = this._hzBubDef(k) || {}; if (d.mod && this._mdList().some((x) => x.id === d.mod)) { this._tmView = d.mod; this._render(); } }
-    else if (a === "tmgomore") { this._tmView = k; this._tmHomed = false; this._modal = null; this._renderModal(); this._render(); }
+    else if (a === "tmgomore") { this._tmPg = {}; this._tm2T = {}; this._tmView = k; this._tmHomed = false; this._modal = null; this._renderModal(); this._render(); }
     else if (a === "tmmore") { if (this._tmPg) this._tmPg.more = 0; this._modal = { type: "tmmore" }; this._renderModal(); }
-    else if (a === "tmlock") { this._tmPin = ""; const me = this._tmMe(); if (me.has_pin) this._tmPinOpen("unlock"); else this._tmPinOpen("new"); }
+    else if (a === "tmlock") { this._tmPin = ""; this._tmPinThen = ""; this._tm2Back = null; const me = this._tmMe(); if (me.has_pin) this._tmPinOpen("unlock"); else this._tmPinOpen("new"); }
     else if (a === "tmopen") { this._modal = { type: "tmnorm" }; this._renderModal(); if (this._admin()) this._tmAdminList(); }
     else if (a === "tmstart") this._tmStartNow();
     else if (a === "tmno") { try { localStorage.setItem("fh_tm_nohint", "1"); } catch (_) { /* egal */ } this._tmHintHide = true; this._render(); }
@@ -187,7 +188,7 @@
       if (!m || m.type !== "tmpin") return; if (k === "back") m.buf = m.buf.slice(0, -1); else if (m.buf.length < 6) m.buf += k;
       m.err = m.buf.length ? "" : m.err; this._renderModal(); if (m.buf.length === 6) this._tmKeyDone();
     }
-    else if (a === "tmpinx") { this._tmPinThen = ""; this._modal = null; this._renderModal(); }
+    else if (a === "tmpinx") { this._tmPinThen = ""; this._modal = this._tm2Back || null; this._tm2Back = null; this._renderModal(); }
     else if (a === "tmdone") { this._tmPin = ""; this._modal = null; this._renderModal(); this._render(); }
     else if (a === "tmmode") { this._tmModeSet(k); this._renderModal(); this._render(); }
     else if (a === "tmend") { this._tmModeSet("off"); this._tmPin = ""; this._modal = { type: "tmnorm" }; this._renderModal(); this._render(); }
@@ -218,6 +219,12 @@
     if (f === "tmnot") { this._tmSave({ notify: String(t.value || "").trim().replace(/^notify\./, "") }); return true; }
     return false;
   }
+  /* Display-Schalter: alle Schalter, dazu nur Lichter, die nach Display aussehen (sonst stünde jede Lampe in der Liste) */
+  _tmScreens(cur) {
+    const st = this._hass.states, hit = (e) => /screen|display|bildschirm/i.test(`${e} ${(st[e].attributes || {}).friendly_name || ""}`);
+    const l = Object.keys(st).filter((e) => e.startsWith("switch.") || (e.startsWith("light.") && (e === cur || hit(e))));
+    return l.sort((a, b) => (hit(b) ? 1 : 0) - (hit(a) ? 1 : 0));
+  }
   _tmUrlStr() { try { return `${location.origin}${location.pathname}?tablet=1`; } catch (_) { return "?tablet=1"; } }
   _tmModal() {
     const m = this._modal, st = this._hass.states;
@@ -240,7 +247,7 @@
     const seg = (act, cur, opts) => `<span class="gschs">${opts.map(([k, t]) => `<button class="gsch ${String(cur) === String(k) ? "sel" : ""}" data-act="${act}" data-k="${k}" aria-pressed="${String(cur) === String(k)}" ${lock ? "disabled" : ""}>${t}</button>`).join("")}</span>`;
     const row = (t, s, ctl) => `<div class="vrow"><span>${t}${s ? `<small class="mut" style="display:block">${s}</small>` : ""}</span>${ctl}</div>`;
     const sw = (act, on, label) => `<button class="sw ${on ? "on" : ""}" data-act="${act}" aria-pressed="${!!on}" aria-label="${esc(label)}" ${lock ? "disabled" : ""}></button>`;
-    const motions = Object.keys(st).filter((e) => e.startsWith("binary_sensor.") && ["motion", "occupancy", "presence"].includes((st[e].attributes || {}).device_class)), sws = Object.keys(st).filter((e) => e.startsWith("switch.")).sort((a, b) => (/screen/.test(b) ? 1 : 0) - (/screen/.test(a) ? 1 : 0));
+    const motions = Object.keys(st).filter((e) => e.startsWith("binary_sensor.") && ["motion", "occupancy", "presence"].includes((st[e].attributes || {}).device_class)), sws = this._tmScreens(c.screen);
     const moAll = motions.length ? motions : Object.keys(st).filter((e) => e.startsWith("binary_sensor."));
     const mods = this._mdList().filter((x) => x.id !== "st");
     const pinRow = lock
@@ -265,7 +272,7 @@
       <div class="gschs" style="flex-wrap:wrap">${mods.map((x) => `<button class="gsch ${c.dock_hide.includes(x.id) ? "" : "sel"}" data-act="tmdock" data-k="${x.id}" aria-pressed="${!c.dock_hide.includes(x.id)}" ${lock ? "disabled" : ""}>${esc(x.short || x.name)}</button>`).join("")}</div>
       <div class="lsec" style="margin-top:14px">${ic("eye", 15)}Bewegung und Display</div>
       <div class="mut sm" style="margin:0 0 6px">Der Bewegungsmelder wird im Home Assistant überwacht und funktioniert auch bei ausgeschaltetem Display. Bei Bewegung geht das Display an, ohne Bewegung nach der eingestellten Zeit wieder aus.</div>
-      ${lock ? "" : `<div class="of"><div class="ol"><b>Bewegungsmelder</b></div></div>${this._wzSel(moAll, c.motion, "tmsel", 'data-k="motion"', "– keiner –")}<div class="of"><div class="ol"><b>Display-Schalter</b><span>Fully: der Schalter „Screen“ der Fully-Integration</span></div></div>${this._wzSel(sws, c.screen, "tmsel", 'data-k="screen"', "– keiner –")}`}
+      ${lock ? "" : `<div class="of"><div class="ol"><b>Bewegungsmelder</b></div></div>${this._wzSel(moAll, c.motion, "tmsel", 'data-k="motion"', "– keiner –")}<div class="of"><div class="ol"><b>Display-Schalter</b><span>Fully: Schalter „Screen“ · Kiosk Satellite: Licht „Screen“</span></div></div>${this._wzSel(sws, c.screen, "tmsel", 'data-k="screen"', "– keiner –", /screen|display|bildschirm/i)}`}
       ${row("Display ausschalten nach", "Ohne Bewegung. Nur mit Display-Schalter.", seg("tmoff", c.off_after, [[0, "Nie"], [10, "10 Min."], [30, "30 Min."]]))}
       <div class="vrow"><span>HA-App (Android)<small class="mut" style="display:block">Benachrichtigungsdienst, z. B. mobile_app_tablet. Schaltet nur ein.</small></span><input class="osel" data-f="tmnot" value="${esc(c.notify)}" placeholder="mobile_app_…" style="width:46%;margin:0" ${lock ? "disabled" : ""} aria-label="Benachrichtigungsdienst"></div>
       ${inT ? "" : `<div class="lsec" style="margin-top:14px">${ic("copy", 15)}Fully Kiosk</div><div class="mut sm" style="margin:0 0 6px">Diesen Link in Fully unter Web Content Settings als Start-URL eintragen. Dann startet das Tablet immer im Tablet-Modus.</div><div class="tmurl"><code>${esc(this._tmUrlStr())}</code><button class="ibtn" data-act="tmcopy" aria-label="Kopieren">${ic("copy", 18)}</button></div>`}

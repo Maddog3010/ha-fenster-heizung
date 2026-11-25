@@ -71,7 +71,7 @@ def clean_cfg(raw: Any) -> dict[str, Any]:
         "sleep": _pick(raw.get("sleep"), SLEEP, d["sleep"]),
         "wake_warn": raw.get("wake_warn") is not False,
         "motion": _ent(raw.get("motion"), ("binary_sensor",)),
-        "screen": _ent(raw.get("screen"), ("switch",)),
+        "screen": _ent(raw.get("screen"), ("switch", "light")),
         "notify": notify if isinstance(notify, str) and SVC_RE.match(notify) else "",
         "off_after": _pick(raw.get("off_after"), OFF_AFTER, d["off_after"]),
         "dock_hide": list(dict.fromkeys(hide)),
@@ -298,7 +298,8 @@ class TabletManager:
                 # Bildschirmschoner oder Dimmen das Display dunkel halten.
                 if not on and cur is not None and cur.state == "off":
                     return
-                await self.hass.services.async_call("switch", "turn_on" if on else "turn_off", {"entity_id": c["screen"]}, blocking=False)
+                domain = c["screen"].split(".", 1)[0]  # Fully: Schalter, Kiosk Satellite: Licht „Screen“
+                await self.hass.services.async_call(domain, "turn_on" if on else "turn_off", {"entity_id": c["screen"]}, blocking=False)
             elif c["notify"] and on:
                 await self.hass.services.async_call("notify", c["notify"], {"message": "command_screen_on"}, blocking=False)
         except Exception as err:  # noqa: BLE001 - Gerät kann fehlen

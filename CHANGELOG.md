@@ -2,6 +2,23 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.5b7] - 2026-11-25
+
+Tablet-Modus, zweite Stufe: Fenster & Heizung und Warmwasser ohne Scrollen. Dazu der Display-Schalter für Kiosk Satellite.
+
+### Neu
+- **Tablet-Modus · Modul 1 (v1.9 Build 10):** passt auf eine Seite, mit den Reitern „Räume“ und „Statistik“. Antippen eines Raums öffnet ein Fenster zum Regeln, mit Geräten, Raumluft und Statistik.
+- **Tablet-Modus · Modul 2 (v1.1 Build 3):** passt auf eine Seite, mit den Reitern „Jetzt“, „Zeiten“ und „Verlauf“.
+- **Display-Schalter:** Neben Schaltern (Fully Kiosk) gehen jetzt auch Lichter, zum Beispiel „Screen“ von Kiosk Satellite. In der Auswahl stehen nur Lichter mit „Screen“, „Display“ oder „Bildschirm“ im Namen.
+
+### Geändert
+- **PIN im Tablet-Modus:** Mit eingerichteter PIN fragen jetzt auch Änderungen an Heizplan, Fensterregelung und Warmwasser-Einstellungen danach; danach sind sie 2 Minuten frei. Temperatur, Anwesenheit, die drei Warmwasser-Knöpfe und der Schalter des Elektroheizers brauchen keine PIN.
+- Mit „Aufbau: Wie bisher“ erscheinen die Verlaufswerte beim Warmwasser sofort statt erst als „–“.
+
+### Noch offen
+- Der Reiter „Haus“ mit Grundriss und die übrigen Modulseiten kommen in den nächsten Stufen.
+- Getestet im Browser mit Beispieldaten, noch nicht auf einem echten Tablet.
+
 ## [2026.11.5b6] - 2026-11-25
 
 Korrektur eines gemeldeten Fehlers und Modul 0 (v0.12 Build 4): Fenster im Grundriss genauer – dasselbe wie in der stabilen Version 2026.11.4.7.

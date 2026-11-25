@@ -9,7 +9,7 @@
     const ids = [...(r.windows || []), r.modeEid, r.pres && r.pres.melder].filter(Boolean);
     c[k] = { busy: true, ts: now, ev: (c[k] && c[k].ev) || null };
     this._hass.callWS({ type: "history/history_during_period", start_time: new Date(now - 12 * 3600e3).toISOString(), end_time: new Date(now).toISOString(), entity_ids: ids, include_start_time_state: false, significant_changes_only: false, minimal_response: true, no_attributes: true })
-      .then((res) => { c[k] = { busy: false, ts: Date.now(), ev: this._zlEvents(r, res || {}) }; if (this._modal && this._modal.type === "why" && this._modal.id === k) this._renderModal(); })
+      .then((res) => { c[k] = { busy: false, ts: Date.now(), ev: this._zlEvents(r, res || {}) }; if (this._modal && (this._modal.type === "why" || this._modal.type === "tm2room") && this._modal.id === k) this._renderModal(); })
       .catch(() => { c[k] = { busy: false, ts: Date.now(), ev: [] }; if (this._modal && this._modal.type === "why") this._renderModal(); });
     return c[k];
   }

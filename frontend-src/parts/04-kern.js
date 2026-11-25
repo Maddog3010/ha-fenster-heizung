@@ -218,8 +218,8 @@ class FensterHeizungPanel extends HTMLElement {
     }
     return out;
   }
-  _chart(rooms) {
-    const days = this._days(rooms), W = Math.max(300, Math.min(1100, (this.clientWidth || 390) - 62)), H = 230, L = 36, R = 6, T = 12, B = 30;
+  _chart(rooms, dim) {
+    const days = this._days(rooms), W = dim ? Math.max(260, Math.round(dim.w)) : Math.max(300, Math.min(1100, (this.clientWidth || 390) - 62)), H = dim ? Math.max(120, Math.round(dim.h)) : 230, L = 36, R = 6, T = 12, B = 30;
     this._w = this.clientWidth;
     const lblStep = W < 480 ? 3 : 2;
     const tot = days.map((x) => x.v.reduce((a, b) => a + b, 0));

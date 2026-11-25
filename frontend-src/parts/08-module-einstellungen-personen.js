@@ -42,7 +42,7 @@
   }
   _mdPoll(r) {
     if (!this._hass) return;
-    const apply = (x) => { if (!x || this._dragging || (this._modal && ["wwset", "wwsch", "enset", "gsset", "evset"].includes(this._modal.type)) || this._mdT) return; this._mdApply(x); this._render(); };
+    const apply = (x) => { if (!x || this._dragging || (this._modal && ["wwset", "wwsch", "tm2ww", "enset", "gsset", "evset"].includes(this._modal.type)) || this._mdT) return; this._mdApply(x); this._render(); };
     if (r) { apply(r); return; }
     this._hass.callWS({ type: "fenster_heizung/get_modules" }).then(apply).catch(() => {});
   }

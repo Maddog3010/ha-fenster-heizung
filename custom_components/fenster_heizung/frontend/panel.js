@@ -786,8 +786,8 @@ const MV_STG = [
   ["stabil", "ab 1.0", "Geprüft und für den Alltag gedacht.", "Einstellungen bleiben bei Updates erhalten, neue Funktionen kommen nur dazu.", "Neue Funktionen heben die Version an (1.1, 1.2). Ein großer Umbau macht daraus 2.0."]];
 const MV = {
   gr: { v: "0.12", b: 4, d: "2026-11-25", p: "2026.11.5b6", log: [["0.12", 4, "2026.11.5b6", "Fenster: Breite und Höhe, Rollladen bei jeder Fensterart (auch bodentief) – auch in 2026.11.4.7"], ["0.12", 3, "2026.11.5b5", "Zaun und andere lange, gedrehte Elemente springen beim Speichern nicht mehr; Breite/Tiefe ändern lässt die Mitte an ihrem Platz; gedrehte Markierung (auch in 2026.11.4.6)"], ["0.12", 2, "2026.11.4.4b3", "Handy: Plan in der Ansicht wie im Bearbeiten – Symbole an ihrem Platz, normale Schrift; die Handy-Leiste mit großer Schrift ist unter Ansicht ▾ › Groß wählbar. Raumnamen weichen der Heizkörper-Temperatur aus"], ["0.12", 1, "2026.11.4.4b1", "Fenster- und Türkontakte im Fenster bzw. in der Tür: zu, gekippt, offen und „?“ im Plan, Chip „offen · 25 min“ (nicht auf dem Handy), Übernehmen alter Kontakt-Elemente, „Kontakte aus Modul 1 zuordnen“; Heizkörper mit Wärmeschein und Temperatur zur Raumseite"], ["0.11", 15, "2026.11.4.1", "Handy-Ansicht Build 4: Sonderfälle – in schmalen Räumen werden Symbole zu Punkten, zu viele enden mit „+2“, in sehr kleinen Räumen zeigt ein Farbpunkt die Temperatur; Raum antippen zeigt alles im Raum-Blatt"], ["0.11", 14, "2026.11.4.1", "Handy-Ansicht Build 3: neue Werkzeugleiste – Etage, Ansicht, Bearbeiten und „⋯“ in einer Zeile, Ebenen als Wischleiste; der Plan beginnt weiter oben"], ["0.11", 13, "2026.11.4.1", "Handy-Ansicht Build 2: Status-Leiste je Raum – Temperatur links, Geräte mit Zustand, Melder und Lampen rechts, bei schmalen Räumen zweizeilig; nichts überlagert mehr den Raumnamen"], ["0.11", 12, "2026.11.4.1", "Handy-Ansicht Build 1: Raumnamen bleiben immer im Raum (vorher ragte z. B. „Sportzimmer“ in den Nachbarraum), Trennung an der Wortfuge („Sport-/zimmer“), Schrift nach Raumbreite"], ["0.10.1", 11, "2026.11.4", "Stufe Beta: Modul 0 ist mit Version 2026.11.4 zum Testen freigegeben – der Grundriss läuft mit echten Daten und wird von Modul 1, 11 und 18 genutzt"], ["0.10.1", 10, "2026.11.4b58", "Puppenhaus entfernt (nur noch der Plan, im Banner wieder das Haus-Symbol). Werkzeugleiste im Baukasten bleibt am Handy/iPad nach dem Wischen stehen und springt nicht mehr an den Anfang (auch Ebenen- und Etagen-Knöpfe)."], ["0.10", 10, "2026.11.4b56", "Puppenhaus (alle Etagen schräg übereinander, Antippen klappt flach, auch im Banner), Sonnenlicht durch die Fenster mit Tageszeit-Regler und Nordrichtung, Möbel (19) und Außenbereich (42: Garten & Pflanzen, Spielen & Freizeit, Wege, Bauten & Technik) mit Größe in cm, Grundstück als eigene Etage mit Haus-Umriss, Zustände (Pool, Bewässerung, Gartenlampe …). Raumnamen passen sich dem Raum an und verdecken keine Melder mehr"], ["0.9", 9, "2026.11.4b55", "Haustechnik, Sensoren und Notfall-Punkte im Plan (34 Teile, mit Zustand aus Home Assistant, Kegel für Bewegungsmelder und Kamera, WLAN-Reichweite, Notizen); Notfall-Punkte auch in Modul 11. Raum-Sensoren in Home Assistant (Fläche, Temperatur, Lampen an, Fenster offen, belegt, Wohnfläche). Bereiche und Etagen aus dem Plan anlegen"], ["0.8", 8, "2026.11.4b55", "Zoom (+/−, Strg+Mausrad, zwei Finger), Verschieben, Vollbild und Raum-Fokus im Plan. Export als PDF (A4 quer, alle Etagen, mit Titel, Fläche und Datum), PNG und SVG. Dashboard-Karte „Grundriss“ (custom:sw-grundriss-card) mit Stil, Etage, Ebenen und Raum-Blatt"], ["0.7", 7, "2026.11.4b54", "Baukasten 2.0: Raster 5–50 cm, Wände rasten auf 15° ein, Maße im Plan. Türen und Fenster schräg auf jeder Wand, frei drehbar, mit Breite und Art (Doppel-, Schiebe-, Pendel-, Falt-, Terrassentür, Garagentor; bodentief, Dachfenster, Rollladen), Abstand zur Ecke, wandern mit dem Raum. Plan-Check, Maßstab messen, Etage kopieren, Tastatur. Treppenarten (L, U halbgewendelt, Wendel, Dachboden), mobile Heizer und Luftentfeuchter aus Modul 1 (Entfeuchter folgt seinem Standort), Markise mit Stand"], ["0.6", 6, "2026.11.4b54", "Eine Optik überall: Modul 1, 11 und der Baukasten zeichnen den Grundriss wie Modul 0. Neuer Baukasten mit Leiste oben, Werkzeugen links, Eigenschaften daneben und Ablage zum Ziehen. Ebene „Jetzt“ und Raum-Blatt beim Antippen eines Raums"], ["0.5", 5, "2026.11.4b53", "Neue Optik des Grundrisses: Wandstärken, Böden je Raumart, Türen mit Schwenkbogen, Fenster mit Glas (offen = gelb), Treppen, Raumsymbol und m², Maße, Nordpfeil, Maßstab; Stile Modern, Bauplan und Hell"], ["0.4", 4, "2026.11.4b53", "Sichern & Einlesen: Plan als Datei, Einlesen mit Vorschau (ersetzen oder Etagen dazu), Verlauf der letzten 15 Stände und Umzugs-Kopie wiederherstellen"], ["0.3", 3, "2026.11.4b52", "Baukasten zieht aus Modul 11 nach Modul 0: Bearbeiten in Modul 1, 11 und 18 führt hierher und zurück, Reiter Ebenen mit Bauplan, Melder, Lampen und Wärme"], ["0.2", 2, "2026.11.4b52", "Reiter Räume: eine Liste Plan-Raum ↔ Bereich ↔ Raum in Modul 1 mit „genutzt von“, Zuordnung aus Modul 18 übernommen, Einstellungen mit Rückfrage beim Ausschalten"], ["0.1", 1, "2026.11.4b52", "Neues Modul: der Grundriss gehört dem Kern, Umzug aus Modul 11, Plan mit Ebenen Melder und Lampen ansehen"]] },
-  fh: { v: "1.9", b: 9, d: "2026-11-23", p: "2026.11.4b59", log: [["1.9", 9, "2026.11.4b59", "Elektroheizer 2.0 Build 1–4: Entfernen-Dialog mit Rückgängig, Papierkorb (30 Tage) zum Wiederherstellen, Leistung messen und Testlauf im Assistenten; Heizer unter Modul 1 · Einstellungen › Geräte (eigener Reiter entfällt) mit Liste und PV-Regeln, Geräte-Blatt mit Bearbeiten, Pausieren und „In anderen Raum stellen“ (Statistik zieht mit), Raumeinstellungen nur noch mit Kurzinfo; Einrichtungs-Assistent in vier Schritten (Gerät mit Vorschlägen, Raum als Kachel, Leistung per Vorlage, Regeln mit Vorschlägen) aus Raumkarte „⋯“, Modul-1-Einstellungen, Raumeinstellungen und Grundriss; eigene Geräteliste mit fester ID und Namen, automatische Übernahme bestehender Heizer (Reste in den Papierkorb), Entfernen räumt auf (Gerät aus, Thermostate zurück, Schalter-Entität gelöscht, Statistik auf Wunsch behalten)"], ["1.8", 8, "2026.11.3b10", "Haus-Szene: Solarmodule liegen jetzt gerade auf der Dachfläche (unten 4, darüber 3, links vom Schornstein) statt schräg über der Dachkante; Glanz bei Überschuss, Schnee bei Frost"], ["1.8", 7, "2026.11.3b9", "Messräume im Grundriss (Zuordnung im Grundriss oder in den Raumeinstellungen) und Messräume innen oder außen: außen ohne Wohlfühlbereich, mit Frost- und Glättehinweis, als Außenfläche im Grundriss und als Außentemperatur des Hauses wählbar"], ["1.8", 6, "2026.11.3b8", "Grundriss in der neuen Optik: Räume als Kacheln mit Licht in der Temperaturfarbe, Ziel-Temperatur, Status-Plakette wie in der Detail-Ansicht, HD-Heizkörper mit Wärme, Fenster mit Glas, Punktraster und Zusammenfassung (Ø, heizen, Fenster offen)"], ["1.8", 5, "2026.11.3b7", "Grundriss aus Modul 11 erscheint zuverlässig: erneuter Abruf nach Fehler (z. B. nach Neustart von Home Assistant) und jede Minute, Hinweis wenn der Grundriss nur Wände hat"], ["1.8", 4, "2026.11.3b4", "Karten lückenlos: jede Karte rutscht in die freie Lücke der kürzeren Spalte"], ["1.8", 3, "2026.11.3b3", "Luftentfeuchter: Betriebsart „Nur mit PV-Überschuss“ mit Start- und Aus-Verzögerung, Schimmelschutz und Batterie-Ladung als Überschuss; Haus-Szene: Sponsor-Extra Haus-Stile und Himmel-Themen (W7), Himmel gemeinsam mit Modul 3; Animationen halten an, wenn nicht sichtbar; eigene Animationsstufe im Tablet-Modus (Standard Aus)"], ["1.8", 2, "2026.11.3b2", "„Warum?“ als Zeitleiste; Präsenzmelder je Raum (Mindestens/Genau, Verzögerungen, Leerlauf-Absenkung); Haus-Szene in der Kopfkarte (Räume nach Etagen, Zustand, Wärmequelle, PV, Tageszeit und Wetter); Grundriss als Wärmekarte (dritte Ansicht, Baukasten aus Modul 11) mit Hinweis-Plaketten; acht neue Raumbilder (Esszimmer, Wintergarten, Keller / Hauswirtschaft, Werkstatt, Fitness, Dachboden, Garage, Carport / Außen); Messräume: Raumbild wählbar und aus dem Namen erkannt, Menü „⋯“ mit Messraum einstellen und Raumbild & Farbe"], ["1.8", 1, "2026.11.3b1", "Raumkarte 2.0: Raumbild je Raumtyp mit Zustand als Licht, Fenster und Heizkörper, Temperatur-Ring, Heizplan-Band mit Temperaturfarben, Fenster-Uhr, Hinweis-Plaketten, Menü „⋯“, Kompakt-Liste mit Mini-Bild, Elektroheizer und Luftentfeuchter als Kacheln und im Raumbild; Schalter „Raumkarten wie bisher“"], ["1.7", 1, "2026.11.2b10", "Luftentfeuchter-Nachtmodus: eigene Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts, Meldungen bis zum Morgen zurückhalten"], ["1.6", 3, "2026.11.2b7", "Messräume verschwinden nicht mehr, wenn das Dashboard die Einstellungen nicht laden konnte; fehlende Messräume lassen sich aus der Sicherung zurückholen"], ["1.6", 2, "2026.11.2b2", "Anwesenheit: Standort-Einstellungen und Temperatur bei Abwesenheit fallen nicht mehr auf die Grundwerte zurück"], ["1.6", 1, "2026.11.1b16", "Luftentfeuchter: NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“, neue Tag-Aktionen Entfeuchter heute aus und Wassertank geleert"], ["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
-  ww: { v: "1.1", b: 2, d: "2026-11-22", p: "2026.11.4b46", log: [["1.1", 2, "2026.11.4b46", "Neues Banner: Speicher im Schnitt mit Temperatur oben und unten, Zirkulation, Aufheizen und PV-Überschuss"], ["1.1", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.0", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  fh: { v: "1.9", b: 10, d: "2026-11-25", p: "2026.11.5b7", log: [["1.9", 10, "2026.11.5b7", "Tablet-Modus: passt ohne Scrollen auf eine Seite (Reiter Räume und Statistik, Raum-Fenster)"], ["1.9", 9, "2026.11.4b59", "Elektroheizer 2.0 Build 1–4: Entfernen-Dialog mit Rückgängig, Papierkorb (30 Tage) zum Wiederherstellen, Leistung messen und Testlauf im Assistenten; Heizer unter Modul 1 · Einstellungen › Geräte (eigener Reiter entfällt) mit Liste und PV-Regeln, Geräte-Blatt mit Bearbeiten, Pausieren und „In anderen Raum stellen“ (Statistik zieht mit), Raumeinstellungen nur noch mit Kurzinfo; Einrichtungs-Assistent in vier Schritten (Gerät mit Vorschlägen, Raum als Kachel, Leistung per Vorlage, Regeln mit Vorschlägen) aus Raumkarte „⋯“, Modul-1-Einstellungen, Raumeinstellungen und Grundriss; eigene Geräteliste mit fester ID und Namen, automatische Übernahme bestehender Heizer (Reste in den Papierkorb), Entfernen räumt auf (Gerät aus, Thermostate zurück, Schalter-Entität gelöscht, Statistik auf Wunsch behalten)"], ["1.8", 8, "2026.11.3b10", "Haus-Szene: Solarmodule liegen jetzt gerade auf der Dachfläche (unten 4, darüber 3, links vom Schornstein) statt schräg über der Dachkante; Glanz bei Überschuss, Schnee bei Frost"], ["1.8", 7, "2026.11.3b9", "Messräume im Grundriss (Zuordnung im Grundriss oder in den Raumeinstellungen) und Messräume innen oder außen: außen ohne Wohlfühlbereich, mit Frost- und Glättehinweis, als Außenfläche im Grundriss und als Außentemperatur des Hauses wählbar"], ["1.8", 6, "2026.11.3b8", "Grundriss in der neuen Optik: Räume als Kacheln mit Licht in der Temperaturfarbe, Ziel-Temperatur, Status-Plakette wie in der Detail-Ansicht, HD-Heizkörper mit Wärme, Fenster mit Glas, Punktraster und Zusammenfassung (Ø, heizen, Fenster offen)"], ["1.8", 5, "2026.11.3b7", "Grundriss aus Modul 11 erscheint zuverlässig: erneuter Abruf nach Fehler (z. B. nach Neustart von Home Assistant) und jede Minute, Hinweis wenn der Grundriss nur Wände hat"], ["1.8", 4, "2026.11.3b4", "Karten lückenlos: jede Karte rutscht in die freie Lücke der kürzeren Spalte"], ["1.8", 3, "2026.11.3b3", "Luftentfeuchter: Betriebsart „Nur mit PV-Überschuss“ mit Start- und Aus-Verzögerung, Schimmelschutz und Batterie-Ladung als Überschuss; Haus-Szene: Sponsor-Extra Haus-Stile und Himmel-Themen (W7), Himmel gemeinsam mit Modul 3; Animationen halten an, wenn nicht sichtbar; eigene Animationsstufe im Tablet-Modus (Standard Aus)"], ["1.8", 2, "2026.11.3b2", "„Warum?“ als Zeitleiste; Präsenzmelder je Raum (Mindestens/Genau, Verzögerungen, Leerlauf-Absenkung); Haus-Szene in der Kopfkarte (Räume nach Etagen, Zustand, Wärmequelle, PV, Tageszeit und Wetter); Grundriss als Wärmekarte (dritte Ansicht, Baukasten aus Modul 11) mit Hinweis-Plaketten; acht neue Raumbilder (Esszimmer, Wintergarten, Keller / Hauswirtschaft, Werkstatt, Fitness, Dachboden, Garage, Carport / Außen); Messräume: Raumbild wählbar und aus dem Namen erkannt, Menü „⋯“ mit Messraum einstellen und Raumbild & Farbe"], ["1.8", 1, "2026.11.3b1", "Raumkarte 2.0: Raumbild je Raumtyp mit Zustand als Licht, Fenster und Heizkörper, Temperatur-Ring, Heizplan-Band mit Temperaturfarben, Fenster-Uhr, Hinweis-Plaketten, Menü „⋯“, Kompakt-Liste mit Mini-Bild, Elektroheizer und Luftentfeuchter als Kacheln und im Raumbild; Schalter „Raumkarten wie bisher“"], ["1.7", 1, "2026.11.2b10", "Luftentfeuchter-Nachtmodus: eigene Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts, Meldungen bis zum Morgen zurückhalten"], ["1.6", 3, "2026.11.2b7", "Messräume verschwinden nicht mehr, wenn das Dashboard die Einstellungen nicht laden konnte; fehlende Messräume lassen sich aus der Sicherung zurückholen"], ["1.6", 2, "2026.11.2b2", "Anwesenheit: Standort-Einstellungen und Temperatur bei Abwesenheit fallen nicht mehr auf die Grundwerte zurück"], ["1.6", 1, "2026.11.1b16", "Luftentfeuchter: NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“, neue Tag-Aktionen Entfeuchter heute aus und Wassertank geleert"], ["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  ww: { v: "1.1", b: 3, d: "2026-11-25", p: "2026.11.5b7", log: [["1.1", 3, "2026.11.5b7", "Tablet-Modus: passt ohne Scrollen auf eine Seite (Reiter Jetzt, Zeiten, Verlauf)"], ["1.1", 2, "2026.11.4b46", "Neues Banner: Speicher im Schnitt mit Temperatur oben und unten, Zirkulation, Aufheizen und PV-Überschuss"], ["1.1", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.0", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   en: { v: "1.6", b: 5, d: "2026-11-15", p: "2026.11.3", log: [["1.6", 5, "2026.11.3", "Gaszähler mit Karte für Tag, Woche, Monat und Jahr, Abrechnungsjahr, Preisliste mit „gültig ab“ und Abschlag; Einstellungen in Reitern (Strom, Zähler, Gas, Anzeige)"], ["1.6", 4, "2026.11.3b21", "Autarkie-Ring im Banner sprang hin und her"], ["1.6", 3, "2026.11.3b20", "Flüsse in der Szene liefen nur beim Scrollen: Bewegung läuft jetzt über jeden Neuaufbau weiter"], ["1.6", 2, "2026.11.3b4", "Karten lückenlos beim Verschieben; Kosten-Treppe passt ihre Höhe an, Beschriftungen werden nicht mehr verdeckt; Energie-Szene ohne Zuschnitt, größere Werte, lange Namen gekürzt"], ["1.6", 1, "2026.11.3b3", "Neue Optik Stufe 4: Preisband unter der Tageskurve, Woche/Monat/Jahr gespiegelt (Solar oben, Netzbezug unten), Solar-Kalender im Jahr, Kosten-Treppe mit Symbolen, Sparschwein mit Anschaffungskosten, Verteilung als Ring mit Auto und Geräten aus Modul 4, Werte zählen beim Zeitraumwechsel hoch; W7 Sponsor-Extra Haus-Stile und Himmel-Themen; Energiefluss und Szene ohne Neustart der Animation bei neuen Werten"], ["1.5", 1, "2026.11.3b3", "Neue Optik Stufe 3: Energie-Szene im Banner (Haus mit Dach-PV, Balkon, Batterie, Strommast, Auto), Himmel und Wetter wie Modul 1, Summe mit Σ bei vergangenen Zeiträumen, Antippen führt zu Modul 8/13/14/16, flacher Streifen am Handy, Mini-Szene auf der Startseite"], ["1.4", 1, "2026.11.3b3", "Neue Optik Stufe 2: Energiefluss HD mit Geräte-Plaketten, Balkon als eigener Knoten, Batterie mit Füllstand, Auto aus Modul 8, Linienstärke nach Leistung, Antippen zeigt Werte; Hinweise mit Bild und Knopf, günstigster Strom des Tages; Schalter „Energiefluss wie bisher“"], ["1.3", 1, "2026.11.3b2", "Neue Optik Stufe 1: HD-Symbole an den Kacheln (Solar mit Balkon, Netzbezug, Einspeisung, Verbrauch), Kacheln 2.0 mit Verlauf als Fläche und Punkt „jetzt“, Vergleich als Plakette, Doppelring Autarkie/Eigenverbrauch, Preis-Skala; Schalter „Kacheln wie bisher“"], ["1.2", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   gs: { v: "1.5", b: 1, d: "2026-11-10", p: "2026.11.2b13", log: [["1.5", 1, "2026.11.2b13", "Stufe 4 der neuen Optik: Geräte-Szene im Banner, Tablet-Modus als Geräte-Wand (quer) und Liste (hoch), Bewegung Aus/Dezent/Voll, Standby je Gerät, Monatsziel im Banner, Jahresrückblick zum Teilen"], ["1.4", 1, "2026.11.2b12", "Stufe 3 der neuen Optik (ohne Rangliste): bestes Startfenster als Bild mit Solarprognose und Preisband, „Um … erinnern“, Startfenster aller Geräte auf einen Blick; bei gleichem Solar-Anteil gewinnt der günstigere Preis"], ["1.3", 2, "2026.11.2b11", "Stufe 2 der neuen Optik: Geräte-Seite mit Programm-Kurve nach Herkunft, Durchlauf-Protokoll und typischem Lauf; auf dem Handy Liste der Geräte, Details beim Antippen"], ["1.3", 1, "2026.11.2b10", "Anpassen: Karten und Geräte verschieben und ausblenden"], ["1.2", 3, "2026.11.2b8", "Merkt sich die letzten Läufe mit Startzeit (für den Energie-Coach)"], ["1.2", 2, "2026.11.2b3", "„Erinnern“ funktioniert wieder"], ["1.2", 1, "2026.11.2b2", "Gerätekarten 2.0: HD-Bild mit Herkunfts-Ring, Prozentzeile statt Balken, „noch ~ Min. · fertig ~ Uhr“ ab 3 Läufen, drei Felder, Startempfehlung mit „Erinnern“, Schalter „Karten wie bisher“"], ["1.1", 2, "2026.11.1b1", "Bis zu 15 statt 8 Geräte, mit Zähler beim Hinzufügen"], ["1.1", 1, "2026.1030.0b2", "Tag, Woche, Monat und Jahr mit Blättern, Gerätetypen mit Symbol, Farben wie Modul 3, Diagramm zum Antippen, Vergleich zur Vorperiode"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   lu: { v: "0.1", b: 2, d: "2026-11-22", p: "2026.11.4b47", log: [["0.1", 2, "2026.11.4b47", "Neues Banner: Haus-Schnitt mit den Räumen in der Farbe ihrer Luftfeuchte, Lüfter und Luftströme, kritischster Raum als große Zahl"], ["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -3816,6 +3816,139 @@ const CSS_TM2 = `
 .tm2rh>div{display:flex;align-items:center;gap:10px;max-width:340px;padding:10px 16px;border-radius:14px;background:rgba(13,19,27,.88);border:1px solid rgba(255,255,255,.1);text-align:left;color:#d7dde4}
 .tm2rh i{width:10px;height:10px;border-radius:50%;background:var(--zc);flex:none}.tm2rh b{display:block;font-size:.98rem;font-weight:600}.tm2rh small{display:block;font-size:.8rem;color:#98a4af}
 `;
+/* Tablet-Modus · Modulseiten ohne Scrollen (Stufe 2: Modul 1 und 2) */
+const CSS_TM2M = `
+.tm2tabs{flex:none;display:flex;gap:4px;padding:4px;border-radius:16px;border:1px solid var(--line);background:var(--card)}
+.tm2tabs button{min-width:96px;min-height:44px;padding:0 16px;border:0;border-radius:12px;background:none;color:var(--mut);font:inherit;font-weight:700;cursor:pointer}
+.tm2tabs button.sel{background:var(--teal);color:var(--on-acc,#04201d)}
+.tm2h .tm2tabs{margin-right:14px}
+.tm2tr{flex:none;display:flex;padding:6px 16px 0}.tm2tr .tm2tabs{flex:1}.tm2tr .tm2tabs button{flex:1}
+.tm2 .tmbody.tm2mod{display:flex;flex-direction:column;gap:10px}
+.tm2mod>.card,.tm2mod .tm2four>.card,.tm2mod .tm2stat>.card,.tm2mod .tm2wwh>.card,.tm2mod .tm2wwr>.card{margin:0;min-width:0;min-height:0}
+.tm2none{margin:auto;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:32px 48px}
+.tm2mini{flex:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:rgba(127,127,127,.08);color:inherit;font:inherit;font-size:.85rem;font-weight:600;cursor:pointer}
+.tm2sh{flex:none;display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:44px}
+.tm2sh>span:first-child{display:flex;align-items:center;gap:8px;font-weight:700;min-width:0}
+.tm2sh em{font-style:normal;font-size:.76rem;font-weight:600;color:var(--mut)}.tm2sh em.on{color:var(--teal)}
+.tm2swr{display:inline-flex;align-items:center;gap:8px}.tm2shr{display:flex;align-items:center;gap:14px}
+/* ---------- Modul 1: Räume ---------- */
+.tm2top{flex:none;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.tm2pres{display:flex;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--card)}
+.tm2pres button{display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 18px;border:0;background:none;color:var(--mut);font:inherit;font-weight:700;cursor:pointer}
+.tm2pres button+button{border-left:1px solid var(--line)}
+.tm2pres button.sel{background:color-mix(in srgb,var(--teal) 18%,transparent);color:var(--primary-text-color)}
+.tm2pres button[disabled]{cursor:default;opacity:.65}
+.tm2chips{flex:1;min-width:0;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px}
+.tm2chip{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:inherit;font:inherit;font-size:.85rem;white-space:nowrap}
+button.tm2chip{min-height:44px;cursor:pointer}.tm2chip.wa{border-color:color-mix(in srgb,var(--amber) 65%,transparent);color:var(--amber)}
+.tm2swb{flex:1;min-height:0;display:flex;flex-direction:column;gap:8px;touch-action:pan-y}
+.tm2rooms{flex:1;min-height:0;display:grid;grid-template-columns:repeat(var(--c),minmax(0,1fr));grid-template-rows:repeat(var(--r),minmax(0,1fr));gap:10px}
+.tm2rooms.r1{grid-template-rows:minmax(0,380px);align-content:start}
+.tm2room{min-width:0;min-height:0;overflow:hidden;display:flex;flex-direction:column;border-radius:18px;border:1px solid var(--line);background:var(--card);padding:10px;gap:6px}
+.tm2room.k-offen,.tm2room.k-gekippt,.tm2room.k-pause,.tm2room.k-heizt{border-color:color-mix(in srgb,var(--c) 65%,transparent)}
+.tm2room.k-offen,.tm2room.k-gekippt,.tm2room.k-pause{background:color-mix(in srgb,var(--c) 10%,var(--card))}
+.tm2ri{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;border:0;background:none;color:inherit;font:inherit;text-align:left;padding:0;cursor:pointer}div.tm2ri{cursor:default}
+.tm2rn{flex:none;display:flex;align-items:center;gap:10px;width:100%}
+.tm2rn .hti{flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:rgba(127,127,127,.12);color:var(--c,var(--teal))}
+.tm2rn>span:nth-child(2){flex:1;min-width:0}
+.tm2rn b{display:block;font-size:1.05rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tm2rn small{display:block;font-size:.8rem;color:var(--c,var(--mut));white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tm2rn i.b{flex:none;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:rgba(127,127,127,.18);color:var(--teal)}
+.tm2rv{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;gap:4px;width:100%;font-size:3rem;font-weight:700;line-height:1}
+.tm2rv small{font-size:1rem;font-weight:500;color:var(--mut);align-self:center}
+.tm2rf{flex:none;display:block;width:100%;text-align:center;font-size:.82rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tm2pm{flex:none;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tm2pm button{display:grid;place-items:center;height:56px;border-radius:14px;border:1px solid var(--line);background:rgba(127,127,127,.12);color:inherit;cursor:pointer}
+.tm2pm button:disabled{opacity:.3;cursor:default}.tm2pm button:active:not(:disabled){filter:brightness(1.3)}
+/* Zwei oder mehr Zeilen auf niedrigen Bildschirmen: enger */
+.tm2.short .tm2room{padding:7px;gap:4px}.tm2.short .tm2rn .hti{width:32px;height:32px}.tm2.short .tm2rv{font-size:2.1rem}.tm2.short .tm2pm button{height:44px}
+@media(max-height:560px){.tm2.short .tm2rooms.r2 .tm2rf{display:none}}
+.tm2.sz-large .tm2rn b{font-size:1.2rem}.tm2.sz-large .tm2rn small,.tm2.sz-large .tm2rf{font-size:.95rem}.tm2.sz-large .tm2rv{font-size:3.4rem}.tm2.sz-large .tm2pm button{height:64px}
+.tm2.sz-xl .tm2rn b{font-size:1.35rem}.tm2.sz-xl .tm2rn small,.tm2.sz-xl .tm2rf{font-size:1.05rem}.tm2.sz-xl .tm2rv{font-size:3.6rem}.tm2.sz-xl .tm2pm button{height:64px}.tm2.sz-xl .tm2chip,.tm2.sz-xl .tm2pres button{font-size:1rem}
+.tm2.short.sz-large .tm2rv,.tm2.short.sz-xl .tm2rv{font-size:2.2rem}.tm2.short.sz-large .tm2pm button,.tm2.short.sz-xl .tm2pm button{height:48px}
+.tm2.port .tm2pres{flex:1 1 100%}.tm2.port .tm2pres button{flex:1}.tm2.port .tm2chips{flex:1 1 100%;justify-content:flex-start;flex-wrap:nowrap;overflow:hidden}
+/* ---------- Modul 1: Statistik ---------- */
+.tm2sums{flex:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.tm2sum{min-width:0;padding:10px 14px;border-radius:16px;border:1px solid var(--line);border-left:4px solid var(--a);background:var(--card)}
+.tm2sum span{display:flex;align-items:center;gap:6px;font-size:.82rem;color:var(--mut)}.tm2sum b{display:block;font-size:1.7rem;line-height:1.25}.tm2sum b small{font-size:.85rem;font-weight:500;color:var(--mut)}.tm2sum em{display:block;font-style:normal;font-size:.8rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tm2.port .tm2mod .tm2sums,.tm2.port.tm2 .tm2sums{grid-template-columns:repeat(2,minmax(0,1fr))}
+.tm2stat{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 330px;grid-template-rows:minmax(0,1fr);gap:10px}
+.tm2.port .tm2stat{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto}
+.tm2cc{display:flex;flex-direction:column;overflow:hidden}.tm2cc h2{flex:none}
+.tm2ch{flex:1;min-height:0;overflow:hidden}.tm2ch>svg{display:block}
+.tm2sl{display:flex;flex-direction:column;gap:6px;overflow:hidden;touch-action:pan-y}.tm2sl h2{flex:none;margin-bottom:0}
+.tm2srs{flex:1;min-height:0;display:grid;grid-template-rows:repeat(var(--n),minmax(44px,1fr));gap:6px}
+.tm2.port .tm2srs{flex:none;grid-template-rows:none;grid-auto-rows:54px}
+.tm2sr{min-height:0;overflow:hidden;display:flex;align-items:center;gap:10px;padding:0 10px;border-radius:12px;border:1px solid var(--line);background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.tm2sr i{flex:none;width:10px;height:28px;border-radius:5px}.tm2sr span{flex:1;min-width:0}.tm2sr b{display:block;font-size:.95rem;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tm2sr small{display:block;font-size:.75rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tm2sr>svg{flex:none;transform:rotate(-90deg);color:var(--mut)}
+.tm2htr{flex:none;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;background:color-mix(in srgb,var(--amber) 12%,transparent)}.tm2htr b{display:block;font-size:.9rem}.tm2htr small{display:block;font-size:.75rem;color:var(--mut)}
+@media(max-height:1100px){.tm2.port .tm2sum{padding:3px 12px}.tm2.port .tm2sum b{font-size:1.25rem}.tm2.port .tm2sum span,.tm2.port .tm2sum em{font-size:.72rem}.tm2.port .tm2srs{grid-auto-rows:46px;gap:4px}}
+/* ---------- Raumfenster ---------- */
+@media(min-width:720px){.sheet.wide.tm2rm{width:min(1040px,94vw);max-height:94vh}}
+.tm2rm .sh{align-items:center;gap:12px}.tm2rm .sh>div:not(.tm2tabs){flex:1;min-width:0}.tm2rm .sh>.hti{flex:none}
+.tm2ctl{display:grid;grid-template-columns:260px minmax(0,1fr);gap:18px}
+@media(max-width:899px){.tm2ctl{grid-template-columns:minmax(0,1fr)}.tm2rm .sh{flex-wrap:wrap}.tm2rm .sh .tm2tabs{order:5;flex:1 1 100%}.tm2rm .sh .tm2tabs button{flex:1}}
+.tm2cl{display:flex;flex-direction:column;align-items:stretch;justify-content:center;gap:10px}
+.tm2dial{position:relative;width:230px;max-width:100%;align-self:center}.tm2dial svg{display:block;width:100%}.tm2dial>div{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}.tm2dial b{font-size:3.1rem;line-height:1}.tm2dial span{color:var(--mut)}
+.tm2pm.big button{height:64px}.tm2cl .tm2swr{justify-content:space-between;min-height:44px}
+.tm2cr{display:flex;flex-direction:column;gap:10px;min-width:0}
+.tm2kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.tm2kpi{min-width:0;padding:8px 12px;border-radius:14px;border:1px solid var(--line);border-left:4px solid var(--a)}.tm2kpi span,.tm2kpi small{display:block;font-size:.76rem;color:var(--mut)}.tm2kpi b{display:block;font-size:1.4rem;white-space:nowrap}
+.tm2sec .pnow{margin-top:4px}
+.tm2ev{display:flex;gap:12px;align-items:center;padding:7px 12px;margin-top:6px;border-radius:12px;border:1px solid var(--line);font-size:.9rem}.tm2ev time{flex:none;color:var(--teal);font-weight:700}
+.tm2dev{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;align-items:start}
+.tm2rch{flex:none;height:min(300px,38vh);margin:12px 0}.tm2rm .tm2sums{margin-top:4px}.tm2wide{width:100%;min-height:48px}
+@media(max-width:899px){.tm2rm .tm2sums{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-height:700px){.tm2dial{width:150px}.tm2dial b{font-size:2.2rem}.tm2pm.big button{height:48px}.tm2cr{gap:6px}.tm2kpi{padding:5px 10px}.tm2kpi b{font-size:1.15rem}.tm2ctl{gap:12px}.tm2cl{gap:6px}}
+.tm2rm .ibtn,.tm2cc .ibtn{width:44px;height:44px}
+.tm2dev .why,.tm2dev button:not(.sw):not(.ibtn){min-height:44px}
+@media(max-height:1000px) and (max-width:899px){.tm2dial{width:180px}.tm2dial b{font-size:2.5rem}}
+/* ---------- Modul 2: Jetzt ---------- */
+.tm2wwn{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,.75fr) minmax(0,1.25fr);grid-template-rows:minmax(0,1fr);gap:10px}
+.tm2tank{min-height:0;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px;border-radius:20px;background:linear-gradient(165deg,#0d6e8c,#0a4a6b 70%,#093a58);color:#fff;overflow:hidden}
+.tm2tank .chip{flex:none;display:inline-flex;align-items:center;gap:6px}
+.tm2tk{flex:1;min-height:0;width:100%;position:relative}.tm2tk svg.wwtank{position:absolute;inset:0;width:100%;height:100%;max-width:none;margin:0;transform:none}
+.tm2tf{flex:none;text-align:center}.tm2tf b{display:block;font-size:1.25rem}.tm2tf small{display:block;font-size:.85rem;opacity:.8}
+.tm2wwr{min-width:0;min-height:0;display:flex;flex-direction:column;gap:10px}
+.tm2acts{flex:1 1 0;min-height:72px;max-height:140px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.tm2act{min-width:0;min-height:0;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:6px 8px;border-radius:18px;border:1px solid var(--line);background:var(--card);color:inherit;font:inherit;text-align:center;cursor:pointer}
+.tm2act b{display:block;font-size:.95rem;line-height:1.2}.tm2act small{display:block;font-size:.72rem;color:var(--mut)}
+.tm2act.on{border-color:var(--amber);background:color-mix(in srgb,var(--amber) 18%,var(--card))}.tm2act:disabled{opacity:.45;cursor:default}
+.tm2warn{flex:none;display:flex;align-items:center;gap:10px;min-height:48px;padding:6px 12px;border-radius:14px;border:1px solid var(--amber);background:color-mix(in srgb,var(--amber) 14%,var(--card));color:inherit;font:inherit;text-align:left;cursor:pointer}
+.tm2warn.bad{border-color:#ef4444;background:color-mix(in srgb,#ef4444 16%,var(--card))}.tm2warn>span{flex:1;min-width:0}.tm2warn b{display:block;font-size:.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tm2warn em{font-style:normal;font-size:.8rem;color:var(--mut)}
+.tm2vals{flex:1.4 1 0;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:10px}
+.tm2val{min-width:0;min-height:0;overflow:hidden;display:flex;align-items:center;gap:12px;padding:6px 14px;border-radius:16px;border:1px solid var(--line);border-left:4px solid var(--a);background:var(--card)}
+.tm2val .ti{flex:none;color:var(--a)}.tm2val>span:nth-child(2){min-width:0}.tm2val small,.tm2val em{display:block;font-style:normal;font-size:.76rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tm2val b{display:block;font-size:1.5rem;line-height:1.2;white-space:nowrap}.tm2val b i{font-style:normal;font-size:.85rem;font-weight:500;color:var(--mut)}
+.tm2sched{flex:none;padding:10px 14px}.tm2sched>div{display:grid;grid-template-columns:104px minmax(0,1fr);align-items:start;gap:8px}.tm2sched>div>b{font-size:.85rem;line-height:30px}.tm2sched .wwax{margin-bottom:4px}
+.tm2.port .tm2wwn{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,.8fr) minmax(0,1fr)}
+.tm2.short .tm2act{flex-direction:row;gap:8px}.tm2.short .tm2acts{min-height:56px;max-height:76px}.tm2.short .tm2wwr{gap:6px}.tm2.short .tm2val b{font-size:1.15rem}.tm2.short .tm2sched{padding:6px 10px}.tm2.short .tm2sched .wwbar{height:20px}.tm2.short .tm2sched>div>b{line-height:20px}.tm2.short .tm2sched .wwax{margin:1px 1px 2px}
+/* ---------- Modul 2: Zeiten ---------- */
+.tm2four{flex:1;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:10px}
+.tm2f{display:flex;flex-direction:column;justify-content:flex-start;gap:8px;overflow:hidden;padding:10px 14px}
+.tm2f .wwax{margin-bottom:0}.tm2f .wwbar{height:34px}
+.tm2seg{flex:none;display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.tm2seg button{flex:1 1 0;min-width:0;min-height:44px;padding:0 4px;border:0;background:none;color:var(--mut);font:inherit;font-size:.86rem;font-weight:700;cursor:pointer}
+.tm2seg button+button{border-left:1px solid var(--line)}.tm2seg button.sel{background:color-mix(in srgb,var(--teal) 18%,transparent);color:var(--primary-text-color)}
+.tm2note{font-size:.82rem;color:var(--mut);line-height:1.3}
+.tm2days{flex:none;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}.tm2days button{min-height:44px;border-radius:999px;border:1px solid var(--line);background:none;color:var(--mut);font:inherit;font-weight:700;cursor:pointer;padding:0}.tm2days button.sel{background:var(--teal);border-color:var(--teal);color:var(--on-acc,#04201d)}
+.tm2last{margin-top:auto;display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:14px;border:1px solid var(--line)}.tm2last.ok{border-color:color-mix(in srgb,var(--teal) 55%,transparent);background:color-mix(in srgb,var(--teal) 10%,transparent)}.tm2last.warn{border-color:var(--amber)}.tm2last>span{min-width:0}.tm2last b{display:block;font-size:.9rem}.tm2last small{display:block;font-size:.76rem;color:var(--mut)}
+.tm2tri{flex:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.tm2tri>div{min-width:0;padding:6px 10px;border-radius:12px;border:1px solid var(--line);border-left:4px solid var(--a)}.tm2tri small{display:block;font-size:.72rem;color:var(--mut)}.tm2tri b{display:block;font-size:1.15rem;white-space:nowrap}
+.tm2miss{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;color:var(--mut);font-size:.9rem}.tm2miss .btn2{flex:none;min-height:44px;padding:0 18px}
+.tm2.port .tm2four{grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(4,minmax(0,1fr))}
+.tm2.short .tm2f{gap:4px;padding:6px 12px}.tm2.short .tm2f .wwbar{height:22px}.tm2.short .tm2note{font-size:.74rem}.tm2.short .tm2last{padding:4px 10px}
+@media(max-height:1100px){.tm2.port .tm2f{gap:3px;padding:3px 12px}.tm2.port .tm2f .wwbar{height:20px}.tm2.port .tm2note{font-size:.72rem;line-height:1.2}.tm2.port .tm2last{padding:2px 10px}.tm2.port .tm2last svg{width:18px;height:18px}.tm2.port .tm2last b{font-size:.8rem;line-height:1.2}.tm2.port .tm2last small{font-size:.68rem;line-height:1.2}.tm2.port .tm2tri>div{padding:2px 8px}.tm2.port .tm2tri b{font-size:1rem}}
+/* ---------- Modul 2: Verlauf ---------- */
+.tm2wwh{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 290px;grid-template-rows:minmax(0,1fr);gap:10px}
+.tm2wws{min-height:0;display:flex;flex-direction:column;gap:10px}
+.tm2big{flex:none;display:flex;flex-direction:column;align-items:center;padding:14px;border-radius:18px;background:linear-gradient(165deg,#0d6e8c,#0a4a6b);color:#fff}.tm2big small{opacity:.8}.tm2big b{font-size:2.8rem;line-height:1.15}.tm2big span{font-size:.85rem;opacity:.85}
+.tm2wws .tm2acts{flex:1 1 0;min-height:0;max-height:none;grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(3,minmax(0,1fr))}.tm2wws .tm2act{flex-direction:row;justify-content:flex-start;gap:12px;padding:4px 14px;text-align:left}
+.tm2two{flex:none;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:auto}.tm2two>div{padding:8px 12px;border-radius:14px;border:1px solid var(--line);border-left:4px solid var(--a);background:var(--card)}.tm2two small{display:block;color:var(--mut);font-size:.76rem}.tm2two b{font-size:1.35rem}
+.tm2.port .tm2wwh{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto}.tm2.port .tm2wws{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tm2.port .tm2wws .tm2acts{grid-row:span 2;grid-column:2;grid-template-rows:repeat(3,minmax(52px,1fr))}.tm2.port .tm2big{grid-column:1;grid-row:1}.tm2.port .tm2two{grid-column:1;grid-row:2;margin:0}
+.tm2.short .tm2wws .tm2acts{min-height:0;max-height:none;gap:6px}.tm2.short .tm2big{padding:4px}.tm2.short .tm2big span,.tm2.short .tm2big small{font-size:.72rem}.tm2.short .tm2big b{font-size:1.9rem}.tm2.short .tm2wws{gap:6px}.tm2.short .tm2two>div{padding:4px 10px}.tm2.short .tm2two b{font-size:1.1rem}
+.tm2.sz-large .tm2act b,.tm2.sz-large .tm2tabs button{font-size:1.08rem}.tm2.sz-large .tm2val small,.tm2.sz-large .tm2val em{font-size:.88rem}
+.tm2.sz-xl .tm2act b,.tm2.sz-xl .tm2tabs button{font-size:1.18rem}.tm2.sz-xl .tm2val small,.tm2.sz-xl .tm2val em{font-size:.95rem}.tm2.sz-xl .tm2note{font-size:.95rem}
+`;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
     super();
@@ -4036,8 +4169,8 @@ class FensterHeizungPanel extends HTMLElement {
     }
     return out;
   }
-  _chart(rooms) {
-    const days = this._days(rooms), W = Math.max(300, Math.min(1100, (this.clientWidth || 390) - 62)), H = 230, L = 36, R = 6, T = 12, B = 30;
+  _chart(rooms, dim) {
+    const days = this._days(rooms), W = dim ? Math.max(260, Math.round(dim.w)) : Math.max(300, Math.min(1100, (this.clientWidth || 390) - 62)), H = dim ? Math.max(120, Math.round(dim.h)) : 230, L = 36, R = 6, T = 12, B = 30;
     this._w = this.clientWidth;
     const lblStep = W < 480 ? 3 : 2;
     const tot = days.map((x) => x.v.reduce((a, b) => a + b, 0));
@@ -6904,7 +7037,7 @@ class FensterHeizungPanel extends HTMLElement {
     const ids = [...(r.windows || []), r.modeEid, r.pres && r.pres.melder].filter(Boolean);
     c[k] = { busy: true, ts: now, ev: (c[k] && c[k].ev) || null };
     this._hass.callWS({ type: "history/history_during_period", start_time: new Date(now - 12 * 3600e3).toISOString(), end_time: new Date(now).toISOString(), entity_ids: ids, include_start_time_state: false, significant_changes_only: false, minimal_response: true, no_attributes: true })
-      .then((res) => { c[k] = { busy: false, ts: Date.now(), ev: this._zlEvents(r, res || {}) }; if (this._modal && this._modal.type === "why" && this._modal.id === k) this._renderModal(); })
+      .then((res) => { c[k] = { busy: false, ts: Date.now(), ev: this._zlEvents(r, res || {}) }; if (this._modal && (this._modal.type === "why" || this._modal.type === "tm2room") && this._modal.id === k) this._renderModal(); })
       .catch(() => { c[k] = { busy: false, ts: Date.now(), ev: [] }; if (this._modal && this._modal.type === "why") this._renderModal(); });
     return c[k];
   }
@@ -7822,7 +7955,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _build() {
     const sr = this.shadowRoot;
-    sr.innerHTML = `<style>${CSS_MAIN}${CSS_RK}${CSS_GH}${CSS_SUP}${CSS_STS}${CSS_GOE}${CSS_SF2}${CSS_WT}${CSS_SAI}${CSS_SB}${CSS_MQX}${CSS_TM2}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
+    sr.innerHTML = `<style>${CSS_MAIN}${CSS_RK}${CSS_GH}${CSS_SUP}${CSS_STS}${CSS_GOE}${CSS_SF2}${CSS_WT}${CSS_SAI}${CSS_SB}${CSS_MQX}${CSS_TM2}${CSS_TM2M}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
     this._built = true; this._t0 = Date.now();
     /* Aufklappbereiche (<details>) merken: Home Assistant meldet laufend neue Werte, jeder Neuaufbau würde sie sonst wieder zuklappen (2026.11.4.3b5) */
     sr.addEventListener("toggle", (e) => { const d = e.target; if (d && d.tagName === "DETAILS" && !this._dkBusy) { const k = this._dKey(d); if (k) (this._dOpen = this._dOpen || {})[k] = d.open; } }, true);
@@ -8630,6 +8763,8 @@ class FensterHeizungPanel extends HTMLElement {
     if (!m) { box.innerHTML = ""; return; }
     const r = this._collect().find((x) => x.id === m.id) || this._msList().find((x) => x.id === m.id) || { name: "" };
     if (m.type === "advent") { box.innerHTML = this._advModal(); return; }
+    if (m.type === "tm2room") { box.innerHTML = this._tm2RoomModal(m); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; this._tm2Charts(); return; }
+    if (m.type === "tm2ww" || m.type === "tm2prob") { box.innerHTML = this._tm2WwModal(m); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "sai") { box.innerHTML = this._saiModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "lfset") { box.innerHTML = this._lfSetModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "lfloc") { box.innerHTML = this._lfLocModal(); return; }
@@ -8977,7 +9112,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _mdPoll(r) {
     if (!this._hass) return;
-    const apply = (x) => { if (!x || this._dragging || (this._modal && ["wwset", "wwsch", "enset", "gsset", "evset"].includes(this._modal.type)) || this._mdT) return; this._mdApply(x); this._render(); };
+    const apply = (x) => { if (!x || this._dragging || (this._modal && ["wwset", "wwsch", "tm2ww", "enset", "gsset", "evset"].includes(this._modal.type)) || this._mdT) return; this._mdApply(x); this._render(); };
     if (r) { apply(r); return; }
     this._hass.callWS({ type: "fenster_heizung/get_modules" }).then(apply).catch(() => {});
   }
@@ -13684,7 +13819,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (this._tmSleep) { if (moved || newWarn) this._tmWake(); return; }
     if (newWarn && !this._modal) { this._tmView = "st"; this._tmLast = Date.now(); this._render(); return; }
     if (c.sleep && idle >= c.sleep * 60000) { this._tmSleep = true; this._modal = null; this._renderModal(); this._render(); return; }
-    if (c.idle_home && idle >= c.idle_home * 60000 && !this._tmHomed) { this._tmHomed = true; const paged = Object.values(this._tmPg || {}).some(Boolean); if (!this._modal) this._tmPg = {}; if ((this._tmV() !== "st" || paged) && !this._modal) { this._tmView = "st"; this._render(); } }
+    if (c.idle_home && idle >= c.idle_home * 60000 && !this._tmHomed) { this._tmHomed = true; this._tm2Unl = 0; const paged = Object.values(this._tmPg || {}).some(Boolean) || Object.keys(this._tm2T || {}).length > 0; if (!this._modal) { this._tmPg = {}; this._tm2T = {}; } if ((this._tmV() !== "st" || paged) && !this._modal) { this._tmView = "st"; this._render(); } }
   }
   _tmV() { return this._tmView || "st"; }
   _tmItems() {
@@ -13797,6 +13932,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _tmAfterPin(fresh) {
     const then = this._tmPinThen; this._tmPinThen = "";
+    if (typeof then === "function") { this._tm2Unl = Date.now() + 120000; this._tmPin = ""; this._modal = this._tm2Back || null; this._tm2Back = null; this._renderModal(); then(); this._render(); return; }
     if (then === "start") { this._tmModeSet("on"); this._tmView = "st"; this._modal = null; this._renderModal(); this._render(); return; }
     this._modal = { type: this._tmOn() ? "tmset" : "tmnorm" }; this._renderModal(); if (this._modal.type === "tmnorm" && this._admin()) this._tmAdminList();
     if (fresh) this._render();
@@ -13805,11 +13941,11 @@ class FensterHeizungPanel extends HTMLElement {
   _tmAct(a, b) {
     const k = b.dataset.k, m = this._modal;
     if (a.startsWith("tm2")) { this._tm2Act(a, b); return; }
-    if (a === "tmgo") { if (k === "st") this._tmPg = {}; this._tmView = k; this._tmHomed = false; this._render(); }
+    if (a === "tmgo") { this._tmPg = {}; this._tm2T = {}; this._tmView = k; this._tmHomed = false; this._render(); }
     else if (a === "tmbub") { const d = this._hzBubDef(k) || {}; if (d.mod && this._mdList().some((x) => x.id === d.mod)) { this._tmView = d.mod; this._render(); } }
-    else if (a === "tmgomore") { this._tmView = k; this._tmHomed = false; this._modal = null; this._renderModal(); this._render(); }
+    else if (a === "tmgomore") { this._tmPg = {}; this._tm2T = {}; this._tmView = k; this._tmHomed = false; this._modal = null; this._renderModal(); this._render(); }
     else if (a === "tmmore") { if (this._tmPg) this._tmPg.more = 0; this._modal = { type: "tmmore" }; this._renderModal(); }
-    else if (a === "tmlock") { this._tmPin = ""; const me = this._tmMe(); if (me.has_pin) this._tmPinOpen("unlock"); else this._tmPinOpen("new"); }
+    else if (a === "tmlock") { this._tmPin = ""; this._tmPinThen = ""; this._tm2Back = null; const me = this._tmMe(); if (me.has_pin) this._tmPinOpen("unlock"); else this._tmPinOpen("new"); }
     else if (a === "tmopen") { this._modal = { type: "tmnorm" }; this._renderModal(); if (this._admin()) this._tmAdminList(); }
     else if (a === "tmstart") this._tmStartNow();
     else if (a === "tmno") { try { localStorage.setItem("fh_tm_nohint", "1"); } catch (_) { /* egal */ } this._tmHintHide = true; this._render(); }
@@ -13817,7 +13953,7 @@ class FensterHeizungPanel extends HTMLElement {
       if (!m || m.type !== "tmpin") return; if (k === "back") m.buf = m.buf.slice(0, -1); else if (m.buf.length < 6) m.buf += k;
       m.err = m.buf.length ? "" : m.err; this._renderModal(); if (m.buf.length === 6) this._tmKeyDone();
     }
-    else if (a === "tmpinx") { this._tmPinThen = ""; this._modal = null; this._renderModal(); }
+    else if (a === "tmpinx") { this._tmPinThen = ""; this._modal = this._tm2Back || null; this._tm2Back = null; this._renderModal(); }
     else if (a === "tmdone") { this._tmPin = ""; this._modal = null; this._renderModal(); this._render(); }
     else if (a === "tmmode") { this._tmModeSet(k); this._renderModal(); this._render(); }
     else if (a === "tmend") { this._tmModeSet("off"); this._tmPin = ""; this._modal = { type: "tmnorm" }; this._renderModal(); this._render(); }
@@ -13848,6 +13984,12 @@ class FensterHeizungPanel extends HTMLElement {
     if (f === "tmnot") { this._tmSave({ notify: String(t.value || "").trim().replace(/^notify\./, "") }); return true; }
     return false;
   }
+  /* Display-Schalter: alle Schalter, dazu nur Lichter, die nach Display aussehen (sonst stünde jede Lampe in der Liste) */
+  _tmScreens(cur) {
+    const st = this._hass.states, hit = (e) => /screen|display|bildschirm/i.test(`${e} ${(st[e].attributes || {}).friendly_name || ""}`);
+    const l = Object.keys(st).filter((e) => e.startsWith("switch.") || (e.startsWith("light.") && (e === cur || hit(e))));
+    return l.sort((a, b) => (hit(b) ? 1 : 0) - (hit(a) ? 1 : 0));
+  }
   _tmUrlStr() { try { return `${location.origin}${location.pathname}?tablet=1`; } catch (_) { return "?tablet=1"; } }
   _tmModal() {
     const m = this._modal, st = this._hass.states;
@@ -13870,7 +14012,7 @@ class FensterHeizungPanel extends HTMLElement {
     const seg = (act, cur, opts) => `<span class="gschs">${opts.map(([k, t]) => `<button class="gsch ${String(cur) === String(k) ? "sel" : ""}" data-act="${act}" data-k="${k}" aria-pressed="${String(cur) === String(k)}" ${lock ? "disabled" : ""}>${t}</button>`).join("")}</span>`;
     const row = (t, s, ctl) => `<div class="vrow"><span>${t}${s ? `<small class="mut" style="display:block">${s}</small>` : ""}</span>${ctl}</div>`;
     const sw = (act, on, label) => `<button class="sw ${on ? "on" : ""}" data-act="${act}" aria-pressed="${!!on}" aria-label="${esc(label)}" ${lock ? "disabled" : ""}></button>`;
-    const motions = Object.keys(st).filter((e) => e.startsWith("binary_sensor.") && ["motion", "occupancy", "presence"].includes((st[e].attributes || {}).device_class)), sws = Object.keys(st).filter((e) => e.startsWith("switch.")).sort((a, b) => (/screen/.test(b) ? 1 : 0) - (/screen/.test(a) ? 1 : 0));
+    const motions = Object.keys(st).filter((e) => e.startsWith("binary_sensor.") && ["motion", "occupancy", "presence"].includes((st[e].attributes || {}).device_class)), sws = this._tmScreens(c.screen);
     const moAll = motions.length ? motions : Object.keys(st).filter((e) => e.startsWith("binary_sensor."));
     const mods = this._mdList().filter((x) => x.id !== "st");
     const pinRow = lock
@@ -13895,7 +14037,7 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="gschs" style="flex-wrap:wrap">${mods.map((x) => `<button class="gsch ${c.dock_hide.includes(x.id) ? "" : "sel"}" data-act="tmdock" data-k="${x.id}" aria-pressed="${!c.dock_hide.includes(x.id)}" ${lock ? "disabled" : ""}>${esc(x.short || x.name)}</button>`).join("")}</div>
       <div class="lsec" style="margin-top:14px">${ic("eye", 15)}Bewegung und Display</div>
       <div class="mut sm" style="margin:0 0 6px">Der Bewegungsmelder wird im Home Assistant überwacht und funktioniert auch bei ausgeschaltetem Display. Bei Bewegung geht das Display an, ohne Bewegung nach der eingestellten Zeit wieder aus.</div>
-      ${lock ? "" : `<div class="of"><div class="ol"><b>Bewegungsmelder</b></div></div>${this._wzSel(moAll, c.motion, "tmsel", 'data-k="motion"', "– keiner –")}<div class="of"><div class="ol"><b>Display-Schalter</b><span>Fully: der Schalter „Screen“ der Fully-Integration</span></div></div>${this._wzSel(sws, c.screen, "tmsel", 'data-k="screen"', "– keiner –")}`}
+      ${lock ? "" : `<div class="of"><div class="ol"><b>Bewegungsmelder</b></div></div>${this._wzSel(moAll, c.motion, "tmsel", 'data-k="motion"', "– keiner –")}<div class="of"><div class="ol"><b>Display-Schalter</b><span>Fully: Schalter „Screen“ · Kiosk Satellite: Licht „Screen“</span></div></div>${this._wzSel(sws, c.screen, "tmsel", 'data-k="screen"', "– keiner –", /screen|display|bildschirm/i)}`}
       ${row("Display ausschalten nach", "Ohne Bewegung. Nur mit Display-Schalter.", seg("tmoff", c.off_after, [[0, "Nie"], [10, "10 Min."], [30, "30 Min."]]))}
       <div class="vrow"><span>HA-App (Android)<small class="mut" style="display:block">Benachrichtigungsdienst, z. B. mobile_app_tablet. Schaltet nur ein.</small></span><input class="osel" data-f="tmnot" value="${esc(c.notify)}" placeholder="mobile_app_…" style="width:46%;margin:0" ${lock ? "disabled" : ""} aria-label="Benachrichtigungsdienst"></div>
       ${inT ? "" : `<div class="lsec" style="margin-top:14px">${ic("copy", 15)}Fully Kiosk</div><div class="mut sm" style="margin:0 0 6px">Diesen Link in Fully unter Web Content Settings als Start-URL eintragen. Dann startet das Tablet immer im Tablet-Modus.</div><div class="tmurl"><code>${esc(this._tmUrlStr())}</code><button class="ibtn" data-act="tmcopy" aria-label="Kopieren">${ic("copy", 18)}</button></div>`}
@@ -13942,22 +14084,25 @@ class FensterHeizungPanel extends HTMLElement {
     return esc(m.tag || "");
   }
   _tm2Render(v, m) {
-    const sr = this.shadowRoot, c = this._tmC(), land = this._tm2Land(), fit = v === "st";
+    const sr = this.shadowRoot, c = this._tmC(), land = this._tm2Land(), fit = this._tm2Fit(v), mod = fit && v !== "st";
     const zoom = { auto: 1, large: 1.15, xl: 1.3 }[c.size] || 1;
     let title, sub;
-    if (fit) {   /* gleich gezählt wie in der Gesamt-Ampel auf dem Haus-Kopf */
+    if (v === "st") {   /* gleich gezählt wie in der Gesamt-Ampel auf dem Haus-Kopf */
       const L = this._hzLevel(this._hzNew() ? this._hzVis(this._hzHints()) : this._hzHints()); title = this._hzGreet().split(" · ")[0];
       sub = [L.n ? `${L.n} ${L.n === 1 ? "Hinweis" : "Hinweise"}` : "", L.info ? `${L.info} ${L.info === 1 ? "Info" : "Infos"}` : ""].filter(Boolean).join(" · ") || "Alles in Ordnung";
     }
-    else { title = esc(m ? m.name : ""); sub = this._tm2Status(m); }
+    else { title = esc(m ? m.name : ""); sub = mod ? this._tm2ModStatus(v) : this._tm2Status(m); }
+    const tabs = mod ? this._tm2Tabs(v) : "";
     const x = sr.querySelector(".tmbody"), keep = x && this._tmVOld === v ? x.scrollTop : 0; this._tmVOld = v;
     const d = new Date(), nav = this._tm2Nav(land);
     sr.getElementById("main").innerHTML = `<div class="tmw tm2 ${land ? "land" : "port"}${land && window.innerHeight < 700 ? " short" : ""} sz-${esc(c.size)}">${land ? nav : ""}<div class="tm2main">
-      <header class="tmh tm2h">${land ? "" : `<img class="blogo" src="${LOGO_URL}" alt="" draggable="false">`}<div class="tmht"><b>${title}</b><span>${sub}</span></div>
+      <header class="tmh tm2h">${land ? "" : `<img class="blogo" src="${LOGO_URL}" alt="" draggable="false">`}<div class="tmht"><b>${title}</b><span>${sub}</span></div>${land ? tabs : ""}
       <div class="tmclk"><span data-tmclk>${d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</span><small data-tmdate>${d.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}</small></div>${land ? "" : this._tm2Lock()}</header>
-      <div class="tmbody${fit ? " tm2fit" : ""}"${fit ? "" : ` style="zoom:${zoom}"`}>${this._tmBody(v)}</div></div>${land ? "" : nav}</div>`;
+      ${land || !tabs ? "" : `<div class="tm2tr">${tabs}</div>`}
+      <div class="tmbody${fit ? " tm2fit" : ""}${mod ? ` tm2mod tm2-${v}` : ""}"${fit ? "" : ` style="zoom:${zoom}"`}>${mod ? this._tm2ModBody(v) : this._tmBody(v)}</div></div>${land ? "" : nav}</div>`;
     const nb = sr.querySelector(".tmbody"); if (nb && keep && !fit) nb.scrollTop = keep;
     this._tm2Bind();
+    if (mod) { this._tm2Charts(); if (this._modal && this._modal.type === "tm2room") this._renderModal(); }
   }
   /* Wie viel auf eine Seite passt: Kacheln (Spalten × Zeilen) und Hinweise */
   _tm2Cap() {
@@ -14081,6 +14226,13 @@ class FensterHeizungPanel extends HTMLElement {
   _tm2Act(a, b) {
     const k = b.dataset.k;
     if (a === "tm2pg") { this._tm2Turn(k, +b.dataset.d); return true; }
+    if (a === "tm2tab") { (this._tm2T = this._tm2T || {})[b.dataset.v] = k; this._tmHomed = false; this._render(); return true; }
+    if (a === "tm2room") { this._modal = { type: "tm2room", id: b.dataset.id, tab: "ctl" }; this._renderModal(); return true; }
+    if (a === "tm2rtab") { if (this._modal && this._modal.type === "tm2room") { this._modal.tab = k; this._renderModal(); } return true; }
+    if (a === "tm2prob") { this._modal = { type: "tm2prob" }; this._renderModal(); return true; }
+    if (a === "tm2ww") { this._modal = { type: "tm2ww", kind: k }; this._renderModal(); return true; }
+    /* Ändern erst nach der PIN: data-g ist die eigentliche Aktion */
+    if (a === "tm2g") { const d = { ...b.dataset }, g = d.g; this._tm2Guard(() => (g === "tm2ww" ? this._tm2Act(g, { dataset: d }) : this._act(g, { dataset: d }))); return true; }
     if (a === "tm2look") { this._tmSave({ look: k === "classic" ? "classic" : "new" }); return true; }
     if (a === "tm2rail") {
       const cur = this._tm2Rail(this._tmItems()).map((x) => x.id), next = cur.includes(k) ? cur.filter((x) => x !== k) : [...cur, k];
@@ -14089,6 +14241,211 @@ class FensterHeizungPanel extends HTMLElement {
       this._tmSave({ rail: next }); return true;
     }
     return false;
+  }
+  /* ================= Tablet-Modus · Stufe 2: gemeinsames für Modulseiten ohne Scrollen =================
+     Reiter in der Kopfzeile, Inhalt füllt genau die Resthöhe. Bisher: Modul 1 (hier) und Modul 2 (12d4).
+     Anzeigen geht immer. Einstellungen ändern fragt nach der PIN, wenn das Tablet eine hat (2 Minuten frei). */
+  static TM2_TABS = { fh: [["rooms", "Räume"], ["stats", "Statistik"]], ww: [["now", "Jetzt"], ["times", "Zeiten"], ["hist", "Verlauf"]] };
+  _tm2Fit(v) { return v === "st" || (!!this.constructor.TM2_TABS[v] && this._mdList().some((m) => m.id === v)); }
+  _tm2Tab(v) { const T = this.constructor.TM2_TABS[v], cur = (this._tm2T || {})[v]; return T.some((t) => t[0] === cur) ? cur : T[0][0]; }
+  _tm2Tabs(v) {
+    if (v === "fh" ? !this._collect().length && !this._msList().length : !this._wwConfigured()) return "";
+    const cur = this._tm2Tab(v);
+    return `<div class="tm2tabs" role="tablist">${this.constructor.TM2_TABS[v].map(([k, l]) => `<button role="tab" class="${cur === k ? "sel" : ""}" aria-selected="${cur === k}" data-act="tm2tab" data-v="${v}" data-k="${k}">${l}</button>`).join("")}</div>`;
+  }
+  _tm2ModBody(v) { return v === "fh" ? this._tm2Fh() : this._tm2Ww(); }
+  _tm2ModStatus(v) {
+    if (v === "ww") return this._wwConfigured() ? this._wwStatus()[1] : "Noch nicht eingerichtet";
+    const rooms = this._collect(); if (!rooms.length) return "Noch keine Räume";
+    const open = rooms.reduce((a, r) => a + this._rkState(r).anyOpen, 0), paused = rooms.filter((r) => r.mode === "heizung_pausiert");
+    return [open ? `${open} Fenster offen` : "Alle Fenster zu", paused.length === 1 ? `${esc(paused[0].name)} pausiert` : paused.length ? `${paused.length} Räume pausiert` : ""].filter(Boolean).join(" · ");
+  }
+  /* Diagramme erst zeichnen, wenn die Größe ihres Platzes feststeht */
+  _tm2Charts() {
+    const sr = this.shadowRoot;
+    sr.querySelectorAll("[data-tm2ch]").forEach((box) => {
+      const kind = box.dataset.tm2ch, w = box.clientWidth; let h = box.clientHeight; if (!w || !h) return;
+      if (kind === "ww") {
+        let used = this._mdState().ww.ent.pump ? 78 : 30;
+        for (let i = 0; i < 3; i++) { box.innerHTML = this._wwChart({ w, h: h - used }); const over = box.scrollHeight - h; if (over <= 0) break; used += over; }
+      } else {
+        const rooms = (kind === "fhroom" ? this._collect().filter((r) => r.id === box.dataset.id) : [...this._collect()].sort((a, b) => a.ci - b.ci));
+        box.innerHTML = this._chart(rooms, { w, h });
+      }
+    });
+  }
+  /* Änderung hinter der PIN: gleich ausführen, wenn keine PIN gesetzt oder gerade entsperrt */
+  _tm2Locked() { return !!this._tmMe().has_pin && !(this._tm2Unl && Date.now() < this._tm2Unl); }
+  _tm2Guard(fn) {
+    if (!this._tm2Locked()) { fn(); return; }
+    this._tm2Back = this._modal; this._tmPinThen = fn;
+    this._modal = { type: "tmpin", mode: "unlock", buf: "", first: "", err: "" }; this._renderModal();
+  }
+  /* ---------- Modul 1 · Fenster & Heizung ---------- */
+  _tm2Fh() {
+    if (!this._collect().length && !this._msList().length) return `<div class="card empty tm2none">${ic("radiator", 44)}<div>Noch keine Räume eingerichtet.</div><small>Räume legst du in der normalen Ansicht an.</small></div>`;
+    return this._tm2Tab("fh") === "stats" ? this._tm2FhStats() : this._tm2FhRooms();
+  }
+  _tm2Fuel(rooms) {
+    const set = new Set(rooms.map((r) => r.fuel || "erdgas")), F = set.size === 1 ? FUELS[[...set][0]] : MIXED, mixed = set.size > 1;
+    return { F, amt: (sc, l = rooms) => l.reduce((a, r) => a + (r.sc[sc]?.[mixed ? "kwh" : "gas"] || 0), 0) };
+  }
+  _tm2FhTop(rooms) {
+    const p = this._pres(), adm = this._admin(), o = this._out(), F = this._tm2Fuel(rooms), open = rooms.reduce((a, r) => a + this._rkState(r).anyOpen, 0), pv = this._htrRooms().length ? this._pvNow() : null, sum = this._sum();
+    const seg = [["home", "home", "Zu Hause"], ["away", "door", "Abwesend"], ["vacation", "suitcase", "Urlaub"]].map(([k, i, l]) => `<button class="${p.mode === k ? "sel" : ""}" data-act="${k === "vacation" && p.mode === "vacation" ? "vac" : "pm"}" data-k="${k}" aria-pressed="${p.mode === k}" ${adm ? "" : "disabled"}>${ic(i, 20)}<span>${l}</span></button>`).join("");
+    const chip = (i, t, c = "", attr = "") => (attr ? `<button class="tm2chip ${c}" ${attr}>${ic(i, 18)}${t}</button>` : `<span class="tm2chip ${c}">${ic(i, 18)}${t}</span>`);
+    const away = this._away() ? chip("suitcase", `Absenkung auf ${num(p.temp, 1)} °C`, "wa") : p.mode === "vacation" ? chip("suitcase", `Urlaub ab ${this._fmtD(p.from)}`) : sum.active ? chip("sun", "Sommermodus") : "";
+    const loc = this._lfDevs().filter((d) => this._lfLocCard1(d)).map((d) => chip("fan", `${esc(d.name)}: Wo steht er?`, "wa", `data-act="lfxloc" data-d="${esc(d.id)}"`)).join("");
+    return `<div class="tm2top"><div class="tm2pres" role="group" aria-label="Anwesenheit">${seg}</div><div class="tm2chips">${loc}${away}${o.t != null ? chip("partly", `${num(o.t, 1)} °C außen`) : ""}${open ? chip("windowOpen", `${open} offen`, "wa") : ""}${pv != null ? chip("bolt", `${wfmt(pv)} Überschuss`) : ""}${rooms.length ? chip("flame", `${num(F.amt("day"), 2)} ${unitOf(F.F)} gespart`) : ""}</div></div>`;
+  }
+  _tm2RoomCap() {
+    const size = this._tmC().size, W = window.innerWidth, H = window.innerHeight;
+    if (this._tm2Land()) { const c = size === "xl" ? (W >= 1500 ? 4 : 3) : size === "large" || W < 1150 ? 3 : 4, r = H >= 1000 ? 3 : size === "xl" && H < 760 ? 1 : H < 560 ? 1 : 2; return { c, r, n: c * r }; }
+    const c = W >= 1100 ? 3 : 2, r = size === "xl" ? (H >= 1150 ? 3 : 2) : H >= 1150 ? 4 : H >= 880 ? 3 : 2; return { c, r, n: c * r };
+  }
+  /* Zieltemperatur eines Raums, mit der gerade angetippten Änderung */
+  _tm2Tgt(r) {
+    const th = (r.thermos || []).map((e) => this._hass.states[e]).filter(Boolean), A = (th[0] && th[0].attributes) || {}, o = (this._tmTgt || {})[r.id];
+    const t = o && Date.now() < o.until ? o.v : parseFloat(A.temperature);
+    return { t: isFinite(t) ? t : null, can: !!th.length && isFinite(t) && r.mode !== "heizung_pausiert", th: th.length };
+  }
+  _tm2PM(r, g, cls = "") {
+    const id = esc(r.id);
+    return `<div class="tm2pm ${cls}"><button data-act="tmt" data-id="${id}" data-d="-1" ${g.can ? "" : "disabled"} aria-label="${esc(r.name)} kälter">${ic("minus", 28)}</button><button data-act="tmt" data-id="${id}" data-d="1" ${g.can ? "" : "disabled"} aria-label="${esc(r.name)} wärmer">${ic("plus", 28)}</button></div>`;
+  }
+  _tm2RoomTile(r) {
+    const s = this._rkState(r), g = this._tm2Tgt(r), off = r.mode === "regelung_aus", id = esc(r.id);
+    const facts = [s.cur != null ? `Ist ${num(s.cur, 1)} °C` : "", s.hum != null ? `${num(s.hum)} % Feuchte` : ""].filter(Boolean).join(" · ") || "Kein Messwert";
+    const badge = `${s.htr && s.htr.status === "pv" ? `<i class="b" title="Elektroheizer läuft">${ic("bolt", 14)}</i>` : ""}${s.lfs.length ? `<i class="b" title="Entfeuchter steht hier">${ic("fan", 14)}</i>` : ""}`;
+    return `<div class="tm2room k-${s.k}" style="--c:${s.col}"><button class="tm2ri" data-act="tm2room" data-id="${id}" aria-label="${esc(r.name)} öffnen">
+      <span class="tm2rn"><span class="hti">${ic(s.anyOpen ? "windowOpen" : this._icon(r), 24)}</span><span><b>${esc(r.name)}</b><small>${esc(s.lab)}</small></span>${badge}</span>
+      <span class="tm2rv">${g.t != null && !off ? num(g.t, 1) : "–"}<small>°C</small></span><span class="tm2rf">${facts}</span></button>${this._tm2PM(r, g)}</div>`;
+  }
+  _tm2MsTile(m) {
+    const T = m.temp ? this._msVal(m.temp, "t", m.stale) : null, Hm = m.hum ? this._msVal(m.hum, "h", m.stale) : null, ok = (x) => x && x.st !== "none" && x.st !== "bad";
+    return `<div class="tm2room ms"><div class="tm2ri"><span class="tm2rn"><span class="hti">${ic("thermo", 24)}</span><span><b>${esc(m.name)}</b><small>Messraum</small></span></span>
+      <span class="tm2rv">${ok(T) ? num(T.v, 1) : "–"}<small>°C</small></span><span class="tm2rf">${ok(Hm) ? `${num(Hm.v)} % Feuchte` : "nur Anzeige"}</span></div></div>`;
+  }
+  _tm2FhRooms() {
+    const rooms = this._collect(), ms = this._msList(), list = [...rooms.map((r) => ({ r })), ...ms.map((m) => ({ m }))], cap = this._tm2RoomCap(), p = this._tm2Page("rooms", list.length, cap.n);
+    const cols = p.pages > 1 ? cap.c : Math.min(cap.c, Math.max(2, Math.ceil(list.length / cap.r))), rows = p.pages > 1 ? cap.r : Math.max(1, Math.ceil(list.length / cols));
+    return `${this._tm2FhTop(rooms)}<div class="tm2swb" data-sw="rooms"><div class="tm2rooms r${rows}" style="--c:${cols};--r:${rows}">${list.slice(p.from, p.to).map((x) => (x.r ? this._tm2RoomTile(x.r) : this._tm2MsTile(x.m))).join("")}</div>${this._tm2Pager("rooms", p, "Räume")}</div>`;
+  }
+  _tm2Sums(rooms) {
+    const F = this._tm2Fuel(rooms);
+    return `<div class="tm2sums">${[["day", "today", "Heute", "var(--teal)"], ["month", "month", "Monat", "#60a5fa"], ["year", "year", "Jahr", "#a78bfa"], ["total", "total", "Gesamt", "#f472b6"]].map(([sc, i, l, c]) => `<div class="tm2sum" style="--a:${c}"><span>${ic(i, 18)}${l}</span><b>${num(rooms.reduce((a, r) => a + (r.sc[sc]?.min || 0), 0))}<small> Min.</small></b><em>${num(F.amt(sc), 2)} ${unitOf(F.F)} gespart</em></div>`).join("")}</div>`;
+  }
+  _tm2FhStats() {
+    const rooms = this._collect(); if (!rooms.length) return `<div class="card empty tm2none">${ic("chart", 44)}<div>Noch keine Räume mit Heizung.</div></div>`;
+    const H = window.innerHeight, per = this._tm2Land() ? (H >= 1000 ? 9 : H >= 760 ? 6 : H >= 640 ? 5 : 3) : H >= 1150 ? 5 : H >= 880 ? 3 : 2;
+    const list = [...rooms].sort((a, b) => (b.sc.day?.min || 0) - (a.sc.day?.min || 0)), p = this._tm2Page("fhstat", list.length, per);
+    const hs = this._htrRooms(), kwh = hs.reduce((a, r) => a + (Number(r.htr.heute_kwh) || 0), 0), pvk = hs.reduce((a, r) => a + (Number(r.htr.heute_pv_kwh) || 0), 0);
+    const htr = hs.length ? `<div class="tm2htr">${ic("bolt", 22)}<span><b>PV-Heizer heute: ${num(kwh, 1)} kWh</b><small>${kwh > 0 ? Math.round((pvk / kwh) * 100) : 0} % aus Überschuss · jetzt ${wfmt(this._htrTotal())}</small></span></div>` : "";
+    const row = (r) => `<button class="tm2sr" data-act="rep" data-id="${esc(r.id)}" aria-label="Bericht ${esc(r.name)}"><i style="background:${r.color}"></i><span><b>${esc(r.name)}</b><small>${num(r.sc.day?.min || 0)} Min. · ${r.pauses || 0}× · ${num(r.sc.day?.gas || 0, 2)} ${unitOf(FUELS[r.fuel || "erdgas"])}</small></span>${ic("chev", 18)}</button>`;
+    return `${this._tm2Sums(rooms)}<div class="tm2stat"><div class="card tm2cc"><h2>${ic("clock", 18)}Pausenzeit pro Tag · 14 Tage</h2><div class="tm2ch" data-tm2ch="fh"></div></div>
+      <section class="card tm2sl" data-sw="fhstat" style="--n:${per}"><h2>${ic("chart", 18)}Heute je Raum</h2><div class="tm2srs">${list.slice(p.from, p.to).map(row).join("")}</div>${this._tm2Pager("fhstat", p, "")}${htr}</section></div>`;
+  }
+  /* ---------- Raumfenster ---------- */
+  _tm2Dial(s, g, off) {
+    const lo = 5, hi = 30, f = g.t != null && !off ? Math.min(1, Math.max(0, (g.t - lo) / (hi - lo))) : 0, R = 84, C = 2 * Math.PI * R, A = 0.75 * C;
+    return `<div class="tm2dial"><svg viewBox="0 0 200 200" aria-hidden="true"><g transform="rotate(135 100 100)"><circle cx="100" cy="100" r="${R}" fill="none" stroke="var(--line)" stroke-width="15" stroke-linecap="round" stroke-dasharray="${A} ${C}"/>${f ? `<circle cx="100" cy="100" r="${R}" fill="none" stroke="${s.col}" stroke-width="15" stroke-linecap="round" stroke-dasharray="${(A * f).toFixed(1)} ${C}"/>` : ""}</g></svg><div><b>${g.t != null && !off ? num(g.t, 1) + "°" : "–"}</b><span>Ziel</span></div></div>`;
+  }
+  _tm2RoomModal(m) {
+    const r = this._collect().find((x) => x.id === m.id); if (!r) return "";
+    const s = this._rkState(r), g = this._tm2Tgt(r), off = r.mode === "regelung_aus", id = esc(r.id), adm = this._admin(), lock = this._tm2Locked() ? ic("lock", 14) : "";
+    const dev = `${this._htrBox(r)}${this._lfBox(r.id)}`, air = this._airBox(r) || "", hasDev = !!(dev || air);
+    const tabs = [["ctl", "Regeln"], ...(hasDev ? [["dev", dev ? "Geräte & Luft" : "Raumluft"]] : []), ["stat", "Statistik"]], tab = tabs.some((t) => t[0] === m.tab) ? m.tab : "ctl";
+    let body = "";
+    if (tab === "dev") body = `<div class="tm2dev">${dev ? `<div>${dev}</div>` : ""}${air ? `<div>${air}</div>` : ""}</div>`;
+    else if (tab === "stat") body = `${this._tm2Sums([r])}<div class="tm2ch tm2rch" data-tm2ch="fhroom" data-id="${id}"></div><button class="btn2 tm2wide" data-act="rep" data-id="${id}">${ic("chart", 18)} Tagesbericht mit Verlauf</button>`;
+    else {
+      const min = s.anyOpen ? s.mins : r.sc.day?.min || 0;
+      const kpi = (l, v, sub, c) => `<div class="tm2kpi" style="--a:${c}"><span>${l}</span><b>${v}</b><small>${sub}</small></div>`;
+      const p0 = this._cfg.plans[r.id] || { enabled: false, entries: [] }, pts = s.pts, now = nowMin(), nx = pts.length ? nextPt(pts, now) : null;
+      const plan = pts.length ? `${bar(pts, s.today, now)}<div class="pnow">${s.planOn ? "Jetzt" : (r.planOn ?? p0.enabled) ? "Ruht gerade. Plan" : "Aus. Plan"} <b>${num(at(pts, now), 1)} °C</b> · ab ${fmtT((nx.w % 10080) % 1440)} Uhr <b>${num(nx.t, 1)} °C</b></div>` : `<div class="pnow">Noch kein Heizplan eingerichtet.</div>`;
+      const L = this._zlLoad(r), tm = (ms) => new Date(ms).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+      const ev = L.ev == null ? `<div class="tm2ev mut">Verlauf wird geladen …</div>` : L.ev.length ? [...L.ev].reverse().slice(0, window.innerHeight < 700 ? 1 : 3).map((e) => `<div class="tm2ev"><time>${tm(e.t)}</time><span>${esc(e.x)}</span></div>`).join("") : `<div class="tm2ev mut">In den letzten 12 Stunden ist nichts passiert.</div>`;
+      const note = this._away() ? `Abwesend: Absenkung auf ${num(this._pres().temp, 1)} °C, der Heizplan ruht.` : s.summer ? "Sommermodus: Der Heizplan ruht." : "";
+      body = `<div class="tm2ctl"><div class="tm2cl">${this._tm2Dial(s, g, off)}${this._tm2PM(r, g, "big")}${r.sw ? `<div class="tm2swr"><span>Fensterregelung ${lock}</span><button class="sw ${r.on ? "on" : ""}" data-act="tm2g" data-g="sw" data-sw="${esc(r.sw)}" aria-pressed="${!!r.on}" aria-label="Fensterregelung umschalten"></button></div>` : ""}</div>
+        <div class="tm2cr"><div class="tm2kpis">${kpi("Ist", s.cur != null ? `${num(s.cur, 1)} °C` : "–", s.rt.sensor ? "Raumsensor" : "Thermostat", "var(--amber)")}${s.hum != null ? kpi("Feuchte", `${num(s.hum)} %`, s.hum >= 60 ? "erhöht" : s.hum < 35 ? "trocken" : "gut", "#60a5fa") : kpi("Fenster", s.anyOpen ? `${s.anyOpen} offen` : s.wins.length ? "zu" : "–", s.wins.length ? `${s.wins.length} Kontakt${s.wins.length === 1 ? "" : "e"}` : "kein Kontakt", "#60a5fa")}${kpi(s.anyOpen ? "Offen seit" : "Pausiert", `${num(min)} Min.`, s.anyOpen ? `seit ${tm(s.since)}` : `heute, ${r.pauses || 0}×`, "#a78bfa")}</div>
+        ${note ? `<div class="pnote">${ic("info", 16)}${note}</div>` : ""}
+        <div class="tm2sec"><div class="tm2sh"><span>${ic("plan", 17)}Heizplan heute</span>${adm ? `<button class="tm2mini" data-act="tm2g" data-g="plan" data-id="${id}">${lock || ic("pencil", 15)} Ändern</button>` : ""}</div>${plan}</div>
+        <div class="tm2sec tm2whys"><div class="tm2sh"><span>${ic("info", 17)}Warum?</span><button class="tm2mini" data-act="why" data-id="${id}">Alle Gründe</button></div>${ev}</div></div></div>`;
+    }
+    return `<div class="ov" data-act="close"></div><div class="sheet wide tm2rm" role="dialog" aria-modal="true"><div class="sh"><span class="hti" style="color:${s.col}">${ic(this._icon(r), 30)}</span><div><b>${esc(r.name)}</b><span style="color:${s.col}">${esc(s.lab)}</span></div><div class="tm2tabs">${tabs.map(([k, l]) => `<button class="${tab === k ? "sel" : ""}" data-act="tm2rtab" data-k="${k}">${l}</button>`).join("")}</div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 22)}</button></div>${body}</div>`;
+  }
+  /* ================= Tablet-Modus · Stufe 2: Modul 2 · Warmwasser & Zirkulation =================
+     Jetzt: Speicher groß, drei Knöpfe, vier Werte, Zeiten von heute. Zeiten: vier Felder. Verlauf: Kurve der letzten 24 Stunden. */
+  _tm2Ww() {
+    if (!this._wwConfigured()) return this._wwPage();
+    this._wwLoad();
+    const tab = this._tm2Tab("ww");
+    return tab === "times" ? this._tm2WwTimes() : tab === "hist" ? this._tm2WwHist() : this._tm2WwNow();
+  }
+  _tm2WwBtns() {
+    const W = this._mdState().ww, E = W.ent, hasGen = !!(E.src || E.rod);
+    if (!this._admin()) return "";
+    const b = (act, on, i, l, ok, why) => `<button class="tm2act ${on ? "on" : ""}" data-act="${act}" aria-pressed="${!!on}" ${ok ? "" : "disabled"}>${ic(i, 30)}<span><b>${l}</b>${ok ? "" : `<small>${why}</small>`}</span></button>`;
+    return `<div class="tm2acts">${b("wwboost", W.boost, "flame", W.boost ? "Aufheizen stoppen" : "Einmal aufheizen", hasGen || W.boost, "Kein Erzeuger gewählt")}${b("wwcirc5", W.circ5, "drop", W.circ5 ? "Zirkulation läuft" : "Zirkulation 5 Min.", !!E.pump, "Keine Pumpe gewählt")}${b("wwaway", W.away, "suitcase", W.away ? "Abwesend: an" : "Abwesend", true, "")}</div>`;
+  }
+  _tm2WwNow() {
+    const W = this._mdState().ww, E = W.ent, t = this._wwTemps(), st = this._wwStatus(), sh = this._wwShowers(t), want = this._wwWant(), pvNow = this._pvNow();
+    const today = new Date().getDay() % 6 === 0 ? "we" : "wd", pumpOn = this._wwIsOn(E.pump), rv = this._wwV(E.ret), legD = this._wwLegDays(), srcMin = this._wwMinutesOn(E.src || E.rod), pumpMin = this._wwMinutesOn(E.pump), hasGen = !!(E.src || E.rod);
+    const circH = (W.circ[today] || []).reduce((a, x) => a + Math.max(0, wwTm(x.to) - wwTm(x.from)), 0) / 60;
+    const probs = this._wwProblems().filter((p) => p[0] === "bad" || p[0] === "warn");
+    const warn = probs.length ? `<button class="tm2warn ${probs[0][0]}" data-act="tm2prob">${ic(probs[0][1], 22)}<span><b>${esc(probs[0][2])}</b></span><em>${probs.length > 1 ? `+${probs.length - 1}` : "Details"}</em></button>` : "";
+    const tile = (i, l, v, u, sub, c) => `<div class="tm2val" style="--a:${c}"><span class="ti">${ic(i, 24)}</span><span><small>${l}</small><b>${v}<i>${u ? ` ${u}` : ""}</i></b><em>${sub}</em></span></div>`;
+    const tiles = [
+      tile("flame", "Erzeuger", srcMin == null ? "–" : srcMin, srcMin == null ? "" : "Min.", hasGen ? "letzte 24 Std." : "Kein Erzeuger gewählt", "var(--amber)"),
+      tile("drop", "Zirkulation", E.pump ? (pumpOn ? "läuft" : "aus") : "–", "", E.pump ? `${pumpMin == null ? "" : `${pumpMin} Min. in 24 Std. · `}Plan ${num(circH, 1)} Std.` : "Keine Pumpe gewählt", "var(--teal)"),
+      tile("thermo", "Rücklauf", rv == null ? "–" : num(rv, 1), rv == null ? "" : "°C", E.ret ? `Pumpe stoppt ab ${W.circ.ret_max} °C` : "Kein Sensor gewählt", "#60a5fa"),
+      tile("shield", "Legionellenschutz", legD == null ? "–" : legD === 0 ? "heute" : `vor ${legD}`, legD ? (legD === 1 ? "Tag" : "Tagen") : "", !hasGen ? "Kein Erzeuger gewählt" : W.leg.on ? `Nächster Lauf: ${DAYS[W.leg.day]} ${W.leg.time}` : "Ausgeschaltet", "#a78bfa"),
+    ].join("");
+    const times = `<div class="card tm2sched"><div><b>Warmwasser</b><div>${this._wwBar(W.heat[today], "heat")}</div></div>${E.pump ? `<div><b>Zirkulation</b><div>${this._wwBar(W.circ[today], "circ")}</div></div>` : ""}</div>`;
+    return `<div class="tm2wwn"><div class="tm2tank"><span class="chip st ${st[2]}">${ic(st[0], 18)}${st[1]}</span><div class="tm2tk">${this._wwTank(t)}</div>
+        <div class="tm2tf"><b>${sh != null ? `Reicht für ca. ${sh} ${sh === 1 ? "Dusche" : "Duschen"}` : "Kein Messwert"}</b><small>Soll ${num(want, 0)} °C · ${W.size} Liter${W.pv.on && pvNow != null ? ` · PV-Überschuss ${wfmt(pvNow)}` : ""}</small></div></div>
+      <div class="tm2wwr">${this._tm2WwBtns()}${warn}<div class="tm2vals">${tiles}</div>${times}</div></div>`;
+  }
+  _tm2WwTimes() {
+    const W = this._mdState().ww, E = W.ent, adm = this._admin(), hasGen = !!(E.src || E.rod), key = this._wwDay(), pvNow = this._pvNow(), lg = W.leg, pv = W.pv, lock = this._tm2Locked() ? ic("lock", 14) : "";
+    const g = (act, extra = "") => `data-act="tm2g" data-g="${act}" ${extra}`;
+    const edit = (attr) => (adm ? `<button class="tm2mini" ${attr}>${lock || ic("pencil", 15)} Ändern</button>` : "");
+    const head = (i, t, right) => `<div class="tm2sh"><span>${ic(i, 19)}${t}</span>${right ? `<span class="tm2shr">${right}</span>` : ""}</div>`;
+    const sw = (act, on, label) => `<span class="tm2swr">${adm ? lock : ""}<button class="sw ${on ? "on" : ""}" ${g(act)} aria-pressed="${!!on}" aria-label="${label}" ${adm ? "" : "disabled"}></button></span>`;
+    const miss = (i, title, text, btn) => `<div class="card tm2f">${head(i, title, "")}<div class="tm2miss">${ic(i, 30)}<span>${text}</span>${adm ? `<button class="btn2" ${g("mdsetup")}>${lock} ${btn}</button>` : ""}</div></div>`;
+    const days = `<div class="tm2seg" role="group">${[["wd", "Montag–Freitag"], ["we", "Wochenende"]].map(([k, l]) => `<button class="${key === k ? "sel" : ""}" data-act="wwday" data-k="${k}" aria-pressed="${key === k}">${l}</button>`).join("")}</div>`;
+    const heat = `<div class="card tm2f">${head("plan", "Warmwasser-Zeitplan", edit(g("wwsch", 'data-k="heat"')))}${days}<div class="${hasGen ? "" : "wwdim"}">${this._wwBar(W.heat[key], "heat")}</div>
+      <div class="tm2note">${hasGen ? `Außerhalb der Zeiten ${W.heat.low} °C${pv.on ? ` · bei PV-Überschuss bis ${pv.max} °C` : ""}` : "Noch kein Wärmeerzeuger gewählt: Der Plan dient nur der Anzeige."}</div></div>`;
+    const modes = [["plan", "Zeitplan"], ["demand", "Bei Bedarf"], ["interval", "Intervall"], ["off", "Aus"]], cm = W.circ.mode;
+    const cnote = cm === "off" ? "Die Pumpe bleibt aus." : cm === "demand" ? `Startet beim Auslöser und läuft ${W.circ.run} Min. nach.${E.trig ? "" : " Noch kein Auslöser gewählt."}` : cm === "interval" ? `In den Zeiten alle ${W.circ.every} Min. für ${W.circ.on} Min.` : `Stoppt, sobald der Rücklauf ${W.circ.ret_max} °C erreicht.`;
+    const circ = !E.pump ? miss("drop", "Zirkulation", "Keine Zirkulationspumpe gewählt.", "Pumpe wählen") : `<div class="card tm2f">${head("drop", `Zirkulation <em class="${this._wwIsOn(E.pump) ? "on" : ""}">${this._wwIsOn(E.pump) ? "Pumpe läuft" : "Pumpe aus"}</em>`, edit(g("tm2ww", 'data-k="circ"')))}
+      <div class="tm2seg" role="group">${modes.map(([k, l]) => `<button class="${cm === k ? "sel" : ""}" ${g("wwmode", `data-k="${k}"`)} aria-pressed="${cm === k}" ${adm ? "" : "disabled"}>${l}</button>`).join("")}</div>${cm === "off" ? "" : `<div>${this._wwBar(W.circ[key], "circ")}</div>`}<div class="tm2note">${cnote}</div></div>`;
+    const legD = this._wwLegDays();
+    const leg = !hasGen ? miss("shield", "Legionellenschutz", "Dafür braucht es einen Wärmeerzeuger oder Heizstab.", "Erzeuger wählen") : `<div class="card tm2f">${head("shield", "Legionellenschutz", `${lg.on ? edit(g("tm2ww", 'data-k="leg"')) : ""}${sw("wwleg", lg.on, "Legionellenschutz")}`)}
+      ${lg.on ? `<div class="tm2days">${DAYS.map((d, i) => `<button class="${lg.day === i ? "sel" : ""}" ${g("wwlegday", `data-k="${i}"`)} aria-pressed="${lg.day === i}" ${adm ? "" : "disabled"}>${d}</button>`).join("")}</div><div class="tm2note">${lg.time} Uhr · ${lg.temp} °C · ${lg.hold} Min. halten</div>
+        <div class="tm2last ${lg.last && (!lg.last.ok || legD > 9) ? "warn" : lg.last ? "ok" : ""}">${ic(!lg.last ? "info" : lg.last.ok && legD <= 9 ? "check" : "alert", 22)}<span><b>${lg.last ? `Zuletzt: ${new Date(lg.last.ts).toLocaleDateString("de-DE", { weekday: "short", day: "numeric", month: "numeric" })}, ${new Date(lg.last.ts).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })} Uhr` : "Noch keine Aufheizung aufgezeichnet"}</b>${lg.last ? `<small>${num(lg.last.max, 1)} °C erreicht, ${lg.last.held} Min. gehalten</small>` : ""}</span></div>`
+        : `<div class="tm2miss">${ic("alert", 28)}<span>Aus. Bei großen Speichern oder mit Zirkulation wird regelmäßiges Aufheizen empfohlen.</span></div>`}</div>`;
+    const val = (l, v, c) => `<div style="--a:${c}"><small>${l}</small><b>${v}</b></div>`;
+    const pvC = !E.rod ? miss("bolt", "PV-Überschuss nutzen", "Kein Heizstab gewählt.", "Heizstab wählen") : `<div class="card tm2f">${head("bolt", "PV-Überschuss nutzen", `${pv.on ? edit(g("tm2ww", 'data-k="pv"')) : ""}${sw("wwpv", pv.on, "PV-Überschuss")}`)}
+      ${pv.on ? `<div class="tm2tri">${val("Ab", wfmt(pv.min), "var(--teal)")}${val("Bis maximal", `${pv.max} °C`, "var(--amber)")}${val("Heizstab", wfmt(pv.watt), "#60a5fa")}</div>
+        <div class="tm2last ${pvNow != null && pvNow >= pv.min ? "ok" : ""}">${ic("bolt", 22)}<span><b>${pvNow == null ? "Kein PV-Sensor gewählt" : `${wfmt(pvNow)} Überschuss`}</b>${pvNow == null ? "" : `<small>${pvNow >= pv.min ? "Der Heizstab darf laufen." : "Zu wenig, der Heizstab bleibt aus."}</small>`}</span></div>` : `<div class="tm2miss">${ic("bolt", 28)}<span>Aus.</span></div>`}</div>`;
+    return `<div class="tm2four">${heat}${circ}${leg}${pvC}</div>`;
+  }
+  _tm2WwHist() {
+    const t = this._wwTemps(), sh = this._wwShowers(t), f = (v) => (v == null ? "–" : `${num(v, 1)} °C`);
+    return `<div class="tm2wwh"><div class="card tm2cc"><h2>${ic("chart", 18)}Speicher · letzte 24 Stunden<button class="ibtn gear" style="margin-left:auto" data-act="wwreload" aria-label="Aktualisieren">${ic("clock", 18)}</button></h2><div class="tm2ch" data-tm2ch="ww"></div></div>
+      <div class="tm2wws"><div class="tm2big"><small>oben im Speicher</small><b>${f(t.top)}</b><span>${sh != null ? `Reicht für ca. ${sh} ${sh === 1 ? "Dusche" : "Duschen"}` : ""}</span></div>${this._tm2WwBtns()}
+      <div class="tm2two"><div style="--a:#fbbf24"><small>Mitte</small><b>${f(t.mid)}</b></div><div style="--a:#38bdf8"><small>unten</small><b>${f(t.bot)}</b></div></div></div></div>`;
+  }
+  /* Werte ändern (hinter der PIN) und Zustandsmeldungen */
+  _tm2WwModal(m) {
+    const W = this._mdState().ww, adm = this._admin(), close = `<button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button>`;
+    if (m.type === "tm2prob") return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Zustand</b><span>Warmwasser & Zirkulation</span></div>${close}</div>${this._wwProblems().map(([lv, i, ti, tx]) => `<div class="dgs ${lv === "mut" ? "" : lv}">${ic(i, 22)}<div><b>${esc(ti)}</b><span>${esc(tx)}</span></div><span></span></div>`).join("")}</div>`;
+    const k = m.kind, T = { circ: "Zirkulation", leg: "Legionellenschutz", pv: "PV-Überschuss" }[k];
+    const rows = k === "circ" ? `${this._wwNum("Nachlauf", "Bei Bedarf: so lange läuft die Pumpe nach.", "circ.run", W.circ.run, 1, 15, 1, "Min.", adm)}${this._wwNum("Intervall: Pumpe läuft", "", "circ.on", W.circ.on, 1, 15, 1, "Min.", adm)}${this._wwNum("Intervall: alle", "", "circ.every", W.circ.every, 10, 120, 5, "Min.", adm)}${this._wwNum("Pumpe stoppt ab Rücklauf", "", "circ.ret_max", W.circ.ret_max, 30, 60, 1, "°C", adm)}<button class="btn2" data-act="wwsch" data-k="circ">${ic("clock", 16)} Zeiten der Pumpe</button>`
+      : k === "leg" ? `${this._wwNumT("Uhrzeit", "Am besten nachts.", "leg.time", W.leg.time, adm)}${this._wwNum("Schutztemperatur", "", "leg.temp", W.leg.temp, 55, 65, 1, "°C", adm)}${this._wwNum("Halten für", "", "leg.hold", W.leg.hold, 10, 60, 5, "Min.", adm)}`
+      : `${this._wwNum("Ab Überschuss", "", "pv.min", W.pv.min, 300, 6000, 100, "W", adm)}${this._wwNum("Speicher bis maximal", "", "pv.max", W.pv.max, 50, 65, 1, "°C", adm)}${this._wwNum("Leistung Heizstab", "", "pv.watt", W.pv.watt, 300, 9000, 100, "W", adm)}`;
+    return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>${T}</b><span>Warmwasser & Zirkulation</span></div>${close}</div>${rows}<div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
   /* ================= Sponsor-Bereich (3.0.2.13) =================
      Die Integration bleibt kostenlos. Mit einem Sponsor-Schlüssel gibt es Schönes obendrauf: Abzeichen, Farbverläufe,
@@ -23211,7 +23568,7 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
     this._hass.callWS({ type: "history/history_during_period", start_time: start.toISOString(), end_time: end.toISOString(), entity_ids: ids, include_start_time_state: true, significant_changes_only: false, minimal_response: false, no_attributes: false })
       .then((res) => { this._wwH = { ts: Date.now(), start: +start, end: +end, res: res || {} }; })
       .catch(() => { this._wwH = { ts: Date.now(), start: +start, end: +end, res: {}, err: true }; })
-      .finally(() => { this._wwBusy = false; if (this._mdActive() === "ww" && !this._dragging) this._render(); });
+      .finally(() => { this._wwBusy = false; if ((this._mdActive() === "ww" || (this._tmOn() && this._tmV() === "ww")) && !this._dragging) this._render(); });
   }
   _wwSeries(eid) { const H = this._wwH; if (!H || !eid) return []; return ((H.res || {})[eid] || []).map((x) => ({ t: ((x.lu ?? x.lc ?? H.start / 1000) * 1000 - H.start) / 6e4, s: x.s })); }
   _wwMinutesOn(eid) {
@@ -23227,12 +23584,12 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
     return hit ? hit.temp : W.heat.low;
   }
   _wwAt(ser, m) { let v = null; for (const x of ser) { if (x.t <= m) v = x; else break; } return v; }
-  _wwChart() {
+  _wwChart(dim) {
     const W = this._mdState().ww, E = W.ent, H = this._wwH;
     if (!H) return `<div class="mut sm" style="padding:30px 0;text-align:center">Verlauf wird geladen …</div>`;
     const lines = [["top", "oben", E.top], ["mid", "Mitte", E.mid], ["bot", "unten", E.bot]].filter((x) => x[2]).map(([k, l, e]) => ({ k, l, ser: this._wwSeries(e).map((x) => ({ t: x.t, v: parseFloat(x.s) })).filter((x) => isFinite(x.v)) })).filter((x) => x.ser.length);
     if (!lines.length) return `<div class="mut sm" style="padding:30px 0;text-align:center">Für den Verlauf fehlen Messwerte der Speicher-Sensoren.</div>`;
-    const cw = this.clientWidth || 390, avail = cw >= 720 ? Math.min(780, cw * 0.94) : cw, Wd = Math.max(300, Math.min(748, Math.floor(avail - 32))), Ht = Wd < 500 ? 250 : 300, L = 34, R = 10, T = 12, B = 26, iw = Wd - L - R, ih = Ht - T - B, total = (H.end - H.start) / 6e4;
+    const cw = this.clientWidth || 390, avail = cw >= 720 ? Math.min(780, cw * 0.94) : cw, Wd = dim ? Math.max(260, Math.floor(dim.w)) : Math.max(300, Math.min(748, Math.floor(avail - 32))), Ht = dim ? Math.max(140, Math.floor(dim.h)) : Wd < 500 ? 250 : 300, L = 34, R = 10, T = 12, B = 26, iw = Wd - L - R, ih = Ht - T - B, total = (H.end - H.start) / 6e4;
     const all = lines.flatMap((x) => x.ser.map((p) => p.v)), lo = Math.floor((Math.min(...all, W.heat.low) - 3) / 5) * 5, hi = Math.ceil((Math.max(...all, W.target) + 3) / 5) * 5;
     const X = (m) => L + (Math.max(0, Math.min(total, m)) / total) * iw, Y = (v) => T + ih - ((v - lo) / (hi - lo)) * ih;
     const cols = { top: "#f97316", mid: "#fbbf24", bot: "#38bdf8" }, top = lines.find((x) => x.k === "top") || lines[0];
@@ -23375,7 +23732,7 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
       let v = t.value;
       if (!t.dataset.t) { v = Number(String(v).replace(",", ".")); const lo = +t.dataset.min, hi = +t.dataset.max, st = +t.dataset.step || 1; v = isFinite(v) ? Math.min(hi, Math.max(lo, Math.round(v / st) * st)) : lo; }
       else if (!/^\d\d:\d\d$/.test(v)) v = "03:00";
-      this._wwSet(t.dataset.k, v); this._render(); return true;
+      this._wwSet(t.dataset.k, v); this._render(); if (this._modal && this._modal.type === "tm2ww") this._renderModal(); return true;
     }
     if (f === "wwent") { W.ent[t.dataset.k] = t.value; this._mdSave(); this._wwH = null; return true; }
     if (f === "wwsz") { const v = Number(String(t.value).replace(",", ".")); W[t.dataset.k] = isFinite(v) ? Math.min(+t.dataset.max, Math.max(+t.dataset.min, Math.round(v))) : W[t.dataset.k]; this._mdSave(); return true; }

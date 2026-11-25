@@ -37,22 +37,25 @@
     return esc(m.tag || "");
   }
   _tm2Render(v, m) {
-    const sr = this.shadowRoot, c = this._tmC(), land = this._tm2Land(), fit = v === "st";
+    const sr = this.shadowRoot, c = this._tmC(), land = this._tm2Land(), fit = this._tm2Fit(v), mod = fit && v !== "st";
     const zoom = { auto: 1, large: 1.15, xl: 1.3 }[c.size] || 1;
     let title, sub;
-    if (fit) {   /* gleich gezählt wie in der Gesamt-Ampel auf dem Haus-Kopf */
+    if (v === "st") {   /* gleich gezählt wie in der Gesamt-Ampel auf dem Haus-Kopf */
       const L = this._hzLevel(this._hzNew() ? this._hzVis(this._hzHints()) : this._hzHints()); title = this._hzGreet().split(" · ")[0];
       sub = [L.n ? `${L.n} ${L.n === 1 ? "Hinweis" : "Hinweise"}` : "", L.info ? `${L.info} ${L.info === 1 ? "Info" : "Infos"}` : ""].filter(Boolean).join(" · ") || "Alles in Ordnung";
     }
-    else { title = esc(m ? m.name : ""); sub = this._tm2Status(m); }
+    else { title = esc(m ? m.name : ""); sub = mod ? this._tm2ModStatus(v) : this._tm2Status(m); }
+    const tabs = mod ? this._tm2Tabs(v) : "";
     const x = sr.querySelector(".tmbody"), keep = x && this._tmVOld === v ? x.scrollTop : 0; this._tmVOld = v;
     const d = new Date(), nav = this._tm2Nav(land);
     sr.getElementById("main").innerHTML = `<div class="tmw tm2 ${land ? "land" : "port"}${land && window.innerHeight < 700 ? " short" : ""} sz-${esc(c.size)}">${land ? nav : ""}<div class="tm2main">
-      <header class="tmh tm2h">${land ? "" : `<img class="blogo" src="${LOGO_URL}" alt="" draggable="false">`}<div class="tmht"><b>${title}</b><span>${sub}</span></div>
+      <header class="tmh tm2h">${land ? "" : `<img class="blogo" src="${LOGO_URL}" alt="" draggable="false">`}<div class="tmht"><b>${title}</b><span>${sub}</span></div>${land ? tabs : ""}
       <div class="tmclk"><span data-tmclk>${d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</span><small data-tmdate>${d.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}</small></div>${land ? "" : this._tm2Lock()}</header>
-      <div class="tmbody${fit ? " tm2fit" : ""}"${fit ? "" : ` style="zoom:${zoom}"`}>${this._tmBody(v)}</div></div>${land ? "" : nav}</div>`;
+      ${land || !tabs ? "" : `<div class="tm2tr">${tabs}</div>`}
+      <div class="tmbody${fit ? " tm2fit" : ""}${mod ? ` tm2mod tm2-${v}` : ""}"${fit ? "" : ` style="zoom:${zoom}"`}>${mod ? this._tm2ModBody(v) : this._tmBody(v)}</div></div>${land ? "" : nav}</div>`;
     const nb = sr.querySelector(".tmbody"); if (nb && keep && !fit) nb.scrollTop = keep;
     this._tm2Bind();
+    if (mod) { this._tm2Charts(); if (this._modal && this._modal.type === "tm2room") this._renderModal(); }
   }
   /* Wie viel auf eine Seite passt: Kacheln (Spalten × Zeilen) und Hinweise */
   _tm2Cap() {
@@ -176,6 +179,13 @@
   _tm2Act(a, b) {
     const k = b.dataset.k;
     if (a === "tm2pg") { this._tm2Turn(k, +b.dataset.d); return true; }
+    if (a === "tm2tab") { (this._tm2T = this._tm2T || {})[b.dataset.v] = k; this._tmHomed = false; this._render(); return true; }
+    if (a === "tm2room") { this._modal = { type: "tm2room", id: b.dataset.id, tab: "ctl" }; this._renderModal(); return true; }
+    if (a === "tm2rtab") { if (this._modal && this._modal.type === "tm2room") { this._modal.tab = k; this._renderModal(); } return true; }
+    if (a === "tm2prob") { this._modal = { type: "tm2prob" }; this._renderModal(); return true; }
+    if (a === "tm2ww") { this._modal = { type: "tm2ww", kind: k }; this._renderModal(); return true; }
+    /* Ändern erst nach der PIN: data-g ist die eigentliche Aktion */
+    if (a === "tm2g") { const d = { ...b.dataset }, g = d.g; this._tm2Guard(() => (g === "tm2ww" ? this._tm2Act(g, { dataset: d }) : this._act(g, { dataset: d }))); return true; }
     if (a === "tm2look") { this._tmSave({ look: k === "classic" ? "classic" : "new" }); return true; }
     if (a === "tm2rail") {
       const cur = this._tm2Rail(this._tmItems()).map((x) => x.id), next = cur.includes(k) ? cur.filter((x) => x !== k) : [...cur, k];
