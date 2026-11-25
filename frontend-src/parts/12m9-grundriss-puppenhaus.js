@@ -210,7 +210,7 @@
     const cur = P.items.find((x) => x.id === ed.sel); if (!cur || cur.t !== "o") return false;
     const sc = this._sfScale(), px = (cm) => Math.max(4, Math.round((cm / 100) * sc));
     if (a === "grxok2") { this._sfSnap(); const kk = this._grMK().by[v]; if (kk) { const cx = cur.x + cur.w / 2, cy = cur.y + cur.h / 2; cur.ok = v; cur.w = px(kk.w); cur.h = px(kk.h); cur.x = Math.round(cx - cur.w / 2); cur.y = Math.round(cy - cur.h / 2); if (!kk.d.length) cur.e = ""; } this._grOkLast = v; this._render(); return true; }
-    /* 2026.11.4.6b1: Größe ändern, ohne dass das Element wandert – die Mitte bleibt (gedreht wird um die Mitte) */
+    /* 2026.11.4.6: Größe ändern, ohne dass das Element wandert – die Mitte bleibt (gedreht wird um die Mitte) */
     const keepC = (fn) => { const cx = cur.x + (cur.w || 0) / 2, cy = cur.y + (cur.h || 0) / 2; fn(); cur.x = Math.round(cx - (cur.w || 0) / 2); cur.y = Math.round(cy - (cur.h || 0) / 2); };
     if (a === "grxow" || a === "grxoh") { this._sfSnap(); const key = a === "grxow" ? "w" : "h", cm = Math.max(10, Math.round(((cur[key] || 40) / sc) * 100) + s); keepC(() => { cur[key] = px(cm); }); this._render(); return true; }
     if (a === "grxorot") { this._sfSnap(); cur.r = ((((cur.r || 0) + s) % 360) + 360) % 360; this._render(); return true; }

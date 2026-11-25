@@ -286,7 +286,7 @@ def clean_plan(raw: Any) -> dict[str, Any]:
         for k in ("x", "y"):
             if k in it:
                 o[k] = int(_num(it[k], -3000, 3000, 0))
-        # 2026.11.4.6b1: Nicht die linke obere Ecke, sondern die Mitte muss im Plan liegen. Ein langer, gedrehter Zaun hat
+        # 2026.11.4.6: Nicht die linke obere Ecke, sondern die Mitte muss im Plan liegen. Ein langer, gedrehter Zaun hat
         # seine (ungedrehte) Ecke weit links oben – vorher wurde sie auf −50 begrenzt und der Zaun sprang beim Speichern.
         for k, dk in (("x", "w"), ("y", "h")):
             if k in o:

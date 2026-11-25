@@ -307,7 +307,7 @@ def test_real_manual_change_still_pauses():
 
 
 def test_amp_not_arriving_is_not_resent_every_tick_and_notifies_once():
-    """2026.11.4.6b1: „16 A“ kam nicht an – vorher alle 10 s neu gesendet (49 Einträge) und mehrere Handy-Meldungen."""
+    """2026.11.4.6: „16 A“ kam nicht an – vorher alle 10 s neu gesendet (49 Einträge) und mehrere Handy-Meldungen."""
     m, box, hass = make(vehicles=[{"id": "v1", "name": "BYD", "ids": [4], "mode": "now", "limit": 100, "plug": "last"}])
     box.amp = 10
     box.ignore = {"amp"}

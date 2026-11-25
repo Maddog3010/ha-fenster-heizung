@@ -110,7 +110,7 @@
       if (i) {
         const hd = (k, x, y) => `<g data-h="${k}"><circle class="sfhh" cx="${x}" cy="${y}" r="18"></circle><rect class="sfhd" x="${x - 5}" y="${y - 5}" width="10" height="10" rx="2"></rect></g>`;
         if (i.t === "r" && i.pts) out += `<path class="sfsel" d="${this._sfRPath(i)}"></path>${this._sfRHandles(i, ed.vsel)}`;
-        else if (i.t === "o" && i.r) out += `<rect class="sfsel" x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}" transform="rotate(${i.r} ${i.x + i.w / 2} ${i.y + i.h / 2})"></rect>`;   /* 2026.11.4.6b1: gedreht markieren; Größe dann über Breite/Tiefe */
+        else if (i.t === "o" && i.r) out += `<rect class="sfsel" x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}" transform="rotate(${i.r} ${i.x + i.w / 2} ${i.y + i.h / 2})"></rect>`;   /* 2026.11.4.6: gedreht markieren; Größe dann über Breite/Tiefe */
         else if (i.t === "r" || i.t === "s" || i.t === "o") out += `<rect class="sfsel" x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}"></rect>${hd("br", i.x + i.w, i.y + i.h)}`;
         else if (i.t === "w") out += hd("p1", i.x, i.y) + hd("p2", i.x2, i.y2);
         else out += `<circle class="sfsel" cx="${i.x}" cy="${i.y}" r="${i.t === "m" ? 22 : 20}"></circle>`;

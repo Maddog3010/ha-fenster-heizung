@@ -2,9 +2,9 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
-## [2026.11.4.6b1] - 2026-11-25
+## [2026.11.4.6] - 2026-11-25
 
-Testversion mit Korrekturen für Modul 8 (v1.0.2) und Modul 0 (v0.12 Build 3).
+Korrekturen für Modul 8 (v1.0.2) und Modul 0 (v0.12 Build 3).
 
 ### Behoben
 - **Modul 8: „Wallbox reagiert nicht – der Befehl „16 A“ kam nach 3 Versuchen nicht an“ mehrmals in der Nacht.** Übernahm die go-e einen Befehl nicht sofort, wurde er in jedem Takt (alle 10 Sekunden) neu gesendet – im Verlauf standen dann Dutzende gleiche „16 A“-Einträge, und jede neue Runde schickte wieder eine Meldung aufs Handy. Jetzt:

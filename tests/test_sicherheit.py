@@ -845,7 +845,7 @@ def test_moebel_aussen_norden():
 
 
 def test_clean_plan_keeps_rotated_long_item_in_place():
-    """2026.11.4.6b1: Ein langer, um 90° gedrehter Zaun am linken Rand hat seine ungedrehte Ecke weit links.
+    """2026.11.4.6: Ein langer, um 90° gedrehter Zaun am linken Rand hat seine ungedrehte Ecke weit links.
     Vorher wurde x auf −50 begrenzt und der Zaun sprang bei jedem Speichern nach rechts."""
     z = {"id": "z1", "fl": "ga", "t": "o", "ok": "zaun", "x": -270, "y": 300, "w": 575, "h": 6, "r": 90}
     p = S.clean_plan({"floors": [{"id": "ga", "n": "Außen", "ga": 1}], "items": [z]})
