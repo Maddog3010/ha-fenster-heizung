@@ -2,6 +2,14 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.5b6] - 2026-11-25
+
+Korrektur eines gemeldeten Fehlers – dieselbe wie in der stabilen Version 2026.11.4.7.
+
+### Behoben
+- **„RangeError: Maximum call stack size exceeded“ nach längerer Laufzeit (vor allem in der App auf iPhone und iPad).** Das Fehlerprotokoll legt einen Umschlag um die Befehle des Dashboards, um fehlgeschlagene Befehle zu erkennen. Home Assistant baut sein Verbindungsobjekt aber bei jeder Zustandsänderung neu auf – dabei kam jedes Mal ein weiterer Umschlag um den vorigen dazu. Nach Stunden lagen Tausende ineinander, und ein Befehl brach mit diesem Fehler ab (z. B. beim Speichern oder Laden einer Ansicht). Jetzt gibt es genau einen Umschlag. Ein Test prüft das mit 50.000 Neuaufbauten.
+- **Modul 9 · Wetterkarte:** Ein Bild, das beim Neuzeichnen schon entfernt war, löste einen Folgefehler aus („Cannot read properties of null“).
+
 ## [2026.11.5b5] - 2026-11-25
 
 Korrekturen für Modul 8 (v1.0.2) und Modul 0 (v0.12 Build 3) – dieselben wie in der stabilen Version 2026.11.4.6.

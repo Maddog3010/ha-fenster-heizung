@@ -14690,12 +14690,18 @@ class FensterHeizungPanel extends HTMLElement {
      Die Oberfläche meldet fehlgeschlagene Befehle (Schema-Fehler wie „expected str at 'id'“, unbekannte Befehle, unerwartete Fehler)
      und eigene Anzeigefehler an fenster_heizung/err_report. In Build 1 wird nichts versendet. */
   _errWrap(h) {
-    if (!h || typeof h.callWS !== "function" || h.__fhErr) return;
-    const orig = h.callWS, self = this;
+    /* 2026.11.4.7: Home Assistant baut das hass-Objekt bei jeder Zustandsänderung neu auf ({ ...hass }) und kopiert dabei
+       unseren Umschlag um callWS mit, nicht aber die Markierung am Objekt. Vorher wurde dann bei jeder Änderung ein weiterer
+       Umschlag um den vorigen gelegt – nach Stunden Tausende ineinander, und ein Befehl endete mit
+       „RangeError: Maximum call stack size exceeded“. Jetzt trägt der Umschlag selbst die Markierung und das Original. */
+    if (!h || typeof h.callWS !== "function" || h.callWS.__fhErr) return;
+    const orig = h.callWS.__fhOrig || h.callWS, self = this;
     try {
-      Object.defineProperty(h, "__fhErr", { value: true });
       /* nur eigene Befehle; der Fehler wird unverändert weitergereicht */
-      h.callWS = function (msg) { return orig.call(this, msg).catch((e) => { try { self._errCmd(msg, e); } catch (_) { /* nie stören */ } throw e; }); };
+      const wrap = function (msg) { return orig.call(this, msg).catch((e) => { try { self._errCmd(msg, e); } catch (_) { /* nie stören */ } throw e; }); };
+      Object.defineProperty(wrap, "__fhErr", { value: true });
+      Object.defineProperty(wrap, "__fhOrig", { value: orig });
+      h.callWS = wrap;
     } catch (_) { /* Objekt gesperrt: dann eben ohne */ }
     if (!this.constructor._errHook) {
       this.constructor._errHook = true;
@@ -21757,7 +21763,7 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
     const legend = layer === "radar" ? `<span class="wxmlg rad">leicht<i class="grad"></i>stark</span>` : `<span class="wxmlg">${[1, 2, 3, 4].map((l) => `<i style="background:${this._wxLvCol(l)}"></i>${l}`).join("")}<em>Stufe</em></span>`;
     return `<div class="card wxmap"><div class="wxtlh"><h2>${ic("pin", 18)}Wetterkarte <small class="mut">Deutscher Wetterdienst</small></h2><div class="seg wxseg"><button class="${layer === "warn" ? "sel" : ""}" data-act="wxsmapl" data-k="warn">Warnungen</button><button class="${layer === "radar" ? "sel" : ""}" data-act="wxsmapl" data-k="radar">Regenradar</button></div></div>
       ${m.ok && !m.inDe ? `<div class="wxnote">${ic("info", 15)}Dein Zuhause liegt außerhalb Deutschlands. Der DWD zeigt nur Deutschland.</div>` : ""}
-      <div class="wxmimg" data-wxmap="${esc(m.url)}"><img src="${esc(m.base)}" data-keep="1" alt="" width="${w}" height="${h}" fetchpriority="high" onerror="this.parentNode.classList.add('err')"><img src="${esc(m.url)}" data-keep="1"${prev ? ` style="background:url('${esc(prev)}') center/100% 100% no-repeat"` : ""} alt="${layer === "radar" ? "Niederschlagsradar" : "Warnkarte"} des Deutschen Wetterdienstes" width="${w}" height="${h}" onload="this.style.background='none'" onerror="this.parentNode.classList.add('err')">
+      <div class="wxmimg" data-wxmap="${esc(m.url)}"><img src="${esc(m.base)}" data-keep="1" alt="" width="${w}" height="${h}" fetchpriority="high" onerror="this.parentNode&&this.parentNode.classList.add('err')"><img src="${esc(m.url)}" data-keep="1"${prev ? ` style="background:url('${esc(prev)}') center/100% 100% no-repeat"` : ""} alt="${layer === "radar" ? "Niederschlagsradar" : "Warnkarte"} des Deutschen Wetterdienstes" width="${w}" height="${h}" onload="this.style.background='none'" onerror="this.parentNode&&this.parentNode.classList.add('err')">
         ${m.pin ? `<span class="wxpin" style="left:${m.pin[0].toFixed(2)}%;top:${m.pin[1].toFixed(2)}%" title="Zuhause">${ic("home", 14)}</span>` : ""}<div class="wxmerr">${ic("alert", 16)}Karte vom DWD gerade nicht erreichbar. Neuer Versuch beim nächsten Aufbau.</div></div>
       <div class="wxmft"><div class="gschips">${Object.entries(Z).map(([k, [, t2]]) => `<button class="gsch ${zoom === k ? "sel" : ""}" data-act="wxsmapz" data-k="${k}">${t2}</button>`).join("")}</div>${legend}</div>
       <div class="wxmsrc">Stand ${hm} Uhr · neu alle 5 Minuten · Quelle: Deutscher Wetterdienst (GeoServer) · <a href="https://www.dwd.de/DE/wetter/warnungen_gemeinden/warnWetter_node.html" target="_blank" rel="noopener">auf dwd.de öffnen</a></div></div>`;
