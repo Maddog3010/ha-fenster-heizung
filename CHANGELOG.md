@@ -2,6 +2,15 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4.8] - 2026-11-25
+
+Korrektur von drei gemeldeten Fehlern.
+
+### Behoben
+- **Modul 1: Lehnt ein Thermostat einen Befehl ab** (z. B. „Unable to communicate with the device“), versucht Strom & Wärme es nach 10 und nach 60 Sekunden noch einmal – nicht, wenn inzwischen ein neuer Befehl kam, das Gerät verstellt wurde oder die Heizung aus ist. Erst nach dem dritten Fehlversuch steht es in der Gerätediagnose. Als Programmfehler wird es nicht mehr gemeldet, auch beim Elektroheizer.
+- **„RangeError: Maximum call stack size exceeded“** (zwei Meldungen): Die Korrektur aus 2026.11.4.7 reichte nicht, wenn ein Zusatz außerhalb von Strom & Wärme dieselbe Befehlsfunktion ebenfalls umhüllt. Jetzt verändert das Dashboard das Home-Assistant-Objekt gar nicht mehr. Nach dem Update die Seite neu laden, auch in länger offenen Browser-Tabs.
+- **Fehlerprotokoll:** Anzeigefehler meldet jetzt immer die zuletzt aktive Seite.
+
 ## [2026.11.4.7] - 2026-11-25
 
 Korrektur eines gemeldeten Fehlers und Modul 0 (v0.12 Build 4): Fenster im Grundriss genauer.

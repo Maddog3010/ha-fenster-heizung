@@ -8,6 +8,7 @@ from datetime import timedelta
 from typing import Any
 
 from homeassistant.core import CALLBACK_TYPE, HomeAssistant
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.event import async_call_later, async_track_time_interval
 from homeassistant.util import dt as dt_util
 
@@ -40,6 +41,11 @@ from .pvlogic import (
 )
 
 _LOGGER = logging.getLogger(__name__)
+
+
+def geraetefehler(err: BaseException) -> bool:
+    """True, wenn das Gerät oder seine Integration den Befehl nicht ausführen konnte (Funk, Hub, Cloud) – kein Programmfehler."""
+    return isinstance(err, (HomeAssistantError, TimeoutError, OSError))
 _ON_MODES = ("heat", "auto", "heat_cool")
 
 
@@ -137,7 +143,10 @@ class HeaterRoom:
         try:
             await self.hass.services.async_call(domain, service, data, blocking=True)
         except Exception as err:  # noqa: BLE001
-            _LOGGER.exception("%s.%s für %s fehlgeschlagen", domain, service, data.get("entity_id"))
+            if geraetefehler(err):  # das Gerät lehnt ab: im Protokoll vermerken, aber kein Programmfehler
+                _LOGGER.warning("%s.%s für %s fehlgeschlagen: %s", domain, service, data.get("entity_id"), err)
+            else:
+                _LOGGER.exception("%s.%s für %s fehlgeschlagen", domain, service, data.get("entity_id"))
             diag_log(self.hass, "error", f"{domain}.{service} für {data.get('entity_id')} fehlgeschlagen: {err}", entity=data.get("entity_id"))
         else:
             if domain == "climate" and service == "set_temperature":

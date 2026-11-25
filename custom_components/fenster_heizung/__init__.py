@@ -12,6 +12,7 @@ from homeassistant.components.http import StaticPathConfig
 from homeassistant.config_entries import ConfigEntry, ConfigEntryState
 from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import CALLBACK_TYPE, Event, HomeAssistant, callback
+from homeassistant.exceptions import ServiceValidationError
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.event import (
     async_call_later,
@@ -43,7 +44,7 @@ from .tablet import TabletManager
 from .solar import SolarManager
 from .wetter import WetterManager
 from .wasser import WasserManager
-from .heater import HeaterRoom, PvManager
+from .heater import HeaterRoom, PvManager, geraetefehler
 from .presence import PresenceManager
 from .tibber import TibberManager
 from .extbackup import ExtBackup
@@ -108,6 +109,7 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 PLATFORMS = ["switch", "sensor", "binary_sensor", "button"]
 RECHECK_SECONDS = 300
+CMD_RETRY = (10, 60)  # Sekunden bis zum zweiten und dritten Versuch, wenn ein Thermostat den Befehl ablehnt
 
 
 class _SafeDict(dict):
@@ -167,6 +169,7 @@ class WindowController:
         self.active = False  # True = Heizung gerade pausiert
         self._saved: dict[str, dict[str, Any]] = {}
         self._timer: CALLBACK_TYPE | None = None
+        self._retry: dict[tuple[str, str], CALLBACK_TYPE] = {}  # ausstehende Wiederholungen je Gerät und Befehl
         self._notify_timer: CALLBACK_TYPE | None = None
         self._notified = False
         self._unsub: CALLBACK_TYPE | None = None
@@ -270,6 +273,7 @@ class WindowController:
     async def async_stop(self) -> None:
         self.pr.stop()
         self._cancel_timer()
+        self._retry_clear()
         self._cancel_notify()
         for attr in ("_unsub", "_unsub_t", "_unsub_h", "_unsub_e", "_unsub_p"):
             unsub = getattr(self, attr)
@@ -322,6 +326,7 @@ class WindowController:
     async def _release(self) -> None:
         """Heizung ging aus: Pause beenden, ohne die Thermostate zurückzustellen."""
         self._cancel_timer()
+        self._retry_clear()
         self._energy_step()
         now = self._roll()
         if self._paused_since:
@@ -1117,6 +1122,7 @@ class WindowController:
             # später erneut prüfen, solange das Fenster offen bleibt
             self._timer = async_call_later(self.hass, RECHECK_SECONDS, self._suppress)
             return
+        self._retry_clear()  # nichts aus der Zeit davor nachschicken
         cfg = self.cfg
         for eid in cfg[CONF_THERMOSTATS]:
             st = self.hass.states.get(eid)
@@ -1152,6 +1158,7 @@ class WindowController:
 
     async def _restore(self, _now) -> None:
         self._timer = None
+        self._retry_clear()  # ein noch offenes „Aus“ darf nicht nach dem Zurückstellen ankommen
         for eid, data in self._saved.items():
             st = self.hass.states.get(eid)
             if st is None or st.state == "unavailable":
@@ -1175,12 +1182,21 @@ class WindowController:
         self._signal()
         await self._plan_apply_if_due()  # nach dem Fenster gilt der aktuelle Plan
 
-    async def _call(self, service: str, entity_id: str, **data: Any) -> None:
+    async def _call(self, service: str, entity_id: str, *, attempt: int = 0, before: Any = None, **data: Any) -> None:
+        key = (entity_id, service)
+        pending = self._retry.pop(key, None)  # ein neuer Befehl ersetzt den ausstehenden alten
+        if pending:
+            pending()
+        if attempt == 0:
+            before = self._cmd_mark(service, entity_id)
         try:
             await self.hass.services.async_call(
                 "climate", service, {"entity_id": entity_id, **data}, blocking=True
             )
         except Exception as err:  # noqa: BLE001
+            if geraetefehler(err) and not isinstance(err, ServiceValidationError):
+                self._call_rejected(service, entity_id, attempt, before, err, data)
+                return
             _LOGGER.exception("climate.%s für %s fehlgeschlagen", service, entity_id)
             diag_log(self.hass, "error", f"climate.{service} für {entity_id} fehlgeschlagen: {err}", entity=entity_id, room=self.entry.title)
         else:
@@ -1188,6 +1204,39 @@ class WindowController:
                 diag_expect(self.hass, entity_id, temperature=data.get("temperature"))
             elif service == "set_hvac_mode":
                 diag_expect(self.hass, entity_id, hvac_mode=data.get("hvac_mode"))
+
+    def _cmd_mark(self, service: str, entity_id: str) -> Any:
+        """Der Wert, den der Befehl ändern soll – None, solange das Gerät nicht erreichbar ist."""
+        st = self.hass.states.get(entity_id)
+        if st is None or st.state in ("unavailable", "unknown"):
+            return None
+        return st.state if service == "set_hvac_mode" else st.attributes.get("temperature")
+
+    def _call_rejected(self, service: str, entity_id: str, attempt: int, before: Any, err: Any, data: dict[str, Any]) -> None:
+        """Gerät oder Integration lehnt ab (Funk, Hub, Cloud): kein Programmfehler. Später noch einmal versuchen."""
+        if attempt >= len(CMD_RETRY):
+            _LOGGER.warning("climate.%s für %s nach %s Versuchen fehlgeschlagen: %s", service, entity_id, attempt + 1, err)
+            diag_log(self.hass, "error", f"climate.{service} für {entity_id} nach {attempt + 1} Versuchen fehlgeschlagen: {err}", entity=entity_id, room=self.entry.title)
+            return
+        wait = CMD_RETRY[attempt]
+        _LOGGER.warning("climate.%s für %s abgelehnt, neuer Versuch in %s s: %s", service, entity_id, wait, err)
+
+        async def _again(_now) -> None:
+            self._retry.pop((entity_id, service), None)
+            mark = self._cmd_mark(service, entity_id)
+            if self._heating_off() or (before is not None and mark is not None and mark != before):
+                return  # inzwischen anders verstellt: nichts mehr nachschicken
+            if mark is None:  # noch nicht erreichbar: zählt als Fehlversuch
+                self._call_rejected(service, entity_id, attempt + 1, before, err, data)
+                return
+            await self._call(service, entity_id, attempt=attempt + 1, before=before, **data)
+
+        self._retry[(entity_id, service)] = async_call_later(self.hass, wait, _again)
+
+    def _retry_clear(self) -> None:
+        for cancel in self._retry.values():
+            cancel()
+        self._retry.clear()
 
 
 async def _async_register_panel(hass: HomeAssistant) -> None:
