@@ -2,17 +2,13 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
-## [2026.11.4.8] - 2026-11-25
+## [2026.11.4.7] - 2026-11-25
 
-Modul 0 (v0.12 Build 4): Fenster im Grundriss genauer.
+Korrektur eines gemeldeten Fehlers und Modul 0 (v0.12 Build 4): Fenster im Grundriss genauer.
 
 ### Geändert
 - **Fenster: Breite und Höhe.** Neben der Breite hat jedes Fenster jetzt auch eine Höhe (Grundriss bearbeiten → Fenster antippen). Vorgabe: 1,20 m, bodentief 2,20 m, Dachfenster 1,00 m. Breite × Höhe steht auch im Hinweis beim Darüberfahren.
 - **Rollladen bei jedem Fenster:** „Rollladen“ ist jetzt ein eigener Schalter statt einer eigenen Fensterart – also auch **bodentief mit Rollladen** oder Dachfenster mit Rollladen. Fenster, die bisher „mit Rollladen“ waren, behalten ihren Rollladen und gelten als normales Fenster.
-
-## [2026.11.4.7] - 2026-11-25
-
-Korrektur eines gemeldeten Fehlers.
 
 ### Behoben
 - **„RangeError: Maximum call stack size exceeded“ nach längerer Laufzeit (vor allem in der App auf iPhone und iPad).** Das Fehlerprotokoll legt einen Umschlag um die Befehle des Dashboards, um fehlgeschlagene Befehle zu erkennen. Home Assistant baut sein Verbindungsobjekt aber bei jeder Zustandsänderung neu auf – dabei kam jedes Mal ein weiterer Umschlag um den vorigen dazu. Nach Stunden lagen Tausende ineinander, und ein Befehl brach mit diesem Fehler ab (z. B. beim Speichern oder Laden einer Ansicht). Jetzt gibt es genau einen Umschlag. Ein Test prüft das mit 50.000 Neuaufbauten.

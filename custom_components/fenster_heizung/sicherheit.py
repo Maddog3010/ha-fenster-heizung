@@ -67,7 +67,7 @@ BHIST_GAP_S = 20 * 3600
 ITEM_T = ("r", "w", "d", "f", "s", "x", "m", "l", "g", "a", "h", "o")  # l = Lampe (Modul 18, ab 2026.11.4b51), g = mobiles Gerät, a = Markise (Modul 0 Build 7), h = Haustechnik (Build 9)
 LAMP_K = ("decke", "steh", "spot", "streifen", "aussen", "tisch")  # tisch ab Modul 18 Build 7
 DOOR_K = ("doppel", "schiebe", "pendel", "falt", "garage", "glas")  # Modul 0 Build 7: Arten der Tür (ohne = Drehtür)
-WIN_K = ("boden", "dach")  # Modul 0 Build 7: Arten des Fensters (ohne = normal); Rollladen ist seit 2026.11.4.8 ein eigener Schalter (ro)
+WIN_K = ("boden", "dach")  # Modul 0 Build 7: Arten des Fensters (ohne = normal); Rollladen ist seit 2026.11.4.7 ein eigener Schalter (ro)
 STAIR_K = ("l", "u", "wendel", "boden")  # Modul 0 Build 7: L-Treppe, U-Treppe (halbgewendelt), Wendeltreppe, Dachbodentreppe (ohne = gerade)
 DEV_K = ("heizer", "entf")  # Modul 0 Build 7: mobiler Heizer, mobiler Luftentfeuchter (aus Modul 1)
 DEV_DOM = ("switch", "climate", "humidifier", "fan", "input_boolean", "water_heater")
