@@ -64,7 +64,7 @@
       : unk ? `<text x="${x}" y="${Y(17) + (sd > 0 ? 0 : 6)}" text-anchor="middle" font-size="11" font-weight="800" fill="${c}">?</text>` : "";
     return `<g transform="${rot}">${ttl}${frame}${glass}${rollo}${sash}</g>${chip}`;
   }
-  /* 2026.11.4.8: Rollladen zu jeder Fensterart (früher eigene Art „rollo“) und Höhe je Fenster */
+  /* 2026.11.4.7: Rollladen zu jeder Fensterart (früher eigene Art „rollo“) und Höhe je Fenster */
   _grWinRo(i) { return !!(i && (i.ro || i.fk === "rollo")); }
   _grWinH(i) { return i && i.hh ? i.hh : i && i.fk === "boden" ? 220 : i && i.fk === "dach" ? 100 : 120; }
   /* ---- Eigenschaften für Türen und Fenster */

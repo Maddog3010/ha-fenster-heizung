@@ -857,7 +857,7 @@ def test_clean_plan_keeps_rotated_long_item_in_place():
 
 
 def test_clean_plan_window_rollladen_and_height():
-    """2026.11.4.8: Rollladen bei jeder Fensterart (auch bodentief), Höhe je Fenster; alte Art „rollo“ wird übernommen."""
+    """2026.11.4.7: Rollladen bei jeder Fensterart (auch bodentief), Höhe je Fenster; alte Art „rollo“ wird übernommen."""
     fl = [{"id": "eg", "n": "EG"}]
     its = [{"id": "f1", "fl": "eg", "t": "f", "x": 10, "y": 10, "fk": "boden", "ro": 1, "hh": 215, "b": 120},
            {"id": "f2", "fl": "eg", "t": "f", "x": 20, "y": 10, "fk": "rollo"},
