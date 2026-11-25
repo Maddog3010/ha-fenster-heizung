@@ -32,6 +32,7 @@ IDLE_HOME = (0, 2, 5, 15)
 SLEEP = (0, 5, 15, 30)
 OFF_AFTER = (0, 10, 30)
 LOOKS = ("new", "classic")
+RESTS = ("auto", "en", "ef")
 MAX_TABLETS = 20
 ITER = 60000
 FAILS_MAX = 5
@@ -43,7 +44,7 @@ def default_cfg() -> dict[str, Any]:
     return {
         "size": "auto", "idle_home": 2, "sleep": 15, "wake_warn": True,
         "motion": "", "screen": "", "notify": "", "off_after": 0, "dock_hide": [],
-        "look": "new", "rail": [],
+        "look": "new", "rail": [], "rest": "auto",
     }
 
 
@@ -77,6 +78,7 @@ def clean_cfg(raw: Any) -> dict[str, Any]:
         "dock_hide": list(dict.fromkeys(hide)),
         "look": _pick(raw.get("look"), LOOKS, d["look"]),
         "rail": list(dict.fromkeys(rail))[:4],
+        "rest": _pick(raw.get("rest"), RESTS, d["rest"]),
     }
 
 

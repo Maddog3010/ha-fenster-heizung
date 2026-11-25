@@ -13,9 +13,9 @@
     this._hass.callWS({ type: "fenster_heizung/gs_get" }).then((r) => { this._gsD = { ...(r || {}), ts: Date.now() }; this._gsErrN = 0; }).catch(() => {
       const n = this._gsErrN = (this._gsErrN || 0) + 1, wait = Math.min(15000, 3000 * n);
       this._gsD = this._gsD && !this._gsD.err ? { ...this._gsD, stale: true, ts: Date.now() - 15000 + wait } : { devices: [], hist: {}, err: true, ts: Date.now() - 15000 + wait };
-      clearTimeout(this._gsRt); this._gsRt = setTimeout(() => { if (this._mdActive() === "gs") this._gsLoad(); }, wait + 50);
+      clearTimeout(this._gsRt); this._gsRt = setTimeout(() => { if (this._mdSees("gs")) this._gsLoad(); }, wait + 50);
     })
-      .finally(() => { this._gsBusy = false; if (this._mdActive() === "gs" && !this._modal && !this._stOpen) this._render(); });
+      .finally(() => { this._gsBusy = false; if (this._mdSees("gs") && !this._modal && !this._stOpen) this._render(); });
   }
   _gsAct(a, b) {
     const G = this._gsState(), k = b.dataset.k, i = +b.dataset.i;
@@ -245,7 +245,7 @@
       ${this._gsSpark(d.id, this._gsPer())}${adv}</div>`;
   }
   _gsChart(D, devs, P) {
-    const sel = devs.some((d) => d.id === this._gsSel) ? this._gsSel : "", pick = sel ? [sel] : devs.map((d) => d.id), W = 640, Hh = 210, pl = 40, pb = 24, pt = 14, ih = Hh - pb - pt;
+    const sel = devs.some((d) => d.id === this._gsSel) ? this._gsSel : "", pick = sel ? [sel] : devs.map((d) => d.id), W = this._gsDim ? this._gsDim.w : 640, Hh = this._gsDim ? this._gsDim.h : 210, pl = 40, pb = 24, pt = 14, ih = Hh - pb - pt;
     const chip = (k, t, on) => `<button class="gsch ${on ? "sel" : ""}" data-act="gsdev" data-k="${k}" aria-pressed="${on}">${t}</button>`;
     const chips = `<div class="gschips">${chip("", "Alle Geräte", !sel)}${devs.map((d) => chip(esc(d.id), esc(d.name), sel === d.id)).join("")}</div>`;
     const leg = `<div class="legend">${GS_SRC.map((t, i) => `<span><i style="background:${GS_COL[i]}"></i>${t}</span>`).join("")}</div>`;

@@ -38,6 +38,7 @@
   }
   _tm2Render(v, m) {
     const sr = this.shadowRoot, c = this._tmC(), land = this._tm2Land(), fit = this._tm2Fit(v), mod = fit && v !== "st";
+    if (v !== "en") this._tm2EnRange(false);   /* gemerkten Zeitraum der Energie-Übersicht zurückgeben */
     const zoom = { auto: 1, large: 1.15, xl: 1.3 }[c.size] || 1;
     let title, sub;
     if (v === "st") {   /* gleich gezählt wie in der Gesamt-Ampel auf dem Haus-Kopf */
@@ -55,7 +56,7 @@
       <div class="tmbody${fit ? " tm2fit" : ""}${mod ? ` tm2mod tm2-${v}` : ""}"${fit ? "" : ` style="zoom:${zoom}"`}>${mod ? this._tm2ModBody(v) : this._tmBody(v)}</div></div>${land ? "" : nav}</div>`;
     const nb = sr.querySelector(".tmbody"); if (nb && keep && !fit) nb.scrollTop = keep;
     this._tm2Bind();
-    if (mod) { this._tm2Charts(); if (this._modal && this._modal.type === "tm2room") this._renderModal(); }
+    if (mod) { this._tm2Charts(); if (this._modal && (this._modal.type === "tm2room" || this._modal.type === "tm2x")) this._renderModal(); }
   }
   /* Wie viel auf eine Seite passt: Kacheln (Spalten × Zeilen) und Hinweise */
   _tm2Cap() {
@@ -182,6 +183,9 @@
     if (a === "tm2tab") { (this._tm2T = this._tm2T || {})[b.dataset.v] = k; this._tmHomed = false; this._render(); return true; }
     if (a === "tm2room") { this._modal = { type: "tm2room", id: b.dataset.id, tab: "ctl" }; this._renderModal(); return true; }
     if (a === "tm2rtab") { if (this._modal && this._modal.type === "tm2room") { this._modal.tab = k; this._renderModal(); } return true; }
+    if (a === "tm2x") { this._modal = { type: "tm2x", k, s: b.dataset.s || "", id: b.dataset.id || "" }; this._renderModal(); return true; }
+    if (a === "tm2run") { if (this._modal && this._modal.type === "tm2x") { this._modal.run = +k; this._renderModal(); } return true; }
+    if (a === "tm2rest") { this._tmSave({ rest: k }); return true; }
     if (a === "tm2prob") { this._modal = { type: "tm2prob" }; this._renderModal(); return true; }
     if (a === "tm2ww") { this._modal = { type: "tm2ww", kind: k }; this._renderModal(); return true; }
     /* Ändern erst nach der PIN: data-g ist die eigentliche Aktion */

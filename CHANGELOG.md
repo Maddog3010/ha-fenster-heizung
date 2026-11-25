@@ -2,6 +2,29 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.5b8] - 2026-11-25
+
+Tablet-Modus, dritte Stufe: Energie, Gerätestrom und Hausfluss ohne Scrollen, dazu zwei neue Ruhebilder. Außerdem drei gemeldete Fehler – dieselben Korrekturen wie in der stabilen Version 2026.11.4.8.
+
+### Neu
+- **Tablet-Modus · Modul 3 (v1.6 Build 6):** passt auf eine Seite, mit den Reitern „Jetzt“, „Verlauf“ und „Kosten“. Hinweise, Gas, Sparschwein und Hausfluss öffnest du über Knöpfe.
+- **Tablet-Modus · Modul 4 (v1.5 Build 2):** mit den Reitern „Geräte“, „Startfenster“ und „Statistik“. Antippen öffnet das Gerätefenster mit Programmkurve, letzten Läufen und Erinnerung.
+- **Tablet-Modus · Modul 19 (v1.1 Build 3):** mit den Reitern „Jetzt“ (Haus und vier Tageswerte) und „Strom“. Der Akkustand steht oben in der Kopfzeile.
+- **Ruhebild:** neue Tablet-Einstellung „Auto“, „Energie“ oder „Hausfluss“. „Auto“ zeigt die Wandanzeige, wenn eine dieser Seiten offen ist, sonst die Uhr.
+
+### Geändert
+- Im neuen Tablet-Aufbau zeigt ein Tipp auf einen Balken in Energie und Gerätestrom die Werte, statt in den Zeitraum zu springen.
+
+### Behoben
+- **Modul 1: Lehnt ein Thermostat einen Befehl ab** (z. B. „Unable to communicate with the device“), versucht Strom & Wärme es nach 10 und nach 60 Sekunden noch einmal – nicht, wenn inzwischen ein neuer Befehl kam, das Gerät verstellt wurde oder die Heizung aus ist. Erst nach dem dritten Fehlversuch steht es in der Gerätediagnose. Als Programmfehler wird es nicht mehr gemeldet, auch beim Elektroheizer.
+- **„RangeError: Maximum call stack size exceeded“** (zwei Meldungen): Die Korrektur aus 2026.11.4.7 reichte nicht, wenn ein Zusatz außerhalb von Strom & Wärme dieselbe Befehlsfunktion ebenfalls umhüllt. Jetzt verändert das Dashboard das Home-Assistant-Objekt gar nicht mehr. Nach dem Update die Seite neu laden, auch in länger offenen Browser-Tabs.
+- **Fehlerprotokoll:** Anzeigefehler meldet jetzt immer die zuletzt aktive Seite.
+
+### Noch offen
+- Der Reiter „Haus“ mit Grundriss und die übrigen Modulseiten kommen in den nächsten Stufen.
+- Fertige Geräte zeigen „Fertig – ausräumen“, lassen sich aber noch nicht quittieren. Die Aufteilung „Wohin der Strom ging“ gibt es nur für heute.
+- Getestet im Browser mit Beispieldaten, noch nicht auf einem echten Tablet oder mit dem betroffenen Thermostat.
+
 ## [2026.11.5b7] - 2026-11-25
 
 Tablet-Modus, zweite Stufe: Fenster & Heizung und Warmwasser ohne Scrollen. Dazu der Display-Schalter für Kiosk Satellite.

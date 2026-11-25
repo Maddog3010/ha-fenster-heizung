@@ -517,7 +517,7 @@
     const ebRes = E.range === "day" ? "hour" : "day", eb = this._ebQ(P.s, P.e, ebRes);
     const ebV = E.cmp !== "off" ? (() => { const V = this._enPer(-1); return this._ebQ(V.s, V.e, ebRes); })() : Promise.resolve(null);
     Promise.all([p, q, eb, ebV]).then(([r, v, e1, e2]) => { this._enH = done(r, v); this._enH.eb = e1; if (this._enH.prev) this._enH.prev.eb = e2; }).catch(() => { this._enH = done({}, null, true); })
-      .finally(() => { if (this._enBusy === key) this._enBusy = null; if (this._mdActive() === "en" && !this._dragging) this._render(); });
+      .finally(() => { if (this._enBusy === key) this._enBusy = null; if (this._mdSees("en") && !this._dragging) this._render(); });
   }
   _enSer(eid, zero) {
     const H = this._enH; if (!H || !eid) return [];
@@ -656,7 +656,7 @@
   _enChart() {
     const E = this._enState(), H = this._enH, key = E.range + ":" + (E.off || 0), hl = E.hl, op = (f) => (!hl || hl === f ? 1 : .25);
     if (!H || H.key !== key) return `<div class="mut sm" style="padding:30px 0;text-align:center">Verlauf wird geladen …</div>`;
-    const Wd = 640, Ht = 220, L = 40, R = 8, T = 24, B = 28, iw = Wd - L - R, ih = Ht - T - B;
+    const Wd = this._enDim ? this._enDim.w : 640, Ht = this._enDim ? this._enDim.h : 220, L = 40, R = 8, T = 24, B = 28, iw = Wd - L - R, ih = Ht - T - B;
     this._enTipD = null;
     if (E.range === "day") {
       const s = this._enSamples(); if (!s || !s.length) return `<div class="mut sm" style="padding:30px 0;text-align:center">Keine Verlaufsdaten für diesen Tag.</div>`;

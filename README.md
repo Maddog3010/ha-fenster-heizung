@@ -391,12 +391,14 @@ Für Tablets an der Wand: große Knöpfe, Uhr im Kopf, untere Leiste mit den akt
 
 **Neu ab 2026.11.5b7 (Testversion):** Auch Fenster & Heizung und Warmwasser passen ohne Scrollen auf eine Seite, aufgeteilt in Reiter.
 
+**Neu ab 2026.11.5b8 (Testversion):** Ebenso Energie, Gerätestrom und Hausfluss.
+
 - **Einschalten:** Knopf im Kopf (ab 600 px Breite), Einstellung „Automatisch“ oder Direktlink `?tablet=1`, zum Beispiel als Start-URL in Fully Kiosk.
 - **PIN:** sechs Ziffern schützen die Einstellungen, im neuen Aufbau auch Heizplan, Fensterregelung und Warmwasser-Einstellungen. Nach fünf falschen Eingaben ist die Eingabe 60 Sekunden gesperrt.
-- **Ruhemodus** mit dunkler Uhr, Wetter, Alarm und Personen. Eine Warnung weckt das Tablet auf.
+- **Ruhemodus** mit dunkler Uhr, Wetter, Alarm und Personen. Eine Warnung weckt das Tablet auf. Ab 2026.11.5b8 gibt es im neuen Aufbau auch die Ruhebilder Energie und Hausfluss (Einstellung „Ruhebild“).
 - **Bewegungsmelder:** Bei Bewegung geht das Display an, nach 10 oder 30 Minuten ohne Bewegung wieder aus.
 - **Display-Schalter:** ein Schalter, zum Beispiel „Screen“ von Fully Kiosk, oder ab 2026.11.5b7 ein Licht, zum Beispiel „Screen“ von Kiosk Satellite.
-- **Modul 4** zeigt quer die Geräte-Wand mit sechs großen Kacheln.
+- **Modul 4** zeigt quer die Geräte-Wand mit sechs großen Kacheln (Aufbau „Wie bisher“; im neuen Aufbau bis zu acht je Seite).
 
 | | Fully Kiosk (Android) | HA-App Android | HA-App iPad/iPhone |
 |---|---|---|---|

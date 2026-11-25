@@ -3,25 +3,23 @@
      Die Oberfläche meldet fehlgeschlagene Befehle (Schema-Fehler wie „expected str at 'id'“, unbekannte Befehle, unerwartete Fehler)
      und eigene Anzeigefehler an fenster_heizung/err_report. In Build 1 wird nichts versendet. */
   _errWrap(h) {
-    /* 2026.11.4.7: Home Assistant baut das hass-Objekt bei jeder Zustandsänderung neu auf ({ ...hass }) und kopiert dabei
-       unseren Umschlag um callWS mit, nicht aber die Markierung am Objekt. Vorher wurde dann bei jeder Änderung ein weiterer
-       Umschlag um den vorigen gelegt – nach Stunden Tausende ineinander, und ein Befehl endete mit
-       „RangeError: Maximum call stack size exceeded“. Jetzt trägt der Umschlag selbst die Markierung und das Original. */
-    if (!h || typeof h.callWS !== "function" || h.callWS.__fhErr) return;
-    const orig = h.callWS.__fhOrig || h.callWS, self = this;
-    try {
-      /* nur eigene Befehle; der Fehler wird unverändert weitergereicht */
-      const wrap = function (msg) { return orig.call(this, msg).catch((e) => { try { self._errCmd(msg, e); } catch (_) { /* nie stören */ } throw e; }); };
-      Object.defineProperty(wrap, "__fhErr", { value: true });
-      Object.defineProperty(wrap, "__fhOrig", { value: orig });
-      h.callWS = wrap;
-    } catch (_) { /* Objekt gesperrt: dann eben ohne */ }
-    if (!this.constructor._errHook) {
+    /* 2026.11.4.8: Das hass-Objekt von Home Assistant wird nicht mehr verändert. Vorher legten wir unseren Umschlag direkt um
+       dessen callWS; Home Assistant kopiert das Objekt bei jeder Änderung ({ ...hass }), und so konnten sich Umschläge ineinander
+       stapeln, bis ein Befehl mit „RangeError: Maximum call stack size exceeded“ endete. Jetzt bekommt nur diese Seite eine
+       eigene Kopie mit genau einem Umschlag – egal, wie oft Home Assistant das Objekt neu baut oder wer sonst callWS umlegt. */
+    this.constructor._errInst = this;   /* Anzeigefehler meldet immer die zuletzt aktive Seite */
+    if (!this.constructor._errHook && typeof window !== "undefined") {
       this.constructor._errHook = true;
-      const mine = (s) => /fenster_heizung_static|fenster-heizung-panel/.test(String(s || ""));
-      window.addEventListener("error", (ev) => { if (mine(ev.filename) || mine(ev.error && ev.error.stack)) this._errJs(ev.error || ev.message, "Fenster"); });
-      window.addEventListener("unhandledrejection", (ev) => { const r = ev.reason; if (r && mine(r.stack)) this._errJs(r, "Versprechen"); });
+      const mine = (s) => /fenster_heizung_static|fenster-heizung-panel/.test(String(s || "")), now = () => this.constructor._errInst;
+      window.addEventListener("error", (ev) => { if (mine(ev.filename) || mine(ev.error && ev.error.stack)) now()._errJs(ev.error || ev.message, "Fenster"); });
+      window.addEventListener("unhandledrejection", (ev) => { const r = ev.reason; if (r && mine(r.stack)) now()._errJs(r, "Versprechen"); });
     }
+    if (!h || typeof h.callWS !== "function") return h;
+    const orig = h.callWS.__fhOrig || h.callWS, self = this;
+    /* nur eigene Befehle; der Fehler wird unverändert weitergereicht */
+    const wrap = function (msg) { return orig.call(this, msg).catch((e) => { try { self._errCmd(msg, e); } catch (_) { /* nie stören */ } throw e; }); };
+    Object.defineProperty(wrap, "__fhOrig", { value: orig });
+    return { ...h, callWS: wrap };
   }
   _errDev() { const w = window.innerWidth || 1000; return w < 600 ? "handy" : w < 1100 ? "tablet" : "pc"; }
   _errSend(p) {

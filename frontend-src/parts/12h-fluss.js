@@ -5,7 +5,7 @@
     if (!this._hass || this._efxBusy || (this._efxD && !force)) return;
     this._efxBusy = true;
     this._hass.callWS({ type: "fenster_heizung/ef_get" }).then((r) => { this._efxD = r; }).catch(() => { if (!this._efxD || this._efxD.err) { this._efxD = { locked: true, cfg: null, err: true }; setTimeout(() => { if (this._efxD && this._efxD.err) this._efxLoad(true); }, 3000); } })  /* letzten Stand behalten, sonst gleich neu versuchen */
-      .finally(() => { this._efxBusy = false; if (this._mdActive() === "ef") this._render(); });
+      .finally(() => { this._efxBusy = false; if (this._mdSees("ef")) this._render(); });
   }
   _efxPut(cfg) {
     this._efBandV = (this._efBandV || 0) + 1;  /* Banner sofort neu zeichnen */
@@ -147,7 +147,7 @@
     if (!this._efxSp()) return `<div class="card empty">${ic("heart", 34)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Nur für Sponsoren</div>Der Hausfluss gehört zu den Extras für Sponsoren.<br><button class="btn2 pri" style="margin-top:12px" data-act="spnopen">Sponsor-Bereich öffnen</button></div>`;
     const c = this._efxCfg(), adm = this._admin(), list = EF_POS ? Object.keys(EF_POS).filter((p) => c.nodes[p] && c.nodes[p].on) : [], nodes = list.map((p) => c.nodes[p]);
     if (!list.length) return `<div class="card empty">${ic("energy", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch keine Kacheln</div>Lege Solar, Netz, Akku und Verbraucher als Kacheln um dein Haus an.${adm ? `<br><div style="margin-top:12px;text-align:left"><div class="efsec" style="margin-bottom:6px">Schnellstart mit deinen Sensoren</div>${this._efxHausHtml(adm)}<div class="efsec" style="margin:12px 0 6px">Oder eine Vorlage</div>${this._efxTplHtml(adm)}</div><button class="btn2" style="margin-top:8px" data-act="efxopen">Selbst einrichten</button>` : ""}</div>`;
-    const narrow = (this.clientWidth || 1000) < 640, hub = c.hub, calc = this._efxCalc(nodes), hubW = hub.calc === "rest" ? calc.rest : calc.total;
+    const narrow = !this._tm2EfB && (this.clientWidth || 1000) < 640, hub = c.hub, calc = this._efxCalc(nodes), hubW = hub.calc === "rest" ? calc.rest : calc.total;
     this._efMix = this._efxMix(nodes);
     /* Das Haus sitzt immer genau in der Mitte: Zeilen oben und unten werden paarweise gehalten oder weggelassen, leere Gegenstücke bekommen einen unsichtbaren Platzhalter */
     const ar = !!this._efArr && adm && !narrow;  /* W1 Anordnen: alle neun Plätze sichtbar, freie als Ablagefläche */
@@ -178,11 +178,12 @@
     const seg = `<div class="efseg" role="tablist"><button class="${tab === "now" ? "on" : ""}" role="tab" aria-selected="${tab === "now"}" data-act="efxtab" data-v="now">Jetzt</button><button class="${tab === "strom" ? "on" : ""}" role="tab" aria-selected="${tab === "strom"}" data-act="efxtab" data-v="strom">Strom</button>${tab === "now" && !tm && (!narrow || mob === "brett") && !arr ? `<button class="efszb efsh" data-act="efxshare" aria-label="Fluss-Bild als Bild teilen">${ic("download", 14)} Bild</button>` : ""}${tab === "now" && adm && !tm && !narrow ? `<button class="efszb efab${arr ? " on" : ""}" data-act="efxarr" aria-pressed="${arr}">${arr ? "Fertig" : "Anordnen"}</button>` : ""}${tab === "now" && !narrow && !tm ? `<button class="efszb" data-act="efxsize" aria-label="Größe der Kacheln">Größe: ${SZ[sz] || "Auto"}</button>` : tab === "now" && narrow ? `<button class="efszb" data-act="efxmob" aria-label="Ansicht wechseln">Ansicht: ${MB[mob]}</button>` : ""}</div>`;
     const cls = `efx${narrow ? " nar" : ""}${lt ? " lt" : ""}${L.shape === "rund" ? " sh-rund" : ""}${tm ? " wall" : ""}`;
     const foot = `<div class="mut sm" style="margin:2px 4px">Modul 19 · für Sponsoren · Werte live aus deinen Entitäten · Tippe auf einen Wert für den Verlauf</div>`;
-    if (tab === "strom") return `<div class="${cls}">${hero}${seg}${this._efStrom(narrow)}</div>`;
+    if (tab === "strom" && !this._tm2EfB) return `<div class="${cls}">${hero}${seg}${this._efStrom(narrow)}</div>`;
     if (narrow && !tm && mob === "fluss" && !arr) { setTimeout(() => this._efxColLines(), 0); return `<div class="${cls}">${hero}${seg}${this._efxCol(items, hubW)}${this._efxToday()}${foot}</div>`; }
     if (narrow && !tm && mob === "raster" && !arr) { const R = this._efxRaster(items, hubW, adm); return `<div class="${cls}">${R.card}${seg}${R.grid}${foot}</div>`; }
     setTimeout(() => this._efxLines(), 0);
     const board = `${arr && !narrow ? `<div class="stowarn" style="margin:0">${ic("info", 16)}<span>Anordnen: Kachel auf einen anderen Platz ziehen – oder antippen und dann den Ziel-Platz antippen. Belegte Plätze werden getauscht.</span></div>` : ""}<div class="efboard th-${L.theme}${arr && !narrow ? " arr" : ""}" id="efboard" data-rows="${rows}"${!narrow && this._efW ? ` style="--eft:${this._efW}px"` : ""}><svg class="eflines" aria-hidden="true">${this._efSvg || ""}</svg><div class="efgrid">${cells}${slots}${hubCell}</div></div>`;
+    if (this._tm2EfB) return `<div class="${cls} tm2efx">${board}</div>`;
     if (tm) { const ck = Math.floor(Date.now() / 5000) + "|" + (this._efBandV || 0) + "|" + (window.innerWidth >= window.innerHeight); if (this._efTmC && this._efTmC.k === ck) return this._efTmC.h; }
     if (tm) { const quer = (window.innerWidth || 1280) >= (window.innerHeight || 800); const h = `<div class="${cls} ${quer ? "quer" : "hoch"}">${seg}<div class="efwall">${board}${this._efxWallSide(items, hubW, quer)}</div></div>`; this._efTmC = { k: Math.floor(Date.now() / 5000) + "|" + (this._efBandV || 0) + "|" + (window.innerWidth >= window.innerHeight), h }; return h; }
     return `<div class="${cls}">${hero}${seg}${board}${arr ? "" : this._efxToday()}
@@ -190,6 +191,7 @@
   }
   /* Kachelgröße: auf Tablet und Desktop nach der Höhe, die unter dem Banner übrig bleibt (Einstellung „Größe“ überschreibt das) */
   _efxFit(b, narrow) {
+    if (b.closest(".tm2efx")) { this._tm2EfFit(b); return; }
     if (narrow) { b.style.removeProperty("--eft"); return; }
     const sz = this._efSize(), vh = window.innerHeight || 800, key = (this.clientWidth || 0) + "x" + vh;
     if (this._efK !== key) { this._efK = key; this._efTop = b.getBoundingClientRect().top; }

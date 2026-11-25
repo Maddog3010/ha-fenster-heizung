@@ -46,6 +46,8 @@
     if (r) { apply(r); return; }
     this._hass.callWS({ type: "fenster_heizung/get_modules" }).then(apply).catch(() => {});
   }
+  /* Ist dieses Modul gerade zu sehen? Im Tablet-Modus zählt die Tablet-Ansicht (auch das Ruhebild). */
+  _mdSees(id) { return this._tmOn && this._tmOn() ? !!this._tmSleep || this._tmV() === id : this._mdActive() === id; }
   _mdActiveSet(id) { const s = this._mdState(); s.active = id; this._loOpen = false; try { localStorage.setItem("fh_mod_active", id); } catch (_) { /* Speicher gesperrt */ } }
   _mdList() {
     const s = this._mdState(), home = this._hzOn() ? [{ ...MOD_HOME, tag: this._hzGreet() }] : [];

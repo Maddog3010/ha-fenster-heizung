@@ -30,7 +30,7 @@
     const s = R ? R.s : new Date(), e = R ? R.e : new Date(Date.now() + 864e5);
     this._hass.callWS({ type: "fenster_heizung/ef_link", start: iso(s), end: iso(e) }).then((d) => { c[key] = { ts: Date.now(), d }; this._efLk = d; })
       .catch(() => { c[key] = { ts: Date.now(), d: { gs: [], wb: null } }; })
-      .finally(() => { this._efLkBusy = null; if (this._mdActive() === "ef") this._render(); if (this._modal && this._modal.type === "efxedit") this._renderModal(); });
+      .finally(() => { this._efLkBusy = null; if (this._mdSees("ef")) this._render(); if (this._modal && this._modal.type === "efxedit") this._renderModal(); });
     return h ? h.d : null;
   }
   /* Quelle einer Verbraucher-Kachel: { k: "gs"|"wb"|"own", g } */
@@ -81,7 +81,7 @@
     Promise.all([(fine ? q(R.s, R.end, "5minute").then((r5) => (Object.values(r5 || {}).some((l) => (l || []).length) ? { r: {}, r5, per, res: "5" } : coarse())).catch(coarse) : coarse()), eb])
       .then(([{ r, r5, per: pp, res }, E]) => { cache[key] = this._efxEbMerge({ ts: Date.now(), live: R.cur, res, ...this._efxStatCalc(nodes, r || {}, R, pp, P, r5 || {}) }, E, R, P); })
       .catch(() => { cache[key] = { ts: Date.now(), err: true, bars: [], cons: [], tot: null }; })
-      .finally(() => { if (this._efStBusy === key) this._efStBusy = null; if (this._mdActive() === "ef") this._render(); });
+      .finally(() => { if (this._efStBusy === key) this._efStBusy = null; if (this._mdSees("ef")) this._render(); });
     return h || null;
   }
   _efxStatCalc(nodes, r, R, per, P, r5 = {}) {
@@ -175,6 +175,17 @@
     if (E.ok === false) return `Gerechnet aus ${old}. Genauer wird es mit dem Haus-Energiebuch: dafür Solar- und Netzleistung unter Einstellungen → Haus → Energiequellen eintragen.`;
     return `Gerechnet aus ${old}.`;
   }
+  /* Verbraucher-Kacheln mit Verbrauch und Solar-Anteil im Zeitraum, größte zuerst (auch für den Tablet-Modus) */
+  _efxConsList(P, R, H, c) {
+    const L = this._efLkLoad(P, R), ln = (o) => o.pv + o.bat + o.net;
+    return Object.keys(EF_POS).filter((p) => c.nodes[p] && c.nodes[p].on && c.nodes[p].flow === "consume").map((p) => {
+      const n = c.nodes[p], own = H.cons[p] || { kwh: 0, pv: 0, meter: 0 }, lk = this._efLkFor(n, L);
+      /* Modul 4/8 erst ab dem Tag, an dem das Gerät dort eingerichtet ist – liegt der Zeitraum davor, eigene Rechnung */
+      const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      if (lk.k !== "own" && lk.g.first && lk.g.first < iso(R.e)) { const g = lk.g; return { p, n, src: lk.k, kwh: ln({ pv: g.pv, bat: g.bat || 0, net: g.net }), pv: g.pv, bat: g.bat || 0, net: g.net, part: g.first > iso(R.s) }; }
+      return { p, n, src: own.meter ? "meter" : "pow", kwh: own.kwh, pv: own.pv, bat: null, net: null };
+    }).filter((x) => x.kwh > 0.0005 || x.src === "gs" || x.src === "wb").sort((a, b) => b.kwh - a.kwh);
+  }
   _efStrom(narrow) {
     const P = this._efP(), R = this._efPer(P), c = this._efxCfg(), H = this._efxStatLoad(P), RG = [["day", "Tag"], ["week", "Woche"], ["month", "Monat"], ["year", "Jahr"]];
     const nav = `<div class="efpn"><div class="seg oseg">${RG.map(([k, l]) => `<button class="${P.range === k ? "sel" : ""}" data-act="efxrng" data-k="${k}">${l}</button>`).join("")}</div><div class="efpnv"><button class="ibtn" data-act="efxoff" data-k="-1" aria-label="Zurück">‹</button><b>${esc(this._efPLbl(P, R))}</b><button class="ibtn" data-act="efxoff" data-k="1" ${P.off >= 0 ? "disabled" : ""} aria-label="Weiter">›</button></div></div>`;
@@ -192,14 +203,7 @@
     const det = sb ? `<div class="efsd"><b>${esc(P.range === "day" ? `${sel}–${sel + 1} Uhr` : P.range === "year" ? new Date(R.s.getFullYear(), sel, 1).toLocaleDateString("de-DE", { month: "long" }) : new Date(R.s.getFullYear(), R.s.getMonth(), R.s.getDate() + sel).toLocaleDateString("de-DE", { weekday: "short", day: "2-digit", month: "2-digit" }))}</b> · ${f1(sb.use)} kWh${EF_MIX.filter(([k]) => sb[k] > 0.0005).map(([k, l, col]) => ` · <span style="color:${col}">${pc(sb[k], sb.use)} % ${l}</span>`).join("")}</div>` : `<div class="efsd mut">Tippe auf eine Säule für die Werte</div>`;
     const e1 = `<div class="card efsec1"><div class="efh2">${ic("chart", 16)}Herkunft ${P.range === "day" ? "pro Stunde" : P.range === "year" ? "pro Monat" : "pro Tag"}</div><div class="efcols n${H.bars.length > 24 ? "m" : ""}">${cols}</div><div class="efleg2">${EF_MIX.map(([, l, col]) => `<span><i style="background:${col}"></i>${l}</span>`).join("")}<span class="mut">Höhe = Hausverbrauch</span></div><div class="efsres">${ic("info", 13)}<span>${this._efxResTxt(H)}</span></div>${det}</div>`;
     /* E2 Verbraucher mit Solar-Anteil */
-    const L = this._efLkLoad(P, R), ln = (o) => o.pv + o.bat + o.net;
-    const list = Object.keys(EF_POS).filter((p) => c.nodes[p] && c.nodes[p].on && c.nodes[p].flow === "consume").map((p) => {
-      const n = c.nodes[p], own = H.cons[p] || { kwh: 0, pv: 0, meter: 0 }, lk = this._efLkFor(n, L);
-      /* Modul 4/8 erst ab dem Tag, an dem das Gerät dort eingerichtet ist – liegt der Zeitraum davor, eigene Rechnung */
-      const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-      if (lk.k !== "own" && lk.g.first && lk.g.first < iso(R.e)) { const g = lk.g; return { p, n, src: lk.k, kwh: ln({ pv: g.pv, bat: g.bat || 0, net: g.net }), pv: g.pv, bat: g.bat || 0, net: g.net, part: g.first > iso(R.s) }; }
-      return { p, n, src: own.meter ? "meter" : "pow", kwh: own.kwh, pv: own.pv, bat: null, net: null };
-    }).filter((x) => x.kwh > 0.0005 || x.src === "gs" || x.src === "wb").sort((a, b) => b.kwh - a.kwh);
+    const list = this._efxConsList(P, R, H, c);
     const SRC = { gs: ["Modul 4", "Werte aus Modul 4 · Gerätestrom (alle 20 s gerechnet)", "gs"], wb: ["Modul 8", "Werte aus Modul 8 · Ladestatistik", "ev"], meter: ["Zähler", "aus dem kWh-Zähler des Geräts", ""], pow: ["aus Leistung", "aus dem Leistungssensor hochgerechnet", ""] };
     const e2 = `<div class="card"><div class="efh2">${ic("energy", 16)}Verbraucher mit Solar-Anteil</div>${list.length ? list.map((x) => {
       const col = x.n.color || EF_POS[x.p][3], s = pc(x.pv, x.kwh), S3 = SRC[x.src], three = x.bat != null;

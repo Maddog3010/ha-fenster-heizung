@@ -786,10 +786,10 @@ const MV_STG = [
   ["stabil", "ab 1.0", "Geprüft und für den Alltag gedacht.", "Einstellungen bleiben bei Updates erhalten, neue Funktionen kommen nur dazu.", "Neue Funktionen heben die Version an (1.1, 1.2). Ein großer Umbau macht daraus 2.0."]];
 const MV = {
   gr: { v: "0.12", b: 4, d: "2026-11-25", p: "2026.11.5b6", log: [["0.12", 4, "2026.11.5b6", "Fenster: Breite und Höhe, Rollladen bei jeder Fensterart (auch bodentief) – auch in 2026.11.4.7"], ["0.12", 3, "2026.11.5b5", "Zaun und andere lange, gedrehte Elemente springen beim Speichern nicht mehr; Breite/Tiefe ändern lässt die Mitte an ihrem Platz; gedrehte Markierung (auch in 2026.11.4.6)"], ["0.12", 2, "2026.11.4.4b3", "Handy: Plan in der Ansicht wie im Bearbeiten – Symbole an ihrem Platz, normale Schrift; die Handy-Leiste mit großer Schrift ist unter Ansicht ▾ › Groß wählbar. Raumnamen weichen der Heizkörper-Temperatur aus"], ["0.12", 1, "2026.11.4.4b1", "Fenster- und Türkontakte im Fenster bzw. in der Tür: zu, gekippt, offen und „?“ im Plan, Chip „offen · 25 min“ (nicht auf dem Handy), Übernehmen alter Kontakt-Elemente, „Kontakte aus Modul 1 zuordnen“; Heizkörper mit Wärmeschein und Temperatur zur Raumseite"], ["0.11", 15, "2026.11.4.1", "Handy-Ansicht Build 4: Sonderfälle – in schmalen Räumen werden Symbole zu Punkten, zu viele enden mit „+2“, in sehr kleinen Räumen zeigt ein Farbpunkt die Temperatur; Raum antippen zeigt alles im Raum-Blatt"], ["0.11", 14, "2026.11.4.1", "Handy-Ansicht Build 3: neue Werkzeugleiste – Etage, Ansicht, Bearbeiten und „⋯“ in einer Zeile, Ebenen als Wischleiste; der Plan beginnt weiter oben"], ["0.11", 13, "2026.11.4.1", "Handy-Ansicht Build 2: Status-Leiste je Raum – Temperatur links, Geräte mit Zustand, Melder und Lampen rechts, bei schmalen Räumen zweizeilig; nichts überlagert mehr den Raumnamen"], ["0.11", 12, "2026.11.4.1", "Handy-Ansicht Build 1: Raumnamen bleiben immer im Raum (vorher ragte z. B. „Sportzimmer“ in den Nachbarraum), Trennung an der Wortfuge („Sport-/zimmer“), Schrift nach Raumbreite"], ["0.10.1", 11, "2026.11.4", "Stufe Beta: Modul 0 ist mit Version 2026.11.4 zum Testen freigegeben – der Grundriss läuft mit echten Daten und wird von Modul 1, 11 und 18 genutzt"], ["0.10.1", 10, "2026.11.4b58", "Puppenhaus entfernt (nur noch der Plan, im Banner wieder das Haus-Symbol). Werkzeugleiste im Baukasten bleibt am Handy/iPad nach dem Wischen stehen und springt nicht mehr an den Anfang (auch Ebenen- und Etagen-Knöpfe)."], ["0.10", 10, "2026.11.4b56", "Puppenhaus (alle Etagen schräg übereinander, Antippen klappt flach, auch im Banner), Sonnenlicht durch die Fenster mit Tageszeit-Regler und Nordrichtung, Möbel (19) und Außenbereich (42: Garten & Pflanzen, Spielen & Freizeit, Wege, Bauten & Technik) mit Größe in cm, Grundstück als eigene Etage mit Haus-Umriss, Zustände (Pool, Bewässerung, Gartenlampe …). Raumnamen passen sich dem Raum an und verdecken keine Melder mehr"], ["0.9", 9, "2026.11.4b55", "Haustechnik, Sensoren und Notfall-Punkte im Plan (34 Teile, mit Zustand aus Home Assistant, Kegel für Bewegungsmelder und Kamera, WLAN-Reichweite, Notizen); Notfall-Punkte auch in Modul 11. Raum-Sensoren in Home Assistant (Fläche, Temperatur, Lampen an, Fenster offen, belegt, Wohnfläche). Bereiche und Etagen aus dem Plan anlegen"], ["0.8", 8, "2026.11.4b55", "Zoom (+/−, Strg+Mausrad, zwei Finger), Verschieben, Vollbild und Raum-Fokus im Plan. Export als PDF (A4 quer, alle Etagen, mit Titel, Fläche und Datum), PNG und SVG. Dashboard-Karte „Grundriss“ (custom:sw-grundriss-card) mit Stil, Etage, Ebenen und Raum-Blatt"], ["0.7", 7, "2026.11.4b54", "Baukasten 2.0: Raster 5–50 cm, Wände rasten auf 15° ein, Maße im Plan. Türen und Fenster schräg auf jeder Wand, frei drehbar, mit Breite und Art (Doppel-, Schiebe-, Pendel-, Falt-, Terrassentür, Garagentor; bodentief, Dachfenster, Rollladen), Abstand zur Ecke, wandern mit dem Raum. Plan-Check, Maßstab messen, Etage kopieren, Tastatur. Treppenarten (L, U halbgewendelt, Wendel, Dachboden), mobile Heizer und Luftentfeuchter aus Modul 1 (Entfeuchter folgt seinem Standort), Markise mit Stand"], ["0.6", 6, "2026.11.4b54", "Eine Optik überall: Modul 1, 11 und der Baukasten zeichnen den Grundriss wie Modul 0. Neuer Baukasten mit Leiste oben, Werkzeugen links, Eigenschaften daneben und Ablage zum Ziehen. Ebene „Jetzt“ und Raum-Blatt beim Antippen eines Raums"], ["0.5", 5, "2026.11.4b53", "Neue Optik des Grundrisses: Wandstärken, Böden je Raumart, Türen mit Schwenkbogen, Fenster mit Glas (offen = gelb), Treppen, Raumsymbol und m², Maße, Nordpfeil, Maßstab; Stile Modern, Bauplan und Hell"], ["0.4", 4, "2026.11.4b53", "Sichern & Einlesen: Plan als Datei, Einlesen mit Vorschau (ersetzen oder Etagen dazu), Verlauf der letzten 15 Stände und Umzugs-Kopie wiederherstellen"], ["0.3", 3, "2026.11.4b52", "Baukasten zieht aus Modul 11 nach Modul 0: Bearbeiten in Modul 1, 11 und 18 führt hierher und zurück, Reiter Ebenen mit Bauplan, Melder, Lampen und Wärme"], ["0.2", 2, "2026.11.4b52", "Reiter Räume: eine Liste Plan-Raum ↔ Bereich ↔ Raum in Modul 1 mit „genutzt von“, Zuordnung aus Modul 18 übernommen, Einstellungen mit Rückfrage beim Ausschalten"], ["0.1", 1, "2026.11.4b52", "Neues Modul: der Grundriss gehört dem Kern, Umzug aus Modul 11, Plan mit Ebenen Melder und Lampen ansehen"]] },
-  fh: { v: "1.9", b: 10, d: "2026-11-25", p: "2026.11.5b7", log: [["1.9", 10, "2026.11.5b7", "Tablet-Modus: passt ohne Scrollen auf eine Seite (Reiter Räume und Statistik, Raum-Fenster)"], ["1.9", 9, "2026.11.4b59", "Elektroheizer 2.0 Build 1–4: Entfernen-Dialog mit Rückgängig, Papierkorb (30 Tage) zum Wiederherstellen, Leistung messen und Testlauf im Assistenten; Heizer unter Modul 1 · Einstellungen › Geräte (eigener Reiter entfällt) mit Liste und PV-Regeln, Geräte-Blatt mit Bearbeiten, Pausieren und „In anderen Raum stellen“ (Statistik zieht mit), Raumeinstellungen nur noch mit Kurzinfo; Einrichtungs-Assistent in vier Schritten (Gerät mit Vorschlägen, Raum als Kachel, Leistung per Vorlage, Regeln mit Vorschlägen) aus Raumkarte „⋯“, Modul-1-Einstellungen, Raumeinstellungen und Grundriss; eigene Geräteliste mit fester ID und Namen, automatische Übernahme bestehender Heizer (Reste in den Papierkorb), Entfernen räumt auf (Gerät aus, Thermostate zurück, Schalter-Entität gelöscht, Statistik auf Wunsch behalten)"], ["1.8", 8, "2026.11.3b10", "Haus-Szene: Solarmodule liegen jetzt gerade auf der Dachfläche (unten 4, darüber 3, links vom Schornstein) statt schräg über der Dachkante; Glanz bei Überschuss, Schnee bei Frost"], ["1.8", 7, "2026.11.3b9", "Messräume im Grundriss (Zuordnung im Grundriss oder in den Raumeinstellungen) und Messräume innen oder außen: außen ohne Wohlfühlbereich, mit Frost- und Glättehinweis, als Außenfläche im Grundriss und als Außentemperatur des Hauses wählbar"], ["1.8", 6, "2026.11.3b8", "Grundriss in der neuen Optik: Räume als Kacheln mit Licht in der Temperaturfarbe, Ziel-Temperatur, Status-Plakette wie in der Detail-Ansicht, HD-Heizkörper mit Wärme, Fenster mit Glas, Punktraster und Zusammenfassung (Ø, heizen, Fenster offen)"], ["1.8", 5, "2026.11.3b7", "Grundriss aus Modul 11 erscheint zuverlässig: erneuter Abruf nach Fehler (z. B. nach Neustart von Home Assistant) und jede Minute, Hinweis wenn der Grundriss nur Wände hat"], ["1.8", 4, "2026.11.3b4", "Karten lückenlos: jede Karte rutscht in die freie Lücke der kürzeren Spalte"], ["1.8", 3, "2026.11.3b3", "Luftentfeuchter: Betriebsart „Nur mit PV-Überschuss“ mit Start- und Aus-Verzögerung, Schimmelschutz und Batterie-Ladung als Überschuss; Haus-Szene: Sponsor-Extra Haus-Stile und Himmel-Themen (W7), Himmel gemeinsam mit Modul 3; Animationen halten an, wenn nicht sichtbar; eigene Animationsstufe im Tablet-Modus (Standard Aus)"], ["1.8", 2, "2026.11.3b2", "„Warum?“ als Zeitleiste; Präsenzmelder je Raum (Mindestens/Genau, Verzögerungen, Leerlauf-Absenkung); Haus-Szene in der Kopfkarte (Räume nach Etagen, Zustand, Wärmequelle, PV, Tageszeit und Wetter); Grundriss als Wärmekarte (dritte Ansicht, Baukasten aus Modul 11) mit Hinweis-Plaketten; acht neue Raumbilder (Esszimmer, Wintergarten, Keller / Hauswirtschaft, Werkstatt, Fitness, Dachboden, Garage, Carport / Außen); Messräume: Raumbild wählbar und aus dem Namen erkannt, Menü „⋯“ mit Messraum einstellen und Raumbild & Farbe"], ["1.8", 1, "2026.11.3b1", "Raumkarte 2.0: Raumbild je Raumtyp mit Zustand als Licht, Fenster und Heizkörper, Temperatur-Ring, Heizplan-Band mit Temperaturfarben, Fenster-Uhr, Hinweis-Plaketten, Menü „⋯“, Kompakt-Liste mit Mini-Bild, Elektroheizer und Luftentfeuchter als Kacheln und im Raumbild; Schalter „Raumkarten wie bisher“"], ["1.7", 1, "2026.11.2b10", "Luftentfeuchter-Nachtmodus: eigene Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts, Meldungen bis zum Morgen zurückhalten"], ["1.6", 3, "2026.11.2b7", "Messräume verschwinden nicht mehr, wenn das Dashboard die Einstellungen nicht laden konnte; fehlende Messräume lassen sich aus der Sicherung zurückholen"], ["1.6", 2, "2026.11.2b2", "Anwesenheit: Standort-Einstellungen und Temperatur bei Abwesenheit fallen nicht mehr auf die Grundwerte zurück"], ["1.6", 1, "2026.11.1b16", "Luftentfeuchter: NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“, neue Tag-Aktionen Entfeuchter heute aus und Wassertank geleert"], ["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  fh: { v: "1.9", b: 11, d: "2026-11-25", p: "2026.11.5b8", log: [["1.9", 11, "2026.11.5b8", "Thermostat lehnt einen Befehl ab: zwei weitere Versuche, keine Meldung als Programmfehler mehr (auch in 2026.11.4.8)"], ["1.9", 10, "2026.11.5b7", "Tablet-Modus: passt ohne Scrollen auf eine Seite (Reiter Räume und Statistik, Raum-Fenster)"], ["1.9", 9, "2026.11.4b59", "Elektroheizer 2.0 Build 1–4: Entfernen-Dialog mit Rückgängig, Papierkorb (30 Tage) zum Wiederherstellen, Leistung messen und Testlauf im Assistenten; Heizer unter Modul 1 · Einstellungen › Geräte (eigener Reiter entfällt) mit Liste und PV-Regeln, Geräte-Blatt mit Bearbeiten, Pausieren und „In anderen Raum stellen“ (Statistik zieht mit), Raumeinstellungen nur noch mit Kurzinfo; Einrichtungs-Assistent in vier Schritten (Gerät mit Vorschlägen, Raum als Kachel, Leistung per Vorlage, Regeln mit Vorschlägen) aus Raumkarte „⋯“, Modul-1-Einstellungen, Raumeinstellungen und Grundriss; eigene Geräteliste mit fester ID und Namen, automatische Übernahme bestehender Heizer (Reste in den Papierkorb), Entfernen räumt auf (Gerät aus, Thermostate zurück, Schalter-Entität gelöscht, Statistik auf Wunsch behalten)"], ["1.8", 8, "2026.11.3b10", "Haus-Szene: Solarmodule liegen jetzt gerade auf der Dachfläche (unten 4, darüber 3, links vom Schornstein) statt schräg über der Dachkante; Glanz bei Überschuss, Schnee bei Frost"], ["1.8", 7, "2026.11.3b9", "Messräume im Grundriss (Zuordnung im Grundriss oder in den Raumeinstellungen) und Messräume innen oder außen: außen ohne Wohlfühlbereich, mit Frost- und Glättehinweis, als Außenfläche im Grundriss und als Außentemperatur des Hauses wählbar"], ["1.8", 6, "2026.11.3b8", "Grundriss in der neuen Optik: Räume als Kacheln mit Licht in der Temperaturfarbe, Ziel-Temperatur, Status-Plakette wie in der Detail-Ansicht, HD-Heizkörper mit Wärme, Fenster mit Glas, Punktraster und Zusammenfassung (Ø, heizen, Fenster offen)"], ["1.8", 5, "2026.11.3b7", "Grundriss aus Modul 11 erscheint zuverlässig: erneuter Abruf nach Fehler (z. B. nach Neustart von Home Assistant) und jede Minute, Hinweis wenn der Grundriss nur Wände hat"], ["1.8", 4, "2026.11.3b4", "Karten lückenlos: jede Karte rutscht in die freie Lücke der kürzeren Spalte"], ["1.8", 3, "2026.11.3b3", "Luftentfeuchter: Betriebsart „Nur mit PV-Überschuss“ mit Start- und Aus-Verzögerung, Schimmelschutz und Batterie-Ladung als Überschuss; Haus-Szene: Sponsor-Extra Haus-Stile und Himmel-Themen (W7), Himmel gemeinsam mit Modul 3; Animationen halten an, wenn nicht sichtbar; eigene Animationsstufe im Tablet-Modus (Standard Aus)"], ["1.8", 2, "2026.11.3b2", "„Warum?“ als Zeitleiste; Präsenzmelder je Raum (Mindestens/Genau, Verzögerungen, Leerlauf-Absenkung); Haus-Szene in der Kopfkarte (Räume nach Etagen, Zustand, Wärmequelle, PV, Tageszeit und Wetter); Grundriss als Wärmekarte (dritte Ansicht, Baukasten aus Modul 11) mit Hinweis-Plaketten; acht neue Raumbilder (Esszimmer, Wintergarten, Keller / Hauswirtschaft, Werkstatt, Fitness, Dachboden, Garage, Carport / Außen); Messräume: Raumbild wählbar und aus dem Namen erkannt, Menü „⋯“ mit Messraum einstellen und Raumbild & Farbe"], ["1.8", 1, "2026.11.3b1", "Raumkarte 2.0: Raumbild je Raumtyp mit Zustand als Licht, Fenster und Heizkörper, Temperatur-Ring, Heizplan-Band mit Temperaturfarben, Fenster-Uhr, Hinweis-Plaketten, Menü „⋯“, Kompakt-Liste mit Mini-Bild, Elektroheizer und Luftentfeuchter als Kacheln und im Raumbild; Schalter „Raumkarten wie bisher“"], ["1.7", 1, "2026.11.2b10", "Luftentfeuchter-Nachtmodus: eigene Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts, Meldungen bis zum Morgen zurückhalten"], ["1.6", 3, "2026.11.2b7", "Messräume verschwinden nicht mehr, wenn das Dashboard die Einstellungen nicht laden konnte; fehlende Messräume lassen sich aus der Sicherung zurückholen"], ["1.6", 2, "2026.11.2b2", "Anwesenheit: Standort-Einstellungen und Temperatur bei Abwesenheit fallen nicht mehr auf die Grundwerte zurück"], ["1.6", 1, "2026.11.1b16", "Luftentfeuchter: NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“, neue Tag-Aktionen Entfeuchter heute aus und Wassertank geleert"], ["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   ww: { v: "1.1", b: 3, d: "2026-11-25", p: "2026.11.5b7", log: [["1.1", 3, "2026.11.5b7", "Tablet-Modus: passt ohne Scrollen auf eine Seite (Reiter Jetzt, Zeiten, Verlauf)"], ["1.1", 2, "2026.11.4b46", "Neues Banner: Speicher im Schnitt mit Temperatur oben und unten, Zirkulation, Aufheizen und PV-Überschuss"], ["1.1", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.0", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
-  en: { v: "1.6", b: 5, d: "2026-11-15", p: "2026.11.3", log: [["1.6", 5, "2026.11.3", "Gaszähler mit Karte für Tag, Woche, Monat und Jahr, Abrechnungsjahr, Preisliste mit „gültig ab“ und Abschlag; Einstellungen in Reitern (Strom, Zähler, Gas, Anzeige)"], ["1.6", 4, "2026.11.3b21", "Autarkie-Ring im Banner sprang hin und her"], ["1.6", 3, "2026.11.3b20", "Flüsse in der Szene liefen nur beim Scrollen: Bewegung läuft jetzt über jeden Neuaufbau weiter"], ["1.6", 2, "2026.11.3b4", "Karten lückenlos beim Verschieben; Kosten-Treppe passt ihre Höhe an, Beschriftungen werden nicht mehr verdeckt; Energie-Szene ohne Zuschnitt, größere Werte, lange Namen gekürzt"], ["1.6", 1, "2026.11.3b3", "Neue Optik Stufe 4: Preisband unter der Tageskurve, Woche/Monat/Jahr gespiegelt (Solar oben, Netzbezug unten), Solar-Kalender im Jahr, Kosten-Treppe mit Symbolen, Sparschwein mit Anschaffungskosten, Verteilung als Ring mit Auto und Geräten aus Modul 4, Werte zählen beim Zeitraumwechsel hoch; W7 Sponsor-Extra Haus-Stile und Himmel-Themen; Energiefluss und Szene ohne Neustart der Animation bei neuen Werten"], ["1.5", 1, "2026.11.3b3", "Neue Optik Stufe 3: Energie-Szene im Banner (Haus mit Dach-PV, Balkon, Batterie, Strommast, Auto), Himmel und Wetter wie Modul 1, Summe mit Σ bei vergangenen Zeiträumen, Antippen führt zu Modul 8/13/14/16, flacher Streifen am Handy, Mini-Szene auf der Startseite"], ["1.4", 1, "2026.11.3b3", "Neue Optik Stufe 2: Energiefluss HD mit Geräte-Plaketten, Balkon als eigener Knoten, Batterie mit Füllstand, Auto aus Modul 8, Linienstärke nach Leistung, Antippen zeigt Werte; Hinweise mit Bild und Knopf, günstigster Strom des Tages; Schalter „Energiefluss wie bisher“"], ["1.3", 1, "2026.11.3b2", "Neue Optik Stufe 1: HD-Symbole an den Kacheln (Solar mit Balkon, Netzbezug, Einspeisung, Verbrauch), Kacheln 2.0 mit Verlauf als Fläche und Punkt „jetzt“, Vergleich als Plakette, Doppelring Autarkie/Eigenverbrauch, Preis-Skala; Schalter „Kacheln wie bisher“"], ["1.2", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
-  gs: { v: "1.5", b: 1, d: "2026-11-10", p: "2026.11.2b13", log: [["1.5", 1, "2026.11.2b13", "Stufe 4 der neuen Optik: Geräte-Szene im Banner, Tablet-Modus als Geräte-Wand (quer) und Liste (hoch), Bewegung Aus/Dezent/Voll, Standby je Gerät, Monatsziel im Banner, Jahresrückblick zum Teilen"], ["1.4", 1, "2026.11.2b12", "Stufe 3 der neuen Optik (ohne Rangliste): bestes Startfenster als Bild mit Solarprognose und Preisband, „Um … erinnern“, Startfenster aller Geräte auf einen Blick; bei gleichem Solar-Anteil gewinnt der günstigere Preis"], ["1.3", 2, "2026.11.2b11", "Stufe 2 der neuen Optik: Geräte-Seite mit Programm-Kurve nach Herkunft, Durchlauf-Protokoll und typischem Lauf; auf dem Handy Liste der Geräte, Details beim Antippen"], ["1.3", 1, "2026.11.2b10", "Anpassen: Karten und Geräte verschieben und ausblenden"], ["1.2", 3, "2026.11.2b8", "Merkt sich die letzten Läufe mit Startzeit (für den Energie-Coach)"], ["1.2", 2, "2026.11.2b3", "„Erinnern“ funktioniert wieder"], ["1.2", 1, "2026.11.2b2", "Gerätekarten 2.0: HD-Bild mit Herkunfts-Ring, Prozentzeile statt Balken, „noch ~ Min. · fertig ~ Uhr“ ab 3 Läufen, drei Felder, Startempfehlung mit „Erinnern“, Schalter „Karten wie bisher“"], ["1.1", 2, "2026.11.1b1", "Bis zu 15 statt 8 Geräte, mit Zähler beim Hinzufügen"], ["1.1", 1, "2026.1030.0b2", "Tag, Woche, Monat und Jahr mit Blättern, Gerätetypen mit Symbol, Farben wie Modul 3, Diagramm zum Antippen, Vergleich zur Vorperiode"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  en: { v: "1.6", b: 6, d: "2026-11-25", p: "2026.11.5b8", log: [["1.6", 6, "2026.11.5b8", "Tablet-Modus: passt ohne Scrollen auf eine Seite (Reiter Jetzt, Verlauf, Kosten), Ruhebild Energie"], ["1.6", 5, "2026.11.3", "Gaszähler mit Karte für Tag, Woche, Monat und Jahr, Abrechnungsjahr, Preisliste mit „gültig ab“ und Abschlag; Einstellungen in Reitern (Strom, Zähler, Gas, Anzeige)"], ["1.6", 4, "2026.11.3b21", "Autarkie-Ring im Banner sprang hin und her"], ["1.6", 3, "2026.11.3b20", "Flüsse in der Szene liefen nur beim Scrollen: Bewegung läuft jetzt über jeden Neuaufbau weiter"], ["1.6", 2, "2026.11.3b4", "Karten lückenlos beim Verschieben; Kosten-Treppe passt ihre Höhe an, Beschriftungen werden nicht mehr verdeckt; Energie-Szene ohne Zuschnitt, größere Werte, lange Namen gekürzt"], ["1.6", 1, "2026.11.3b3", "Neue Optik Stufe 4: Preisband unter der Tageskurve, Woche/Monat/Jahr gespiegelt (Solar oben, Netzbezug unten), Solar-Kalender im Jahr, Kosten-Treppe mit Symbolen, Sparschwein mit Anschaffungskosten, Verteilung als Ring mit Auto und Geräten aus Modul 4, Werte zählen beim Zeitraumwechsel hoch; W7 Sponsor-Extra Haus-Stile und Himmel-Themen; Energiefluss und Szene ohne Neustart der Animation bei neuen Werten"], ["1.5", 1, "2026.11.3b3", "Neue Optik Stufe 3: Energie-Szene im Banner (Haus mit Dach-PV, Balkon, Batterie, Strommast, Auto), Himmel und Wetter wie Modul 1, Summe mit Σ bei vergangenen Zeiträumen, Antippen führt zu Modul 8/13/14/16, flacher Streifen am Handy, Mini-Szene auf der Startseite"], ["1.4", 1, "2026.11.3b3", "Neue Optik Stufe 2: Energiefluss HD mit Geräte-Plaketten, Balkon als eigener Knoten, Batterie mit Füllstand, Auto aus Modul 8, Linienstärke nach Leistung, Antippen zeigt Werte; Hinweise mit Bild und Knopf, günstigster Strom des Tages; Schalter „Energiefluss wie bisher“"], ["1.3", 1, "2026.11.3b2", "Neue Optik Stufe 1: HD-Symbole an den Kacheln (Solar mit Balkon, Netzbezug, Einspeisung, Verbrauch), Kacheln 2.0 mit Verlauf als Fläche und Punkt „jetzt“, Vergleich als Plakette, Doppelring Autarkie/Eigenverbrauch, Preis-Skala; Schalter „Kacheln wie bisher“"], ["1.2", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  gs: { v: "1.5", b: 2, d: "2026-11-25", p: "2026.11.5b8", log: [["1.5", 2, "2026.11.5b8", "Tablet-Modus: passt ohne Scrollen auf eine Seite (Reiter Geräte, Startfenster, Statistik), Gerätefenster"], ["1.5", 1, "2026.11.2b13", "Stufe 4 der neuen Optik: Geräte-Szene im Banner, Tablet-Modus als Geräte-Wand (quer) und Liste (hoch), Bewegung Aus/Dezent/Voll, Standby je Gerät, Monatsziel im Banner, Jahresrückblick zum Teilen"], ["1.4", 1, "2026.11.2b12", "Stufe 3 der neuen Optik (ohne Rangliste): bestes Startfenster als Bild mit Solarprognose und Preisband, „Um … erinnern“, Startfenster aller Geräte auf einen Blick; bei gleichem Solar-Anteil gewinnt der günstigere Preis"], ["1.3", 2, "2026.11.2b11", "Stufe 2 der neuen Optik: Geräte-Seite mit Programm-Kurve nach Herkunft, Durchlauf-Protokoll und typischem Lauf; auf dem Handy Liste der Geräte, Details beim Antippen"], ["1.3", 1, "2026.11.2b10", "Anpassen: Karten und Geräte verschieben und ausblenden"], ["1.2", 3, "2026.11.2b8", "Merkt sich die letzten Läufe mit Startzeit (für den Energie-Coach)"], ["1.2", 2, "2026.11.2b3", "„Erinnern“ funktioniert wieder"], ["1.2", 1, "2026.11.2b2", "Gerätekarten 2.0: HD-Bild mit Herkunfts-Ring, Prozentzeile statt Balken, „noch ~ Min. · fertig ~ Uhr“ ab 3 Läufen, drei Felder, Startempfehlung mit „Erinnern“, Schalter „Karten wie bisher“"], ["1.1", 2, "2026.11.1b1", "Bis zu 15 statt 8 Geräte, mit Zähler beim Hinzufügen"], ["1.1", 1, "2026.1030.0b2", "Tag, Woche, Monat und Jahr mit Blättern, Gerätetypen mit Symbol, Farben wie Modul 3, Diagramm zum Antippen, Vergleich zur Vorperiode"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   lu: { v: "0.1", b: 2, d: "2026-11-22", p: "2026.11.4b47", log: [["0.1", 2, "2026.11.4b47", "Neues Banner: Haus-Schnitt mit den Räumen in der Farbe ihrer Luftfeuchte, Lüfter und Luftströme, kritischster Raum als große Zahl"], ["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   rb: { v: "0.1", b: 2, d: "2026-11-22", p: "2026.11.4b47", log: [["0.1", 2, "2026.11.4b47", "Neues Banner: Fassade mit der Sonne auf ihrem Bogen (Richtung und Höhe aus sun.sun), nachts Mond und Licht in den Fenstern"], ["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   wp: { v: "0.1", b: 2, d: "2026-11-22", p: "2026.11.4b47", log: [["0.1", 2, "2026.11.4b47", "Neues Banner: Außengerät mit drehendem Lüfter und Thermometer, bei Frost Reif und Schnee, Hinweis auf Abtauen"], ["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -802,7 +802,7 @@ const MV = {
   dt: { v: "0.9", b: 1, d: "2026-11-21", p: "2026.11.4b38", log: [["0.9", 1, "2026.11.4b38", "Vorabversion: „Lohnt sich dein Tarif?“ (Monat und Jahr gegen Festpreis), Kachel „Gespart im Monat“, Wochenansicht, Daten prüfen, Hinweis auf der Startseite bei negativen Preisen, Sensor Ersparnis Monat, Diagnose"], ["0.8", 1, "2026.11.4b1", "Bestes Fenster je Gerät, Preisalarm, Sensoren und Ereignis"], ["0.7", 1, "2026.11.4b1", "Neue Optik: Preisband-Banner, Kacheln 2.0, Heute und morgen mit Sonne"], ["0.6", 1, "2026.11.4b1", "Tarif-Dienst: Tibber direkt, Preis-Sensoren, Viertelstunden, morgen, Endpreis, Push"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   wa: { v: "0.2", b: 3, d: "2026-11-22", p: "2026.11.4b46", log: [["0.2", 3, "2026.11.4b46", "Neues Banner: Kalenderblatt mit dem nächsten Termin und Ampel-Ringen für die wichtigsten Termine"], ["0.2", 2, "2026.11.4b40", "Termine: eigener Speicher, anlegen, bearbeiten, löschen, Abstand in Tagen bis Jahren, Vorlagen, Erledigt mit Rückgängig, Ampel mit Vorwarnung, Kosten des Jahres, Diagnose"], ["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   sp: { v: "1.0", b: 2, d: "2026-11-12", p: "2026.11.3", log: [["1.0", 2, "2026.11.3b12", "Anlagen wählen: mehrere Prognose-Dienste (Forecast.Solar, Solcast, Open-Meteo) für dasselbe Dach werden nicht mehr ungefragt addiert – Auswahl je Anlage, „Nur …“-Knöpfe, Vorgabe aus dem Energie-Dashboard, Warnung auf der Seite; Korrektur lernt nach einer Änderung neu"], ["1.0", 1, "2026.11.3b8", "Stabil: Anlagen einzeln, fünf Sensoren für Automationen (heute, morgen, Rest heute, korrigiert, beste Zeit), Kachel mit Sonnenbogen auf der Startseite, Tablet-Wand, Ertragssensor aus dem Energie-Dashboard vorschlagen, Einrichtungs-Check, Lab „Lernfaktor“ fest eingebaut"], ["0.9", 5, "2026.11.3b8", "Treffsicherheit & Tipps: korrigierte Prognose (lernt aus 14 Tagen), Tage im Vergleich 7/14/30 und Treffer-Kalender mit Tag als Kurve, Empfehlungen mit Startzeit, Hinweis bei Schnee oder Störung"], ["0.9", 4, "2026.11.3b7", "Technik: Prognose über die Energie-Schnittstelle (Forecast.Solar, Solcast, Open-Meteo), Solcast-Sensoren, Ertrag je Stunde aus der Langzeitstatistik, Kurve von heute früh als Messlatte, Speicher mit Schema-Version (400 Tage), Abruf nur alle 30 Min. im Hintergrund"], ["0.9", 3, "2026.11.3b7", "Neue Optik Stufe 1: Sonnenbogen-Banner (nachts Mond und morgen), Kacheln mit HD-Bildern und Ring, Prognose und Ertrag je Stunde in einer Kurve, beste Zeit mit Geräten und Knopf ins Modul, Preisband, Verlauf mit Abweichung je Tag, Handy und Hell, Schalter „Wie bisher“"], ["0.9", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.9", 1, "3.0.6.5", "Start der Zählung"]] },
-  ef: { v: "1.1", b: 2, d: "2026-11-15", p: "2026.11.3", log: [["1.1", 2, "2026.11.3", "Bis zu vier Kacheln links und rechts und zwei unten, bis zu fünf Quellen am Handy, hellere Kacheln, Verbraucher mit Solar-Anteil genauer"], ["1.1", 1, "2026.11.3b19", "Strom-Reiter: „Woher kam der Strom?“ mit Anteil von Solar, Akku und Netz, Akku- und Netz-Bilanz und wohin der Solarstrom ging"], ["1.0", 1, "2026.11.3b6", "Stabil: Schnellstart aus den Haus-Werten, Einrichtungs-Prüfung, Kosten im Strom-Reiter und Vorteil heute auf dem Tablet, Fluss-Bild als Bild teilen, Tablet-Modus zeichnet nur alle 5 s neu, Feinschliff der Optik (Haus als freier Ring, ruhigere Kacheln, klarere Schrift)"], ["0.9", 1, "2026.11.3b5", "Vorabversion: Strom-Reiter mit Lichtsäulen und Verbrauchern mit Solar-Anteil (Tag/Woche/Monat/Jahr), Animationen „Voll“, Kacheln ziehen, Vorlagen, Gruppen-Kachel, Tageswerte-Leiste, Sponsor-Abzeichen im Banner"], ["0.8", 1, "2026.11.3b5", "Banner & Themen (Konzept Neue Optik A, F, H): Lichtband-Banner mit Herkunfts-Balken, Themen Nachtglas, Blaupause, Sternenhimmel, Haus im Garten, Kachelform Rund, Hell-Variante, Handy als Fluss-Spalte oder Kachel-Raster, Wand-Ansicht im Tablet-Modus mit Ruhebild"], ["0.7", 1, "2026.11.3b5", "Linien & Haus (Konzept Neue Optik C/D): Leuchtlinien mit Stärke nach Leistung und Verlauf als Option, Haus mit Herkunfts-Ring und wählbarem Haus-Bild, Bilder mit Zustand (Läuft ab, Ladestand-Ring), Status-Punkt, Kachel „keine Daten“"], ["0.6", 3, "2026.11.2b10", "Eigenes mdi-Symbol: „Mdi:…“ (iPhone) und „_“ werden richtig übernommen, sonst ein Hinweis"], ["0.6", 2, "2026.11.2b3", "Aktive Kacheln heben sich deutlicher von ruhenden ab"], ["0.6", 1, "2026.11.2b2", "24 HD-Bilder im Bildkatalog, alte Symbole einmalig umgestellt (Schalter „Alte Symbole behalten“), ruhige Kacheln ohne farbigen Rahmen"], ["0.5", 6, "3.0.7.6", "Fluss in den Linien richtet sich nach der Leistung: wenig Watt wenige langsame Punkte, viel Watt viele schnelle"], ["0.5", 5, "3.0.7.5", "Handy: die beiden oberen Kacheln stehen nebeneinander mittig über dem Haus"], ["0.5", 4, "3.0.7.4", "Fluss in den Linien läuft durchgängig (drei Punkte, bleibt beim Neuzeichnen im Takt, kein Punkt mehr oben links), Handy-Ansicht wie Tablet: Haus mittig, Linien wie im Vorbild"], ["0.5", 3, "3.0.7.3", "Jetzt-Ansicht flackerte bei neuen Werten: Kachelgröße und Linien stehen jetzt schon beim Neuzeichnen"], ["0.5", 2, "3.0.7.2", "Fluss-Bild passt sich Tablet und Desktop an (Kachelgröße nach der Höhe, Einstellung „Größe“), Banner bleibt oben, Umschalter „Jetzt | Strom“, Linien wie im Vorbild, Haus mittig"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
+  ef: { v: "1.1", b: 3, d: "2026-11-25", p: "2026.11.5b8", log: [["1.1", 3, "2026.11.5b8", "Tablet-Modus: passt ohne Scrollen auf eine Seite (Reiter Jetzt, Strom), Ruhebild Hausfluss"], ["1.1", 2, "2026.11.3", "Bis zu vier Kacheln links und rechts und zwei unten, bis zu fünf Quellen am Handy, hellere Kacheln, Verbraucher mit Solar-Anteil genauer"], ["1.1", 1, "2026.11.3b19", "Strom-Reiter: „Woher kam der Strom?“ mit Anteil von Solar, Akku und Netz, Akku- und Netz-Bilanz und wohin der Solarstrom ging"], ["1.0", 1, "2026.11.3b6", "Stabil: Schnellstart aus den Haus-Werten, Einrichtungs-Prüfung, Kosten im Strom-Reiter und Vorteil heute auf dem Tablet, Fluss-Bild als Bild teilen, Tablet-Modus zeichnet nur alle 5 s neu, Feinschliff der Optik (Haus als freier Ring, ruhigere Kacheln, klarere Schrift)"], ["0.9", 1, "2026.11.3b5", "Vorabversion: Strom-Reiter mit Lichtsäulen und Verbrauchern mit Solar-Anteil (Tag/Woche/Monat/Jahr), Animationen „Voll“, Kacheln ziehen, Vorlagen, Gruppen-Kachel, Tageswerte-Leiste, Sponsor-Abzeichen im Banner"], ["0.8", 1, "2026.11.3b5", "Banner & Themen (Konzept Neue Optik A, F, H): Lichtband-Banner mit Herkunfts-Balken, Themen Nachtglas, Blaupause, Sternenhimmel, Haus im Garten, Kachelform Rund, Hell-Variante, Handy als Fluss-Spalte oder Kachel-Raster, Wand-Ansicht im Tablet-Modus mit Ruhebild"], ["0.7", 1, "2026.11.3b5", "Linien & Haus (Konzept Neue Optik C/D): Leuchtlinien mit Stärke nach Leistung und Verlauf als Option, Haus mit Herkunfts-Ring und wählbarem Haus-Bild, Bilder mit Zustand (Läuft ab, Ladestand-Ring), Status-Punkt, Kachel „keine Daten“"], ["0.6", 3, "2026.11.2b10", "Eigenes mdi-Symbol: „Mdi:…“ (iPhone) und „_“ werden richtig übernommen, sonst ein Hinweis"], ["0.6", 2, "2026.11.2b3", "Aktive Kacheln heben sich deutlicher von ruhenden ab"], ["0.6", 1, "2026.11.2b2", "24 HD-Bilder im Bildkatalog, alte Symbole einmalig umgestellt (Schalter „Alte Symbole behalten“), ruhige Kacheln ohne farbigen Rahmen"], ["0.5", 6, "3.0.7.6", "Fluss in den Linien richtet sich nach der Leistung: wenig Watt wenige langsame Punkte, viel Watt viele schnelle"], ["0.5", 5, "3.0.7.5", "Handy: die beiden oberen Kacheln stehen nebeneinander mittig über dem Haus"], ["0.5", 4, "3.0.7.4", "Fluss in den Linien läuft durchgängig (drei Punkte, bleibt beim Neuzeichnen im Takt, kein Punkt mehr oben links), Handy-Ansicht wie Tablet: Haus mittig, Linien wie im Vorbild"], ["0.5", 3, "3.0.7.3", "Jetzt-Ansicht flackerte bei neuen Werten: Kachelgröße und Linien stehen jetzt schon beim Neuzeichnen"], ["0.5", 2, "3.0.7.2", "Fluss-Bild passt sich Tablet und Desktop an (Kachelgröße nach der Höhe, Einstellung „Größe“), Banner bleibt oben, Umschalter „Jetzt | Strom“, Linien wie im Vorbild, Haus mittig"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
 };
 /* Letzter Stand von Modul 8 (Wallbox, Statistik, Vorhersage) über die Lebensdauer einer Seite hinaus: Die Home-Assistant-App baut die
    Seite nach dem Zurückwechseln teils neu auf – dann wird sofort der letzte Stand gezeigt und im Hintergrund aktualisiert. */
@@ -3816,7 +3816,7 @@ const CSS_TM2 = `
 .tm2rh>div{display:flex;align-items:center;gap:10px;max-width:340px;padding:10px 16px;border-radius:14px;background:rgba(13,19,27,.88);border:1px solid rgba(255,255,255,.1);text-align:left;color:#d7dde4}
 .tm2rh i{width:10px;height:10px;border-radius:50%;background:var(--zc);flex:none}.tm2rh b{display:block;font-size:.98rem;font-weight:600}.tm2rh small{display:block;font-size:.8rem;color:#98a4af}
 `;
-/* Tablet-Modus · Modulseiten ohne Scrollen (Stufe 2: Modul 1 und 2) */
+/* Tablet-Modus · Modulseiten ohne Scrollen (Stufe 2: Modul 1 und 2, Stufe 3: Modul 3, 4 und 19) */
 const CSS_TM2M = `
 .tm2tabs{flex:none;display:flex;gap:4px;padding:4px;border-radius:16px;border:1px solid var(--line);background:var(--card)}
 .tm2tabs button{min-width:96px;min-height:44px;padding:0 16px;border:0;border-radius:12px;background:none;color:var(--mut);font:inherit;font-weight:700;cursor:pointer}
@@ -3948,6 +3948,113 @@ button.tm2chip{min-height:44px;cursor:pointer}.tm2chip.wa{border-color:color-mix
 .tm2.short .tm2wws .tm2acts{min-height:0;max-height:none;gap:6px}.tm2.short .tm2big{padding:4px}.tm2.short .tm2big span,.tm2.short .tm2big small{font-size:.72rem}.tm2.short .tm2big b{font-size:1.9rem}.tm2.short .tm2wws{gap:6px}.tm2.short .tm2two>div{padding:4px 10px}.tm2.short .tm2two b{font-size:1.1rem}
 .tm2.sz-large .tm2act b,.tm2.sz-large .tm2tabs button{font-size:1.08rem}.tm2.sz-large .tm2val small,.tm2.sz-large .tm2val em{font-size:.88rem}
 .tm2.sz-xl .tm2act b,.tm2.sz-xl .tm2tabs button{font-size:1.18rem}.tm2.sz-xl .tm2val small,.tm2.sz-xl .tm2val em{font-size:.95rem}.tm2.sz-xl .tm2note{font-size:.95rem}
+/* ---------- Stufe 3: gemeinsam ---------- */
+.tm2bar{flex:none;display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.tm2bar .tm2seg{width:380px;max-width:100%}
+.tm2per{display:flex;align-items:center;gap:6px;margin-left:auto}.tm2per b{min-width:180px;text-align:center}
+.tm2per button{display:grid;place-items:center;width:48px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:inherit;cursor:pointer}.tm2per button:disabled{opacity:.35;cursor:default}.tm2per .nx svg{transform:rotate(180deg)}
+.tm2legend{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;color:var(--mut);white-space:nowrap}.tm2legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-left:6px}
+.tm2ring{flex:none;width:104px;height:104px}
+.tm2chip.go{border-color:color-mix(in srgb,var(--teal) 65%,transparent);color:var(--teal);font-weight:700}
+.tm2use{flex:none;width:100%;min-width:0;min-height:48px;display:flex;align-items:center;gap:12px;padding:6px 12px;border-radius:14px;border:1px solid var(--line);border-left:4px solid var(--a,var(--teal));background:none;color:inherit;font:inherit;text-align:left}button.tm2use{cursor:pointer}
+.tm2use>span{flex:1;min-width:0}.tm2use b,.tm2use small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tm2use small{font-size:.76rem;color:var(--mut)}.tm2use strong{flex:none;font-size:1.15rem;white-space:nowrap}
+/* ---------- Modul 3: Jetzt ---------- */
+.tm2enn{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr);gap:10px}
+.tm2enn>.card,.tm2cost>.card,.tm2efs>.card{margin:0;min-width:0;min-height:0}
+.tm2flow{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;gap:6px}
+.tm2flow>svg{flex:1 1 0;min-height:0;width:100%!important;height:auto!important;max-width:none!important;margin:0!important}
+.tm2flow>*:not(svg):not(.m3flw){flex:none;max-width:100%;margin:0}
+.tm2flow>.m3flw{flex:1 1 0;min-height:0;width:100%;position:relative}.tm2flow>.m3flw>svg{position:absolute;inset:0;width:100%!important;height:100%!important;max-width:none!important;margin:0!important}
+.tm2.land:not(.short) .tm2ens .tm2sum b,.tm2.land:not(.short) .tm2side4 .tm2sum b{font-size:2.3rem}.tm2.land:not(.short) .tm2ens .tm2sum span,.tm2.land:not(.short) .tm2side4 .tm2sum span{font-size:.95rem}
+.tm2ens{min-width:0;min-height:0;display:flex;flex-direction:column;gap:10px}
+.tm2.tm2 .tm2sums.two{grid-template-columns:repeat(2,minmax(0,1fr))}.tm2ens .tm2sums{flex:1;min-height:0;grid-auto-rows:minmax(0,1fr)}
+.tm2ens .tm2sum,.tm2side4 .tm2sum{min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:center}
+.tm2.tm2 .tm2aut{flex:none;margin:0;display:flex;align-items:center;gap:16px;padding:12px 16px}.tm2aut>div{min-width:0}.tm2aut b,.tm2aut small,.tm2aut em{display:block}.tm2aut b{font-size:1.1rem}.tm2aut small{color:var(--mut);font-size:.85rem}.tm2aut em{font-style:normal;font-weight:700;color:var(--teal)}
+.tm2.port .tm2enn{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto}.tm2.port .tm2ens .tm2sums{flex:none;grid-auto-rows:auto}
+.tm2.short .tm2sum{padding:3px 10px}.tm2.short .tm2sum b{font-size:1.2rem}.tm2.short .tm2sum span,.tm2.short .tm2sum em{font-size:.72rem;line-height:1.2}.tm2.short .tm2ring{width:66px;height:66px}.tm2.tm2.short .tm2aut{padding:4px 12px;gap:10px}.tm2.short .tm2aut b{font-size:.95rem}.tm2.short .tm2aut small,.tm2.short .tm2aut em{font-size:.76rem}.tm2.short .tm2ens,.tm2.short .tm2ens .tm2sums{gap:6px}
+/* ---------- Modul 3: Verlauf und Kosten ---------- */
+.tm2side4{min-width:0;min-height:0;display:grid;grid-template-rows:repeat(4,minmax(0,1fr));gap:10px}
+.tm2.port .tm2side4{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto auto}
+.tm2ch .legend{margin:6px 0 0;justify-content:center}.tm2 .tm2ch button{min-height:44px}.tm2ch .m3cal{margin-top:8px}.tm2ch .enchw svg{display:block;width:100%;height:auto}
+.tm2cost{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr);gap:10px}
+.tm2.port .tm2cost{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) minmax(0,1fr)}
+.tm2water{flex:1;min-height:0;position:relative}.tm2water>svg{position:absolute;inset:0;width:100%!important;height:100%!important;max-width:none!important;margin:0!important}
+.tm2dist{flex:none;display:flex;height:22px;margin:2px 0 8px;border-radius:11px;overflow:hidden;background:var(--line)}.tm2dist i{display:block;height:100%}
+.tm2uses{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:space-evenly;gap:6px;overflow:hidden}
+.tm2cost .tm2note{flex:none;margin-top:6px}
+.tm2.short .tm2use{min-height:44px;padding:2px 10px}.tm2.short .tm2use svg{width:26px;height:26px}.tm2.short .tm2uses{gap:3px}.tm2.short .tm2dist{height:12px;margin:0 0 4px}
+/* ---------- Modul 4: Geräte ---------- */
+.tm2gsh{flex:none;display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;min-height:40px}.tm2gsh>span b{font-size:1.25rem}.tm2gsh>small{font-size:.85rem;color:var(--mut)}.tm2gsh .tm2chip{margin-left:auto}
+.tm2.port .tm2gsh .tm2legend{display:none}.tm2.port .tm2gsh .tm2chip{flex:1 1 100%;margin:0}
+.tm2dvs-grid{flex:1;min-height:0;display:grid;grid-template-columns:repeat(var(--c),minmax(0,1fr));grid-template-rows:repeat(var(--r),minmax(0,1fr));gap:10px}.tm2dvs-grid.r1{grid-template-rows:minmax(0,360px);align-content:start}
+.tm2dv{min-width:0;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:6px;padding:10px;border-radius:18px;border:1px solid var(--line);background:var(--card)}
+.tm2dv.k-run{border-color:color-mix(in srgb,var(--amber) 70%,transparent)}.tm2dv.k-done{border-color:color-mix(in srgb,var(--teal) 70%,transparent)}
+.tm2dvm{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:4px;padding:0;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.tm2dvh{flex:none;display:flex;align-items:center;gap:10px;width:100%}.tm2dvh>span:last-child{flex:1;min-width:0}.tm2dvh b,.tm2dvh small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tm2dvh b{font-size:1.05rem}.tm2dvh small{font-size:.8rem;color:var(--mut)}.tm2dv.k-run .tm2dvh small{color:var(--amber)}.tm2dv.k-done .tm2dvh small{color:var(--teal)}
+.tm2dvv{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;gap:6px;width:100%;font-size:2.4rem;font-weight:800;line-height:1;white-space:nowrap}.tm2dvv small{font-size:.85rem;font-weight:500;color:var(--mut)}
+.tm2dvs{flex:none;display:flex;width:100%;height:8px;border-radius:4px;overflow:hidden;background:var(--line)}.tm2dvs i{display:block;height:100%}
+.tm2dvf,.tm2dvb,.tm2wb{flex:none;display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 8px;border-radius:12px;font-size:.84rem;color:var(--mut);white-space:nowrap;overflow:hidden}
+.tm2dvf.done{background:color-mix(in srgb,var(--teal) 14%,transparent);color:var(--teal);font-weight:700}.tm2dvf.go{color:var(--teal);font-weight:700}
+.tm2dvf .g2prog{display:block;width:100%;height:10px;margin:0;border-radius:5px;overflow:hidden;background:var(--line)}.tm2dvf .g2prog i{display:block;height:100%;background:var(--amber)}
+.tm2dvb,button.tm2wb{border:1px solid var(--line);background:rgba(127,127,127,.12);color:inherit;font:inherit;font-size:.84rem;font-weight:700;cursor:pointer}.tm2dvb span,.tm2wb span{overflow:hidden;text-overflow:ellipsis}
+.tm2dvb.on,button.tm2wb.on{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 18%,transparent)}
+.tm2.short .tm2dv{padding:7px;gap:3px}.tm2.short .tm2dvh>:first-child{zoom:.72}.tm2.short .tm2dvv{font-size:1.5rem}.tm2.short .tm2dvs{height:5px}
+.tm2.sz-large .tm2dvh b{font-size:1.2rem}.tm2.sz-large .tm2dvh small,.tm2.sz-large .tm2dvf{font-size:.95rem}
+.tm2.sz-xl .tm2dvh b{font-size:1.3rem}.tm2.sz-xl .tm2dvh small,.tm2.sz-xl .tm2dvf,.tm2.sz-xl .tm2dvb{font-size:1rem}.tm2.sz-xl .tm2dvv{font-size:2.8rem}
+/* ---------- Modul 4: Startfenster ---------- */
+.tm2gsf{flex:1 1 0;min-height:110px}.tm2.tm2 .tm2gsf .tm2sh .tm2chip{margin-left:auto}
+.tm2gsw{flex:none;gap:6px;touch-action:pan-y}.tm2rows{display:flex;flex-direction:column;gap:6px}
+.tm2wr{display:grid;grid-template-columns:minmax(150px,230px) minmax(40px,1fr) 150px 52px 220px;align-items:center;gap:12px;min-height:48px;border-top:1px solid var(--line);padding-top:4px}.tm2wr:first-child{border-top:0;padding-top:0}
+.tm2wn{display:flex;align-items:center;gap:10px;min-width:0;min-height:44px;padding:0;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}.tm2wn b,.tm2wr.plain b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tm2wt{position:relative;height:14px;border-radius:7px;background:var(--line)}.tm2wt i{position:absolute;top:0;bottom:0;border-radius:7px;background:var(--teal)}
+.tm2wz{font-size:.85rem;color:var(--mut);white-space:nowrap}.tm2wr strong{color:var(--amber);text-align:right}
+.tm2wb.off{color:var(--teal);font-weight:700}
+.tm2wr.plain{grid-template-columns:auto minmax(0,1fr) auto 60px}.tm2wr.plain span{font-size:.85rem;color:var(--mut);white-space:nowrap}
+.tm2.port .tm2wr:not(.plain){grid-template-columns:minmax(0,1fr) auto 44px minmax(0,190px);gap:8px}.tm2.port .tm2wt{display:none}.tm2.port .tm2gsf{min-height:150px}
+@media(max-width:1100px){.tm2.land .tm2wr:not(.plain){grid-template-columns:minmax(110px,170px) minmax(30px,1fr) auto 48px 180px;gap:8px}}
+@media(max-width:700px){.tm2.port .tm2wr:not(.plain){grid-template-columns:minmax(0,1fr) 44px minmax(0,170px)}.tm2.port .tm2wz{display:none}}
+/* ---------- Modul 4: Statistik und Gerätefenster ---------- */
+.tm2gsx{gap:6px}.tm2goal{flex:none;display:flex;align-items:center;gap:12px}.tm2goal small{color:var(--mut)}.tm2gsx .tm2ring{width:88px;height:88px}
+.tm2.port .tm2gsx{max-height:300px}.tm2.short .tm2gsx{gap:3px}.tm2.short .tm2gsx .tm2ring{width:56px;height:56px}
+.tm2dayr{height:100%;display:grid;grid-template-rows:repeat(var(--n),minmax(0,1fr))}
+.tm2dayr button{display:grid;grid-template-columns:34px minmax(70px,180px) minmax(0,1fr) auto;align-items:center;gap:10px;min-height:44px;padding:0;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.tm2dayr b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.9rem}.tm2dayr button>span{display:block;min-width:0}.tm2dayr button>span>span{display:flex;height:16px;border-radius:8px;overflow:hidden}.tm2dayr em{font-style:normal;font-size:.82rem;color:var(--mut);white-space:nowrap}
+.tm2gsi{flex:none;display:flex}.tm2kpis.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+.tm2cv{margin:6px 0}.tm2cv svg.s3svg,.tm2cv>svg{max-height:34vh}.tm2rm .tm2cv svg{max-width:100%}
+.tm2runs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:6px 0}.tm2runs button{min-width:0;min-height:48px;padding:4px 10px;border-radius:12px;border:1px solid var(--line);background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}.tm2runs button.sel{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 14%,transparent)}.tm2runs b,.tm2runs small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.85rem}.tm2runs small{color:var(--mut);font-size:.76rem}
+.tm2adv{display:flex;align-items:center;gap:12px;margin-top:6px;padding:6px 12px;border-radius:14px;border:1px solid var(--line)}.tm2adv>span{flex:1;min-width:0}.tm2adv small{display:block;color:var(--mut);font-size:.78rem}
+@media(max-width:899px){.tm2kpis.four,.tm2runs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* ---------- Modul 19 ---------- */
+.tm2efb{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:center}
+.tm2.port .tm2efb .efgrid{row-gap:clamp(8px,3.2vh,44px)}
+.tm2efb .efx{width:100%;max-width:none;margin:0;padding:0}.tm2efb .efboard{display:flex;flex-direction:column;justify-content:center;margin:0;box-sizing:border-box}.tm2efb .efgrid{width:100%}
+.tm2efs{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);grid-template-rows:minmax(0,1fr);gap:10px}
+.tm2.port .tm2efs{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto}.tm2.port .tm2efl{flex:none;grid-auto-rows:62px;grid-template-rows:none}
+.tm2efcols{flex:1;min-height:0;display:flex;justify-content:center;gap:18px;padding:4px 0}
+.tm2efc{flex:1;max-width:130px;min-width:0;min-height:0;display:flex;flex-direction:column;align-items:center;gap:2px}.tm2efc>b{font-size:1.6rem;color:var(--c)}.tm2efc>em{font-style:normal;font-weight:700}.tm2efc>small{color:var(--mut)}
+.tm2efc>span{flex:1;min-height:20px;width:100%;display:flex;align-items:flex-end;border-radius:14px;background:color-mix(in srgb,var(--c) 10%,transparent)}.tm2efc>span>i{display:block;width:100%;border-radius:14px;background:linear-gradient(180deg,var(--c),color-mix(in srgb,var(--c) 45%,transparent));box-shadow:0 0 24px -6px var(--c)}
+.tm2efl{flex:1;min-height:0;display:grid;grid-template-rows:repeat(var(--n),minmax(0,1fr));gap:4px}
+.tm2efr{min-width:0;min-height:0;overflow:hidden;display:flex;align-items:center;gap:12px;border-top:1px solid var(--line)}.tm2efr:first-child{border-top:0}
+.tm2efn{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}.tm2efn>b{color:var(--c);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tm2efn>b small{margin-left:8px;font-weight:500;font-size:.72rem;color:var(--mut)}.tm2efn>span{display:flex;gap:2px;height:10px;border-radius:5px;overflow:hidden;background:var(--line)}.tm2efn>span>i{display:block;height:100%}
+.tm2efr>strong{min-width:58px;text-align:right;font-size:1.15rem;color:#fbbf24}.tm2efr>strong small{display:block;font-size:.68rem;font-weight:500;color:var(--mut)}.tm2efr>em{min-width:86px;text-align:right;font-style:normal;font-size:.85rem;color:var(--mut);white-space:nowrap}
+.tm2.short .tm2efc>b{font-size:1.15rem}.tm2.short .tm2efr .efq{zoom:.75}.tm2.short .tm2efl{gap:0}
+/* ---------- Ruhebilder: Energie und Hausfluss ---------- */
+.tmrest.tm2rw{justify-content:flex-start;align-items:stretch;gap:14px;padding:16px 22px 10px;overflow:hidden;text-align:left}
+.tm2rwh{flex:none;display:flex;align-items:center;justify-content:space-between;gap:20px}.tm2rwt b{display:block;font-size:2.6rem;line-height:1.1}.tm2rwt small{opacity:.7;font-size:1rem}.tm2rw .tm2rh{max-width:62%;margin:0}
+.tm2rw.port .tm2rwh{flex-direction:column;align-items:flex-start;gap:8px}.tm2rw.port .tm2rh{max-width:100%}
+.tmrest.tm2rw .tmrw{position:static;flex:none;margin:0;text-align:center;line-height:1.2}
+.tm2rwen{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;gap:14px}
+.tm2rw.port .tm2rwen{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1.1fr) minmax(0,1fr) auto}
+.tm2rwbig{min-height:0;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:28px;background:linear-gradient(165deg,#0f766e,#115e59 55%,#0f3f3b);color:#fff;text-align:center}.tm2rwbig small{font-size:1.4rem;opacity:.85}.tm2rwbig b{font-size:min(11vw,18vh);line-height:1.1;white-space:nowrap}.tm2rwbig em{font-style:normal;font-size:1.7rem;font-weight:700}
+.tm2rwl{min-height:0;display:flex;flex-direction:column;gap:14px}.tm2rwv{flex:1;min-height:0;overflow:hidden;display:flex;align-items:center;gap:20px;padding:6px 22px;border-radius:22px;border:1px solid rgba(255,255,255,.14);border-left:6px solid var(--a)}.tm2rwv>svg{flex:none}.tm2rwv small,.tm2rwv b,.tm2rwv em{display:block}.tm2rwv small{opacity:.75;font-size:1rem}.tm2rwv b{font-size:min(2.8rem,7vh);line-height:1.15;white-space:nowrap}.tm2rwv em{font-style:normal;font-size:.9rem;opacity:.7}
+.tm2rwaut{grid-column:1/-1;display:flex;align-items:center;gap:18px;padding:10px 22px;border-radius:18px;border:1px solid rgba(255,255,255,.14);font-size:1.15rem}.tm2rwaut>i{flex:1;height:14px;border-radius:7px;overflow:hidden;background:rgba(255,255,255,.12)}.tm2rwaut>i>i{display:block;height:100%;background:#2dd4bf}.tm2rwaut b{font-size:1.6rem}
+.tm2rwef{flex:1;min-height:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:minmax(0,.85fr) minmax(0,1.15fr);grid-template-areas:". pv ." "bat hub net";gap:14px}
+.tm2rw.port .tm2rwef{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:minmax(0,.8fr) minmax(0,1.4fr) minmax(0,.8fr);grid-template-areas:"pv pv" "hub hub" "bat net"}
+.tm2rwn{min-width:0;min-height:0;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:26px;border:2px solid color-mix(in srgb,var(--a,#2dd4bf) 50%,transparent);text-align:center}.tm2rwn.pv{grid-area:pv}.tm2rwn.hub{grid-area:hub}.tm2rwn.bat{grid-area:bat}.tm2rwn.net{grid-area:net}.tm2rwn.empty{border:0}
+.tm2rwn>svg{flex:0 1 auto;min-height:0}.tm2rwn.hub>svg{flex:1 1 0;width:100%;max-height:220px}.tm2rwn small{font-size:1.1rem;opacity:.75}.tm2rwn b{font-size:min(3.8rem,8vh);line-height:1.1;white-space:nowrap}.tm2rwn em{font-style:normal;font-size:.95rem;opacity:.75}
+@media(max-height:660px),(max-width:700px){.tm2rwv{gap:12px;padding:2px 14px}.tm2rwv>svg{width:34px;height:34px}.tm2rwv small{font-size:.8rem;line-height:1.2}.tm2rwv b{font-size:1.4rem;line-height:1.15}.tm2rwv em{font-size:.72rem;line-height:1.2}}
+@media(max-height:660px){.tm2rwt b{font-size:1.8rem}.tm2rwn>svg{width:44px;height:44px}.tm2rwn.hub>svg{width:100%;height:auto}.tm2rwl,.tm2rwen,.tm2rwef{gap:8px}}
+@media(max-height:660px),(max-width:700px){.tm2rwn>svg{width:40px;height:40px}.tm2rwn.hub>svg{width:100%;height:auto}.tm2rwn small{font-size:.85rem;line-height:1.15}.tm2rwn b{font-size:min(2.6rem,6vh);line-height:1.05}.tm2rwn em{font-size:.75rem;line-height:1.15}}
 `;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
@@ -4055,8 +4162,7 @@ class FensterHeizungPanel extends HTMLElement {
       this._hcon = h.connection;
       try { h.connection.addEventListener("ready", () => { if (this._hass && this._hass.connection === h.connection) setTimeout(() => this._resume(), 300); }); } catch (_) { /* ältere Home-Assistant-Version */ }
     }
-    this._errWrap(h);   /* Fehler-Statistik: fehlgeschlagene eigene Befehle ins Fehlerprotokoll */
-    this._hass = h;
+    this._hass = this._errWrap(h);   /* Fehler-Statistik: fehlgeschlagene eigene Befehle ins Fehlerprotokoll (eigene Kopie) */
     if (first) this._load();
     this._render();
     if (this._modal && ["why", "rkhtr", "ehlist"].includes(this._modal.type)) this._renderModal();  // Gründe bleiben aktuell
@@ -8764,6 +8870,7 @@ class FensterHeizungPanel extends HTMLElement {
     const r = this._collect().find((x) => x.id === m.id) || this._msList().find((x) => x.id === m.id) || { name: "" };
     if (m.type === "advent") { box.innerHTML = this._advModal(); return; }
     if (m.type === "tm2room") { box.innerHTML = this._tm2RoomModal(m); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; this._tm2Charts(); return; }
+    if (m.type === "tm2x") { box.innerHTML = m.k === "gs" ? this._tm2GsModal(m) : this._tm2EnModal(m); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "tm2ww" || m.type === "tm2prob") { box.innerHTML = this._tm2WwModal(m); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "sai") { box.innerHTML = this._saiModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "lfset") { box.innerHTML = this._lfSetModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -9116,6 +9223,8 @@ class FensterHeizungPanel extends HTMLElement {
     if (r) { apply(r); return; }
     this._hass.callWS({ type: "fenster_heizung/get_modules" }).then(apply).catch(() => {});
   }
+  /* Ist dieses Modul gerade zu sehen? Im Tablet-Modus zählt die Tablet-Ansicht (auch das Ruhebild). */
+  _mdSees(id) { return this._tmOn && this._tmOn() ? !!this._tmSleep || this._tmV() === id : this._mdActive() === id; }
   _mdActiveSet(id) { const s = this._mdState(); s.active = id; this._loOpen = false; try { localStorage.setItem("fh_mod_active", id); } catch (_) { /* Speicher gesperrt */ } }
   _mdList() {
     const s = this._mdState(), home = this._hzOn() ? [{ ...MOD_HOME, tag: this._hzGreet() }] : [];
@@ -11575,9 +11684,9 @@ class FensterHeizungPanel extends HTMLElement {
     this._hass.callWS({ type: "fenster_heizung/gs_get" }).then((r) => { this._gsD = { ...(r || {}), ts: Date.now() }; this._gsErrN = 0; }).catch(() => {
       const n = this._gsErrN = (this._gsErrN || 0) + 1, wait = Math.min(15000, 3000 * n);
       this._gsD = this._gsD && !this._gsD.err ? { ...this._gsD, stale: true, ts: Date.now() - 15000 + wait } : { devices: [], hist: {}, err: true, ts: Date.now() - 15000 + wait };
-      clearTimeout(this._gsRt); this._gsRt = setTimeout(() => { if (this._mdActive() === "gs") this._gsLoad(); }, wait + 50);
+      clearTimeout(this._gsRt); this._gsRt = setTimeout(() => { if (this._mdSees("gs")) this._gsLoad(); }, wait + 50);
     })
-      .finally(() => { this._gsBusy = false; if (this._mdActive() === "gs" && !this._modal && !this._stOpen) this._render(); });
+      .finally(() => { this._gsBusy = false; if (this._mdSees("gs") && !this._modal && !this._stOpen) this._render(); });
   }
   _gsAct(a, b) {
     const G = this._gsState(), k = b.dataset.k, i = +b.dataset.i;
@@ -11807,7 +11916,7 @@ class FensterHeizungPanel extends HTMLElement {
       ${this._gsSpark(d.id, this._gsPer())}${adv}</div>`;
   }
   _gsChart(D, devs, P) {
-    const sel = devs.some((d) => d.id === this._gsSel) ? this._gsSel : "", pick = sel ? [sel] : devs.map((d) => d.id), W = 640, Hh = 210, pl = 40, pb = 24, pt = 14, ih = Hh - pb - pt;
+    const sel = devs.some((d) => d.id === this._gsSel) ? this._gsSel : "", pick = sel ? [sel] : devs.map((d) => d.id), W = this._gsDim ? this._gsDim.w : 640, Hh = this._gsDim ? this._gsDim.h : 210, pl = 40, pb = 24, pt = 14, ih = Hh - pb - pt;
     const chip = (k, t, on) => `<button class="gsch ${on ? "sel" : ""}" data-act="gsdev" data-k="${k}" aria-pressed="${on}">${t}</button>`;
     const chips = `<div class="gschips">${chip("", "Alle Geräte", !sel)}${devs.map((d) => chip(esc(d.id), esc(d.name), sel === d.id)).join("")}</div>`;
     const leg = `<div class="legend">${GS_SRC.map((t, i) => `<span><i style="background:${GS_COL[i]}"></i>${t}</span>`).join("")}</div>`;
@@ -11859,7 +11968,7 @@ class FensterHeizungPanel extends HTMLElement {
     const C = (this._gsR = this._gsR || {}), c = C[did], dev = (((this._gsD || {}).devices) || []).find((x) => x.id === did), live = dev && dev.running;
     if (!force && c && (c.busy || Date.now() - c.ts < (live ? 60000 : 300000))) return;
     C[did] = { ...(c || {}), busy: true, ts: Date.now() };
-    this._hass.callWS({ type: "fenster_heizung/gs_runs", dev: did }).then((r) => { C[did] = { ts: Date.now(), d: r }; }).catch(() => { C[did] = { ts: Date.now(), err: true }; }).finally(() => { if (this._gsDet === did) this._render(); });
+    this._hass.callWS({ type: "fenster_heizung/gs_runs", dev: did }).then((r) => { C[did] = { ts: Date.now(), d: r }; }).catch(() => { C[did] = { ts: Date.now(), err: true }; }).finally(() => { if (this._gsDet === did) this._render(); if (this._modal && this._modal.type === "tm2x" && this._modal.id === did) this._renderModal(); });
   }
   _gsHm(t) { return new Date(t).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }); }
   _gsDur(s) { const x = Math.round((s || 0) / 60); return x >= 60 ? `${Math.floor(x / 60)} h ${String(x % 60).padStart(2, "0")} Min.` : `${x} Min.`; }
@@ -13789,7 +13898,7 @@ class FensterHeizungPanel extends HTMLElement {
   _tmModeSet(m) { try { localStorage.setItem("fh_tm_mode", m); } catch (_) { /* privater Modus */ } this._tmSleep = false; this._tmLast = Date.now(); }
   _tmOn() { const m = this._tmMode(); return m === "on" || (m === "auto" && this._tmTouch() && window.innerWidth >= 600); }
   _tmMe() { const id = this._tmId(), t = ((this._tm && this._tm.tablets) || []).find((x) => x.id === id); return t || { id, name: "Tablet", has_pin: false, cfg: {} }; }
-  _tmC() { return { size: "auto", idle_home: 2, sleep: 15, wake_warn: true, motion: "", screen: "", notify: "", off_after: 0, dock_hide: [], look: "new", rail: [], ...(this._tmMe().cfg || {}) }; }
+  _tmC() { return { size: "auto", idle_home: 2, sleep: 15, wake_warn: true, motion: "", screen: "", notify: "", off_after: 0, dock_hide: [], look: "new", rail: [], rest: "auto", ...(this._tmMe().cfg || {}) }; }
   async _tmLoad() {
     if (this._tmBound !== true) { this._tmBound = true; this._tmBind(); }
     const k = this._tmKind();
@@ -13869,6 +13978,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _tmSleepHtml() {
     const mq = this._mqRest ? this._mqRest() : ""; if (mq) return mq;
+    const wall = this._tm2RestWall ? this._tm2RestWall() : ""; if (wall) return wall;
     const facts = ["wetter", "alarm", "personen", "muell"].map((id) => this._hzBubDef(id)).filter((x) => x && x.i).map((x) => `<div>${ic(x.i, 26)}<span>${esc(x.b)}${x.s ? ` · ${esc(x.s)}` : ""}</span></div>`).join("");
     const ef = this._efxSleep ? this._efxSleep() : "";
     let sc = !ef && this._hzNew() ? this._hzTmSleep() : "";
@@ -14028,6 +14138,7 @@ class FensterHeizungPanel extends HTMLElement {
       ${row("Aufbau", "Neu: Leiste links, Start ohne Scrollen", seg("tm2look", c.look, [["new", "Neu"], ["classic", "Wie bisher"]]))}
       ${row("Zurück zu Start nach", "Ohne Berührung", seg("tmih", c.idle_home, [[0, "Aus"], [2, "2 Min."], [5, "5 Min."], [15, "15 Min."]]))}
       ${row("Ruhemodus nach", "Dunkle Uhr statt Inhalt. Berühren oder Bewegung weckt auf.", seg("tmsl", c.sleep, [[0, "Aus"], [5, "5 Min."], [15, "15 Min."], [30, "30 Min."]]))}
+      ${this._tm2On() ? row("Ruhebild", "Auto: Wandanzeige, wenn Energie oder Hausfluss offen ist, sonst die Uhr", seg("tm2rest", c.rest, [["auto", "Auto"], ...[["en", "Energie"], ["ef", "Hausfluss"]].filter(([k]) => mods.some((x) => x.id === k) && (k !== "ef" || this._efxSp()))])) : ""}
       ${row("Warnungen wecken auf", "Zum Beispiel ein ausgelöster Alarm", sw("tmww", c.wake_warn, "Warnungen wecken auf"))}
       ${this._tm2On() ? `<div class="lsec" style="margin-top:12px">${ic("grid", 15)}Modulleiste</div>
       <div class="mut sm" style="margin:0 0 6px">Quer links, hochkant unten: Start, bis zu vier Module und „Mehr“.</div>
@@ -14085,6 +14196,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _tm2Render(v, m) {
     const sr = this.shadowRoot, c = this._tmC(), land = this._tm2Land(), fit = this._tm2Fit(v), mod = fit && v !== "st";
+    if (v !== "en") this._tm2EnRange(false);   /* gemerkten Zeitraum der Energie-Übersicht zurückgeben */
     const zoom = { auto: 1, large: 1.15, xl: 1.3 }[c.size] || 1;
     let title, sub;
     if (v === "st") {   /* gleich gezählt wie in der Gesamt-Ampel auf dem Haus-Kopf */
@@ -14102,7 +14214,7 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="tmbody${fit ? " tm2fit" : ""}${mod ? ` tm2mod tm2-${v}` : ""}"${fit ? "" : ` style="zoom:${zoom}"`}>${mod ? this._tm2ModBody(v) : this._tmBody(v)}</div></div>${land ? "" : nav}</div>`;
     const nb = sr.querySelector(".tmbody"); if (nb && keep && !fit) nb.scrollTop = keep;
     this._tm2Bind();
-    if (mod) { this._tm2Charts(); if (this._modal && this._modal.type === "tm2room") this._renderModal(); }
+    if (mod) { this._tm2Charts(); if (this._modal && (this._modal.type === "tm2room" || this._modal.type === "tm2x")) this._renderModal(); }
   }
   /* Wie viel auf eine Seite passt: Kacheln (Spalten × Zeilen) und Hinweise */
   _tm2Cap() {
@@ -14229,6 +14341,9 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "tm2tab") { (this._tm2T = this._tm2T || {})[b.dataset.v] = k; this._tmHomed = false; this._render(); return true; }
     if (a === "tm2room") { this._modal = { type: "tm2room", id: b.dataset.id, tab: "ctl" }; this._renderModal(); return true; }
     if (a === "tm2rtab") { if (this._modal && this._modal.type === "tm2room") { this._modal.tab = k; this._renderModal(); } return true; }
+    if (a === "tm2x") { this._modal = { type: "tm2x", k, s: b.dataset.s || "", id: b.dataset.id || "" }; this._renderModal(); return true; }
+    if (a === "tm2run") { if (this._modal && this._modal.type === "tm2x") { this._modal.run = +k; this._renderModal(); } return true; }
+    if (a === "tm2rest") { this._tmSave({ rest: k }); return true; }
     if (a === "tm2prob") { this._modal = { type: "tm2prob" }; this._renderModal(); return true; }
     if (a === "tm2ww") { this._modal = { type: "tm2ww", kind: k }; this._renderModal(); return true; }
     /* Ändern erst nach der PIN: data-g ist die eigentliche Aktion */
@@ -14243,19 +14358,45 @@ class FensterHeizungPanel extends HTMLElement {
     return false;
   }
   /* ================= Tablet-Modus · Stufe 2: gemeinsames für Modulseiten ohne Scrollen =================
-     Reiter in der Kopfzeile, Inhalt füllt genau die Resthöhe. Bisher: Modul 1 (hier) und Modul 2 (12d4).
+     Reiter in der Kopfzeile, Inhalt füllt genau die Resthöhe. Modul 1 (hier), 2 (12d4), 3 (12d5), 4 (12d6) und 19 (12d7).
      Anzeigen geht immer. Einstellungen ändern fragt nach der PIN, wenn das Tablet eine hat (2 Minuten frei). */
-  static TM2_TABS = { fh: [["rooms", "Räume"], ["stats", "Statistik"]], ww: [["now", "Jetzt"], ["times", "Zeiten"], ["hist", "Verlauf"]] };
+  static TM2_TABS = { fh: [["rooms", "Räume"], ["stats", "Statistik"]], ww: [["now", "Jetzt"], ["times", "Zeiten"], ["hist", "Verlauf"]],
+    en: [["now", "Jetzt"], ["hist", "Verlauf"], ["cost", "Kosten"]], gs: [["dev", "Geräte"], ["win", "Startfenster"], ["stats", "Statistik"]], ef: [["now", "Jetzt"], ["strom", "Strom"]] };
   _tm2Fit(v) { return v === "st" || (!!this.constructor.TM2_TABS[v] && this._mdList().some((m) => m.id === v)); }
   _tm2Tab(v) { const T = this.constructor.TM2_TABS[v], cur = (this._tm2T || {})[v]; return T.some((t) => t[0] === cur) ? cur : T[0][0]; }
   _tm2Tabs(v) {
-    if (v === "fh" ? !this._collect().length && !this._msList().length : !this._wwConfigured()) return "";
+    if (!this._tm2Ready(v)) return "";
     const cur = this._tm2Tab(v);
     return `<div class="tm2tabs" role="tablist">${this.constructor.TM2_TABS[v].map(([k, l]) => `<button role="tab" class="${cur === k ? "sel" : ""}" aria-selected="${cur === k}" data-act="tm2tab" data-v="${v}" data-k="${k}">${l}</button>`).join("")}</div>`;
   }
-  _tm2ModBody(v) { return v === "fh" ? this._tm2Fh() : this._tm2Ww(); }
+  /* Reiter erst zeigen, wenn das Modul eingerichtet ist */
+  _tm2Ready(v) {
+    if (v === "fh") return !!(this._collect().length || this._msList().length);
+    if (v === "ww") return this._wwConfigured();
+    if (v === "en") return this._enConfigured();
+    if (v === "gs") return !!this._gsState().devices.length;
+    return !!this._efxD && this._efxSp() && !!this._tm2EfNodes().length;
+  }
+  _tm2ModBody(v) { return v === "fh" ? this._tm2Fh() : v === "ww" ? this._tm2Ww() : v === "en" ? this._tm2En() : v === "gs" ? this._tm2Gs() : this._tm2Ef(); }
   _tm2ModStatus(v) {
     if (v === "ww") return this._wwConfigured() ? this._wwStatus()[1] : "Noch nicht eingerichtet";
+    if (v === "en") {
+      if (!this._enConfigured()) return "Noch nicht eingerichtet";
+      const n = this._enNow(); if (!n) return "Keine Messwerte";
+      const flow = n.imp > 50 ? `${wfmt(n.imp)} aus dem Netz` : n.exp > 50 ? `${wfmt(n.exp)} ins Netz` : "";
+      return [n.house > 20 ? `${Math.round(Math.min(100, Math.max(0, (n.pv2h || 0) / n.house * 100)))} % aus Solar` : "", flow].filter(Boolean).join(" · ") || "Gerade fließt kaum Strom";
+    }
+    if (v === "gs") {
+      if (!this._gsState().devices.length) return "Noch keine Geräte";
+      const l = this._tm2GsDevs(), run = l.filter((d) => d.running).length, done = l.filter((d) => this._gsMode(d) === "done").length;
+      return !this._gsD ? "Wird geladen" : [run ? `${run} ${run === 1 ? "Gerät läuft" : "Geräte laufen"}` : "Kein Gerät läuft", done ? `${done} fertig` : ""].filter(Boolean).join(" · ");
+    }
+    if (v === "ef") {
+      if (!this._tm2Ready("ef")) return "Für Sponsoren";
+      const c = this._efxCfg(), list = this._tm2EfNodes(), nodes = list.map((p) => c.nodes[p]), calc = this._efxCalc(nodes);
+      const bat = this._efxItems(list).find((x) => x.kind === "bat"), soc = bat ? this._efxState(bat.n, bat.w).lvl : null;   /* Akkustand: stand bisher in der Seitenspalte */
+      return `Haus ${this._efxFmtW(c.hub.calc === "rest" ? calc.rest : calc.total)} · ${esc(this._efxMixTxt(this._efxMix(nodes)))}${soc != null ? ` · Akku ${Math.round(soc)} %` : ""}`;
+    }
     const rooms = this._collect(); if (!rooms.length) return "Noch keine Räume";
     const open = rooms.reduce((a, r) => a + this._rkState(r).anyOpen, 0), paused = rooms.filter((r) => r.mode === "heizung_pausiert");
     return [open ? `${open} Fenster offen` : "Alle Fenster zu", paused.length === 1 ? `${esc(paused[0].name)} pausiert` : paused.length ? `${paused.length} Räume pausiert` : ""].filter(Boolean).join(" · ");
@@ -14268,7 +14409,10 @@ class FensterHeizungPanel extends HTMLElement {
       if (kind === "ww") {
         let used = this._mdState().ww.ent.pump ? 78 : 30;
         for (let i = 0; i < 3; i++) { box.innerHTML = this._wwChart({ w, h: h - used }); const over = box.scrollHeight - h; if (over <= 0) break; used += over; }
-      } else {
+      } else if (kind === "en") this._tm2EnChart(box, w, h);
+      else if (kind === "gs") this._tm2GsChart(box, w, h);
+      else if (kind === "gsfc") box.innerHTML = this._tm2GsForecast(box.dataset.id, w, h);
+      else {
         const rooms = (kind === "fhroom" ? this._collect().filter((r) => r.id === box.dataset.id) : [...this._collect()].sort((a, b) => a.ci - b.ci));
         box.innerHTML = this._chart(rooms, { w, h });
       }
@@ -14446,6 +14590,339 @@ class FensterHeizungPanel extends HTMLElement {
       : k === "leg" ? `${this._wwNumT("Uhrzeit", "Am besten nachts.", "leg.time", W.leg.time, adm)}${this._wwNum("Schutztemperatur", "", "leg.temp", W.leg.temp, 55, 65, 1, "°C", adm)}${this._wwNum("Halten für", "", "leg.hold", W.leg.hold, 10, 60, 5, "Min.", adm)}`
       : `${this._wwNum("Ab Überschuss", "", "pv.min", W.pv.min, 300, 6000, 100, "W", adm)}${this._wwNum("Speicher bis maximal", "", "pv.max", W.pv.max, 50, 65, 1, "°C", adm)}${this._wwNum("Leistung Heizstab", "", "pv.watt", W.pv.watt, 300, 9000, 100, "W", adm)}`;
     return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>${T}</b><span>Warmwasser & Zirkulation</span></div>${close}</div>${rows}<div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
+  }
+  /* ================= Tablet-Modus · Stufe 3: Modul 3 Energie-Übersicht ohne Scrollen =================
+     Reiter Jetzt (Fluss, vier Tageswerte, Autarkie), Verlauf (ein Diagramm, vier Vergleichswerte) und Kosten
+     (Treppe und „Wohin der Strom ging“). Hinweise, Gas und Sparschwein öffnen als Fenster. */
+  _tm2None(icon, title, sub = "") { return `<div class="card empty tm2none">${ic(icon, 44)}<div>${title}</div>${sub ? `<small>${sub}</small>` : ""}</div>`; }
+  /* „Jetzt“ und Ruhebild zeigen immer heute. Der Zeitraum von „Verlauf“ und „Kosten“ bleibt dabei gemerkt. */
+  _tm2EnRange(today) {
+    const E = this._enState();
+    if (today) { if (!this._tm2EnKeep) this._tm2EnKeep = { range: E.range, off: E.off || 0 }; E.range = "day"; E.off = 0; }
+    else if (this._tm2EnKeep) { Object.assign(E, this._tm2EnKeep); this._tm2EnKeep = null; }
+  }
+  _tm2Kwh(v) { return v == null ? "–" : num(v, v >= 100 ? 0 : v >= 10 ? 1 : 2); }
+  _tm2Tile4(label, value, unit, sub, color) { return `<div class="tm2sum" style="--a:${color}"><span>${label}</span><b>${value}${unit ? ` <small>${unit}</small>` : ""}</b><em>${sub || "&nbsp;"}</em></div>`; }
+  _tm2Ring(pct, color = "#2dd4bf") {
+    const r = 42, C = 2 * Math.PI * r, p = Math.max(0, Math.min(100, pct || 0));
+    return `<svg class="tm2ring" viewBox="0 0 100 100" role="img" aria-label="${pct == null ? "unbekannt" : `${Math.round(p)} Prozent`}"><circle cx="50" cy="50" r="${r}" fill="none" stroke="var(--line)" stroke-width="10"/>${p > 0 ? `<circle cx="50" cy="50" r="${r}" fill="none" stroke="${color}" stroke-width="10" stroke-linecap="round" stroke-dasharray="${(p / 100 * C).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 50 50)"/>` : ""}<text x="50" y="57" text-anchor="middle" font-size="22" font-weight="800" fill="currentColor">${pct == null ? "–" : `${Math.round(p)} %`}</text></svg>`;
+  }
+  /* Summen des gewählten Zeitraums und was sie in Euro bedeuten */
+  _tm2EnVals() {
+    const sum = this._enSum(), ok = !!(sum && !sum.empty), price = this._price(), feed = this._feed();
+    const self = ok ? Math.max(0, sum.pv - sum.exp) : null, aut = ok && sum.house > 0 ? Math.round(Math.min(100, Math.max(0, (1 - sum.imp / sum.house) * 100))) : null;
+    const evq = ok && sum.pv > 0 ? Math.round(Math.min(100, self / sum.pv * 100)) : null;
+    const buy = ok ? sum.imp * price / 100 : 0, sell = ok ? sum.exp * feed / 100 : 0, saved = ok ? self * price / 100 : 0;
+    return { sum, ok, price, feed, self, aut, evq, buy, sell, saved, net: sell + saved - buy };
+  }
+  /* Verbrauch von heute, den Modul 1, 2 und 8 kennen */
+  _tm2EnUse() {
+    const rooms = this._htrRooms(), heat = rooms.reduce((a, r) => a + (Number(r.htr.heute_kwh) || 0), 0), heatPv = rooms.reduce((a, r) => a + (Number(r.htr.heute_pv_kwh) || 0), 0);
+    const ws = this._mdState().ww, ww = ws.ent.rod ? (this._wwMinutesOn(ws.ent.rod) || 0) / 60 * ws.pv.watt / 1000 : 0;
+    const cd = this._m3Car() ? this._m3CarDay() || { kwh: 0 } : null;
+    return { heat, heatPv, ww, car: cd ? cd.kwh : null };
+  }
+  _tm2En() {
+    if (!this._enConfigured()) return this._tm2None("energy", "Die Energie-Übersicht ist noch nicht eingerichtet.", "Die Sensoren wählst du in der normalen Ansicht.");
+    const tab = this._tm2Tab("en");
+    this._tm2EnRange(tab === "now");
+    this._enLoad(); if (this._enState().ent.pv && this._mdState().ww.ent.rod) this._wwLoad();
+    this._enTipBind();
+    if (this._enTipX != null) Promise.resolve().then(() => this._enTipShow());
+    if (tab === "now") { const n = this._enNow(); return n ? this._tm2EnNow(n) : this._tm2None("alert", "Keine Messwerte", "Solar- oder Netz-Sensor liefern gerade keinen Wert."); }
+    return `${this._tm2EnBar()}${tab === "hist" ? this._tm2EnHist() : this._tm2EnCost()}`;
+  }
+  _tm2EnNow(n) {
+    const V = this._tm2EnVals(), F = this._m3FlowOn() ? this._m3Flow(n) : null, big = this._m3Has("ef") ? `<button class="tm2mini" data-act="mdgo" data-k="ef">${ic("energy", 16)}Hausfluss</button>` : "";
+    const gas = this._gasOn() ? `<button class="tm2mini" data-act="tm2x" data-k="en" data-s="gas">${ic("flame", 16)}Gas</button>` : "";
+    const s = V.sum || {}, kw = (x) => this._tm2Kwh(V.ok ? x : null);
+    const tiles = [
+      this._tm2Tile4("Solar heute", kw(s.pv), "kWh", V.evq != null ? `${V.evq} % selbst genutzt` : "", "#fbbf24"),
+      this._tm2Tile4("Netzbezug", kw(s.imp), "kWh", V.ok ? `${num(V.buy, 2)} € Kosten` : "", "#f87171"),
+      this._tm2Tile4("Einspeisung", kw(s.exp), "kWh", V.ok ? `${num(V.sell, 2)} € Vergütung` : "", "#34d399"),
+      this._tm2Tile4("Verbrauch", kw(s.house), "kWh", V.ok ? "heute im Haus" : "wird geladen", "#2dd4bf")].join("");
+    return `<div class="tm2enn"><div class="card tm2cc tm2flc"><div class="tm2sh"><span>${ic("sun", 18)}Energiefluss jetzt</span><span class="tm2shr">${gas}<button class="tm2mini" data-act="tm2x" data-k="en" data-s="tips">${ic("info", 16)}Hinweise</button>${big}</span></div>
+      <div class="tm2flow">${F ? `${F.svg}${F.det}` : this._enFlow(n)}</div></div>
+      <div class="tm2ens"><div class="tm2sums two">${tiles}</div><div class="card tm2aut">${this._tm2Ring(V.aut)}<div><b>Autarkie heute</b><small>${V.ok && s.house > 0 ? `${this._tm2Kwh(Math.max(0, s.house - s.imp))} von ${this._tm2Kwh(s.house)} kWh ohne Netzbezug` : "wird berechnet"}</small>${V.ok ? `<em>+${num(V.saved, 2)} € gespart durch Solar</em>` : ""}</div></div></div></div>`;
+  }
+  _tm2EnBar() {
+    const E = this._enState(), P = this._enPer();
+    return `<div class="tm2bar"><div class="tm2seg" role="group" aria-label="Zeitraum">${[["day", "Tag"], ["week", "Woche"], ["month", "Monat"], ["year", "Jahr"]].map(([k, l]) => `<button class="${E.range === k ? "sel" : ""}" data-act="enrange" data-k="${k}" aria-pressed="${E.range === k}">${l}</button>`).join("")}</div>
+      <div class="tm2per"><button data-act="enoff" data-k="-1" aria-label="Zurück">${ic("back", 20)}</button><b>${esc(this._enLabel(P, true))}</b><button class="nx" data-act="enoff" data-k="1" aria-label="Weiter" ${P.cur ? "disabled" : ""}>${ic("back", 20)}</button></div></div>`;
+  }
+  _tm2EnHist() {
+    const V = this._tm2EnVals(), prev = this._enPrevSum(), cl = this._enCmpLbl(), on = this._enState().cmp !== "off" && !!prev && V.ok, s = V.sum || {};
+    const cmp = (cur, old) => { if (!on || old == null || old < 0.05) return ""; const d = Math.round((cur - old) / old * 100); return isFinite(d) ? `${d > 0 ? "▲" : d < 0 ? "▼" : "="} ${Math.abs(d)} % ${cl}` : ""; };
+    const pa = on && prev.house > 0 ? Math.round(Math.min(100, Math.max(0, (1 - prev.imp / prev.house) * 100))) : null;
+    const kw = (x) => this._tm2Kwh(V.ok ? x : null);
+    const tiles = [
+      this._tm2Tile4("Solar", kw(s.pv), "kWh", V.ok && prev ? cmp(s.pv, prev.pv) : "", "#fbbf24"),
+      this._tm2Tile4("Netzbezug", kw(s.imp), "kWh", V.ok && prev ? cmp(s.imp, prev.imp) : "", "#f87171"),
+      this._tm2Tile4("Verbrauch", kw(s.house), "kWh", V.ok && prev ? cmp(s.house, prev.house) : "", "#2dd4bf"),
+      this._tm2Tile4("Autarkie", V.aut == null ? "–" : V.aut, "%", pa != null && V.aut != null ? `${V.aut >= pa ? "▲" : "▼"} ${Math.abs(V.aut - pa)} Punkte ${cl}` : "", "#a78bfa")].join("");
+    const E = this._enState(), title = E.range === "day" ? "Leistung (kW)" : E.range === "year" ? (this._m3On() && this._m3CalOn ? "Solar-Kalender" : "Energie pro Monat (kWh)") : "Energie pro Tag (kWh)";
+    return `<div class="tm2stat tm2enh"><div class="card tm2cc"><div class="tm2sh"><span>${ic("chart", 18)}${title}</span></div><div class="tm2ch" data-tm2ch="en"></div></div><div class="tm2side4">${tiles}</div></div>`;
+  }
+  /* Diagramm aus der normalen Ansicht, in der Größe seines Platzes. Antippen zeigt die Werte, geblättert wird oben. */
+  _tm2EnChart(box, w, h) {
+    const k = w < 600 ? 1 : 1.15, note = this._enState().range === "day" ? "" : this._enNote();
+    let used = 36;
+    for (let i = 0; i < 4; i++) {
+      this._enDim = { w: Math.round(w / k), h: Math.max(130, Math.round((h - used) / k)) };
+      box.innerHTML = `${this._enChart().replace(/ data-act="enpick" data-k="\d+"/g, "").replace(/<div class="mut sm"[^>]*>Ein Tipp[^<]*<\/div>/, "")}${/gst on/.test(note) ? note : ""}`;
+      const over = box.scrollHeight - h; if (over <= 0) break; used += over + 2;
+    }
+    this._enDim = null;
+  }
+  _tm2EnCost() {
+    const V = this._tm2EnVals(), P = this._enPer(), today = this._enState().range === "day" && P.cur;
+    if (!V.ok) return `<div class="card empty tm2none">${ic("total", 44)}<div>${V.sum ? "Für diesen Zeitraum gibt es keine Daten." : "Werte werden geladen …"}</div></div>`;
+    const rm = this._collect(), dayK = rm.reduce((a, r) => a + (r.sc.day?.kwh || 0), 0), monK = rm.reduce((a, r) => a + (r.sc.month?.kwh || 0), 0);
+    const water = this._m3On() ? this._m3Water(V.buy, V.sell, V.saved, V.net) : this._enWater(V.buy, V.sell, V.saved, V.net);
+    const row = (g, label, value, sub, color) => `<div class="tm2use" style="--a:${color}">${g ? this._gx(g, 34, { on: true, lvl: 70 }) : ""}<span><b>${label}</b><small>${sub}</small></span><strong>${value}</strong></div>`;
+    let right;
+    if (today) {
+      const U = this._tm2EnUse(), rest = Math.max(0, V.sum.house - U.heat - U.ww - (U.car || 0)), tot = Math.max(0.01, U.heat + U.ww + (U.car || 0) + rest);
+      const it = [["radiator", "Heizung (Raumheizer)", U.heat, "#f97316", U.heat > 0 ? `${Math.round(U.heatPv / U.heat * 100)} % Solar · ` : ""], ["boiler", "Warmwasser (Heizstab)", U.ww, "#38bdf8", "geschätzt · "], ...(U.car != null ? [["car", "Auto (Modul 8)", U.car, "#22d3ee", ""]] : []), ["house", "Haushalt und Rest", rest, "#2dd4bf", ""]];
+      right = `<div class="tm2sh"><span>${ic("layers", 18)}Wohin der Strom heute ging</span></div><div class="tm2dist">${it.map(([, , v, c]) => (v > 0 ? `<i style="width:${(v / tot * 100).toFixed(1)}%;background:${c}"></i>` : "")).join("")}</div>
+        <div class="tm2uses">${it.map(([g, l, v, c, x]) => row(g, l, `${num(v, 1)} kWh`, `${x}${Math.round(v / tot * 100)} % vom Verbrauch`, c)).join("")}</div>`;
+    } else {
+      right = `<div class="tm2sh"><span>${ic("layers", 18)}Im Zeitraum</span></div><div class="tm2uses">${[
+        row("house", "Verbrauch", `${this._tm2Kwh(V.sum.house)} kWh`, `ohne Solar ${num(V.sum.house * V.price / 100, 2)} €`, "#2dd4bf"),
+        row("pvRoof", "Vorteil durch Solar", `${num(V.sell + V.saved, 2)} €`, V.evq != null ? `${V.evq} % selbst genutzt` : "", "#fbbf24"),
+        row("grid", "Autarkie", V.aut == null ? "–" : `${V.aut} %`, `${this._tm2Kwh(V.sum.imp)} kWh aus dem Netz`, "#a78bfa")].join("")}</div>
+        <small class="tm2note">Die Aufteilung auf Heizung und Warmwasser gibt es nur für heute.</small>`;
+    }
+    const pig = this._m3On() ? `<button class="tm2mini" data-act="tm2x" data-k="en" data-s="pig">${ic("total", 16)}Sparschwein</button>` : "";
+    return `<div class="tm2cost"><div class="card tm2cc"><div class="tm2sh"><span>${ic("total", 18)}Kosten und Vorteil</span>${pig}</div><div class="tm2water">${water}</div>
+      <small class="tm2note">${num(V.price, 1)} ct/kWh Bezug · ${num(V.feed, 1)} ct/kWh Einspeisung${rm.length ? ` · Wärme gespart: ${num(dayK, 1)} kWh heute, ${num(monK, 1)} kWh im Monat` : ""}</small></div><div class="card tm2cc">${right}</div></div>`;
+  }
+  /* Fenster: Hinweise, Gas, Sparschwein */
+  _tm2EnModal(m) {
+    const T = { tips: "Hinweise", gas: "Gas", pig: "Sparschwein" }[m.s] || "Energie"; let body = "";
+    if (m.s === "gas") body = this._gasCard();
+    else if (m.s === "pig") body = this._m3Pig();
+    else { const n = this._enNow(), ws = this._mdState().ww; body = n ? this._m3Tips(n, { heat: this._htrTotal(), ww: this._wwIsOn(ws.ent.rod) ? ws.pv.watt : 0, car: this._m3Car() }) : `<div class="mut">Gerade fehlen Messwerte.</div>`; }
+    return `<div class="ov" data-act="close"></div><div class="sheet wide tm2rm" role="dialog" aria-modal="true"><div class="sh"><div><b>${T}</b><span>Energie-Übersicht</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>${body}</div>`;
+  }
+  /* ================= Tablet-Modus · Stufe 3: Modul 4 Gerätestrom ohne Scrollen =================
+     Reiter Geräte (Wand mit Hinweis oder Knopf je Gerät), Startfenster (Prognose und bestes Fenster je Gerät) und
+     Statistik. Antippen eines Geräts öffnet das Gerätefenster mit Programm-Kurve. Erinnern braucht keine PIN. */
+  _tm2GsDevs() { return this._mpDevs(((this._gsD || {}).devices) || []); }
+  _tm2Gs() {
+    if (!this._gsState().devices.length) return this._tm2None("laundry", "Noch kein Gerät eingerichtet.", "Geräte legst du in der normalen Ansicht an.");
+    this._gsLoad(); this._gsTipBind();
+    const D = this._gsD;
+    if (!D || D.err) return this._tm2None("laundry", D && D.err ? "Verbindung zu Home Assistant wird wiederhergestellt …" : "Gerätestrom wird geladen …");
+    const devs = this._tm2GsDevs(), tab = this._tm2Tab("gs"), warn = this._gsReady() ? "" : `<div class="tm2warn">${ic("alert", 18)}Solar- und Netz-Sensor fehlen (Modul 3). Bis dahin gilt alles als Netzstrom.</div>`;
+    if (!devs.length) return this._tm2None("laundry", "Alle Geräte sind ausgeblendet.");
+    return `${warn}${tab === "win" ? this._tm2GsWin(devs) : tab === "stats" ? this._tm2GsStats(devs) : this._tm2GsWall(devs)}`;
+  }
+  _tm2GsFuture(d) { return d.best && d.best.ts * 1000 > Date.now() + 15 * 60000 ? d.best : null; }
+  _tm2GsRem(d, cls = "tm2dvb") {
+    const B = d.best, rem = d.remind && d.remind * 1000 > Date.now();
+    return `<button class="${cls}${rem ? " on" : ""}" data-act="gsrem" data-k="${esc(d.id)}" aria-pressed="${!!rem}">${ic(rem ? "check" : "bell", 18)}<span>${rem ? "Erinnert" : "Erinnern"} · ${B.day === "tomorrow" ? "morgen " : ""}${this._gsHm(B.ts * 1000)}</span></button>`;
+  }
+  _tm2GsWall(devs) {
+    const cap = this._tm2RoomCap(), rk = (d) => (d.running ? 0 : this._gsMode(d) === "done" ? 1 : 2);
+    const sorted = devs.map((d, i) => ({ d, i })).sort((a, b) => rk(a.d) - rk(b.d) || a.i - b.i).map((x) => x.d), p = this._tm2Page("gs", sorted.length, cap.n);
+    const day = this._gsDayP(), T = this._gsAgg(devs.map((d) => d.id), day).t;
+    const idle = devs.filter((d) => !d.running && this._gsTyp(d) !== "kuehl"), now = Math.max(0, ...idle.map((d) => d.cover || 0)), next = idle.map((d) => this._tm2GsFuture(d)).filter(Boolean).sort((a, b) => a.ts - b.ts)[0];
+    const chip = !idle.length ? "" : now >= 70 ? `<span class="tm2chip go">${ic("sun", 18)}Jetzt starten lohnt sich: bis ${num(now, 0)} % Solar</span>` : next ? `<span class="tm2chip">${ic("clock", 18)}Nächstes gutes Fenster ${next.day === "tomorrow" ? "morgen " : ""}ab ${this._gsHm(next.ts * 1000)}</span>` : "";
+    const tile = (d) => {
+      const a = this._gsAgg([d.id], day).t, m = this._gsMode(d), run = m === "run", base = run ? d.w : a.v, tot = base[0] + base[1] + base[2], R = this._gsRestInfo(d), ty = this._gsTyp(d), cold = ty === "kuehl";
+      const st = run ? `läuft${R && !R.learn ? ` · noch ${Math.max(1, Math.round(R.rest / 60))} Min.` : ""}` : m === "done" ? `fertig ${this._gsHm(d.last.ts)}` : cold ? "läuft dauernd" : "bereit";
+      const foot = run ? (R && !R.learn ? `<span class="tm2dvf"><span class="g2prog"><i style="width:${Math.round(R.p * 100)}%"></i></span></span>` : `<span class="tm2dvf">lernt die Laufzeit${R ? ` (${R.n}/3)` : ""}</span>`)
+        : m === "done" && ["wasch", "trockner", "spuel"].includes(ty) ? `<span class="tm2dvf done">${ic("check", 18)}Fertig – ausräumen</span>`
+        : !cold && this._tm2GsFuture(d) ? this._tm2GsRem(d) : `<span class="tm2dvf${!cold && /^Jetzt/.test(d.advice || "") ? " go" : ""}">${cold ? `${num(a.kwh, 2)} kWh heute` : d.advice ? `${esc(d.advice)} · ${num(d.cover, 0)} % Solar` : "&nbsp;"}</span>`;
+      return `<div class="tm2dv k-${m}"><button class="tm2dvm" data-act="tm2x" data-k="gs" data-id="${esc(d.id)}" aria-label="${esc(d.name)}: Gerätefenster öffnen">
+        <span class="tm2dvh">${this._gxRing(this._gsHd(d), tot > 0 ? { pv: base[0], bat: base[1], net: base[2] } : {}, 64, { on: run })}<span><b>${esc(d.name)}</b><small>${st}</small></span></span>
+        <span class="tm2dvv">${run ? wfmt(tot) : `${num(a.c, 2)} €`}<small>${run ? "jetzt" : "heute"}</small></span>
+        <span class="tm2dvs" aria-hidden="true">${tot > 0 ? base.map((x, i) => (x > 0 ? `<i style="flex:${x};background:${GS_COL[i]}"></i>` : "")).join("") : ""}</span></button>${foot}</div>`;
+    };
+    const r = p.pages > 1 ? cap.r : Math.max(1, Math.ceil(sorted.length / cap.c));
+    return `<div class="tm2gsh">${this._gx("pvRoof", 30)}<span>Heute gespart <b>${num(T.sv, 2)} €</b></span><small>${T.own != null ? `${num(T.own, 0)} % eigener Strom` : "noch kein Verbrauch"}</small><span class="tm2legend">${GS_SRC.map((t, i) => `<i style="background:${GS_COL[i]}"></i>${t}`).join(" ")}</span>${chip}</div>
+      <div class="tm2swb" data-sw="gs"><div class="tm2dvs-grid r${r}" style="--c:${cap.c};--r:${r}">${sorted.slice(p.from, p.to).map(tile).join("")}</div>${this._tm2Pager("gs", p, "Geräte")}</div>`;
+  }
+  _tm2GsWin(devs) {
+    const rows = devs.filter((d) => !d.running && d.best && this._gsTyp(d) !== "kuehl").map((d) => ({ d, W: this._gsWinData(d) })).filter((x) => x.W).sort((a, b) => a.W.s - b.W.s);
+    const land = this._tm2Land(), H = window.innerHeight, per = land ? (H < 640 ? 2 : H < 760 ? 3 : H < 1000 ? 5 : 7) : H < 1000 ? 4 : 6;
+    if (!rows.length) {
+      const idle = devs.filter((d) => !d.running && d.advice && this._gsTyp(d) !== "kuehl"), q = this._tm2Page("gswin", idle.length, per);
+      return `<div class="card tm2cc tm2gsw" data-sw="gswin"><div class="tm2sh"><span>${ic("clock", 18)}Startfenster</span></div>${idle.length ? `<div class="tm2rows">${idle.slice(q.from, q.to).map((d) => `<div class="tm2wr plain">${this._gx(this._gsHd(d), 34, { on: true, lvl: 80 })}<b>${esc(d.name)}</b><span>${esc(d.advice)}</span><strong>${num(d.cover, 0)} %</strong></div>`).join("")}</div>${this._tm2Pager("gswin", q, "Geräte")}<small class="tm2note">Zeitfenster erscheinen, sobald es eine Solar-Prognose gibt (Modul 16 oder sieben Tage Verlauf).</small>` : `<div class="tm2none"><div>Gerade gibt es kein Gerät, für das sich ein Fenster lohnt.</div></div>`}</div>`;
+    }
+    const p = this._tm2Page("gswin", rows.length, per), top = [...rows].sort((a, b) => b.d.best.pct - a.d.best.pct || a.W.s - b.W.s)[0], F = top.W;
+    const pos = (W, t) => Math.max(0, Math.min(100, (t - W.x0) / (W.x1 - W.x0) * 100));
+    return `<div class="card tm2cc tm2gsf"><div class="tm2sh"><span>${ic("sun", 18)}Solar ${F.tomorrow ? "morgen" : "heute"} · ${F.src === "avg7" ? "Mittel der letzten 7 Tage" : "Prognose"}</span><span class="tm2chip go">${ic("clock", 16)}Beste Zeit ${this._gsHm(F.s * 1000)}–${this._gsHm(F.e * 1000)}</span></div><div class="tm2ch" data-tm2ch="gsfc" data-id="${esc(top.d.id)}"></div></div>
+      <div class="card tm2cc tm2gsw" data-sw="gswin"><div class="tm2rows">${rows.slice(p.from, p.to).map(({ d, W }) => `<div class="tm2wr"><button class="tm2wn" data-act="tm2x" data-k="gs" data-id="${esc(d.id)}">${this._gx(this._gsHd(d), 34, { on: true, lvl: 80 })}<b>${esc(d.name)}</b></button><span class="tm2wt" aria-hidden="true"><i style="left:${pos(W, W.s).toFixed(1)}%;width:${Math.max(2, pos(W, W.e) - pos(W, W.s)).toFixed(1)}%"></i></span><span class="tm2wz">${W.tomorrow ? "morgen " : ""}${this._gsHm(W.s * 1000)}–${this._gsHm(W.e * 1000)}</span><strong>${num(d.best.pct, 0)} %</strong>${this._tm2GsFuture(d) ? this._tm2GsRem(d, "tm2wb") : `<span class="tm2wb off">jetzt</span>`}</div>`).join("")}</div>${this._tm2Pager("gswin", p, "Geräte")}</div>`;
+  }
+  /* Solar-Prognose von 6 bis 22 Uhr mit dem besten Fenster */
+  _tm2GsForecast(id, w, h) {
+    const d = this._tm2GsDevs().find((x) => x.id === id), W = d && this._gsWinData(d); if (!W) return "";
+    const pl = 38, pt = 10, pb = 22, ih = Math.max(20, h - pt - pb), mx = Math.max(300, ...W.fc.map((x) => x[1]));
+    const X = (t) => pl + (Math.min(W.x1, Math.max(W.x0, t)) - W.x0) / (W.x1 - W.x0) * (w - pl - 6), Y = (v) => pt + ih - v / mx * ih;
+    const pts = W.fc.map((x) => `${X(x[0] + 1800).toFixed(1)} ${Y(x[1]).toFixed(1)}`);
+    let g = ""; const step = enStep(mx / 1000); for (let v = 0; v <= mx / 1000 + 1e-9; v += step) g += `<line x1="${pl}" x2="${w}" y1="${Y(v * 1000).toFixed(1)}" y2="${Y(v * 1000).toFixed(1)}" stroke="var(--line)" stroke-dasharray="3 4"/><text x="${pl - 6}" y="${(Y(v * 1000) + 4).toFixed(1)}" text-anchor="end" font-size="11" fill="var(--mut)">${num(v, step < 1 ? 1 : 0)}</text>`;
+    const ticks = [6, 9, 12, 15, 18, 21].map((hr) => `<text x="${X(W.x0 + (hr - 6) * 3600).toFixed(1)}" y="${h - 6}" text-anchor="middle" font-size="11" fill="var(--mut)">${hr}:00</text>`).join("");
+    const now = Date.now() / 1000, nx = !W.tomorrow && now > W.x0 && now < W.x1 ? X(now) : null;
+    return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="Solar-Prognose in kW">${g}<rect x="${X(W.s).toFixed(1)}" y="${pt}" width="${Math.max(6, X(W.e) - X(W.s)).toFixed(1)}" height="${ih}" rx="8" fill="#2dd4bf" fill-opacity=".16" stroke="#2dd4bf" stroke-dasharray="5 4"/>${pts.length ? `<path d="M${X(W.x0).toFixed(1)} ${Y(0).toFixed(1)}L${pts.join("L")}L${X(W.x1).toFixed(1)} ${Y(0).toFixed(1)}Z" fill="#fbbf24" fill-opacity=".18"/><path d="M${pts.join("L")}" fill="none" stroke="#fbbf24" stroke-width="2.5"/>` : ""}${nx != null ? `<line x1="${nx.toFixed(1)}" x2="${nx.toFixed(1)}" y1="${pt}" y2="${Y(0).toFixed(1)}" stroke="currentColor" opacity=".7"/>` : ""}${ticks}</svg>`;
+  }
+  _tm2GsStats(devs) {
+    const P = this._gsPer(), ids = devs.map((d) => d.id), T = this._gsAgg(ids, P).t, V = this._gsPrev(ids, P), cl = { day: "zum Vortag", week: "zur Vorwoche", month: "zum Vormonat", year: "zum Vorjahr" }[P.rg];
+    const cmp = (cur, old, alt) => { if (!V || old == null || old < 0.005) return alt; const d = Math.round((cur - old) / old * 100); return isFinite(d) ? `${d > 0 ? "▲" : d < 0 ? "▼" : "="} ${Math.abs(d)} % ${cl}` : alt; };
+    const tiles = [
+      this._tm2Tile4("Gespart", `${num(T.sv, 2)} €`, "", cmp(T.sv, V && V.sv, "mit eigenem Strom"), "#34d399"),
+      this._tm2Tile4("Kosten", `${num(T.c, 2)} €`, "", cmp(T.c, V && V.c, T.n ? `Ø ${num(T.c / T.n, 2)} € je Lauf` : "kein Durchlauf"), "#f87171"),
+      this._tm2Tile4("Verbrauch", num(T.kwh, T.kwh >= 100 ? 0 : 1), "kWh", T.own != null ? `${num(T.own, 0)} % eigener Strom` : "keine Daten", "#2dd4bf"),
+      this._tm2Tile4("Durchläufe", num(T.n), "", cmp(T.n, V && V.n, "&nbsp;"), "#a78bfa")].join("");
+    const bar = `<div class="tm2bar"><div class="tm2seg" role="group" aria-label="Zeitraum">${[["day", "Tag"], ["week", "Woche"], ["month", "Monat"], ["year", "Jahr"]].map(([k, l]) => `<button class="${P.rg === k ? "sel" : ""}" data-act="gsrange" data-k="${k}" aria-pressed="${P.rg === k}">${l}</button>`).join("")}</div>
+      <div class="tm2per"><button data-act="gsoff" data-k="-1" aria-label="Zurück">${ic("back", 20)}</button><b>${esc(this._gsLabel(P))}</b><button class="nx" data-act="gsoff" data-k="1" aria-label="Weiter" ${P.cur ? "disabled" : ""}>${ic("back", 20)}</button></div></div>`;
+    return `${bar}<div class="tm2sums">${tiles}</div><div class="tm2stat tm2gss"><div class="card tm2cc"><div class="tm2sh"><span>${ic("chart", 18)}${P.rg === "day" ? "Woher der Strom kam" : "Verlauf nach Quelle (kWh)"}</span><span class="tm2legend">${GS_SRC.map((t, i) => `<i style="background:${GS_COL[i]}"></i>${t}`).join(" ")}</span></div><div class="tm2ch" data-tm2ch="gs"></div></div>${this._tm2GsSide(devs, P)}</div>`;
+  }
+  /* Rechte Spalte: Monatsziel (oder Jahresrückblick) und die Geräte mit der größten Ersparnis */
+  _tm2GsSide(devs, P) {
+    const G = this._gsState(), short = window.innerHeight < 760 || !this._tm2Land();
+    if (P.rg === "year" && P.cur) {
+      const R = this._gsYearRows(devs).slice(0, short ? 2 : 4);
+      if (R.length) return `<div class="card tm2cc tm2gsx"><div class="tm2sh"><span>${ic("today", 18)}Dein Jahr</span><button class="tm2mini" data-act="gsyshare">Als Bild teilen</button></div>${R.map((r) => `<div class="tm2use">${this._gx(this._gsHd(r.d), 32, { on: true, lvl: 80 })}<span><b>${num(r.sun)} von ${num(r.n)} mit Sonne</b><small>${esc(r.d.name)}</small></span><strong>${num(r.sv, 2)} €</strong></div>`).join("")}</div>`;
+    }
+    let goal = "";
+    if (G.goal > 0) { const M = this._gsAgg(devs.map((d) => d.id), this._gsMonthP()).t, f = Math.min(100, M.sv / G.goal * 100); goal = `<div class="tm2goal">${this._tm2Ring(f)}<small>Monatsziel mit Sonne<br>${num(M.sv, 2)} € von ${num(G.goal, 0)} €</small></div>`; }
+    const top = devs.map((d) => ({ d, t: this._gsAgg([d.id], P).t })).filter((x) => x.t.sv > 0.004).sort((a, b) => b.t.sv - a.t.sv).slice(0, goal && short ? 2 : 3);
+    return `<div class="card tm2cc tm2gsx">${goal}<div class="tm2sh"><span>${ic("total", 18)}Größte Ersparnis</span></div>${top.length ? top.map(({ d, t }) => `<button class="tm2use" data-act="tm2x" data-k="gs" data-id="${esc(d.id)}">${this._gx(this._gsHd(d), 30, { on: true, lvl: 80 })}<span><b>${esc(d.name)}</b></span><strong>${num(t.sv, 2)} €</strong></button>`).join("") : `<small class="tm2note">Noch nichts gespart in diesem Zeitraum.</small>`}</div>`;
+  }
+  _tm2GsChart(box, w, h) {
+    const P = this._gsPer(), devs = this._tm2GsDevs();
+    if (P.rg === "day") {
+      const all = devs.map((d) => ({ d, t: this._gsAgg([d.id], P).t })).filter((x) => x.t.kwh > 0.004).sort((a, b) => b.t.kwh - a.t.kwh), n = Math.max(1, Math.floor(h / 46)), rows = all.slice(0, n), mx = Math.max(0.01, ...rows.map((r) => r.t.kwh));
+      if (!rows.length) { box.innerHTML = `<small class="tm2note">An diesem Tag hat noch kein Gerät Strom gebraucht.</small>`; return; }
+      box.innerHTML = `<div class="tm2dayr" style="--n:${n}">${rows.map(({ d, t }) => `<button data-act="tm2x" data-k="gs" data-id="${esc(d.id)}">${this._gx(this._gsHd(d), 28, { on: true, lvl: 80 })}<b>${esc(d.name)}</b><span><span style="width:${(t.kwh / mx * 100).toFixed(1)}%">${t.v.map((v, i) => (v > 0 ? `<i style="flex:${v};background:${GS_COL[i]}"></i>` : "")).join("")}</span></span><em>${num(t.kwh, 2)} kWh</em></button>`).join("")}</div>`;
+      return;
+    }
+    const k = w < 600 ? 1 : 1.15;
+    let used = 0;
+    for (let i = 0; i < 4; i++) {
+      this._gsDim = { w: Math.round(w / k), h: Math.max(80, Math.round((h - used) / k)) };
+      const tmp = document.createElement("div"), keep = this._gsSel; this._gsSel = ""; tmp.innerHTML = this._gsChart(this._gsD, devs, P); this._gsSel = keep; this._gsDim = null;
+      const ch = tmp.querySelector(".enchw"); box.innerHTML = ""; if (!ch) return;
+      ch.querySelectorAll("[data-act='gspick']").forEach((e) => e.removeAttribute("data-act"));
+      box.appendChild(ch);
+      const over = box.scrollHeight - h; if (over <= 0) break; used += over + 2;
+    }
+  }
+  /* Gerätefenster: Werte, Programm-Kurve, letzte Läufe */
+  _tm2GsModal(m) {
+    const close = `<button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button>`, d = this._tm2GsDevs().find((x) => x.id === m.id);
+    if (!d) return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Gerät</b></div>${close}</div><div class="mut">Gerätedaten werden geladen …</div></div>`;
+    this._gsRunsLoad(d.id);
+    const C = (this._gsR || {})[d.id] || {}, Rd = C.d || {}, runs = Rd.runs || [], typ = Rd.typ, ty = this._gsTyp(d), run = d.running, R = this._gsRestInfo(d), day = this._gsAgg([d.id], this._gsDayP()).t;
+    const sel = m.run != null ? runs.find((r) => r.t === m.run) : null;
+    const shown = sel || (run && Rd.live ? { t: Rd.live.t, cv: Rd.live.cv, live: true, kwh: Rd.live.e.reduce((a, b) => a + b, 0) } : runs[0]);
+    const v = run ? d.w : day.v, mix = { pv: v[0], bat: v[1], net: v[2] };
+    const st = run ? `läuft · ${wfmt(d.w[0] + d.w[1] + d.w[2])}${R && !R.learn ? ` · noch ${Math.max(1, Math.round(R.rest / 60))} Min., fertig ~${this._gsHm(R.end)}` : ""}` : this._gsMode(d) === "done" ? `fertig ${this._gsHm(d.last.ts)}` : `${esc(GS_TYP[ty].n)} · bereit`;
+    const kpi = (l, val, sub, c) => `<div class="tm2kpi" style="--a:${c}"><span>${l}</span><b>${val}</b><small>${sub}</small></div>`;
+    const kpis = `<div class="tm2kpis four">${kpi("Kosten heute", `${num(day.c, 2)} €`, `${num(day.kwh, 2)} kWh`, "#f87171")}${kpi("Gespart heute", `${num(day.sv, 2)} €`, `${num(day.n)} ${day.n === 1 ? "Lauf" : "Läufe"}`, "#34d399")}${kpi("Letzter Lauf", d.last ? `${num(d.last.kwh, 2)} kWh` : "–", d.last ? `${num(d.last.share, 0)} % eigener Strom` : "noch keiner", "#fbbf24")}${kpi("Typischer Lauf", typ ? this._gsDur(typ.dur) : "–", typ ? `${num(typ.kwh, 2)} kWh · ${num(typ.c, 2)} €` : "lernt ab 3 Läufen", "#a78bfa")}</div>`;
+    const sum = shown ? `${shown.live ? `seit ${this._gsHm(shown.t * 1000)}` : this._gsWhen(shown.t * 1000)}${shown.dur ? ` · ${this._gsDur(shown.dur)}` : ""} · ${num(shown.kwh || 0, 2)} kWh${shown.c != null ? ` · ${num(shown.c, 2)} €` : ""}` : "";
+    const curve = shown ? `<div class="tm2sh"><span>${ic("chart", 18)}${shown.live ? "Dieser Lauf" : sel ? "Ausgewählter Lauf" : "Letzter Lauf"} <em>${sum}</em></span><span class="tm2legend">${GS_SRC.map((t, i) => `<i style="background:${GS_COL[i]}"></i>${t}`).join(" ")}</span></div><div class="tm2cv">${this._gsCurve(shown.cv, shown.t, ty)}</div>`
+      : `<div class="mut tm2cv">${C.busy && !C.d ? "Lädt …" : "Noch kein Lauf aufgezeichnet. Nach dem nächsten Durchlauf steht hier seine Kurve."}</div>`;
+    const chips = runs.length > 1 ? `<div class="tm2runs">${runs.slice(0, 4).map((r) => { const on = shown && shown.t === r.t; return `<button class="${on ? "sel" : ""}" data-act="tm2run" data-k="${r.t}" aria-pressed="${!!on}"><b>${this._gsWhen(r.t * 1000)}</b><small>${num(r.kwh || 0, 2)} kWh · ${num(r.c || 0, 2)} €</small></button>`; }).join("")}</div>` : "";
+    const rem = !run && ty !== "kuehl" && this._tm2GsFuture(d) ? `<div class="tm2adv">${this._gx("sun", 28)}<span>Am besten ${d.best.day === "tomorrow" ? "morgen " : ""}ab ${this._gsHm(d.best.ts * 1000)} starten<small>~${num(d.best.pct, 0)} % Solar erwartet</small></span>${this._tm2GsRem(d, "tm2wb")}</div>`
+      : !run && d.advice && ty !== "kuehl" ? `<div class="tm2adv">${this._gx("sun", 28)}<span>${esc(d.advice)}<small>Solardeckung jetzt ${num(d.cover, 0)} %</small></span></div>` : "";
+    return `<div class="ov" data-act="close"></div><div class="sheet wide tm2rm" role="dialog" aria-modal="true"><div class="sh"><span class="tm2gsi">${this._gxRing(this._gsHd(d), mix, 56, { on: run })}</span><div><b>${esc(d.name)}</b><span>${st}</span></div>${close}</div>${kpis}${curve}${chips}${rem}${this._gsStandby(d)}</div>`;
+  }
+  /* ================= Tablet-Modus · Stufe 3: Modul 19 Hausfluss ohne Scrollen und die Ruhebilder =================
+     Jetzt: das Haus füllt die Seite, darunter vier Tageswerte. Strom: Herkunft als drei Lichtsäulen, Verbraucher in
+     Seiten. Ruhebild: Energie („Das Haus braucht gerade …“) oder Hausfluss (nur Solar, Haus, Akku und Netz). */
+  _tm2EfNodes() { const c = this._efxCfg(); return Object.keys(EF_POS).filter((p) => c.nodes[p] && c.nodes[p].on); }
+  _tm2Ef() {
+    if (!this._efxD) { this._efxLoad(); return this._tm2None("energy", "Hausfluss wird geladen …"); }
+    if (!this._efxSp()) return this._efPage();
+    if (!this._tm2EfNodes().length) return this._tm2None("energy", "Noch keine Kacheln.", "Solar, Netz, Akku und Verbraucher legst du in der normalen Ansicht an.");
+    return this._tm2Tab("ef") === "strom" ? this._tm2EfStrom() : this._tm2EfNow();
+  }
+  _tm2EfNow() {
+    this._tm2EfB = true; let board;
+    try { board = this._efPage(); } finally { this._tm2EfB = false; }
+    const H = this._efxStatLoad({ range: "day", off: 0 }), T = H && H.any ? H.tot : null, price = Number(this._price()) || 0, feed = Number(this._feed()) || 0;
+    const aut = T && T.use > 0 ? Math.round(Math.max(0, 1 - T.net / T.use) * 100) : null, vt = T ? (T.exp * feed + Math.max(0, T.use - T.net) * price) / 100 : null;
+    const tiles = [
+      this._tm2Tile4("Solar heute", this._tm2Kwh(T ? T.gen : null), "kWh", T && T.gen > 0 ? `${Math.round(Math.max(0, T.gen - T.exp) / T.gen * 100)} % selbst genutzt` : "", "#fbbf24"),
+      this._tm2Tile4("Netzbezug", this._tm2Kwh(T ? T.imp : null), "kWh", T ? `${num(T.imp * price / 100, 2)} € Kosten` : "", "#f87171"),
+      this._tm2Tile4("Autarkie", aut == null ? "–" : aut, "%", T ? `von ${this._tm2Kwh(T.use)} kWh Verbrauch` : "", "#a78bfa"),
+      this._tm2Tile4("Vorteil heute", vt == null ? "–" : `${num(vt, 2)} €`, "", "Solar genutzt und eingespeist", "#34d399")].join("");
+    return `<div class="tm2efb">${board}</div><div class="tm2sums">${tiles}</div>`;
+  }
+  /* Kachelgröße so wählen, dass das ganze Brett in seinen Platz passt */
+  _tm2EfFit(b) {
+    const box = b.closest(".tm2efb"); if (!box) return;
+    const H = box.clientHeight, W = box.clientWidth; if (!H || !W) return;
+    b.style.minHeight = "0px";
+    let w = Math.max(80, Math.min(250, Math.floor((W - 64) / 4)));
+    for (let i = 0; i < 8; i++) {
+      b.style.setProperty("--eft", w + "px");
+      const over = b.offsetHeight - H; if (over <= 0 || w <= 70) break;
+      w = Math.max(70, Math.floor(w * H / b.offsetHeight) - 2);
+    }
+    this._efW = w; b.style.minHeight = H + "px";
+  }
+  _tm2EfStrom() {
+    const P = this._efP(), R = this._efPer(P), c = this._efxCfg(), H = this._efxStatLoad(P);
+    const bar = `<div class="tm2bar"><div class="tm2seg" role="group" aria-label="Zeitraum">${[["day", "Tag"], ["week", "Woche"], ["month", "Monat"], ["year", "Jahr"]].map(([k, l]) => `<button class="${P.range === k ? "sel" : ""}" data-act="efxrng" data-k="${k}" aria-pressed="${P.range === k}">${l}</button>`).join("")}</div>
+      <div class="tm2per"><button data-act="efxoff" data-k="-1" aria-label="Zurück">${ic("back", 20)}</button><b>${esc(this._efPLbl(P, R))}</b><button class="nx" data-act="efxoff" data-k="1" aria-label="Weiter" ${P.off >= 0 ? "disabled" : ""}>${ic("back", 20)}</button></div></div>`;
+    const none = (t, s = "") => `${bar}${this._tm2None("energy", t, s)}`;
+    if (!this._efxPowIds(Object.values(c.nodes).filter((n) => n.on)).length) return none("Keine Leistungssensoren.", "Der Strom-Reiter rechnet mit den Leistungssensoren deiner Kacheln.");
+    if (!H) return none("Verlauf wird geladen …");
+    if (H.err || !H.any) return none("Für diesen Zeitraum gibt es keine Werte.", "Die Sensoren brauchen eine „state_class“ (measurement).");
+    const T = H.tot, f1 = (v) => this._tm2Kwh(v), pc = (a, b) => (b > 0 ? Math.round(a / b * 100) : 0);
+    const src = EF_MIX.filter(([k]) => k !== "oth" || T.oth > 0.05), mx = Math.max(0.001, ...src.map(([k]) => T[k]));
+    const cols = src.map(([k, l, col]) => `<div class="tm2efc" style="--c:${col}"><b>${pc(T[k], T.use)} %</b><span><i style="height:${(T[k] / mx * 100).toFixed(1)}%"></i></span><em>${l}</em><small>${f1(T[k])} kWh</small></div>`).join("");
+    const all = this._efxConsList(P, R, H, c), H2 = window.innerHeight, land = this._tm2Land(), per = H2 < 640 ? 3 : H2 < 760 ? 4 : !land && H2 < 1000 ? 3 : 5;
+    const p = this._tm2Page("efcons", all.length, per), SRC = { gs: "Modul 4", wb: "Modul 8" };
+    const rows = all.slice(p.from, p.to).map((x) => {
+      const s = pc(x.pv, x.kwh), three = x.bat != null, seg = three ? [["#fbbf24", x.pv], ["#a78bfa", x.bat], ["#f87171", x.net]] : [["#fbbf24", x.pv]];
+      return `<div class="tm2efr" style="--c:${x.n.color || EF_POS[x.p][3]}"><span class="efq sm"><span class="efqi">${this._efxImgN(x.n, { on: x.kwh > 0 })}</span></span><span class="tm2efn"><b>${esc(x.n.name)}${SRC[x.src] ? `<small>${SRC[x.src]}</small>` : ""}</b><span aria-hidden="true">${seg.map(([col, v]) => (v > 0 && x.kwh > 0 ? `<i style="width:${(v / x.kwh * 100).toFixed(1)}%;background:${col}"></i>` : "")).join("")}</span></span><strong>${s} %<small>Solar</small></strong><em>${this._tm2Kwh(x.kwh)} kWh</em></div>`;
+    }).join("");
+    return `${bar}<div class="tm2efs"><div class="card tm2cc"><div class="tm2sh"><span>${ic("chart", 18)}Woher kam der Strom?</span></div><div class="tm2efcols">${cols}</div><small class="tm2note">${f1(T.use)} kWh Verbrauch · ${f1(T.gen)} kWh Solar erzeugt · ${T.use > 0 ? 100 - pc(T.net, T.use) : 0} % ohne Netz</small></div>
+      <div class="card tm2cc" data-sw="efcons"><div class="tm2sh"><span>${ic("energy", 18)}Verbraucher mit Solar-Anteil</span></div>${rows ? `<div class="tm2efl" style="--n:${per}">${rows}</div>${this._tm2Pager("efcons", p, "Verbraucher")}` : `<small class="tm2note">Keine Verbraucher-Kacheln mit Leistungssensor.</small>`}</div></div>`;
+  }
+  /* ---------- Ruhebilder ---------- */
+  _tm2RestKind() {
+    if (!this._tm2On()) return "";
+    const want = this._tmC().rest, k = want === "en" || want === "ef" ? want : this._tmV() === "en" || this._tmV() === "ef" ? this._tmV() : "";
+    if (!k || !this._mdList().some((m) => m.id === k)) return "";
+    if (k === "en") return this._enConfigured() ? k : "";
+    if (!this._efxD) { this._efxLoad(); return ""; }
+    return this._efxSp() && this._tm2EfNodes().length ? k : "";
+  }
+  _tm2RestWall() {
+    try {
+      const k = this._tm2RestKind(), inner = k === "en" ? this._tm2RestEn() : k === "ef" ? this._tm2RestEf() : "";
+      if (!inner) return "";
+      const d = new Date();
+      return `<div class="tmrest tm2rw ${this._tm2Land() ? "land" : "port"}" data-kind="${k}"><div class="tm2rwh"><span class="tm2rwt"><b data-tmclk>${d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</b><small data-tmdate>${d.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}</small></span>${this._tm2RestHints()}</div>${inner}<div class="tmrw">Antippen zum Aufwecken</div></div>`;
+    } catch (_) { return ""; }
+  }
+  _tm2RestEn() {
+    this._tm2EnRange(true); this._enLoad();
+    const n = this._enNow(); if (!n) return "";
+    const V = this._tm2EnVals(), solar = n.house > 0 ? Math.round(Math.min(100, Math.max(0, (n.pv2h || 0) / n.house * 100))) : null;
+    const tile = (g, o, label, value, sub, color) => `<div class="tm2rwv" style="--a:${color}">${this._gx(g, 56, o)}<span><small>${label}</small><b>${value}</b><em>${sub}</em></span></div>`;
+    const bat = n.hasBat ? tile("battery", { lvl: n.soc }, n.bc > 20 ? "Batterie lädt" : n.dis > 20 ? "Batterie liefert" : "Batterie", n.soc != null ? `${Math.round(n.soc)} %` : "–", n.bc > 20 || n.dis > 20 ? wfmt(Math.max(n.bc, n.dis)) : "ruht", "#a78bfa") : "";
+    return `<div class="tm2rwen"><div class="tm2rwbig"><small>Das Haus braucht gerade</small><b>${wfmt(n.house)}</b><em>${solar != null ? `${solar} % aus Solar` : "&nbsp;"}</em></div>
+      <div class="tm2rwl">${tile("pvRoof", { on: n.pv > 20 }, "Solar", wfmt(n.pv), "erzeugt", "#fbbf24")}${bat}${tile("grid", {}, n.exp > n.imp ? "Einspeisung" : "Netz", wfmt(n.exp > n.imp ? n.exp : n.imp), n.exp > n.imp ? "geht ins Netz" : n.imp > 20 ? "Bezug" : "ruht", n.exp > n.imp ? "#34d399" : "#f87171")}</div>
+      <div class="tm2rwaut"><span>Autarkie heute</span><i><i style="width:${V.aut || 0}%"></i></i><b>${V.aut == null ? "–" : `${V.aut} %`}</b></div></div>`;
+  }
+  _tm2RestEf() {
+    const c = this._efxCfg(), list = this._tm2EfNodes(), items = this._efxItems(list), nodes = list.map((p) => c.nodes[p]), calc = this._efxCalc(nodes), hubW = c.hub.calc === "rest" ? calc.rest : calc.total, mix = this._efxMix(nodes);
+    /* je Quelle zusammengefasst: alle Solar-Kacheln, alle Akkus, das Netz */
+    const sum = (kind) => { const l = items.filter((x) => x.src && x.kind === kind); return l.length ? { w: l.reduce((a, x) => a + (x.nd ? 0 : x.w), 0), it: l[0], nd: l.every((x) => x.nd) } : null; };
+    const pv = sum("pv"), bat = sum("bat"), net = sum("net");
+    const tile = (cls, g, o, label, s, sub, color) => (s ? `<div class="tm2rwn ${cls}" style="--a:${color}">${this._gx(g, 72, o)}<small>${label}</small><b>${s.nd ? "–" : this._efxFmtW(Math.abs(s.w))}</b><em>${s.nd ? "keine Daten" : sub}</em></div>` : `<div class="tm2rwn ${cls} empty"></div>`);
+    const soc = bat ? this._efxState(bat.it.n, bat.it.w).lvl : null;
+    return `<div class="tm2rwef">${tile("pv", "pvRoof", { on: !!pv && pv.w < -5 }, "Solar", pv, pv && pv.w < -5 ? "erzeugt" : "ruht", "#fbbf24")}
+      <div class="tm2rwn hub"><svg viewBox="-60 -60 120 120" aria-hidden="true">${this._efxRingSvg(mix, 52, 8)}${this._gx("house", 60, { on: true }).replace("<svg ", '<svg x="-30" y="-32" ')}</svg><small>${esc(c.hub.name || "Haus")}</small><b>${this._efxFmtW(hubW)}</b><em>${esc(this._efxMixTxt(mix))}</em></div>
+      ${tile("bat", "battery", { lvl: soc == null ? 60 : soc }, `Akku${soc != null ? ` ${Math.round(soc)} %` : ""}`, bat, bat && bat.w > 5 ? "lädt" : bat && bat.w < -5 ? "entlädt" : "ruht", "#a78bfa")}
+      ${tile("net", "grid", {}, "Netz", net, net && net.w > 5 ? "Einspeisung" : net && net.w < -5 ? "Bezug" : "ruht", net && net.w > 5 ? "#34d399" : "#f87171")}</div>`;
   }
   /* ================= Sponsor-Bereich (3.0.2.13) =================
      Die Integration bleibt kostenlos. Mit einem Sponsor-Schlüssel gibt es Schönes obendrauf: Abzeichen, Farbverläufe,
@@ -15047,25 +15524,23 @@ class FensterHeizungPanel extends HTMLElement {
      Die Oberfläche meldet fehlgeschlagene Befehle (Schema-Fehler wie „expected str at 'id'“, unbekannte Befehle, unerwartete Fehler)
      und eigene Anzeigefehler an fenster_heizung/err_report. In Build 1 wird nichts versendet. */
   _errWrap(h) {
-    /* 2026.11.4.7: Home Assistant baut das hass-Objekt bei jeder Zustandsänderung neu auf ({ ...hass }) und kopiert dabei
-       unseren Umschlag um callWS mit, nicht aber die Markierung am Objekt. Vorher wurde dann bei jeder Änderung ein weiterer
-       Umschlag um den vorigen gelegt – nach Stunden Tausende ineinander, und ein Befehl endete mit
-       „RangeError: Maximum call stack size exceeded“. Jetzt trägt der Umschlag selbst die Markierung und das Original. */
-    if (!h || typeof h.callWS !== "function" || h.callWS.__fhErr) return;
-    const orig = h.callWS.__fhOrig || h.callWS, self = this;
-    try {
-      /* nur eigene Befehle; der Fehler wird unverändert weitergereicht */
-      const wrap = function (msg) { return orig.call(this, msg).catch((e) => { try { self._errCmd(msg, e); } catch (_) { /* nie stören */ } throw e; }); };
-      Object.defineProperty(wrap, "__fhErr", { value: true });
-      Object.defineProperty(wrap, "__fhOrig", { value: orig });
-      h.callWS = wrap;
-    } catch (_) { /* Objekt gesperrt: dann eben ohne */ }
-    if (!this.constructor._errHook) {
+    /* 2026.11.4.8: Das hass-Objekt von Home Assistant wird nicht mehr verändert. Vorher legten wir unseren Umschlag direkt um
+       dessen callWS; Home Assistant kopiert das Objekt bei jeder Änderung ({ ...hass }), und so konnten sich Umschläge ineinander
+       stapeln, bis ein Befehl mit „RangeError: Maximum call stack size exceeded“ endete. Jetzt bekommt nur diese Seite eine
+       eigene Kopie mit genau einem Umschlag – egal, wie oft Home Assistant das Objekt neu baut oder wer sonst callWS umlegt. */
+    this.constructor._errInst = this;   /* Anzeigefehler meldet immer die zuletzt aktive Seite */
+    if (!this.constructor._errHook && typeof window !== "undefined") {
       this.constructor._errHook = true;
-      const mine = (s) => /fenster_heizung_static|fenster-heizung-panel/.test(String(s || ""));
-      window.addEventListener("error", (ev) => { if (mine(ev.filename) || mine(ev.error && ev.error.stack)) this._errJs(ev.error || ev.message, "Fenster"); });
-      window.addEventListener("unhandledrejection", (ev) => { const r = ev.reason; if (r && mine(r.stack)) this._errJs(r, "Versprechen"); });
+      const mine = (s) => /fenster_heizung_static|fenster-heizung-panel/.test(String(s || "")), now = () => this.constructor._errInst;
+      window.addEventListener("error", (ev) => { if (mine(ev.filename) || mine(ev.error && ev.error.stack)) now()._errJs(ev.error || ev.message, "Fenster"); });
+      window.addEventListener("unhandledrejection", (ev) => { const r = ev.reason; if (r && mine(r.stack)) now()._errJs(r, "Versprechen"); });
     }
+    if (!h || typeof h.callWS !== "function") return h;
+    const orig = h.callWS.__fhOrig || h.callWS, self = this;
+    /* nur eigene Befehle; der Fehler wird unverändert weitergereicht */
+    const wrap = function (msg) { return orig.call(this, msg).catch((e) => { try { self._errCmd(msg, e); } catch (_) { /* nie stören */ } throw e; }); };
+    Object.defineProperty(wrap, "__fhOrig", { value: orig });
+    return { ...h, callWS: wrap };
   }
   _errDev() { const w = window.innerWidth || 1000; return w < 600 ? "handy" : w < 1100 ? "tablet" : "pc"; }
   _errSend(p) {
@@ -15939,7 +16414,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (!this._hass || this._efxBusy || (this._efxD && !force)) return;
     this._efxBusy = true;
     this._hass.callWS({ type: "fenster_heizung/ef_get" }).then((r) => { this._efxD = r; }).catch(() => { if (!this._efxD || this._efxD.err) { this._efxD = { locked: true, cfg: null, err: true }; setTimeout(() => { if (this._efxD && this._efxD.err) this._efxLoad(true); }, 3000); } })  /* letzten Stand behalten, sonst gleich neu versuchen */
-      .finally(() => { this._efxBusy = false; if (this._mdActive() === "ef") this._render(); });
+      .finally(() => { this._efxBusy = false; if (this._mdSees("ef")) this._render(); });
   }
   _efxPut(cfg) {
     this._efBandV = (this._efBandV || 0) + 1;  /* Banner sofort neu zeichnen */
@@ -16081,7 +16556,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (!this._efxSp()) return `<div class="card empty">${ic("heart", 34)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Nur für Sponsoren</div>Der Hausfluss gehört zu den Extras für Sponsoren.<br><button class="btn2 pri" style="margin-top:12px" data-act="spnopen">Sponsor-Bereich öffnen</button></div>`;
     const c = this._efxCfg(), adm = this._admin(), list = EF_POS ? Object.keys(EF_POS).filter((p) => c.nodes[p] && c.nodes[p].on) : [], nodes = list.map((p) => c.nodes[p]);
     if (!list.length) return `<div class="card empty">${ic("energy", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch keine Kacheln</div>Lege Solar, Netz, Akku und Verbraucher als Kacheln um dein Haus an.${adm ? `<br><div style="margin-top:12px;text-align:left"><div class="efsec" style="margin-bottom:6px">Schnellstart mit deinen Sensoren</div>${this._efxHausHtml(adm)}<div class="efsec" style="margin:12px 0 6px">Oder eine Vorlage</div>${this._efxTplHtml(adm)}</div><button class="btn2" style="margin-top:8px" data-act="efxopen">Selbst einrichten</button>` : ""}</div>`;
-    const narrow = (this.clientWidth || 1000) < 640, hub = c.hub, calc = this._efxCalc(nodes), hubW = hub.calc === "rest" ? calc.rest : calc.total;
+    const narrow = !this._tm2EfB && (this.clientWidth || 1000) < 640, hub = c.hub, calc = this._efxCalc(nodes), hubW = hub.calc === "rest" ? calc.rest : calc.total;
     this._efMix = this._efxMix(nodes);
     /* Das Haus sitzt immer genau in der Mitte: Zeilen oben und unten werden paarweise gehalten oder weggelassen, leere Gegenstücke bekommen einen unsichtbaren Platzhalter */
     const ar = !!this._efArr && adm && !narrow;  /* W1 Anordnen: alle neun Plätze sichtbar, freie als Ablagefläche */
@@ -16112,11 +16587,12 @@ class FensterHeizungPanel extends HTMLElement {
     const seg = `<div class="efseg" role="tablist"><button class="${tab === "now" ? "on" : ""}" role="tab" aria-selected="${tab === "now"}" data-act="efxtab" data-v="now">Jetzt</button><button class="${tab === "strom" ? "on" : ""}" role="tab" aria-selected="${tab === "strom"}" data-act="efxtab" data-v="strom">Strom</button>${tab === "now" && !tm && (!narrow || mob === "brett") && !arr ? `<button class="efszb efsh" data-act="efxshare" aria-label="Fluss-Bild als Bild teilen">${ic("download", 14)} Bild</button>` : ""}${tab === "now" && adm && !tm && !narrow ? `<button class="efszb efab${arr ? " on" : ""}" data-act="efxarr" aria-pressed="${arr}">${arr ? "Fertig" : "Anordnen"}</button>` : ""}${tab === "now" && !narrow && !tm ? `<button class="efszb" data-act="efxsize" aria-label="Größe der Kacheln">Größe: ${SZ[sz] || "Auto"}</button>` : tab === "now" && narrow ? `<button class="efszb" data-act="efxmob" aria-label="Ansicht wechseln">Ansicht: ${MB[mob]}</button>` : ""}</div>`;
     const cls = `efx${narrow ? " nar" : ""}${lt ? " lt" : ""}${L.shape === "rund" ? " sh-rund" : ""}${tm ? " wall" : ""}`;
     const foot = `<div class="mut sm" style="margin:2px 4px">Modul 19 · für Sponsoren · Werte live aus deinen Entitäten · Tippe auf einen Wert für den Verlauf</div>`;
-    if (tab === "strom") return `<div class="${cls}">${hero}${seg}${this._efStrom(narrow)}</div>`;
+    if (tab === "strom" && !this._tm2EfB) return `<div class="${cls}">${hero}${seg}${this._efStrom(narrow)}</div>`;
     if (narrow && !tm && mob === "fluss" && !arr) { setTimeout(() => this._efxColLines(), 0); return `<div class="${cls}">${hero}${seg}${this._efxCol(items, hubW)}${this._efxToday()}${foot}</div>`; }
     if (narrow && !tm && mob === "raster" && !arr) { const R = this._efxRaster(items, hubW, adm); return `<div class="${cls}">${R.card}${seg}${R.grid}${foot}</div>`; }
     setTimeout(() => this._efxLines(), 0);
     const board = `${arr && !narrow ? `<div class="stowarn" style="margin:0">${ic("info", 16)}<span>Anordnen: Kachel auf einen anderen Platz ziehen – oder antippen und dann den Ziel-Platz antippen. Belegte Plätze werden getauscht.</span></div>` : ""}<div class="efboard th-${L.theme}${arr && !narrow ? " arr" : ""}" id="efboard" data-rows="${rows}"${!narrow && this._efW ? ` style="--eft:${this._efW}px"` : ""}><svg class="eflines" aria-hidden="true">${this._efSvg || ""}</svg><div class="efgrid">${cells}${slots}${hubCell}</div></div>`;
+    if (this._tm2EfB) return `<div class="${cls} tm2efx">${board}</div>`;
     if (tm) { const ck = Math.floor(Date.now() / 5000) + "|" + (this._efBandV || 0) + "|" + (window.innerWidth >= window.innerHeight); if (this._efTmC && this._efTmC.k === ck) return this._efTmC.h; }
     if (tm) { const quer = (window.innerWidth || 1280) >= (window.innerHeight || 800); const h = `<div class="${cls} ${quer ? "quer" : "hoch"}">${seg}<div class="efwall">${board}${this._efxWallSide(items, hubW, quer)}</div></div>`; this._efTmC = { k: Math.floor(Date.now() / 5000) + "|" + (this._efBandV || 0) + "|" + (window.innerWidth >= window.innerHeight), h }; return h; }
     return `<div class="${cls}">${hero}${seg}${board}${arr ? "" : this._efxToday()}
@@ -16124,6 +16600,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   /* Kachelgröße: auf Tablet und Desktop nach der Höhe, die unter dem Banner übrig bleibt (Einstellung „Größe“ überschreibt das) */
   _efxFit(b, narrow) {
+    if (b.closest(".tm2efx")) { this._tm2EfFit(b); return; }
     if (narrow) { b.style.removeProperty("--eft"); return; }
     const sz = this._efSize(), vh = window.innerHeight || 800, key = (this.clientWidth || 0) + "x" + vh;
     if (this._efK !== key) { this._efK = key; this._efTop = b.getBoundingClientRect().top; }
@@ -16542,7 +17019,7 @@ class FensterHeizungPanel extends HTMLElement {
     const s = R ? R.s : new Date(), e = R ? R.e : new Date(Date.now() + 864e5);
     this._hass.callWS({ type: "fenster_heizung/ef_link", start: iso(s), end: iso(e) }).then((d) => { c[key] = { ts: Date.now(), d }; this._efLk = d; })
       .catch(() => { c[key] = { ts: Date.now(), d: { gs: [], wb: null } }; })
-      .finally(() => { this._efLkBusy = null; if (this._mdActive() === "ef") this._render(); if (this._modal && this._modal.type === "efxedit") this._renderModal(); });
+      .finally(() => { this._efLkBusy = null; if (this._mdSees("ef")) this._render(); if (this._modal && this._modal.type === "efxedit") this._renderModal(); });
     return h ? h.d : null;
   }
   /* Quelle einer Verbraucher-Kachel: { k: "gs"|"wb"|"own", g } */
@@ -16593,7 +17070,7 @@ class FensterHeizungPanel extends HTMLElement {
     Promise.all([(fine ? q(R.s, R.end, "5minute").then((r5) => (Object.values(r5 || {}).some((l) => (l || []).length) ? { r: {}, r5, per, res: "5" } : coarse())).catch(coarse) : coarse()), eb])
       .then(([{ r, r5, per: pp, res }, E]) => { cache[key] = this._efxEbMerge({ ts: Date.now(), live: R.cur, res, ...this._efxStatCalc(nodes, r || {}, R, pp, P, r5 || {}) }, E, R, P); })
       .catch(() => { cache[key] = { ts: Date.now(), err: true, bars: [], cons: [], tot: null }; })
-      .finally(() => { if (this._efStBusy === key) this._efStBusy = null; if (this._mdActive() === "ef") this._render(); });
+      .finally(() => { if (this._efStBusy === key) this._efStBusy = null; if (this._mdSees("ef")) this._render(); });
     return h || null;
   }
   _efxStatCalc(nodes, r, R, per, P, r5 = {}) {
@@ -16687,6 +17164,17 @@ class FensterHeizungPanel extends HTMLElement {
     if (E.ok === false) return `Gerechnet aus ${old}. Genauer wird es mit dem Haus-Energiebuch: dafür Solar- und Netzleistung unter Einstellungen → Haus → Energiequellen eintragen.`;
     return `Gerechnet aus ${old}.`;
   }
+  /* Verbraucher-Kacheln mit Verbrauch und Solar-Anteil im Zeitraum, größte zuerst (auch für den Tablet-Modus) */
+  _efxConsList(P, R, H, c) {
+    const L = this._efLkLoad(P, R), ln = (o) => o.pv + o.bat + o.net;
+    return Object.keys(EF_POS).filter((p) => c.nodes[p] && c.nodes[p].on && c.nodes[p].flow === "consume").map((p) => {
+      const n = c.nodes[p], own = H.cons[p] || { kwh: 0, pv: 0, meter: 0 }, lk = this._efLkFor(n, L);
+      /* Modul 4/8 erst ab dem Tag, an dem das Gerät dort eingerichtet ist – liegt der Zeitraum davor, eigene Rechnung */
+      const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      if (lk.k !== "own" && lk.g.first && lk.g.first < iso(R.e)) { const g = lk.g; return { p, n, src: lk.k, kwh: ln({ pv: g.pv, bat: g.bat || 0, net: g.net }), pv: g.pv, bat: g.bat || 0, net: g.net, part: g.first > iso(R.s) }; }
+      return { p, n, src: own.meter ? "meter" : "pow", kwh: own.kwh, pv: own.pv, bat: null, net: null };
+    }).filter((x) => x.kwh > 0.0005 || x.src === "gs" || x.src === "wb").sort((a, b) => b.kwh - a.kwh);
+  }
   _efStrom(narrow) {
     const P = this._efP(), R = this._efPer(P), c = this._efxCfg(), H = this._efxStatLoad(P), RG = [["day", "Tag"], ["week", "Woche"], ["month", "Monat"], ["year", "Jahr"]];
     const nav = `<div class="efpn"><div class="seg oseg">${RG.map(([k, l]) => `<button class="${P.range === k ? "sel" : ""}" data-act="efxrng" data-k="${k}">${l}</button>`).join("")}</div><div class="efpnv"><button class="ibtn" data-act="efxoff" data-k="-1" aria-label="Zurück">‹</button><b>${esc(this._efPLbl(P, R))}</b><button class="ibtn" data-act="efxoff" data-k="1" ${P.off >= 0 ? "disabled" : ""} aria-label="Weiter">›</button></div></div>`;
@@ -16704,14 +17192,7 @@ class FensterHeizungPanel extends HTMLElement {
     const det = sb ? `<div class="efsd"><b>${esc(P.range === "day" ? `${sel}–${sel + 1} Uhr` : P.range === "year" ? new Date(R.s.getFullYear(), sel, 1).toLocaleDateString("de-DE", { month: "long" }) : new Date(R.s.getFullYear(), R.s.getMonth(), R.s.getDate() + sel).toLocaleDateString("de-DE", { weekday: "short", day: "2-digit", month: "2-digit" }))}</b> · ${f1(sb.use)} kWh${EF_MIX.filter(([k]) => sb[k] > 0.0005).map(([k, l, col]) => ` · <span style="color:${col}">${pc(sb[k], sb.use)} % ${l}</span>`).join("")}</div>` : `<div class="efsd mut">Tippe auf eine Säule für die Werte</div>`;
     const e1 = `<div class="card efsec1"><div class="efh2">${ic("chart", 16)}Herkunft ${P.range === "day" ? "pro Stunde" : P.range === "year" ? "pro Monat" : "pro Tag"}</div><div class="efcols n${H.bars.length > 24 ? "m" : ""}">${cols}</div><div class="efleg2">${EF_MIX.map(([, l, col]) => `<span><i style="background:${col}"></i>${l}</span>`).join("")}<span class="mut">Höhe = Hausverbrauch</span></div><div class="efsres">${ic("info", 13)}<span>${this._efxResTxt(H)}</span></div>${det}</div>`;
     /* E2 Verbraucher mit Solar-Anteil */
-    const L = this._efLkLoad(P, R), ln = (o) => o.pv + o.bat + o.net;
-    const list = Object.keys(EF_POS).filter((p) => c.nodes[p] && c.nodes[p].on && c.nodes[p].flow === "consume").map((p) => {
-      const n = c.nodes[p], own = H.cons[p] || { kwh: 0, pv: 0, meter: 0 }, lk = this._efLkFor(n, L);
-      /* Modul 4/8 erst ab dem Tag, an dem das Gerät dort eingerichtet ist – liegt der Zeitraum davor, eigene Rechnung */
-      const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-      if (lk.k !== "own" && lk.g.first && lk.g.first < iso(R.e)) { const g = lk.g; return { p, n, src: lk.k, kwh: ln({ pv: g.pv, bat: g.bat || 0, net: g.net }), pv: g.pv, bat: g.bat || 0, net: g.net, part: g.first > iso(R.s) }; }
-      return { p, n, src: own.meter ? "meter" : "pow", kwh: own.kwh, pv: own.pv, bat: null, net: null };
-    }).filter((x) => x.kwh > 0.0005 || x.src === "gs" || x.src === "wb").sort((a, b) => b.kwh - a.kwh);
+    const list = this._efxConsList(P, R, H, c);
     const SRC = { gs: ["Modul 4", "Werte aus Modul 4 · Gerätestrom (alle 20 s gerechnet)", "gs"], wb: ["Modul 8", "Werte aus Modul 8 · Ladestatistik", "ev"], meter: ["Zähler", "aus dem kWh-Zähler des Geräts", ""], pow: ["aus Leistung", "aus dem Leistungssensor hochgerechnet", ""] };
     const e2 = `<div class="card"><div class="efh2">${ic("energy", 16)}Verbraucher mit Solar-Anteil</div>${list.length ? list.map((x) => {
       const col = x.n.color || EF_POS[x.p][3], s = pc(x.pv, x.kwh), S3 = SRC[x.src], three = x.bat != null;
@@ -23917,7 +24398,7 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
     const ebRes = E.range === "day" ? "hour" : "day", eb = this._ebQ(P.s, P.e, ebRes);
     const ebV = E.cmp !== "off" ? (() => { const V = this._enPer(-1); return this._ebQ(V.s, V.e, ebRes); })() : Promise.resolve(null);
     Promise.all([p, q, eb, ebV]).then(([r, v, e1, e2]) => { this._enH = done(r, v); this._enH.eb = e1; if (this._enH.prev) this._enH.prev.eb = e2; }).catch(() => { this._enH = done({}, null, true); })
-      .finally(() => { if (this._enBusy === key) this._enBusy = null; if (this._mdActive() === "en" && !this._dragging) this._render(); });
+      .finally(() => { if (this._enBusy === key) this._enBusy = null; if (this._mdSees("en") && !this._dragging) this._render(); });
   }
   _enSer(eid, zero) {
     const H = this._enH; if (!H || !eid) return [];
@@ -24056,7 +24537,7 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
   _enChart() {
     const E = this._enState(), H = this._enH, key = E.range + ":" + (E.off || 0), hl = E.hl, op = (f) => (!hl || hl === f ? 1 : .25);
     if (!H || H.key !== key) return `<div class="mut sm" style="padding:30px 0;text-align:center">Verlauf wird geladen …</div>`;
-    const Wd = 640, Ht = 220, L = 40, R = 8, T = 24, B = 28, iw = Wd - L - R, ih = Ht - T - B;
+    const Wd = this._enDim ? this._enDim.w : 640, Ht = this._enDim ? this._enDim.h : 220, L = 40, R = 8, T = 24, B = 28, iw = Wd - L - R, ih = Ht - T - B;
     this._enTipD = null;
     if (E.range === "day") {
       const s = this._enSamples(); if (!s || !s.length) return `<div class="mut sm" style="padding:30px 0;text-align:center">Keine Verlaufsdaten für diesen Tag.</div>`;

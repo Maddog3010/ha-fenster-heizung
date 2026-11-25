@@ -24,7 +24,7 @@
   _tmModeSet(m) { try { localStorage.setItem("fh_tm_mode", m); } catch (_) { /* privater Modus */ } this._tmSleep = false; this._tmLast = Date.now(); }
   _tmOn() { const m = this._tmMode(); return m === "on" || (m === "auto" && this._tmTouch() && window.innerWidth >= 600); }
   _tmMe() { const id = this._tmId(), t = ((this._tm && this._tm.tablets) || []).find((x) => x.id === id); return t || { id, name: "Tablet", has_pin: false, cfg: {} }; }
-  _tmC() { return { size: "auto", idle_home: 2, sleep: 15, wake_warn: true, motion: "", screen: "", notify: "", off_after: 0, dock_hide: [], look: "new", rail: [], ...(this._tmMe().cfg || {}) }; }
+  _tmC() { return { size: "auto", idle_home: 2, sleep: 15, wake_warn: true, motion: "", screen: "", notify: "", off_after: 0, dock_hide: [], look: "new", rail: [], rest: "auto", ...(this._tmMe().cfg || {}) }; }
   async _tmLoad() {
     if (this._tmBound !== true) { this._tmBound = true; this._tmBind(); }
     const k = this._tmKind();
@@ -104,6 +104,7 @@
   }
   _tmSleepHtml() {
     const mq = this._mqRest ? this._mqRest() : ""; if (mq) return mq;
+    const wall = this._tm2RestWall ? this._tm2RestWall() : ""; if (wall) return wall;
     const facts = ["wetter", "alarm", "personen", "muell"].map((id) => this._hzBubDef(id)).filter((x) => x && x.i).map((x) => `<div>${ic(x.i, 26)}<span>${esc(x.b)}${x.s ? ` · ${esc(x.s)}` : ""}</span></div>`).join("");
     const ef = this._efxSleep ? this._efxSleep() : "";
     let sc = !ef && this._hzNew() ? this._hzTmSleep() : "";
@@ -263,6 +264,7 @@
       ${row("Aufbau", "Neu: Leiste links, Start ohne Scrollen", seg("tm2look", c.look, [["new", "Neu"], ["classic", "Wie bisher"]]))}
       ${row("Zurück zu Start nach", "Ohne Berührung", seg("tmih", c.idle_home, [[0, "Aus"], [2, "2 Min."], [5, "5 Min."], [15, "15 Min."]]))}
       ${row("Ruhemodus nach", "Dunkle Uhr statt Inhalt. Berühren oder Bewegung weckt auf.", seg("tmsl", c.sleep, [[0, "Aus"], [5, "5 Min."], [15, "15 Min."], [30, "30 Min."]]))}
+      ${this._tm2On() ? row("Ruhebild", "Auto: Wandanzeige, wenn Energie oder Hausfluss offen ist, sonst die Uhr", seg("tm2rest", c.rest, [["auto", "Auto"], ...[["en", "Energie"], ["ef", "Hausfluss"]].filter(([k]) => mods.some((x) => x.id === k) && (k !== "ef" || this._efxSp()))])) : ""}
       ${row("Warnungen wecken auf", "Zum Beispiel ein ausgelöster Alarm", sw("tmww", c.wake_warn, "Warnungen wecken auf"))}
       ${this._tm2On() ? `<div class="lsec" style="margin-top:12px">${ic("grid", 15)}Modulleiste</div>
       <div class="mut sm" style="margin:0 0 6px">Quer links, hochkant unten: Start, bis zu vier Module und „Mehr“.</div>

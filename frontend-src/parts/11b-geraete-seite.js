@@ -7,7 +7,7 @@
     const C = (this._gsR = this._gsR || {}), c = C[did], dev = (((this._gsD || {}).devices) || []).find((x) => x.id === did), live = dev && dev.running;
     if (!force && c && (c.busy || Date.now() - c.ts < (live ? 60000 : 300000))) return;
     C[did] = { ...(c || {}), busy: true, ts: Date.now() };
-    this._hass.callWS({ type: "fenster_heizung/gs_runs", dev: did }).then((r) => { C[did] = { ts: Date.now(), d: r }; }).catch(() => { C[did] = { ts: Date.now(), err: true }; }).finally(() => { if (this._gsDet === did) this._render(); });
+    this._hass.callWS({ type: "fenster_heizung/gs_runs", dev: did }).then((r) => { C[did] = { ts: Date.now(), d: r }; }).catch(() => { C[did] = { ts: Date.now(), err: true }; }).finally(() => { if (this._gsDet === did) this._render(); if (this._modal && this._modal.type === "tm2x" && this._modal.id === did) this._renderModal(); });
   }
   _gsHm(t) { return new Date(t).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }); }
   _gsDur(s) { const x = Math.round((s || 0) / 60); return x >= 60 ? `${Math.floor(x / 60)} h ${String(x % 60).padStart(2, "0")} Min.` : `${x} Min.`; }

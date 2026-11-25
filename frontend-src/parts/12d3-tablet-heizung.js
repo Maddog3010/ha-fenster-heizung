@@ -1,17 +1,43 @@
   /* ================= Tablet-Modus · Stufe 2: gemeinsames für Modulseiten ohne Scrollen =================
-     Reiter in der Kopfzeile, Inhalt füllt genau die Resthöhe. Bisher: Modul 1 (hier) und Modul 2 (12d4).
+     Reiter in der Kopfzeile, Inhalt füllt genau die Resthöhe. Modul 1 (hier), 2 (12d4), 3 (12d5), 4 (12d6) und 19 (12d7).
      Anzeigen geht immer. Einstellungen ändern fragt nach der PIN, wenn das Tablet eine hat (2 Minuten frei). */
-  static TM2_TABS = { fh: [["rooms", "Räume"], ["stats", "Statistik"]], ww: [["now", "Jetzt"], ["times", "Zeiten"], ["hist", "Verlauf"]] };
+  static TM2_TABS = { fh: [["rooms", "Räume"], ["stats", "Statistik"]], ww: [["now", "Jetzt"], ["times", "Zeiten"], ["hist", "Verlauf"]],
+    en: [["now", "Jetzt"], ["hist", "Verlauf"], ["cost", "Kosten"]], gs: [["dev", "Geräte"], ["win", "Startfenster"], ["stats", "Statistik"]], ef: [["now", "Jetzt"], ["strom", "Strom"]] };
   _tm2Fit(v) { return v === "st" || (!!this.constructor.TM2_TABS[v] && this._mdList().some((m) => m.id === v)); }
   _tm2Tab(v) { const T = this.constructor.TM2_TABS[v], cur = (this._tm2T || {})[v]; return T.some((t) => t[0] === cur) ? cur : T[0][0]; }
   _tm2Tabs(v) {
-    if (v === "fh" ? !this._collect().length && !this._msList().length : !this._wwConfigured()) return "";
+    if (!this._tm2Ready(v)) return "";
     const cur = this._tm2Tab(v);
     return `<div class="tm2tabs" role="tablist">${this.constructor.TM2_TABS[v].map(([k, l]) => `<button role="tab" class="${cur === k ? "sel" : ""}" aria-selected="${cur === k}" data-act="tm2tab" data-v="${v}" data-k="${k}">${l}</button>`).join("")}</div>`;
   }
-  _tm2ModBody(v) { return v === "fh" ? this._tm2Fh() : this._tm2Ww(); }
+  /* Reiter erst zeigen, wenn das Modul eingerichtet ist */
+  _tm2Ready(v) {
+    if (v === "fh") return !!(this._collect().length || this._msList().length);
+    if (v === "ww") return this._wwConfigured();
+    if (v === "en") return this._enConfigured();
+    if (v === "gs") return !!this._gsState().devices.length;
+    return !!this._efxD && this._efxSp() && !!this._tm2EfNodes().length;
+  }
+  _tm2ModBody(v) { return v === "fh" ? this._tm2Fh() : v === "ww" ? this._tm2Ww() : v === "en" ? this._tm2En() : v === "gs" ? this._tm2Gs() : this._tm2Ef(); }
   _tm2ModStatus(v) {
     if (v === "ww") return this._wwConfigured() ? this._wwStatus()[1] : "Noch nicht eingerichtet";
+    if (v === "en") {
+      if (!this._enConfigured()) return "Noch nicht eingerichtet";
+      const n = this._enNow(); if (!n) return "Keine Messwerte";
+      const flow = n.imp > 50 ? `${wfmt(n.imp)} aus dem Netz` : n.exp > 50 ? `${wfmt(n.exp)} ins Netz` : "";
+      return [n.house > 20 ? `${Math.round(Math.min(100, Math.max(0, (n.pv2h || 0) / n.house * 100)))} % aus Solar` : "", flow].filter(Boolean).join(" · ") || "Gerade fließt kaum Strom";
+    }
+    if (v === "gs") {
+      if (!this._gsState().devices.length) return "Noch keine Geräte";
+      const l = this._tm2GsDevs(), run = l.filter((d) => d.running).length, done = l.filter((d) => this._gsMode(d) === "done").length;
+      return !this._gsD ? "Wird geladen" : [run ? `${run} ${run === 1 ? "Gerät läuft" : "Geräte laufen"}` : "Kein Gerät läuft", done ? `${done} fertig` : ""].filter(Boolean).join(" · ");
+    }
+    if (v === "ef") {
+      if (!this._tm2Ready("ef")) return "Für Sponsoren";
+      const c = this._efxCfg(), list = this._tm2EfNodes(), nodes = list.map((p) => c.nodes[p]), calc = this._efxCalc(nodes);
+      const bat = this._efxItems(list).find((x) => x.kind === "bat"), soc = bat ? this._efxState(bat.n, bat.w).lvl : null;   /* Akkustand: stand bisher in der Seitenspalte */
+      return `Haus ${this._efxFmtW(c.hub.calc === "rest" ? calc.rest : calc.total)} · ${esc(this._efxMixTxt(this._efxMix(nodes)))}${soc != null ? ` · Akku ${Math.round(soc)} %` : ""}`;
+    }
     const rooms = this._collect(); if (!rooms.length) return "Noch keine Räume";
     const open = rooms.reduce((a, r) => a + this._rkState(r).anyOpen, 0), paused = rooms.filter((r) => r.mode === "heizung_pausiert");
     return [open ? `${open} Fenster offen` : "Alle Fenster zu", paused.length === 1 ? `${esc(paused[0].name)} pausiert` : paused.length ? `${paused.length} Räume pausiert` : ""].filter(Boolean).join(" · ");
@@ -24,7 +50,10 @@
       if (kind === "ww") {
         let used = this._mdState().ww.ent.pump ? 78 : 30;
         for (let i = 0; i < 3; i++) { box.innerHTML = this._wwChart({ w, h: h - used }); const over = box.scrollHeight - h; if (over <= 0) break; used += over; }
-      } else {
+      } else if (kind === "en") this._tm2EnChart(box, w, h);
+      else if (kind === "gs") this._tm2GsChart(box, w, h);
+      else if (kind === "gsfc") box.innerHTML = this._tm2GsForecast(box.dataset.id, w, h);
+      else {
         const rooms = (kind === "fhroom" ? this._collect().filter((r) => r.id === box.dataset.id) : [...this._collect()].sort((a, b) => a.ci - b.ci));
         box.innerHTML = this._chart(rooms, { w, h });
       }
