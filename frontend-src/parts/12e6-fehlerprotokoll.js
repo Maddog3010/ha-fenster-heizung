@@ -3,12 +3,18 @@
      Die Oberfläche meldet fehlgeschlagene Befehle (Schema-Fehler wie „expected str at 'id'“, unbekannte Befehle, unerwartete Fehler)
      und eigene Anzeigefehler an fenster_heizung/err_report. In Build 1 wird nichts versendet. */
   _errWrap(h) {
-    if (!h || typeof h.callWS !== "function" || h.__fhErr) return;
-    const orig = h.callWS, self = this;
+    /* 2026.11.4.7: Home Assistant baut das hass-Objekt bei jeder Zustandsänderung neu auf ({ ...hass }) und kopiert dabei
+       unseren Umschlag um callWS mit, nicht aber die Markierung am Objekt. Vorher wurde dann bei jeder Änderung ein weiterer
+       Umschlag um den vorigen gelegt – nach Stunden Tausende ineinander, und ein Befehl endete mit
+       „RangeError: Maximum call stack size exceeded“. Jetzt trägt der Umschlag selbst die Markierung und das Original. */
+    if (!h || typeof h.callWS !== "function" || h.callWS.__fhErr) return;
+    const orig = h.callWS.__fhOrig || h.callWS, self = this;
     try {
-      Object.defineProperty(h, "__fhErr", { value: true });
       /* nur eigene Befehle; der Fehler wird unverändert weitergereicht */
-      h.callWS = function (msg) { return orig.call(this, msg).catch((e) => { try { self._errCmd(msg, e); } catch (_) { /* nie stören */ } throw e; }); };
+      const wrap = function (msg) { return orig.call(this, msg).catch((e) => { try { self._errCmd(msg, e); } catch (_) { /* nie stören */ } throw e; }); };
+      Object.defineProperty(wrap, "__fhErr", { value: true });
+      Object.defineProperty(wrap, "__fhOrig", { value: orig });
+      h.callWS = wrap;
     } catch (_) { /* Objekt gesperrt: dann eben ohne */ }
     if (!this.constructor._errHook) {
       this.constructor._errHook = true;
