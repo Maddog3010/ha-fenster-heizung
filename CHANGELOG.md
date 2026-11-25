@@ -4,7 +4,7 @@ Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich a
 
 ## [2026.11.4.6b1] - 2026-11-25
 
-Testversion mit Korrekturen für Modul 8 (v1.0.2).
+Testversion mit Korrekturen für Modul 8 (v1.0.2) und Modul 0 (v0.12 Build 3).
 
 ### Behoben
 - **Modul 8: „Wallbox reagiert nicht – der Befehl „16 A“ kam nach 3 Versuchen nicht an“ mehrmals in der Nacht.** Übernahm die go-e einen Befehl nicht sofort, wurde er in jedem Takt (alle 10 Sekunden) neu gesendet – im Verlauf standen dann Dutzende gleiche „16 A“-Einträge, und jede neue Runde schickte wieder eine Meldung aufs Handy. Jetzt:
@@ -12,6 +12,8 @@ Testversion mit Korrekturen für Modul 8 (v1.0.2).
   - Die Meldung aufs Handy kommt höchstens alle 3 Stunden und nennt, was die Wallbox stattdessen meldet (z. B. „meldet weiter 10 A, Höchststrom in der go-e-App 10 A“).
   - Modul 8 verlangt nie mehr Strom, als die go-e selbst zulässt (Höchststrom in der go-e-App und Ladekabel) – ein solcher Befehl könnte nie ankommen. Steht einmal im Verlauf.
 - **Modul 8: „Wallbox von Hand umgestellt“ direkt nach „Befehl jetzt übernommen“.** Kam ein Befehl verspätet an, wurde der nächste Vergleich mit einem älteren Wunsch als Handumstellung gewertet und die Regelung pausierte 30 Minuten. Jetzt gilt der bestätigte Stand als eigener Stand, und zwei Minuten danach wird keine Handumstellung erkannt.
+- **Modul 0: Der Zaun verschob sich immer wieder.** Gedrehte Elemente (z. B. ein Zaun mit ↻ 90° am Grundstücksrand) werden um ihre Mitte gedreht; gespeichert wird aber die ungedrehte linke obere Ecke. Bei einem langen Zaun liegt die weit außerhalb des Plans – sie wurde beim Speichern auf den Rand begrenzt, und der Zaun sprang bei jedem Speichern ein Stück. Jetzt muss nur die Mitte im Plan liegen. Außerdem bleibt beim Ändern von Breite, Tiefe oder „Normgröße“ die Mitte an ihrem Platz (vorher wuchs das Element nach rechts unten und wanderte, wenn es gedreht war), und das Sichtfeld des Baukastens rechnet gedrehte Elemente richtig ein.
+  Bereits verschobene Zäune bitte einmal an ihren Platz ziehen und speichern – danach bleiben sie dort.
 - **Modul 8 · „Heute“: Eine Ladung, die gestern Abend begonnen hat und noch läuft, fehlte** („0 Ladungen“, „Heute wurde noch nicht geladen“, obwohl kWh gezählt waren). Sie erscheint jetzt als „gestern 21:15 – jetzt“.
 
 ## [2026.11.4.5] - 2026-11-24

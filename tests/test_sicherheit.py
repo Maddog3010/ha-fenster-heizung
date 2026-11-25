@@ -842,3 +842,15 @@ def test_moebel_aussen_norden():
     assert it["o3"]["ok"] == "tisch" and it["o3"]["e"] == ""
     assert it["o4"]["ok"] == "spielturm" and it["o5"]["ok"] == "bewaesserung" and it["o5"]["e"] == "valve.zone_rasen"
     assert "north" not in S.clean_plan({"floors": []})
+
+
+def test_clean_plan_keeps_rotated_long_item_in_place():
+    """2026.11.4.6b1: Ein langer, um 90° gedrehter Zaun am linken Rand hat seine ungedrehte Ecke weit links.
+    Vorher wurde x auf −50 begrenzt und der Zaun sprang bei jedem Speichern nach rechts."""
+    z = {"id": "z1", "fl": "ga", "t": "o", "ok": "zaun", "x": -270, "y": 300, "w": 575, "h": 6, "r": 90}
+    p = S.clean_plan({"floors": [{"id": "ga", "n": "Außen", "ga": 1}], "items": [z]})
+    o = p["items"][0]
+    assert (o["x"], o["y"], o["w"], o["h"], o["r"]) == (-270, 300, 575, 6, 90)
+    assert S.clean_plan(p)["items"][0]["x"] == -270  # bleibt auch beim zweiten Speichern
+    far = S.clean_plan({"floors": [{"id": "ga", "n": "Außen", "ga": 1}], "items": [{**z, "x": -5000}]})["items"][0]
+    assert far["x"] + far["w"] / 2 >= -51  # die Mitte bleibt im Plan (±1 durch Runden)
