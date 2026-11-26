@@ -1,4 +1,4 @@
-# Statistik-Worker (Cloudflare) – Versions-Statistik für „Strom & Wärme“
+# Statistik-Worker (Cloudflare) – Versions-Statistik, Fehlerberichte und Umfragen für „Strom & Wärme“
 
 Alternative zum Proxmox-Server in `../statistik-server/`: gleiche Schnittstelle (`POST /v1/ping`, `POST /v1/forget`),
 gleiche Auswertung, aber auf Cloudflare Workers + D1. Das Dashboard liegt auf `dash.stromwaerme.dev` hinter Cloudflare Access;
@@ -11,7 +11,7 @@ Einrichtung: siehe `Anleitung_Statistik-Cloudflare-Worker.pdf`. Kurz:
     npx wrangler d1 execute stats --remote --file=schema.sql
     npx wrangler deploy                   # danach Access-Anwendung für dash.… anlegen, TEAM_DOMAIN/POLICY_AUD eintragen, erneut deploy
 
-Tests: `node --no-warnings test/test.js && node --no-warnings test/test_fehler.js && node --no-warnings test/test_build6.js && node --no-warnings test/test_build8.js && node --no-warnings test/test_build9.js && node --no-warnings test/test_build10.js && node --no-warnings test/test_build11.js && node --no-warnings test/test_build12.js && node --no-warnings test/test_build13.js` (Node ≥ 22.5, nutzt `node:sqlite` als D1-Ersatz).
+Tests: `node --no-warnings test/test.js && node --no-warnings test/test_fehler.js && node --no-warnings test/test_build6.js && node --no-warnings test/test_build8.js && node --no-warnings test/test_build9.js && node --no-warnings test/test_build10.js && node --no-warnings test/test_build11.js && node --no-warnings test/test_build12.js && node --no-warnings test/test_build13.js && node --no-warnings test/test_build14.js` (Node ≥ 22.5, nutzt `node:sqlite` als D1-Ersatz).
 
 ## Fehler-Statistik (ab 2026.11.4.3b1)
 
@@ -158,3 +158,39 @@ Worker und zwei kleine Tabellen – kein Update der Integration:
 - Banner: Dashboard Build 13.
 
 Tests: zusätzlich `node --no-warnings test/test_build13.js`.
+
+## Build 14: Umfragen
+
+Neu sind zwei Tabellen und der Reiter **Umfragen** (`/umfragen`). Einmal ausführen, im Ordner `statistik-worker`:
+
+    npx wrangler d1 execute stats --remote --file=migrate-build14.sql
+    npx wrangler deploy
+
+(Mehrfach ausführen schadet nicht. `database_id`, `TEAM_DOMAIN` und `POLICY_AUD` in `wrangler.toml` müssen deine Werte
+behalten. Eine Rate-Limit-Regel auf den Hostnamen `stats.…` deckt die neuen Pfade mit ab.)
+
+**Bei den Nutzern erscheint noch nichts:** Dafür braucht es eine Version der Integration mit Umfragen (nächste Stufe).
+
+- **Status:** Entwurf (nur Dashboard) → Test (nur mit Testcode abrufbar) → Läuft (bzw. Geplant bis zum Starttag) → Beendet.
+  Nach dem Veröffentlichen sind Fragen und Zielgruppe gesperrt; Enddatum, Anzeige und Ergebnis bleiben änderbar.
+  Testantworten werden beim Veröffentlichen gelöscht, ebenso wenn sich die Fragen ändern.
+- **Fragen:** höchstens 5, je Auswahlfrage 2–6 Antworten, Sterne 1–5, höchstens 2 Freitexte (freiwillig, 500 Zeichen).
+- **Tage** gelten in Weltzeit (UTC), das Enddatum zählt mit.
+- **Aufbewahrung:** Antworten 12 Monate nach Ende (nächtlicher Lauf). Die Umfrage selbst bleibt, bis du sie löschst.
+- **CSV** je Umfrage; Texte, die mit `= + - @` beginnen, bekommen in allen CSV-Dateien ein `'` davor, damit
+  Tabellenprogramme sie nicht als Formel ausführen.
+
+### Eingang
+
+| Anfrage | Zweck |
+|---|---|
+| `GET /v1/surveys[?test=CODE]` | veröffentlichte Umfragen (laufend, dazu 30 Tage nach Ende), mit `CODE` auch Test-Umfragen. Für alle dieselbe Liste, keine Angaben zur Installation. |
+| `POST /v1/surveys/answer` | `{schema:1, survey, rev, rid, version, channel, answers, test?}` – höchstens 4 KB; `rid` = Zufallscode (UUID 4) nur für diese Umfrage. Erneutes Senden ersetzt die Antwort (frühestens nach 10 s). |
+| `POST /v1/surveys/forget` | `{survey, rid}` – genau diese Antwort löschen, auch nach dem Ende. |
+
+Antworten: 200 angenommen (mit `result`, wenn freigegeben und ab 10 Antworten) · 400 ungültig · 404 unbekannt ·
+409 Fragen inzwischen geändert · 410 beendet · 413 zu groß · 429 zu schnell oder 5.000 Antworten erreicht.
+Gefälschte Antworten lassen sich ohne Anmeldung nicht ganz ausschließen.
+
+Tests: zusätzlich `node --no-warnings test/test_build14.js`.
+

@@ -19,10 +19,10 @@ const post = (env, path, body, ctx) => worker.fetch(new Request(`https://stats.x
 const dget = (env, path, t = tok) => worker.fetch(new Request(`https://dash.x.dev${path}`, { headers: t ? { "cf-access-jwt-assertion": t } : {} }), env);
 const today = new Date().toISOString().slice(0, 10);
 const ID = () => crypto.randomUUID();
-assert.equal(DASH.build, 13);
+assert.ok(DASH.build >= 13);
 
 // Reiter-Reihenfolge wie im Konzept, sichtbar nur gebaute
-assert.deepEqual(TABS.map((t) => t[2]), ["Versionen", "Fehler", "Module", "Releases", "System", "Support", "Wochen"]);
+assert.deepEqual(TABS.map((t) => t[2]), ["Versionen", "Fehler", "Module", "Releases", "System", "Umfragen", "Support", "Wochen"]);
 assert.deepEqual(Y.kindOf("/v1/ping", 200), "ping:ok"); assert.equal(Y.kindOf("/v1/errors", 429), "err:429"); assert.equal(Y.kindOf("/v1/errors/forget", 200), "forget:ok"); assert.equal(Y.kindOf("/x", 404), "andere:404");
 
 // Zählen im Eingang (mit und ohne ctx.waitUntil)
@@ -47,7 +47,7 @@ assert.deepEqual(Y.kindOf("/v1/ping", 200), "ping:ok"); assert.equal(Y.kindOf("/
 
   // Seite
   const h = await (await dget(env, "/system")).text();
-  for (const t of ["Versions-Meldungen heute", "Fehlerberichte heute", "Nächtlicher Lauf", "Build 13", "Datenbank-Stand", "Abgelehnte Meldungen", "zu oft (429)", "ungültig (400)", "falscher Pfad (404)", "installs 1", "Gerät, Aufrufkette", "0 Installationen mit Fehler (alle Versionen)"])
+  for (const t of ["Versions-Meldungen heute", "Fehlerberichte heute", "Nächtlicher Lauf", "Build 13", "Datenbank-Stand", "Abgelehnte Meldungen", "zu oft (429)", "ungültig (400)", "nicht gefunden (404)", "installs 1", "Gerät, Aufrufkette", "0 Installationen mit Fehler (alle Versionen)"])
     assert.ok(h.includes(t), t);
   assert.ok(!h.includes("Datenbank unvollständig") && !h.includes(">fehlt<"), "alles da");
   assert.ok(h.includes('href="/system" class="on"'), "Reiter aktiv");
@@ -75,13 +75,13 @@ assert.deepEqual(Y.kindOf("/v1/ping", 200), "ping:ok"); assert.equal(Y.kindOf("/
   assert.equal((await post(env, "/v1/ping", { schema: 3, id: ID(), version: "2026.11.5b3", channel: "beta", modules: [], ha: "2026.11" })).status, 200, "ohne Zähler-Tabelle keine Störung");
   for (const pth of ["/", "/fehler", "/system"]) {
     const h = await (await dget(env, pth)).text();
-    assert.ok(h.includes("Datenbank unvollständig: Build 12 (Gerät, Aufrufkette), Build 13 (System-Zähler) fehlt"), pth);
+    assert.ok(h.includes("Datenbank unvollständig: Build 12 (Gerät, Aufrufkette), Build 13 (System-Zähler), Build 14 (Umfragen) fehlt"), pth);
   }
   const h = await (await dget(env, "/system")).text();
   assert.ok(h.includes("--file=migrate-build12.sql") && h.includes("--file=migrate-build13.sql") && h.includes("fehlt: err_hits.dev, err_groups.chain") && h.includes("Zähler laufen ab dem Ausrollen"));
   assert.ok(!h.includes("--file=migrate-build11.sql"), "vorhandene Erweiterungen ohne Befehl");
   const C = await Y.schemaCheck(env.DB);
-  assert.deepEqual(C.filter((c) => !c.ok).map((c) => c.b), [12, 13]);
+  assert.deepEqual(C.filter((c) => !c.ok).map((c) => c.b), [12, 13, 14]);
   assert.equal(Y.warnHtml(C.map((c) => ({ ...c, ok: true }))), "");
   console.log("Build-13-Migration OK");
 }

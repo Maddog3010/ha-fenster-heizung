@@ -323,7 +323,7 @@ const spark = (a, w = 84, h = 18) => { const mx = Math.max(1, ...a); return `<sv
 const tag = (t) => { const x = TAG[t] || TAG.bekannt; return `<span class="tg" style="background:${x[1]};color:${x[2]}">${x[0]}</span>`; };
 /** Reiter in fester Reihenfolge (Konzept „neue Reiter“). Sichtbar sind nur die schon gebauten. */
 export const TABS = [["v", "/", "Versionen", true], ["f", "/fehler", "Fehler", true], ["m", "/module", "Module", false], ["r", "/releases", "Releases", false],
-  ["s", "/system", "System", true], ["u", "/support", "Support", false], ["w", "/wochen", "Wochen", false]];
+  ["s", "/system", "System", true], ["q", "/umfragen", "Umfragen", true], ["u", "/support", "Support", false], ["w", "/wochen", "Wochen", false]];
 export const tabs = (on) => `<div class="tabs">${TABS.filter((t) => t[3]).map(([k, href, t]) => `<a href="${href}" class="${on === k ? "on" : ""}">${t}</a>`).join("")}</div>`;
 const fd = (d) => (d ? `${d.slice(8, 10)}.${d.slice(5, 7)}.` : "");
 

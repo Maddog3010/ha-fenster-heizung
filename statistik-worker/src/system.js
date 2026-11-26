@@ -11,7 +11,7 @@ export const SYS_KEEP_DAYS = 400;
 // ---------------------------------------------------------------- Zählen (Eingang) und nächtlicher Lauf
 /** Art der Anfrage aus Pfad und Antwort-Code, z. B. „ping:ok“, „err:429“. Unbekannte Pfade zählen als „andere:404“. */
 export function kindOf(path, status) {
-  const k = { "/v1/ping": "ping", "/v1/errors": "err", "/v1/forget": "forget", "/v1/errors/forget": "forget" }[path] || "andere";
+  const k = { "/v1/ping": "ping", "/v1/errors": "err", "/v1/forget": "forget", "/v1/errors/forget": "forget", "/v1/surveys/answer": "umfrage", "/v1/surveys/forget": "forget" }[path] || "andere";
   return `${k}:${status >= 200 && status < 300 ? "ok" : status}`;
 }
 export async function bump(DB, day, kind) {
@@ -35,8 +35,9 @@ export const CHECKS = [
   { b: 11, t: "Module je Tag", need: ["daily.modules"], file: "migrate-build11.sql" },
   { b: 12, t: "Gerät, Aufrufkette", need: ["err_hits.dev", "err_groups.chain"], file: "migrate-build12.sql" },
   { b: 13, t: "System-Zähler", need: ["sys", "syskv"], file: "migrate-build13.sql" },
+  { b: 14, t: "Umfragen", need: ["surveys", "answers"], file: "migrate-build14.sql" },
 ];
-const KNOWN = ["installs", "daily", "err_groups", "err_hits", "err_reporters", "err_days", "err_merge", "snap", "sys", "syskv"];
+const KNOWN = ["installs", "daily", "err_groups", "err_hits", "err_reporters", "err_days", "err_merge", "snap", "sys", "syskv", "surveys", "answers"];
 /* Cloudflare D1 erlaubt pragma_table_info nur mit festem Tabellennamen (keine Verknüpfung über sqlite_master) – also je Tabelle einzeln. */
 export async function schemaCheck(DB) {
   const have = new Set();
@@ -59,7 +60,7 @@ export function warnHtml(checks) {
 }
 
 // ---------------------------------------------------------------- Laden und Darstellen
-const TABLES = ["installs", "daily", "err_groups", "err_hits", "err_reporters", "err_days", "err_merge", "snap", "sys", "syskv"];
+const TABLES = ["installs", "daily", "err_groups", "err_hits", "err_reporters", "err_days", "err_merge", "snap", "sys", "syskv", "surveys", "answers"];
 export async function sysLoad(DB, todayStr, env = {}) {
   const checks = await schemaCheck(DB);
   const have = new Set((checks || []).filter((c) => c.ok).flatMap((c) => c.need.filter((n) => !n.includes("."))));
@@ -98,7 +99,7 @@ function bars(L, col) {
       (x.bad ? `<rect x="${(i * bw + 2).toFixed(1)}" y="${(H - h1 - h2).toFixed(1)}" width="${(bw - 4).toFixed(1)}" height="${Math.max(h2, 1.5).toFixed(1)}" rx="2" fill="#f87171"/>` : ""); }).join("")}
     <text x="2" y="${H + 12}" fill="#8d8c84" font-size="11">${L[0].d.slice(8, 10)}.${L[0].d.slice(5, 7)}.</text><text x="${W - 2}" y="${H + 12}" fill="#8d8c84" font-size="11" text-anchor="end">heute</text></svg>`;
 }
-const LBL = { 400: "ungültig (400)", 413: "zu groß (413)", 429: "zu oft (429)", 404: "falscher Pfad (404)" };
+const LBL = { 400: "ungültig (400)", 413: "zu groß (413)", 429: "zu oft (429)", 404: "nicht gefunden (404)", 409: "veraltet (409)", 410: "Umfrage beendet (410)" };
 export function sysHtml(X, DASH) {
   const t = X.ping.at(-1), f = X.err.at(-1), avg = (L) => Math.round(L.slice(0, 13).reduce((a, x) => a + x.ok, 0) / 13);
   const cron = X.cron ? `<div class="n" style="font-size:1.25rem;margin-top:6px">${X.cron.day === X.today ? "heute" : e(X.cron.day)} ${e(String(X.cron.time || "").slice(0, 5))}</div><div class="s">${X.cron.ok ? `ok · ${X.cron.ms} ms` : `<span style="color:#f87171">Fehler: ${e(X.cron.msg || "?")}</span>`}${X.cron.snap ? " · Tageswert gespeichert" : ""}</div>`
@@ -112,7 +113,7 @@ export function sysHtml(X, DASH) {
     : `<table class="mini">${X.checks.map((c) => `<tr><td>Build ${c.b} · ${e(c.t)}${c.ok ? "" : `<small style="display:block;color:#fde68a;font-family:ui-monospace,Menlo,monospace;margin-top:2px">npx wrangler d1 execute stats --remote --file=${e(c.file)}</small><small style="display:block;color:#8d8c84">fehlt: ${c.missing.map(e).join(", ")}</small>`}</td><td class="num">${c.ok ? '<span style="color:#5eead4;font-weight:700">✓</span>' : '<span class="tg" style="background:#7f1d1d;color:#fecaca">fehlt</span>'}</td></tr>`).join("")}</table>`;
   const codes = Object.keys(X.rej).sort();
   const rej = noRows ? '<div class="empty">Zähler laufen ab dem Ausrollen von Build 13.</div>' : codes.length
-    ? `<table class="mini"><tr><th style="text-align:left">Grund</th><th class="num">Versionen</th><th class="num">Fehler</th><th class="num">Löschen</th><th class="num">andere</th></tr>${codes.map((c) => `<tr><td>${e(LBL[c] || c)}</td><td class="num">${X.rej[c].ping || 0}</td><td class="num">${X.rej[c].err || 0}</td><td class="num">${X.rej[c].forget || 0}</td><td class="num">${X.rej[c].andere || 0}</td></tr>`).join("")}</table>`
+    ? `<table class="mini"><tr><th style="text-align:left">Grund</th><th class="num">Versionen</th><th class="num">Fehler</th><th class="num">Löschen</th><th class="num">Umfragen</th><th class="num">andere</th></tr>${codes.map((c) => `<tr><td>${e(LBL[c] || c)}</td><td class="num">${X.rej[c].ping || 0}</td><td class="num">${X.rej[c].err || 0}</td><td class="num">${X.rej[c].forget || 0}</td><td class="num">${X.rej[c].umfrage || 0}</td><td class="num">${X.rej[c].andere || 0}</td></tr>`).join("")}</table>`
     : '<div class="empty">Keine abgelehnten Meldungen in 7 Tagen.</div>';
   const tbl = `${X.counts.map(([t, n]) => `${e(t)} ${nf(n)}`).join(" · ")}${X.size ? ` · Datenbank ${(X.size / 1048576).toFixed(1).replace(".", ",")} MB` : ""}`;
   return `${kpi}

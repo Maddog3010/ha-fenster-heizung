@@ -1,6 +1,8 @@
-// Statistik-Worker für „Strom & Wärme“ – Versions-Statistik auf Cloudflare Workers + D1.
+// Statistik-Worker für „Strom & Wärme“ – Versions-Statistik, Fehlerberichte und Umfragen auf Cloudflare Workers + D1.
 //
-//   stats.stromwaerme.dev  Eingang:   nur POST /v1/ping, /v1/forget, /v1/errors, /v1/errors/forget – gibt nie Daten heraus.
+//   stats.stromwaerme.dev  Eingang:   POST /v1/ping, /v1/forget, /v1/errors, /v1/errors/forget, /v1/surveys/answer, /v1/surveys/forget
+//                                     und GET /v1/surveys (ab Build 14). Heraus gehen nur veröffentlichte Umfragen (Test-Umfragen nur
+//                                     mit Testcode), freigegebene Ergebnisse, der Status eigener Fehler und /health.
 //   dash.stromwaerme.dev   Dashboard: nur mit gültigem Cloudflare-Access-Token (wird hier geprüft, nicht nur vorausgesetzt).
 //
 // Gespeichert wird je Installation: zufällige Kennung, Version, Kanal, erster/letzter Tag. Keine IP-Adresse,
@@ -8,9 +10,10 @@
 
 import { kindOf, bump, saveCron, sysCleanup, schemaCheck, warnHtml, sysLoad, sysHtml, SYS_CSS } from "./system.js";
 import { snapToday, snapCleanup, loadSnaps, langzeitHtml, lostAfterUpdate, lostHtml, cohorts, cohortHtml, csv, EXPORTS, CSV_CSS, modTrend, modTrendHtml, loadModDaily } from "./langzeit.js";
+import { surveyList, surveyAnswer, surveyForget, surveyDash, surveyCleanup, SURVEY_CSS, ANSWER_MAX_BODY } from "./umfragen.js";
 import { haMatrixHtml, versionErrPart, versionErrHtml, pc1, dbErrMerge, dbErrSplit, errOwnStatus, validErrors, dbErrors, dbErrForget, dbErrCleanup, errLoad, errLoadOne, errRender, errRenderOne, ERR_CSS, ERR_MAX_BODY, tabs, validStatus, dbErrStatus, loadReleases, releaseMarks, markSvg, weekHtml, laggards, lagHtml } from "./fehler.js";
 /** Build 9: Version dieses Dashboards/Workers – steht im Banner und unter /health. Bei jedem Build hochzählen. */
-export const DASH = { build: 13, patch: 1, date: "2026-11-24" };   // patch = Korrektur innerhalb eines Builds (Anzeige „Build 13.1“)
+export const DASH = { build: 14, patch: 0, date: "2026-11-26" };   // patch = Korrektur innerhalb eines Builds (Anzeige „Build 13.1“)
 const dashChip = () => `<span class="chip dv" title="Version des Statistik-Workers – nach „wrangler deploy“ prüfen, ob der neue Stand aktiv ist">Dashboard Build ${DASH.build}${DASH.patch ? "." + DASH.patch : ""} · ${DASH.date.slice(8, 10)}.${DASH.date.slice(5, 7)}.${DASH.date.slice(0, 4)}</span>`;
 const banChips = (today) => `<span class="chips">${dashChip()}<span class="chip">nur du · Stand ${e(today)}</span></span>`;
 export const SCHEMAS = [1, 2, 3];   // Schema 1: ohne Module · Schema 2: mit Modulliste · Schema 3 (Build 6): dazu HA-Version „2026.11“
@@ -428,11 +431,19 @@ const json = (code, body) =>
 
 async function ingest(req, env, url) {
   if (req.method === "GET" && url.pathname === "/health") return json(200, { ok: true, build: DASH.build, patch: DASH.patch || 0, date: DASH.date });
-  if (req.method !== "POST" || !["/v1/ping", "/v1/forget", "/v1/errors", "/v1/errors/forget"].includes(url.pathname)) return json(404, { ok: false });
+  if (req.method === "GET" && url.pathname === "/v1/surveys") {   /* Build 14: für alle dieselbe Liste, ohne Angaben zur Installation */
+    return json(200, { ok: true, surveys: await surveyList(env.DB, S(Date.now()), url.searchParams.get("test") || "") });
+  }
+  if (req.method !== "POST" || !["/v1/ping", "/v1/forget", "/v1/errors", "/v1/errors/forget", "/v1/surveys/answer", "/v1/surveys/forget"].includes(url.pathname)) return json(404, { ok: false });
   const raw = await req.arrayBuffer();
-  if (raw.byteLength === 0 || raw.byteLength > (url.pathname === "/v1/errors" ? ERR_MAX_BODY : MAX_BODY)) return json(413, { ok: false });
+  const max = url.pathname === "/v1/errors" ? ERR_MAX_BODY : url.pathname === "/v1/surveys/answer" ? ANSWER_MAX_BODY : MAX_BODY;
+  if (raw.byteLength === 0 || raw.byteLength > max) return json(413, { ok: false });
   let d;
   try { d = JSON.parse(new TextDecoder().decode(raw)); } catch { return json(400, { ok: false }); }
+  if (url.pathname === "/v1/surveys/answer" || url.pathname === "/v1/surveys/forget") {
+    const res = url.pathname === "/v1/surveys/answer" ? await surveyAnswer(env.DB, d, Date.now()) : await surveyForget(env.DB, d);
+    return json(res.code, res.body);
+  }
   if (url.pathname === "/v1/errors/forget") {   /* Fehler-Statistik: alle Berichte einer Kennung löschen */
     const id = d && typeof d === "object" ? d.id : null;
     if (typeof id === "string" && ID_RE.test(id)) { await dbErrForget(env.DB, id); return json(200); }
@@ -457,7 +468,7 @@ async function ingest(req, env, url) {
 }
 
 const page = (title, body, today, week = null, tab = "f", sub = "Fehlerberichte · freiwillig · bereinigt", foot = "Nur Installationen, die Fehlerberichte eingeschaltet haben. Berichte älter als 90 Tage werden gelöscht.") => `<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex"><title>${title}</title><style>${CSS}${ERR_CSS}${CSV_CSS}${SYS_CSS}</style></head><body><div class="w">
+<meta name="robots" content="noindex"><title>${title}</title><style>${CSS}${ERR_CSS}${CSV_CSS}${SYS_CSS}${tab === "q" ? SURVEY_CSS : ""}</style></head><body><div class="w">
 <div class="ban"><div><h1>Strom &amp; Wärme · Statistik</h1><small>${sub}</small></div>${banChips(today)}</div>${tabs(tab)}${weekHtml(week)}${body}
 <div class="f">${foot}</div></div></body></html>`;
 /* Build 13: Hinweis „Datenbank unvollständig“ unter dem Banner aller Reiter */
@@ -467,8 +478,9 @@ const html = (s, code = 200) => new Response(s, { status: code, headers: { "cont
 async function dashboard(req, env, url) {
   const fm = /^\/fehler(?:\/([0-9a-f]{12}))?\/?$/.exec(url.pathname), vm = /^\/version\/([0-9.b]{5,24})\/?$/.exec(url.pathname);
   const xm = /^\/export\/([a-z]{2,12})\.csv$/.exec(url.pathname), sm = url.pathname === "/system";
-  const post = req.method === "POST" && fm && fm[1];
-  if ((req.method !== "GET" && !post) || (url.pathname !== "/" && !fm && !vm && !sm && !(xm && EXPORTS.includes(xm[1])))) return json(404, { ok: false });
+  const um = /^\/umfragen(?:\/(neu|[0-9a-f]{12})(\.csv)?)?\/?$/.exec(url.pathname);   /* Build 14 */
+  const post = req.method === "POST" && ((fm && fm[1]) || (um && !um[2]));
+  if ((req.method !== "GET" && !post) || (url.pathname !== "/" && !fm && !vm && !sm && !um && !(xm && EXPORTS.includes(xm[1])))) return json(404, { ok: false });
   if (!(await verifyAccess(req.headers.get("cf-access-jwt-assertion"), env))) return new Response("Zugriff verweigert", { status: 403, headers: { "cache-control": "no-store" } });
   const today = S(Date.now());
   if (sm) {   /* Build 13 · Reiter System */
@@ -476,10 +488,20 @@ async function dashboard(req, env, url) {
     return html(withWarn(page("System · Strom &amp; Wärme", sysHtml(X, DASH), today, wk, "s", "Zustand des Statistik-Workers", "Zähler ohne Kennungen, 400 Tage aufbewahrt. Was eine Cloudflare-Regel vor dem Worker abweist, wird hier nicht gezählt."), X.checks));
   }
   const chk = req.method === "GET" && !xm ? await schemaCheck(env.DB) : null;
-  if (post) {   /* Build 4: Status speichern – nur aus dem eigenen Dashboard (gleiche Herkunft), nur hinter Access */
+  let form = null;
+  if (post) {   /* Build 4: Änderungen nur aus dem eigenen Dashboard (gleiche Herkunft), nur hinter Access */
     const origin = req.headers.get("origin"), site = req.headers.get("sec-fetch-site");
     if ((origin && origin !== `https://${env.DASH_HOST}`) || (!origin && site !== "same-origin")) return new Response("Fremde Herkunft", { status: 403, headers: { "cache-control": "no-store" } });
-    let form; try { form = await req.formData(); } catch { return json(400, { ok: false }); }
+    try { form = await req.formData(); } catch { return json(400, { ok: false }); }
+  }
+  if (um) {   /* Build 14 · Reiter Umfragen */
+    const res = await surveyDash({ DB: env.DB, id: um[1] || "", csvOnly: !!um[2], form, query: Object.fromEntries(url.searchParams), nowMs: Date.now(), modules: MODULES });
+    if (res.redirect) return new Response(null, { status: 303, headers: { location: res.redirect, "cache-control": "no-store" } });
+    if (res.csv) return csvRes(res.csv.name, res.csv.body);
+    if (!res.html) return json(res.code || 400, { ok: false });
+    return html(withWarn(page("Umfragen · Strom &amp; Wärme", res.html, today, null, "q", "Umfragen · freiwillig · ohne Namen", "Antworten tragen nur einen Zufallscode je Umfrage und werden 12 Monate nach Ende gelöscht. Wer ohne Anmeldung antwortet, lässt sich nicht prüfen: Die Zahlen sind ein Stimmungsbild."), chk), res.code || 200);
+  }
+  if (post) {
     const act = String(form.get("act") || "");
     if (act === "merge") {   /* Build 8: diesen Fehler in einen anderen einordnen */
       const m = await dbErrMerge(env.DB, fm[1], String(form.get("into") || ""), Date.now());
@@ -539,7 +561,7 @@ export default {
       const t0 = Date.now(), today = S(t0);
       let snap = false, msg = "";
       try { const r = await loadAndCompute(env.DB, today), er = await errLoad(env.DB, today, 7); snap = await snapToday(env.DB, today, r, er.reife.list); } catch (x) { msg = "Tageswert: " + String((x && x.message) || x).slice(0, 80); }
-      try { await Promise.all([dbCleanup(env.DB, +(env.RETENTION_DAYS || 180), Date.now()), dbErrCleanup(env.DB, Date.now()), snapCleanup(env.DB, Date.now()), sysCleanup(env.DB, Date.now())]); }
+      try { await Promise.all([dbCleanup(env.DB, +(env.RETENTION_DAYS || 180), Date.now()), dbErrCleanup(env.DB, Date.now()), snapCleanup(env.DB, Date.now()), sysCleanup(env.DB, Date.now()), surveyCleanup(env.DB, Date.now())]); }
       catch (x) { msg = (msg ? msg + " · " : "") + "Aufräumen: " + String((x && x.message) || x).slice(0, 80); }
       /* Build 13: letzten Lauf merken (Reiter System) */
       await saveCron(env.DB, { day: today, time: new Date(t0).toISOString().slice(11, 19), ms: Date.now() - t0, ok: !msg, msg, snap });

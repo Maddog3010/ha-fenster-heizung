@@ -141,7 +141,8 @@ export function cohortHtml(C) {
 }
 
 // ---------------------------------------------------------------- S10 Export als CSV
-const cv = (x) => { if (x == null) return ""; if (typeof x === "number") return String(Math.round(x * 10000) / 10000).replace(".", ","); const s = String(x); return /[;"\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
+const cv = (x) => { if (x == null) return ""; if (typeof x === "number") return String(Math.round(x * 10000) / 10000).replace(".", ","); let s = String(x); if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;   /* Build 14: nie als Formel öffnen */
+  return /[;"\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
 export const csv = (head, rows) => "﻿" + [head, ...rows].map((r) => r.map(cv).join(";")).join("\r\n") + "\r\n";
 export const EXPORTS = ["versionen", "reife", "fehler", "verlauf", "verloren", "treue", "module", "ha", "modulverlauf"];
 export const CSV_CSS = `.csv{color:#8d8c84;font-size:.74rem;text-decoration:none;border:1px solid #3a3a38;border-radius:99px;padding:1px 9px;align-self:flex-start;white-space:nowrap}.csv:hover{color:#5eead4;border-color:#2dd4bf}.c.wide{grid-column:1/-1}.g2m{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:4px 24px;align-items:start}`;

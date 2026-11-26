@@ -23,3 +23,9 @@ CREATE TABLE IF NOT EXISTS snap(day TEXT PRIMARY KEY, a30 INTEGER, a7 INTEGER, b
 -- Build 13: Zähler je Tag und Art (ohne Kennungen, 400 Tage) und letzter nächtlicher Lauf
 CREATE TABLE IF NOT EXISTS sys(day TEXT NOT NULL, kind TEXT NOT NULL, n INTEGER NOT NULL, PRIMARY KEY(day, kind));
 CREATE TABLE IF NOT EXISTS syskv(k TEXT PRIMARY KEY, v TEXT);
+-- Build 14: Umfragen und Antworten (Antworten mit eigenem Zufallscode je Umfrage, 12 Monate nach Ende gelöscht)
+CREATE TABLE IF NOT EXISTS surveys(id TEXT PRIMARY KEY, title TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'entwurf', questions TEXT NOT NULL,
+  channel TEXT NOT NULL DEFAULT 'alle', module TEXT NOT NULL DEFAULT '', from_day TEXT, to_day TEXT, popup INTEGER NOT NULL DEFAULT 1,
+  results INTEGER NOT NULL DEFAULT 0, rev INTEGER NOT NULL DEFAULT 1, created TEXT NOT NULL, changed TEXT NOT NULL, ended TEXT);
+CREATE TABLE IF NOT EXISTS answers(sid TEXT NOT NULL, rid TEXT NOT NULL, day TEXT NOT NULL, ts INTEGER NOT NULL, version TEXT NOT NULL,
+  channel TEXT NOT NULL, data TEXT NOT NULL, PRIMARY KEY(sid, rid));
