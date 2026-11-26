@@ -12,6 +12,9 @@ Neu: Umfragen. Der Entwickler kann kurze Fragen stellen, Mitmachen ist freiwilli
 - **Zwei Schalter:** „Umfragen laden“ (Aus: es wird nichts abgerufen) und „Neue Umfragen als Popup zeigen“.
 - **Datenschutz:** Der Abruf (etwa 1× pro Tag) schickt nichts über die Installation mit. Gesendet wird erst nach „Absenden“, mit einem Zufallscode nur für diese Umfrage. Details in der README unter „Umfragen und Datenschutz“.
 
+### Behoben
+- **Einstellungen / Messwerk:** Lieferte das Messwerk keine Daten (z. B. kurz nach dem Neustart), fragte die Einstellungsseite ununterbrochen neu an. Jetzt wartet sie 10 Sekunden bis zum nächsten Versuch. (Auch in 2026.11.4.11.)
+
 ### Noch offen
 - Getestet im Browser gegen den echten Worker-Code auf einem Testserver mit simuliertem Home Assistant, noch nicht in einem echten Home Assistant.
 
