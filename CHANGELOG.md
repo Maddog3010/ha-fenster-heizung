@@ -2,6 +2,17 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4.9] - 2026-11-26
+
+Korrektur der Akku-Hinweise auf der Startseite.
+
+### Behoben
+- **Speicher werden nicht mehr als schwache Batterie gemeldet.** Ausgenommen sind Sensoren von `battery_sim` und die als Batterie-Ladestand oder beim E-Auto eingetragenen Sensoren.
+- **Auf „Später“ gestellte Akkus verdrängen keinen anderen mehr** aus den höchstens drei Akku-Hinweisen.
+
+### Neu
+- **„Nie melden“ am Akku-Hinweis** (nur Admin, gilt für alle Geräte). Wieder einschalten unter Einstellungen › Darstellung › Startseite mit „Wieder melden“.
+
 ## [2026.11.4.8] - 2026-11-25
 
 Korrektur von drei gemeldeten Fehlern.
