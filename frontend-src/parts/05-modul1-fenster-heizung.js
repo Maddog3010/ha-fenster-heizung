@@ -830,6 +830,7 @@
     try { this._render0(); this._kontaktLeiste(); if (sr0) { sr0.querySelectorAll("img[data-keep]").forEach((i) => { const o = keep[i.getAttribute("src")]; if (o && o !== i) i.replaceWith(o); }); sr0.querySelectorAll("#main [data-kk]").forEach((n) => { const o = kk[n.dataset.kk]; if (o && o !== n && !n.contains(o) && (!n.hasAttribute("data-ks") || this._kkSync(o, n))) n.replaceWith(o); }); this._animLoad(at); this._visObs(); if (this._saiDeco) this._saiDeco(sr0); this._msn(); if (this._hzAnimRun) this._hzAnimRun(); } } catch (err) { console.error("fenster_heizung render", err); try { this._errJs(err, "Neuaufbau"); } catch (_) { /* nie stören */ } if (this._toast && Date.now() - (this._errT || 0) > 4000) { this._errT = Date.now(); this._toast("Anzeigefehler: " + (err && err.message || err)); } return; }
     if (sr0) sr0.querySelectorAll(HS).forEach((e, n) => { const v = hsx[e.className.split(" ")[0] + "|" + n]; if (v) e.scrollLeft = v; });
     this._dkApply(sr0 && sr0.getElementById("main"));
+    this._umfDot();
     const nb = sr0 && sr0.querySelector(".mbar"); if (!nb) { this._mbId = id; return; }
     if (this._mbId !== id || x == null) {
       const t = nb.querySelector(".mtab.sel"); if (t) nb.scrollLeft = Math.max(0, t.offsetLeft - (nb.clientWidth - t.offsetWidth) / 2);

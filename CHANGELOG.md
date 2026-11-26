@@ -2,6 +2,19 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.5b11] - 2026-11-26
+
+Neu: Umfragen. Der Entwickler kann kurze Fragen stellen, Mitmachen ist freiwillig.
+
+### Neu
+- **Umfragen:** Eine neue Umfrage erscheint für Administratoren einmal als Fenster, als Karte auf der Startseite und mit einem orangen Punkt am Einstellungen-Knopf. Nie im Tablet-Modus und nie zusammen mit der Frage zur Versions-Statistik oder zu Fehlerberichten.
+- **Einstellungen → System → Umfragen:** offene, beantwortete und beendete Umfragen. Antwort ändern oder zurückziehen, alle eigenen Antworten auf dem Server löschen.
+- **Zwei Schalter:** „Umfragen laden“ (Aus: es wird nichts abgerufen) und „Neue Umfragen als Popup zeigen“.
+- **Datenschutz:** Der Abruf (etwa 1× pro Tag) schickt nichts über die Installation mit. Gesendet wird erst nach „Absenden“, mit einem Zufallscode nur für diese Umfrage. Details in der README unter „Umfragen und Datenschutz“.
+
+### Noch offen
+- Getestet im Browser gegen den echten Worker-Code auf einem Testserver mit simuliertem Home Assistant, noch nicht in einem echten Home Assistant.
+
 ## [2026.11.5b10] - 2026-11-26
 
 Neu: Zusatzheizung bei Frost und die vierte Stufe des Tablet-Modus (E-Auto, Stromtarif, Solar-Prognose). Dazu dieselbe Korrektur wie in der stabilen Version 2026.11.4.10.

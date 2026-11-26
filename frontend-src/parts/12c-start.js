@@ -189,7 +189,7 @@
       return `<section class="blk mub ${HZ_WIDE.includes(id) ? "wide" : ""} ${edit ? "editing" : ""} ${hid ? "hid" : ""}" data-sort="hzblk" data-id="${id}">
       ${edit ? `<div class="etag"><span class="grip" data-handle title="Verschieben">${ic("grip", 18)}</span>${HZ_NAMES[id]}<button class="eyeb" data-act="hzhide" data-k="${id}" aria-pressed="${!hid}" aria-label="${HZ_NAMES[id]} ${hid ? "einblenden" : "ausblenden"}" title="${hid ? "Einblenden" : "Ausblenden"}">${ic(hid ? "eyeOff" : "eye", 18)}<span>${hid ? "Ausgeblendet" : "Sichtbar"}</span></button></div>` : ""}${B[id]}</section>`;
     }).join("");
-    const out = `${this._hzHead() === "scene" ? this._hzHeadHtml(this._hzVis(hints)) : this._hzHead() === "text" ? this._hzAmpel(this._hzVis(hints)) : ""}${nw ? this._hzQaRow() : ""}${bub}${eb}${this._spnCard()}<div class="mublks">${blocks || `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch nichts zu zeigen</div>Richte ein Modul ein oder blende Karten über „Anpassen“ wieder ein.</div>`}</div>`;
+    const out = `${this._hzHead() === "scene" ? this._hzHeadHtml(this._hzVis(hints)) : this._hzHead() === "text" ? this._hzAmpel(this._hzVis(hints)) : ""}${this._umfCard()}${nw ? this._hzQaRow() : ""}${bub}${eb}${this._spnCard()}<div class="mublks">${blocks || `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch nichts zu zeigen</div>Richte ein Modul ein oder blende Karten über „Anpassen“ wieder ein.</div>`}</div>`;
     return nw ? this._hzWrap(out) : out;
   }
   _hzAct(a, b) {

@@ -414,6 +414,7 @@
     if (m.type === "mxsim" || m.type === "mxwaset" || m.type === "mxapset") { const top = (box.querySelector(".sheet") || {}).scrollTop || 0; box.innerHTML = this._mxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "sup") { box.innerHTML = this._supModal(); this._supBind(box); return; }
     if (m.type === "errlog") { box.innerHTML = this._errModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (m.type === "umf") { box.innerHTML = this._umfModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "sts") { box.innerHTML = this._stsModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "cliptext") { box.innerHTML = this._clipModal(); return; }
     if (String(m.type).startsWith("mqx")) { box.innerHTML = this._mqModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }

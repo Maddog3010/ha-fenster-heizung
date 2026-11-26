@@ -110,7 +110,7 @@
     const C = (this._errD && this._errD.cfg) || {};
     if (C.asked || n > 12 || this._tmOn()) return;
     if (this._modal || this._blOn() || !this._stsS().asked) { setTimeout(() => this._errTry(n + 1), 20000); return; }   /* erst nach der Versions-Statistik */
-    setTimeout(() => { if (!this._modal && !((this._errD || {}).cfg || {}).asked) { this._modal = { type: "errlog", mode: "ask", first: true }; this._renderModal(); } }, n ? 0 : 4000);
+    setTimeout(() => { if (!this._modal && !((this._errD || {}).cfg || {}).asked) { this._askShown = true; this._modal = { type: "errlog", mode: "ask", first: true }; this._renderModal(); } }, n ? 0 : 4000);
   }
   _errAct(a, b) {
     const k = b && b.dataset ? b.dataset.k : "", D = this._errD, m = this._modal, copy = (t) => this._clip(t, "Kopiert");

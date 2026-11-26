@@ -15,7 +15,7 @@
     const busy = this._modal || this._blOn() || this._tmOn();
     if (this._tmOn()) return;  // an der Wandtafel nicht fragen; es kommt beim nächsten Öffnen am Handy oder Computer
     if (busy) { setTimeout(() => this._stsTry(n + 1), 15000); return; }
-    setTimeout(() => { if (!this._modal && !this._stsS().asked) { this._modal = { type: "sts", mode: "ask", first: true }; this._renderModal(); } }, n ? 0 : 2500);
+    setTimeout(() => { if (!this._modal && !this._stsS().asked) { this._askShown = true; this._modal = { type: "sts", mode: "ask", first: true }; this._renderModal(); } }, n ? 0 : 2500);
   }
   _stsWhen(ts, next) {
     if (!ts) return next ? "gleich" : "noch nicht";

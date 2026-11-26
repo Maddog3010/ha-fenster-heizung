@@ -1,5 +1,6 @@
 /* Strom & Wärme – Dashboard-Panel 2.0 (ohne externe Abhängigkeiten) */
 const ICONS = {
+  poll: '<path d="M4 20V11M10 20V4M16 20v-6M2 20h20"/>',
   list: '<path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/>',
   grid: '<rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/>',
   layers: '<path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 12.5l9 5 9-5M3 17l9 5 9-5"/>',
@@ -4134,6 +4135,38 @@ button.tm2dtn{border-radius:12px;border:1px solid color-mix(in srgb,var(--teal) 
 .tm2site .v{flex:none}.tm2site .v b{display:block;font-size:2.4rem;line-height:1.1}.tm2site .v small{font-size:.85rem;font-weight:500;color:var(--mut);margin-left:6px}.tm2site .v span{font-size:.85rem;color:var(--mut)}
 .tm2site .sl{flex:1;min-height:0;width:100%;max-height:240px;margin-top:auto}
 `;
+/* Umfragen: Popup, Karte auf der Startseite, Punkt am Einstellungen-Knopf */
+const CSS_UMF = `
+.pillbtn.umfdot{position:relative}
+.pillbtn.umfdot::after{content:"";position:absolute;top:-1px;right:-1px;width:11px;height:11px;border-radius:50%;background:#fb923c;border:2px solid var(--primary-background-color,#111);box-sizing:border-box}
+.card.umfc{border-color:color-mix(in srgb,var(--teal) 55%,var(--line));background:color-mix(in srgb,var(--teal) 9%,var(--card));margin-bottom:12px}
+.umfct{display:flex;gap:12px;align-items:flex-start}.umfct>div{min-width:0}.umfct b{display:block;overflow-wrap:anywhere}.umfct div>span{color:var(--mut);font-size:.8rem}
+.umfci{width:46px;height:46px;border-radius:13px;background:color-mix(in srgb,var(--teal) 22%,transparent);color:var(--teal);display:grid;place-items:center;flex:none}
+.umfcb{margin-top:12px}
+.umfsh .sh>div{flex:1;min-width:0}.umfsh .sh b{overflow-wrap:anywhere}
+.umfprog{display:flex;gap:6px;margin:0 0 14px}.umfprog i{flex:1;height:4px;border-radius:3px;background:var(--line)}.umfprog i.on{background:var(--teal)}
+.umfq{font-size:1.12rem;font-weight:800;line-height:1.3;margin:0 0 12px;overflow-wrap:anywhere}.umfq small{font-weight:500;font-size:.86rem;color:var(--mut)}
+.umfsh .ehchk span{min-width:0;overflow-wrap:anywhere}.umfsh .ehchk i.umfr{border-radius:50%}
+.umfstars{display:flex;justify-content:space-between;max-width:360px;margin:0 auto;padding:0 6px}
+.umfstars button{background:none;border:0;cursor:pointer;font-size:2.5rem;line-height:1;padding:6px 4px;color:var(--gray);opacity:.45;min-width:48px}
+.umfstars button.on{color:#fbbf24;opacity:1}
+.umfscale{display:flex;justify-content:space-between;max-width:360px;margin:0 auto 14px;padding:0 8px;color:var(--mut);font-size:.76rem}
+.umfta{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:14px;padding:12px;background:transparent;color:inherit;font:inherit;font-size:1rem;line-height:1.4;resize:vertical;min-height:92px}
+.umfta:focus{outline:2px solid var(--teal);outline-offset:-1px}
+.umfhint{display:block;margin:4px 2px}
+.umfmsg{margin:10px 0 0;padding:10px 12px;border-radius:12px;border:1px solid color-mix(in srgb,var(--amber) 55%,transparent);background:color-mix(in srgb,var(--amber) 10%,transparent);font-size:.84rem;line-height:1.4}
+.umffoot{margin-top:14px}
+.umfctr{text-align:center;margin-top:8px}
+.umfok{width:62px;height:62px;border-radius:50%;background:var(--teal);color:#042f2e;display:grid;place-items:center;margin:4px auto 12px}
+.umfuntil{text-align:center;margin:0 0 14px}
+.umfls{margin:10px 0 6px}
+.umfrq{font-weight:700;font-size:.9rem;margin:10px 0 6px;overflow-wrap:anywhere}.umfex{margin:-2px 0 8px}
+.umfbar{margin:0 0 9px}.umfbar>div{display:flex;justify-content:space-between;gap:10px;font-size:.86rem}.umfbar span{min-width:0;overflow-wrap:anywhere}.umfbar b{white-space:nowrap}
+.umfbar i{display:block;height:8px;border-radius:5px;background:var(--line);margin-top:4px;overflow:hidden}.umfbar u{display:block;height:100%;border-radius:5px;background:#64748b;text-decoration:none}.umfbar.me u{background:var(--teal)}
+.stsrows.umfmine>div{display:block}.stsrows.umfmine span{display:block;font-size:.78rem}.stsrows.umfmine b{display:block;text-align:left;margin-top:2px;white-space:pre-wrap;overflow-wrap:anywhere}
+.umfrows{border:1px solid var(--line);border-radius:16px;overflow:hidden}.umfrows .sxt b{overflow-wrap:anywhere}
+.umfopts{margin-top:12px}
+`;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
     super();
@@ -4274,7 +4307,7 @@ class FensterHeizungPanel extends HTMLElement {
     try { await this._spnLoad(); this._spnApply(); } catch (_) { /* Sponsor-Bereich ist optional */ }
     try { await this._saiLoad(); await this._advLoad(); } catch (_) { /* Weihnachts-Theme ist optional */ }
     if (this._admin()) this._supWatch();
-    if (this._admin()) { this._stsInit(); this._errInit(); }
+    if (this._admin()) { this._stsInit(); this._errInit(); this._umfInit(); }
     try { if (this._admin() && new URLSearchParams(location.search).get("support") === "1") { history.replaceState(null, "", location.pathname); this._supOpen(); } } catch (_) { /* Link aus der Handy-Mitteilung */ }
     try { this._upd = await this._hass.callWS({ type: "fenster_heizung/get_update" }); } catch (_) { this._upd = null; }
     if (vbeta(this._ver)) { try { this._blG = await this._hass.callWS({ type: "fenster_heizung/beta_gate" }); } catch (_) { this._blG = null; } }  /* Beta-Freigabe, für alle Nutzer */
@@ -5239,6 +5272,7 @@ class FensterHeizungPanel extends HTMLElement {
     try { this._render0(); this._kontaktLeiste(); if (sr0) { sr0.querySelectorAll("img[data-keep]").forEach((i) => { const o = keep[i.getAttribute("src")]; if (o && o !== i) i.replaceWith(o); }); sr0.querySelectorAll("#main [data-kk]").forEach((n) => { const o = kk[n.dataset.kk]; if (o && o !== n && !n.contains(o) && (!n.hasAttribute("data-ks") || this._kkSync(o, n))) n.replaceWith(o); }); this._animLoad(at); this._visObs(); if (this._saiDeco) this._saiDeco(sr0); this._msn(); if (this._hzAnimRun) this._hzAnimRun(); } } catch (err) { console.error("fenster_heizung render", err); try { this._errJs(err, "Neuaufbau"); } catch (_) { /* nie stören */ } if (this._toast && Date.now() - (this._errT || 0) > 4000) { this._errT = Date.now(); this._toast("Anzeigefehler: " + (err && err.message || err)); } return; }
     if (sr0) sr0.querySelectorAll(HS).forEach((e, n) => { const v = hsx[e.className.split(" ")[0] + "|" + n]; if (v) e.scrollLeft = v; });
     this._dkApply(sr0 && sr0.getElementById("main"));
+    this._umfDot();
     const nb = sr0 && sr0.querySelector(".mbar"); if (!nb) { this._mbId = id; return; }
     if (this._mbId !== id || x == null) {
       const t = nb.querySelector(".mtab.sel"); if (t) nb.scrollLeft = Math.max(0, t.offsetLeft - (nb.clientWidth - t.offsetWidth) / 2);
@@ -8248,7 +8282,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _build() {
     const sr = this.shadowRoot;
-    sr.innerHTML = `<style>${CSS_MAIN}${CSS_RK}${CSS_GH}${CSS_SUP}${CSS_STS}${CSS_GOE}${CSS_SF2}${CSS_WT}${CSS_SAI}${CSS_SB}${CSS_MQX}${CSS_TM2}${CSS_TM2M}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
+    sr.innerHTML = `<style>${CSS_MAIN}${CSS_RK}${CSS_GH}${CSS_SUP}${CSS_STS}${CSS_UMF}${CSS_GOE}${CSS_SF2}${CSS_WT}${CSS_SAI}${CSS_SB}${CSS_MQX}${CSS_TM2}${CSS_TM2M}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
     this._built = true; this._t0 = Date.now();
     /* Aufklappbereiche (<details>) merken: Home Assistant meldet laufend neue Werte, jeder Neuaufbau würde sie sonst wieder zuklappen (2026.11.4.3b5) */
     sr.addEventListener("toggle", (e) => { const d = e.target; if (d && d.tagName === "DETAILS" && !this._dkBusy) { const k = this._dKey(d); if (k) (this._dOpen = this._dOpen || {})[k] = d.open; } }, true);
@@ -8340,7 +8374,7 @@ class FensterHeizungPanel extends HTMLElement {
       else if (t.dataset && t.dataset.f === "gname" && this._modal) { this._modal.draft.name = t.value; }
       else if (t.dataset && t.dataset.f === "time" && this._modal) { this._modal.draft.entries[+t.dataset.i].time = t.value || "00:00"; this._renderModal(); }
   }
-  _onInput(t) { if (t.dataset && t.dataset.f === "kmhist") { this._kmHist = { ...(this._kmHist || {}), txt: t.value }; return; } if (t.dataset && t.dataset.f === "wtf") { this._wtIn(t); return; } if (t.dataset && t.dataset.f && t.dataset.f.startsWith("adx") && this._adxInput && this._adxInput(t)) return; if (t.dataset && t.dataset.f === "sfpq") { const q = t.value.trim().toLowerCase(); t.closest(".sfpk").querySelectorAll(".sfprw").forEach((r) => { r.hidden = !!q && !(r.dataset.q || "").includes(q); }); return; } if (t.dataset && t.dataset.f === "stq") { this._stInput(t); return; } if (t.dataset && t.dataset.f === "pkq") { this._pkInput(t); return; } if (t.dataset && (t.dataset.f === "msxname" || t.dataset.f === "msxn") && this._msChange(t)) return; if (t.dataset && t.dataset.f === "lfxname" && this._lfChange(t)) return; if (t.dataset && t.dataset.f === "hpre" && this._modal && this._modal.type === "opt") { const D = this._modal.draft, a = Array.isArray(D.htr_presets) ? [...D.htr_presets] : []; a[+t.dataset.i] = t.value; D.htr_presets = a; return; } if (t.dataset && t.dataset.f === "oadd" && this._modal && this._modal.type === "opt") { if (t.value) { this._modal.draft[t.dataset.k].push(t.value); this._renderModal(); } return; } if (t.dataset && t.dataset.f === "oval" && this._modal && this._modal.type === "opt") { const D = this._modal.draft; D[t.dataset.k] = t.dataset.num ? (t.value === "" ? "" : Number(t.value)) : t.value; if (t.tagName === "SELECT" || t.dataset.k === "room_area") this._renderModal(); return; } if (t.dataset && t.dataset.f === "gname" && this._modal) this._modal.draft.name = t.value;  }
+  _onInput(t) { if (t.dataset && t.dataset.f === "umftext") { this._umfInput(t); return; } if (t.dataset && t.dataset.f === "kmhist") { this._kmHist = { ...(this._kmHist || {}), txt: t.value }; return; } if (t.dataset && t.dataset.f === "wtf") { this._wtIn(t); return; } if (t.dataset && t.dataset.f && t.dataset.f.startsWith("adx") && this._adxInput && this._adxInput(t)) return; if (t.dataset && t.dataset.f === "sfpq") { const q = t.value.trim().toLowerCase(); t.closest(".sfpk").querySelectorAll(".sfprw").forEach((r) => { r.hidden = !!q && !(r.dataset.q || "").includes(q); }); return; } if (t.dataset && t.dataset.f === "stq") { this._stInput(t); return; } if (t.dataset && t.dataset.f === "pkq") { this._pkInput(t); return; } if (t.dataset && (t.dataset.f === "msxname" || t.dataset.f === "msxn") && this._msChange(t)) return; if (t.dataset && t.dataset.f === "lfxname" && this._lfChange(t)) return; if (t.dataset && t.dataset.f === "hpre" && this._modal && this._modal.type === "opt") { const D = this._modal.draft, a = Array.isArray(D.htr_presets) ? [...D.htr_presets] : []; a[+t.dataset.i] = t.value; D.htr_presets = a; return; } if (t.dataset && t.dataset.f === "oadd" && this._modal && this._modal.type === "opt") { if (t.value) { this._modal.draft[t.dataset.k].push(t.value); this._renderModal(); } return; } if (t.dataset && t.dataset.f === "oval" && this._modal && this._modal.type === "opt") { const D = this._modal.draft; D[t.dataset.k] = t.dataset.num ? (t.value === "" ? "" : Number(t.value)) : t.value; if (t.tagName === "SELECT" || t.dataset.k === "room_area") this._renderModal(); return; } if (t.dataset && t.dataset.f === "gname" && this._modal) this._modal.draft.name = t.value;  }
 
   /* ---------------- Aktionen ---------------- */
   _act(a, b) {
@@ -8374,6 +8408,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a.startsWith("spn")) this._spnAct(a, b);
     else if (a.startsWith("sup")) this._supAct(a, b);
     else if (a.startsWith("sts")) this._stsAct(a, b);
+    else if (a.startsWith("umf")) this._umfAct(a, b);
     else if (a.startsWith("errx")) this._errAct(a, b);
     else if (a.startsWith("lgx")) this._lgAct(a, b);
     else if (a.startsWith("mqx")) this._mqAct(a, b);
@@ -9085,6 +9120,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (m.type === "mxsim" || m.type === "mxwaset" || m.type === "mxapset") { const top = (box.querySelector(".sheet") || {}).scrollTop || 0; box.innerHTML = this._mxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "sup") { box.innerHTML = this._supModal(); this._supBind(box); return; }
     if (m.type === "errlog") { box.innerHTML = this._errModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (m.type === "umf") { box.innerHTML = this._umfModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "sts") { box.innerHTML = this._stsModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "cliptext") { box.innerHTML = this._clipModal(); return; }
     if (String(m.type).startsWith("mqx")) { box.innerHTML = this._mqModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -9500,7 +9536,7 @@ class FensterHeizungPanel extends HTMLElement {
       ["dv", "tablet", "Dieses Gerät", "Tablet-Modus, Zeiträume, Ansicht", ""],
       ["ad", "package", "Addons", (() => { const L = this._adState().addons || [], n = L.filter((a) => a.installed).length; return `${n} installiert · ${L.length - n} im Katalog`; })(), (() => { const L = this._adState().addons || [], u = L.filter((a) => a.update).length, e = L.filter((a) => a.status === "error").length; return e ? `<em class="sxc er">${e}</em>` : u ? `<em class="sxc wa">${u}</em>` : ""; })()],
       ["ex", "flask", "Erweiterungen", "Store und Labs", this._labCount() ? `<em class="sxc ok">${this._labCount()} ${this._labCount() === 1 ? "Lab" : "Labs"}</em>` : ""],
-      ["sy", "shield", "System", "Sichern, Diagnose, Versionen", ""],
+      ["sy", "shield", "System", "Sichern, Diagnose, Versionen", adm && this._umfOpenList().length ? `<em class="sxc ok">Umfrage</em>` : ""],
       ["sp", "heart", "Sponsor", "Schlüssel und Extras", ""]];
     const area = AREAS.some((a) => a[0] === this._stA) ? this._stA : wide ? "ov" : "";
     const card = (body, ttl) => `<div class="card sxl stcard">${ttl ? `<div class="stch">${ttl}</div>` : ""}${body}</div>`;
@@ -9525,6 +9561,7 @@ class FensterHeizungPanel extends HTMLElement {
           ${row("clock", "Änderungsverlauf", "Wer hat wann was geändert, jede Änderung einzeln zurücknehmen", "mdstlog", "", (this._stLog || []).length ? `<em class="sxc">${this._stLog.length}</em>` : "")}
           ${row("shield", "Diagnose", "Ventile, Fenster und Verbindung prüfen", "diag")}
           ${this._admin() ? this._stsRow(row) : ""}
+          ${this._admin() ? this._umfRow(row) : ""}
           ${this._admin() ? (this._errD || this._errLd || ((this._errLd = 1), this._errLoad().then(() => this._render()).catch(() => {})), this._errRow(row)) : ""}
           ${row("layers", "Versionen &amp; Updates", "Nach Updates suchen, letzte Änderungen, Module und Addons", "mver", "", this._upd && vgt(this._upd.latest, this._ver) ? `<em class="sxc warn">Update</em>` : "")}`),
       sp: () => card(this._spnRow()),
@@ -13403,7 +13440,7 @@ class FensterHeizungPanel extends HTMLElement {
       return `<section class="blk mub ${HZ_WIDE.includes(id) ? "wide" : ""} ${edit ? "editing" : ""} ${hid ? "hid" : ""}" data-sort="hzblk" data-id="${id}">
       ${edit ? `<div class="etag"><span class="grip" data-handle title="Verschieben">${ic("grip", 18)}</span>${HZ_NAMES[id]}<button class="eyeb" data-act="hzhide" data-k="${id}" aria-pressed="${!hid}" aria-label="${HZ_NAMES[id]} ${hid ? "einblenden" : "ausblenden"}" title="${hid ? "Einblenden" : "Ausblenden"}">${ic(hid ? "eyeOff" : "eye", 18)}<span>${hid ? "Ausgeblendet" : "Sichtbar"}</span></button></div>` : ""}${B[id]}</section>`;
     }).join("");
-    const out = `${this._hzHead() === "scene" ? this._hzHeadHtml(this._hzVis(hints)) : this._hzHead() === "text" ? this._hzAmpel(this._hzVis(hints)) : ""}${nw ? this._hzQaRow() : ""}${bub}${eb}${this._spnCard()}<div class="mublks">${blocks || `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch nichts zu zeigen</div>Richte ein Modul ein oder blende Karten über „Anpassen“ wieder ein.</div>`}</div>`;
+    const out = `${this._hzHead() === "scene" ? this._hzHeadHtml(this._hzVis(hints)) : this._hzHead() === "text" ? this._hzAmpel(this._hzVis(hints)) : ""}${this._umfCard()}${nw ? this._hzQaRow() : ""}${bub}${eb}${this._spnCard()}<div class="mublks">${blocks || `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch nichts zu zeigen</div>Richte ein Modul ein oder blende Karten über „Anpassen“ wieder ein.</div>`}</div>`;
     return nw ? this._hzWrap(out) : out;
   }
   _hzAct(a, b) {
@@ -15802,6 +15839,9 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="lsec" style="margin-top:16px">${ic("chart", 15)}Versions-Statistik</div>
       <div class="mut sm" style="margin:0 0 6px">${this._stsS().url_dev ? "Test-Adresse aktiv: Meldungen gehen an diesen Server." : "Test-Adresse deines Statistik-Servers (nur bei dir). Leer = echter Server. Anleitung: Ordner statistik-server im Repo."}</div>
       <div class="gbtns"><input class="osel" data-f="stsurl" placeholder="http://192.168.1.50:8081" value="${esc(this._stsS().url_dev || "")}" aria-label="Test-Adresse Statistik-Server" style="flex:1;min-width:0"><button class="btn2" data-act="stsurl">Speichern</button></div>
+      <div class="lsec" style="margin-top:16px">${ic("poll", 15)}Umfragen</div>
+      <div class="mut sm" style="margin:0 0 6px">Testcode aus dem Dashboard (Umfragen). Damit siehst nur du die Test-Umfragen. Leer = keine.</div>
+      <div class="gbtns"><input class="osel" data-f="umfcode" placeholder="T-XXXX-XXXX" maxlength="20" autocomplete="off" value="${esc(this._umfS().code || "")}" aria-label="Testcode für Umfragen" style="flex:1;min-width:0"><button class="btn2" data-act="umfcode">Prüfen</button></div>
       <div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="spnforget" style="font-size:.8rem">Verwaltung ausschalten</button></div>`);
   }
   /* ================= Mit GitHub freischalten (Konzept Sponsor-Freischaltung, Stufe 2) =================
@@ -16095,7 +16135,7 @@ class FensterHeizungPanel extends HTMLElement {
     const busy = this._modal || this._blOn() || this._tmOn();
     if (this._tmOn()) return;  // an der Wandtafel nicht fragen; es kommt beim nächsten Öffnen am Handy oder Computer
     if (busy) { setTimeout(() => this._stsTry(n + 1), 15000); return; }
-    setTimeout(() => { if (!this._modal && !this._stsS().asked) { this._modal = { type: "sts", mode: "ask", first: true }; this._renderModal(); } }, n ? 0 : 2500);
+    setTimeout(() => { if (!this._modal && !this._stsS().asked) { this._askShown = true; this._modal = { type: "sts", mode: "ask", first: true }; this._renderModal(); } }, n ? 0 : 2500);
   }
   _stsWhen(ts, next) {
     if (!ts) return next ? "gleich" : "noch nicht";
@@ -16286,7 +16326,7 @@ class FensterHeizungPanel extends HTMLElement {
     const C = (this._errD && this._errD.cfg) || {};
     if (C.asked || n > 12 || this._tmOn()) return;
     if (this._modal || this._blOn() || !this._stsS().asked) { setTimeout(() => this._errTry(n + 1), 20000); return; }   /* erst nach der Versions-Statistik */
-    setTimeout(() => { if (!this._modal && !((this._errD || {}).cfg || {}).asked) { this._modal = { type: "errlog", mode: "ask", first: true }; this._renderModal(); } }, n ? 0 : 4000);
+    setTimeout(() => { if (!this._modal && !((this._errD || {}).cfg || {}).asked) { this._askShown = true; this._modal = { type: "errlog", mode: "ask", first: true }; this._renderModal(); } }, n ? 0 : 4000);
   }
   _errAct(a, b) {
     const k = b && b.dataset ? b.dataset.k : "", D = this._errD, m = this._modal, copy = (t) => this._clip(t, "Kopiert");
@@ -16311,6 +16351,264 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "errxsend") { m.busy = true; this._renderModal(); cfg("send").then((r) => { m.busy = false; re(); const S = r.send || {}; this._toast(S.sent ? (S.n ? `${S.n} Fehler gesendet` : "Gemeldet: keine neuen Fehler") : S.why === "nichts" ? "Nichts Neues zu senden" : S.why === "noch nicht" ? "Server nimmt Fehlerberichte noch nicht an" : S.why === "zu oft" ? "Gerade erst gesendet – in einer Stunde wieder möglich" : "Server nicht erreichbar – später erneut"); }).catch(() => { m.busy = false; re(); fail(); }); }
     else if (a === "errxdel") { m.mode = "del"; this._renderModal(); }
     else if (a === "errxdelok") cfg("forget").then((r) => { m.mode = "main"; re(); this._toast(r.forgotten ? "Gelöscht, Senden aus" : "Hier gelöscht, Server nicht erreichbar"); }).catch(fail);
+  }
+  /* ================= Umfragen =================
+     Popup beim Öffnen (nur Administratoren, nie im Tablet-Modus), Karte auf der Startseite, Punkt am Einstellungen-Knopf und
+     Liste unter Einstellungen → System → Umfragen. Was gesendet wird und wann das Popup erscheinen darf, entscheidet surveys.py.
+     Titel und Texte kommen vom Server und werden immer als reiner Text gezeigt (esc), ohne Links. */
+  _umfS() { return this._umfD || { ok: false, on: true, popup: true, surveys: [], prompt: "", mine: 0, version: "", channel: "stable", last_ok: 0, err: "", code: "" }; }
+  _umfWS(act, extra = {}) {
+    return this._hass.callWS({ type: "fenster_heizung/surveys", act, ...extra }).then((r) => { this._umfD = r; this._umfTs = Date.now(); return r; });
+  }
+  _umfFind(id) { return this._umfS().surveys.find((s) => s.id === id); }
+  _umfInit() {
+    this._umfWS("get").then((r) => { this._render(); if (r.prompt) setTimeout(() => this._umfTry(0), 6000); }).catch(() => { /* Umfragen sind optional */ });
+  }
+  /* Stand ab und zu neu holen (lokal, ohne Internet), damit Karte und Punkt auch bei lange offener Seite stimmen */
+  _umfFresh() {
+    if (!this._admin() || !this._umfTs || Date.now() - this._umfTs < 600000) return;
+    this._umfTs = Date.now();
+    const sig = (r) => JSON.stringify((r.surveys || []).map((s) => [s.id, s.rev, s.status, s.card])), old = sig(this._umfS());
+    this._umfWS("get").then((r) => { if (sig(r) !== old) this._render(); }).catch(() => {});
+  }
+  /* Popup: nie zusammen mit der Frage zur Versions-Statistik oder zu Fehlerberichten, nie über einem anderen Fenster */
+  _umfTry(n) {
+    const S = this._umfS(), id = S.prompt;
+    if (!id || n > 12 || this._umfAsked || this._askShown || !this._admin() || this._tmOn()) return;
+    const sts = this._stsD, C = (this._errD && this._errD.cfg) || null;
+    if (sts && !sts.asked) return;   /* erst die Statistik-Frage; die Umfrage kommt beim nächsten Öffnen */
+    if (C && !C.asked && (C.stats_on || C.channel === "beta")) return;
+    const typing = this.shadowRoot && this.shadowRoot.activeElement && /INPUT|TEXTAREA|SELECT/.test(this.shadowRoot.activeElement.tagName);
+    if ((!sts && n < 3) || this._modal || this._blOn() || this._edit || typing || !this.isConnected || document.visibilityState === "hidden") { setTimeout(() => this._umfTry(n + 1), 20000); return; }
+    const s = this._umfFind(id);
+    if (!s || s.status !== "open") return;
+    this._umfAsked = true;
+    this._umfOpen(id, { popup: true });
+    this._umfWS("shown", { sid: id }).catch(() => {});
+  }
+  _umfDay(d) { return d ? `${d.slice(8, 10)}.${d.slice(5, 7)}.` : ""; }
+  _umfCount(s) { return s.questions.length === 1 ? "Eine Frage" : `${s.questions.length} Fragen`; }
+  _umfMin(s) { const m = Math.max(1, Math.round(s.questions.length / 3)); return `etwa ${m} ${m === 1 ? "Minute" : "Minuten"}`; }
+  _umfOpenList() { return this._umfS().surveys.filter((s) => s.dot); }
+  /* ---- Startseite, Kopfzeile, Einstellungen */
+  _umfCard() {
+    this._umfFresh();
+    if (!this._admin() || this._edit) return "";
+    const s = this._umfS().surveys.find((x) => x.card);
+    if (!s) return "";
+    const pend = s.status === "pending", test = s.state === "test" ? "Test · " : "";
+    const sub = pend ? "Deine Antwort ist noch nicht angekommen." : `${test}${this._umfCount(s)} · ${this._umfMin(s)}${s.to ? ` · bis ${this._umfDay(s.to)}` : ""}`;
+    return `<div class="card umfc"><div class="umfct"><span class="umfci">${ic("poll", 26)}</span><div><b>Umfrage: ${esc(s.title)}</b><span>${sub}</span></div></div>
+      <div class="gbtns umfcb"><button class="btn2 pri" data-act="${pend ? "umfsend" : "umfopen1"}" data-id="${s.id}"${s.busy ? " disabled" : ""}>${pend ? "Erneut senden" : "Mitmachen"}</button><button class="btn2" data-act="umfsnooze" data-id="${s.id}">Später</button></div></div>`;
+  }
+  _umfDot() {
+    const main = this.shadowRoot && this.shadowRoot.getElementById("main");
+    if (!main) return;
+    const on = this._admin() && this._umfOpenList().length > 0;
+    main.querySelectorAll('.bar .pillbtn[data-act="mdst"]').forEach((b) => { b.classList.toggle("umfdot", on); b.setAttribute("aria-label", on ? "Einstellungen · Umfrage offen" : "Einstellungen"); });
+  }
+  _umfRow(row) {
+    const S = this._umfS(), n = this._umfOpenList().length;
+    const sub = !S.on ? "Aus · es wird nichts abgerufen" : n ? `${n === 1 ? "Eine Umfrage ist" : `${n} Umfragen sind`} offen` : "Fragen des Entwicklers · Mitmachen ist freiwillig";
+    return row("poll", "Umfragen", sub, "umfopen", "", n ? `<em class="sxc ok umfnew">Neu</em>` : S.on ? "" : `<em class="sxc off">Aus</em>`);
+  }
+  /* ---- Fenster */
+  _umfOpen(id, o = {}) {
+    const s = this._umfFind(id);
+    if (!s) { this._toast("Diese Umfrage gibt es nicht mehr"); return; }
+    const m = { type: "umf", id, rev: s.rev, popup: !!o.popup, from: o.from || "", mode: "q", step: 0, ans: {}, err: "", busy: false };
+    if (s.status === "ended" || s.status === "answered") m.mode = "res";
+    else {
+      const d = (this._umfDraft || {})[id];
+      m.ans = JSON.parse(JSON.stringify((d && d.rev === s.rev ? d.ans : s.mine) || {}));
+      m.step = s.status === "pending" ? s.questions.length - 1 : d && d.rev === s.rev ? Math.min(d.step, s.questions.length - 1) : 0;
+      if (s.status === "pending") m.err = "offline";
+    }
+    this._modal = m;
+    this._renderModal();
+  }
+  _umfList() { this._modal = { type: "umf", mode: "list" }; this._renderModal(); }
+  _umfDone(q, v) { return q.type === "text" ? true : q.type === "multi" ? Array.isArray(v) && v.length > 0 : v !== undefined && v !== null; }
+  _umfAnswers(s, ans) {
+    const out = {};
+    for (const q of s.questions) { const v = ans[q.id]; if (q.type === "text") { if (String(v || "").trim()) out[q.id] = String(v).trim(); } else if (v !== undefined && this._umfDone(q, v)) out[q.id] = v; }
+    return out;
+  }
+  _umfReady(s, ans) { return s.questions.every((q) => this._umfDone(q, ans[q.id])) && Object.keys(this._umfAnswers(s, ans)).length > 0; }
+  _umfSendBox(s, ans) {
+    const S = this._umfS(), n = Object.keys(this._umfAnswers(s, ans)).length;
+    return `Deine ${n === 1 ? "Antwort" : `${n} Antworten`}, die Version ${esc(S.version)}, Kanal ${S.channel === "beta" ? "Beta" : "Stabil"}${s.state === "test" ? ", dein Testcode" : ""} und ein Zufallscode nur für diese Umfrage.`;
+  }
+  _umfErr(e) {
+    return { offline: "Der Server ist gerade nicht erreichbar. Deine Antworten sind gespeichert.", kurz: "Bitte kurz warten und noch einmal senden.",
+      voll: "Diese Umfrage nimmt keine Antworten mehr an.", beendet: "Diese Umfrage ist inzwischen beendet.", veraltet: "Die Fragen wurden geändert. Bitte öffne die Umfrage neu.",
+      unbekannt: "Diese Umfrage gibt es nicht mehr.", abgelehnt: "Der Server hat die Antwort nicht angenommen. Vielleicht hilft ein Update der Integration.",
+      antworten: "Bitte alle Fragen beantworten.", laeuft: "Wird gerade gesendet …" }[e] || "Das hat nicht geklappt. Bitte später noch einmal versuchen.";
+  }
+  _umfWrap(title, sub, body, x = "umfx") {
+    return `<div class="ov" data-act="${x}"></div><div class="sheet stssh umfsh" role="dialog" aria-modal="true" aria-label="${title}"><div class="sh"><div><b>${title}</b>${sub ? `<span>${sub}</span>` : ""}</div><button class="ibtn" data-act="${x}" aria-label="Schließen">${ic("close", 20)}</button></div>${body}</div>`;
+  }
+  _umfModal() {
+    const m = this._modal, S = this._umfS();
+    if (m.mode === "list") return this._umfListHtml();
+    if (m.mode === "del") {
+      return this._umfWrap("Antworten löschen?", "", `<div class="stsbox">Alle Antworten, die diese Installation gesendet hat, werden auf dem Server gelöscht – auch zu beendeten Umfragen.</div>
+        <div class="gbtns"><button class="btn2" data-act="umflist">Abbrechen</button><button class="btn2 stsdan" data-act="umfdelok"${m.busy ? " disabled" : ""}>${m.busy ? "Löscht …" : "Löschen"}</button></div>`, "umflist");
+    }
+    const s = this._umfFind(m.id);
+    if (!s || s.rev !== m.rev) return this._umfWrap("Umfrage", "", `<div class="stsbox">${this._umfErr(m.err || (s ? "veraltet" : "unbekannt"))}</div><div class="gbtns"><button class="btn2 pri" data-act="umfx">Schließen</button></div>`);
+    if (m.mode === "wd") {
+      return this._umfWrap("Antwort zurückziehen?", esc(s.title), `<div class="stsbox">Deine Antwort wird auf dem Server und hier gelöscht. Solange die Umfrage läuft, kannst du später neu antworten.</div>
+        <div class="gbtns"><button class="btn2" data-act="umfwdno">Abbrechen</button><button class="btn2 stsdan" data-act="umfwdok"${m.busy ? " disabled" : ""}>${m.busy ? "Löscht …" : "Zurückziehen"}</button></div>`, "umfwdno");
+    }
+    return m.mode === "res" ? this._umfResHtml(s) : this._umfQHtml(s);
+  }
+  _umfQHtml(s) {
+    const m = this._modal, n = s.questions.length, i = Math.min(m.step, n - 1), q = s.questions[i], v = m.ans[q.id], last = i === n - 1;
+    const pick = (on, round, t, val) => `<button class="ehchk${on ? " on" : ""}" data-act="umfpick" data-k="${val}" role="${round ? "radio" : "checkbox"}" aria-checked="${on}"><i class="${round ? "umfr" : ""}">${on ? ic("check", 16) : ""}</i><span>${t}</span></button>`;
+    let body = "";
+    if (q.type === "one" || q.type === "multi") {
+      body = `<div role="${q.type === "one" ? "radiogroup" : "group"}">${q.options.map((o, k) => pick(q.type === "one" ? v === k : (v || []).includes(k), q.type === "one", esc(o), k)).join("")}</div>`;
+    } else if (q.type === "stars") {
+      body = `<div class="umfstars" role="radiogroup">${[1, 2, 3, 4, 5].map((k) => `<button class="${typeof v === "number" && k <= v ? "on" : ""}" data-act="umfstar" data-k="${k}" role="radio" aria-checked="${v === k}" aria-label="${k} von 5 Sternen">★</button>`).join("")}</div>
+        <div class="umfscale"><span>gar nicht</span><span>sehr</span></div>${q.na ? pick(v === "na", true, "Nutze ich nicht", "na") : ""}`;
+    } else {
+      body = `<textarea class="umfta" data-f="umftext" maxlength="500" rows="4" aria-label="${esc(q.text)}" placeholder="Deine Antwort">${esc(v || "")}</textarea><div class="mut sm umfhint">Bitte keine Namen oder Adressen. <span id="umfn">${String(v || "").length}</span> / 500</div>`;
+    }
+    const ready = this._umfReady(s, m.ans), next = this._umfDone(q, v);
+    const dead = ["voll", "beendet", "veraltet", "unbekannt"].includes(m.err);
+    const back = i ? `<button class="btn2" data-act="umfprev">Zurück</button>` : m.popup && s.status === "open" ? `<button class="btn2" data-act="umfx">Später</button>` : `<button class="btn2" data-act="umfx">Abbrechen</button>`;
+    const go = last
+      ? `<button class="btn2 pri" id="umfgo" data-act="umfsubmit"${!ready || m.busy ? " disabled" : ""}>${m.busy ? "Sendet …" : m.err ? "Erneut senden" : "Absenden"}</button>`
+      : `<button class="btn2 pri" id="umfgo" data-act="umfnext"${next ? "" : " disabled"}>Weiter</button>`;
+    const sub = `${s.state === "test" ? "Test · " : ""}${n > 1 ? `Frage ${i + 1} von ${n}` : "Eine Frage"}${i ? "" : ` · ${this._umfMin(s)}`}`;
+    return this._umfWrap(esc(s.title), sub, `${n > 1 ? `<div class="umfprog" aria-hidden="true">${s.questions.map((_, k) => `<i class="${k <= i ? "on" : ""}"></i>`).join("")}</div>` : ""}
+      <div class="umfq">${esc(q.text)}${q.type === "text" ? ` <small>(freiwillig)</small>` : q.type === "multi" ? ` <small>(mehrere möglich)</small>` : ""}</div>${body}
+      ${last ? `<div class="gbox"><b>Das wird gesendet</b><span id="umfbox">${this._umfSendBox(s, m.ans)}</span><br><span class="mut">Kein Name, keine Räume, keine Geräte, keine Messwerte.</span></div>` : ""}
+      ${m.err ? `<div class="umfmsg" role="alert">${this._umfErr(m.err)}</div>` : ""}
+      <div class="gbtns umffoot">${dead ? `<button class="btn2 pri" data-act="umfx">Schließen</button>` : back + go}</div>
+      ${!i && s.status === "open" && !dead ? `<div class="umfctr"><button class="lnk" data-act="umfnever">Bei dieser Umfrage nicht mehr fragen</button></div>` : ""}`);
+  }
+  /* Ergebnis als Balken (nur Zahlen, wenn der Entwickler es freigegeben hat) */
+  _umfBars(s) {
+    const R = s.result, mine = s.mine || {};
+    if (!R) return "";
+    const bar = (t, pct, me) => `<div class="umfbar${me ? " me" : ""}"><div><span>${t}${me ? " · deine Wahl" : ""}</span><b>${pct} %</b></div><i><u style="width:${pct}%"></u></i></div>`;
+    const part = s.questions.filter((q) => R.q[q.id]).map((q) => {
+      const x = R.q[q.id], pct = (c) => (x.n ? Math.round((c / x.n) * 100) : 0), v = mine[q.id];
+      const rows = q.type === "stars"
+        ? [5, 4, 3, 2, 1].map((k) => { const sum = x.counts.reduce((a, c) => a + c, 0); return bar(`${k} ${k === 1 ? "Stern" : "Sterne"}`, sum ? Math.round((x.counts[k - 1] / sum) * 100) : 0, v === k); }).join("")
+        : q.options.map((o, k) => bar(esc(o), pct(x.counts[k]), q.type === "multi" ? Array.isArray(v) && v.includes(k) : v === k)).join("");
+      const extra = q.type === "stars" && x.avg ? `Durchschnitt ${num(x.avg, 1)} von 5` : q.type === "multi" ? "Mehrfachauswahl" : "";
+      return `${s.questions.length > 1 ? `<div class="umfrq">${esc(q.text)}</div>` : ""}${extra ? `<div class="mut sm umfex">${extra}</div>` : ""}${rows}`;
+    }).join("");
+    return `<div class="lsec umfls">${s.status === "ended" ? "Ergebnis" : "Zwischenstand"} · ${R.n} Antworten</div>${part}`;
+  }
+  _umfMine(s) {
+    const mine = s.mine || {};
+    const val = (q) => { const v = mine[q.id]; if (v === undefined) return "–"; if (q.type === "one") return esc(q.options[v]); if (q.type === "multi") return v.map((k) => esc(q.options[k])).join(", "); if (q.type === "stars") return v === "na" ? "Nutze ich nicht" : `${v} von 5 Sternen`; return esc(v); };
+    return `<div class="lsec umfls">Deine Antworten</div><div class="stsrows umfmine">${s.questions.map((q) => `<div><span>${esc(q.text)}</span><b>${val(q)}</b></div>`).join("")}</div>`;
+  }
+  _umfResHtml(s) {
+    const m = this._modal, ended = s.status === "ended", mine = !!(s.mine && s.sent), bars = this._umfBars(s);
+    if (ended) {
+      return this._umfWrap(esc(s.title), `Beendet${s.to ? ` · Ende ${this._umfDay(s.to)}` : ""}`, `${bars || `<div class="stsbox">Diese Umfrage ist beendet. Zu ihr wird kein Ergebnis gezeigt.</div>`}${mine && !bars ? this._umfMine(s) : ""}
+        <div class="gbtns umffoot"><button class="btn2 pri" data-act="umfx">Schließen</button></div>`);
+    }
+    return this._umfWrap(m.just ? "Danke!" : esc(s.title), m.just ? "Deine Antwort ist angekommen" : `Gesendet am ${this._umfDay(new Date(s.sent * 1000).toLocaleDateString("sv-SE"))}`,
+      `<div class="umfok">${ic("check", 34)}</div><div class="mut sm umfuntil">${s.to ? `Bis zum ${this._umfDay(s.to)}` : "Solange die Umfrage läuft,"} kannst du sie ändern oder zurückziehen.</div>${bars || this._umfMine(s)}
+       <div class="gbtns umffoot"><button class="btn2" data-act="umfedit">Antwort ändern</button><button class="btn2 pri" data-act="umfx">Fertig</button></div>
+       <div class="umfctr"><button class="lnk" data-act="umfwd">Antwort zurückziehen</button></div>`);
+  }
+  _umfListHtml() {
+    const S = this._umfS(), L = S.surveys;
+    const row = (s) => {
+      const st = s.status, open = st === "open" || st === "pending";
+      const sub = st === "ended" ? `${s.to ? `Ende ${this._umfDay(s.to)} · ` : ""}${s.result ? "Ergebnis ansehen" : "beendet"}` : st === "answered" ? (s.to ? `Ändern bis ${this._umfDay(s.to)}` : "Ändern, solange sie läuft") : st === "pending" ? "Noch nicht angekommen · erneut senden" : `${this._umfCount(s)}${s.to ? ` · bis ${this._umfDay(s.to)}` : ""}`;
+      const chip = s.state === "test" ? ["wa", "Test"] : st === "ended" ? ["off", "Vorbei"] : st === "answered" ? ["ok", "Gesendet"] : st === "pending" ? ["wa", "Offen"] : st === "declined" ? ["", "Offen"] : ["ok", "Neu"];
+      return `<button class="sxrow" data-act="umfitem" data-id="${s.id}"><span class="sxi">${ic("poll", 20)}</span><span class="sxt"><b>${esc(s.title)}</b><small>${open && s.state === "test" ? "Nur mit deinem Testcode · " : ""}${sub}</small></span><em class="sxc ${chip[0]}">${chip[1]}</em><span class="sxg">${ic("chev", 16)}</span></button>`;
+    };
+    const sec = (t, st) => { const l = L.filter((s) => st.includes(s.status)); return l.length ? `<div class="lsec umfls">${t}</div><div class="umfrows">${l.map(row).join("")}</div>` : ""; };
+    const seg = (label, on, act, hint) => `<div class="of"><div class="ol"><b>${label}</b>${hint ? `<small class="mut sm umfhint">${hint}</small>` : ""}</div><div class="oc"><div class="seg oseg" role="group" aria-label="${label}"><button class="${on ? "" : "sel"}" data-act="${act}" data-k="0" aria-pressed="${!on}">Aus</button><button class="${on ? "sel" : ""}" data-act="${act}" data-k="1" aria-pressed="${on}">An</button></div></div></div>`;
+    const lists = sec("Offen", ["open", "pending", "declined"]) + sec("Beantwortet", ["answered"]) + sec("Beendet", ["ended"]);
+    const empty = !S.on ? "„Umfragen laden“ ist aus. Es wird nichts abgerufen." : S.err && S.err !== "noch nicht" ? "Die Umfragen konnten zuletzt nicht abgerufen werden. Der nächste Versuch kommt von allein." : "Gerade gibt es keine Umfrage.";
+    return this._umfWrap("Umfragen", "Einstellungen › System", `${S.on && lists ? lists : `<div class="stsbox">${empty}</div>`}
+      <div class="umfopts">${seg("Umfragen laden", S.on, "umfon", "Etwa 1× pro Tag, ohne Angaben zu dir")}${S.on ? seg("Neue Umfragen als Popup zeigen", S.popup, "umfpop", "") : ""}</div>
+      ${S.mine ? `<button class="lnk" data-act="umfdel">Meine Antworten auf dem Server löschen</button>` : ""}
+      <div class="stslks"><a class="stslk" href="https://github.com/Maddog3010/ha-fenster-heizung/blob/beta/README.md#umfragen-und-datenschutz" target="_blank" rel="noopener noreferrer">Datenschutz</a></div>`, "close");
+  }
+  /* Beim Schließen merken, was schon ausgefüllt war */
+  _umfKeep() {
+    const m = this._modal;
+    if (m && m.type === "umf" && m.mode === "q" && Object.keys(m.ans).length) { this._umfDraft = this._umfDraft || {}; this._umfDraft[m.id] = { rev: m.rev, step: m.step, ans: m.ans }; }
+  }
+  _umfInput(t) {
+    const m = this._modal;
+    if (!m || m.type !== "umf" || m.mode !== "q") return;
+    const s = this._umfFind(m.id); if (!s) return;
+    const q = s.questions[m.step]; if (!q || q.type !== "text") return;
+    m.ans[q.id] = t.value;
+    const sr = this.shadowRoot, n = sr.getElementById("umfn"), box = sr.getElementById("umfbox"), go = sr.getElementById("umfgo");
+    if (n) n.textContent = String(t.value.length);
+    if (box) box.innerHTML = this._umfSendBox(s, m.ans);
+    if (go && go.dataset.act === "umfsubmit") go.disabled = m.busy || !this._umfReady(s, m.ans);
+  }
+  _umfSubmit(act, id, extra = {}) {
+    const m = this._modal && this._modal.type === "umf" ? this._modal : null, mine = () => this._modal === m;
+    if (m) { m.busy = true; m.err = ""; this._renderModal(); }
+    this._umfWS(act, { sid: id, ...extra }).then((r) => {
+      if (r.sent) {
+        if (this._umfDraft) delete this._umfDraft[id];
+        if (m && mine()) { m.busy = false; m.mode = "res"; m.just = true; this._renderModal(); } else this._toast("Antwort gesendet – danke!");
+      } else if (m && mine()) { m.busy = false; m.err = r.error || "offline"; this._renderModal(); }
+      else this._toast(this._umfErr(r.error));
+      this._render();
+    }).catch(() => { if (m && mine()) { m.busy = false; m.err = "x"; this._renderModal(); } else this._toast("Das ging nicht"); });
+  }
+  _umfAct(a, b) {
+    const m = this._modal, id = b.dataset.id, k = b.dataset.k, fail = () => this._toast("Das ging nicht");
+    const re = () => { if (this._modal && this._modal.type === "umf") this._renderModal(); this._render(); };
+    if (a === "umfopen") { this._umfList(); this._umfWS("get").then(re).catch(() => {}); return; }
+    if (a === "umfopen1") { this._umfOpen(id); return; }
+    if (a === "umfsnooze") { this._umfWS("later", { sid: id }).then(() => { this._render(); this._toast("Du findest sie unter Einstellungen → System → Umfragen"); }).catch(fail); return; }
+    if (a === "umfsend") { this._umfSubmit("send", id); return; }
+    if (a === "umfcode") {
+      const el = this.shadowRoot.querySelector('[data-f="umfcode"]'), code = String((el && el.value) || "").trim();
+      this._umfWS("code", { code: code.slice(0, 20) }).then((r) => {
+        this._renderModal(); this._render();
+        this._toast(r.error === "code" ? "Format: T-XXXX-XXXX" : !r.on ? "„Umfragen laden“ ist aus" : !r.fetched ? "Gespeichert – Server nicht erreichbar" : !r.code ? "Testcode entfernt" : r.tests ? `${r.tests} Test-Umfrage${r.tests === 1 ? "" : "n"} gefunden` : "Keine Test-Umfrage – stimmt der Code?");
+      }).catch(fail);
+      return;
+    }
+    if (!m || m.type !== "umf") return;
+    const s = m.id ? this._umfFind(m.id) : null, q = s && s.questions[m.step];
+    if (a === "umfx") { this._umfKeep(); if (m.from === "list") this._umfList(); else { this._modal = null; this._renderModal(); } this._render(); }
+    else if (a === "umflist") { this._umfList(); }
+    else if (a === "umfitem") this._umfOpen(id, { from: "list" });
+    else if (a === "umfpick" && q) { const v = k === "na" ? "na" : +k; if (q.type === "multi") { const l = m.ans[q.id] || []; m.ans[q.id] = l.includes(v) ? l.filter((x) => x !== v) : [...l, v].sort(); } else m.ans[q.id] = v; this._renderModal(); }
+    else if (a === "umfstar" && q) { m.ans[q.id] = +k; this._renderModal(); }
+    else if (a === "umfnext" && s) { if (this._umfDone(q, m.ans[q.id])) { m.step = Math.min(s.questions.length - 1, m.step + 1); m.err = ""; this._renderModal(); const sh = this.shadowRoot.querySelector("#modal .sheet"); if (sh) sh.scrollTop = 0; } }
+    else if (a === "umfprev") { m.step = Math.max(0, m.step - 1); this._renderModal(); }
+    else if (a === "umfsubmit" && s) { if (this._umfReady(s, m.ans) && !m.busy) this._umfSubmit("answer", m.id, { answers: this._umfAnswers(s, m.ans) }); }
+    else if (a === "umfnever") this._umfWS("never", { sid: m.id }).then(() => { if (this._umfDraft) delete this._umfDraft[m.id]; if (m.from === "list") this._umfList(); else { this._modal = null; this._renderModal(); } this._render(); this._toast("Alles klar – sie bleibt unter Einstellungen → System → Umfragen"); }).catch(fail);
+    else if (a === "umfedit" && s) { m.mode = "q"; m.step = 0; m.ans = JSON.parse(JSON.stringify(s.mine || {})); m.err = ""; m.just = false; this._renderModal(); }
+    else if (a === "umfwd") { m.mode = "wd"; this._renderModal(); }
+    else if (a === "umfwdno") { m.mode = "res"; this._renderModal(); }
+    else if (a === "umfwdok") {
+      m.busy = true; this._renderModal();
+      this._umfWS("withdraw", { sid: m.id }).then((r) => {
+        m.busy = false;
+        if (!r.withdrawn) { this._renderModal(); this._toast("Server nicht erreichbar – bitte später noch einmal"); return; }
+        if (this._modal === m) this._umfList();
+        this._render(); this._toast("Antwort gelöscht");
+      }).catch(() => { m.busy = false; this._renderModal(); fail(); });
+    }
+    else if (a === "umfon" || a === "umfpop") this._umfWS("opts", a === "umfon" ? { on: k === "1" } : { popup: k === "1" }).then(re).catch(fail);
+    else if (a === "umfdel") { m.mode = "del"; this._renderModal(); }
+    else if (a === "umfdelok") {
+      m.busy = true; this._renderModal();
+      this._umfWS("forget").then((r) => { if (this._modal === m) this._umfList(); this._render(); this._toast(r.failed ? "Server nicht erreichbar – bitte später noch einmal" : "Deine Antworten sind gelöscht"); }).catch(() => { m.busy = false; this._renderModal(); fail(); });
+    }
   }
   /* ================= Sponsor-Lounge (Konzept Sponsor-Bereich 2.0, Stufen S1 + S2) und Sponsor Max 1 =================
      Eigene Seite statt Dialog, erreichbar über das Herz/den Stern im Kopf, die Startseite und die Einstellungen.
@@ -23347,6 +23645,7 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
       { id: "diag", t: "Diagnose", p: "System", k: "diagnose ventil thermostat batterie problem", go: ["diag"] },
       { id: "errlog", t: "Fehlerprotokoll", p: "System", k: "fehler protokoll log programmfehler support kopieren github absturz", go: ["errxopen"], h: "Programmfehler der letzten 30 Tage, bereinigt und zum Kopieren für den Support. Bleibt auf deinem Home Assistant." },
       { id: "stats", t: "Versions-Statistik", p: "System", k: "statistik version anonym daten senden datenschutz popup teilnehmen kennung", go: ["stsopen"], h: "Freiwillig und anonym: höchstens 1× pro Tag Versionsnummer und Kanal an den Entwickler. Ausschalten und Daten löschen jederzeit möglich." },
+      { id: "umfragen", t: "Umfragen", p: "System", k: "umfrage meinung abstimmen popup fragen feedback datenschutz", go: ["umfopen"], h: "Fragen des Entwicklers. Mitmachen ist freiwillig; Abruf und Popup lassen sich ausschalten." },
       { id: "versions", t: "Versionen", p: "System", k: "version changelog beta modulversion", go: ["mver"] },
     ];
     MODS.forEach((m) => { const ms = MOD_SET[m.id]; if (ms) C.push({ id: `modules.on.${m.id}`, t: `Modul ${m.n} ${m.name}`, p: "Module", k: `modul ${m.short} ${ms.txt}`.toLowerCase(), go: [ms.act], v: () => (this._stIsOn(m) ? "An" : "Aus"), h: ms.txt }); });

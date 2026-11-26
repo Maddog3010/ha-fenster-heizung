@@ -1377,6 +1377,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         from .stats import VersionStats
         store["stats"] = VersionStats(hass)
         await store["stats"].async_start()
+    if "surveys" not in store:  # Umfragen (Abruf abschaltbar; Antworten nur nach „Absenden“)
+        from .surveys import Surveys
+        store["surveys"] = Surveys(hass)
+        await store["surveys"].async_start()
     if "autopilot" not in store:
         from .autopilot import AutopilotManager
         store["autopilot"] = AutopilotManager(hass)
@@ -1506,6 +1510,9 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             sup = hass.data.get(DOMAIN, {}).pop("support", None)
             if sup is not None:
                 sup.async_stop()
+            srv = hass.data.get(DOMAIN, {}).pop("surveys", None)
+            if srv is not None:
+                srv.async_stop()
             sts = hass.data.get(DOMAIN, {}).pop("stats", None)
             if sts is not None:
                 sts.async_stop()

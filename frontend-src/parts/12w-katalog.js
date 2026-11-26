@@ -60,6 +60,7 @@
       { id: "diag", t: "Diagnose", p: "System", k: "diagnose ventil thermostat batterie problem", go: ["diag"] },
       { id: "errlog", t: "Fehlerprotokoll", p: "System", k: "fehler protokoll log programmfehler support kopieren github absturz", go: ["errxopen"], h: "Programmfehler der letzten 30 Tage, bereinigt und zum Kopieren für den Support. Bleibt auf deinem Home Assistant." },
       { id: "stats", t: "Versions-Statistik", p: "System", k: "statistik version anonym daten senden datenschutz popup teilnehmen kennung", go: ["stsopen"], h: "Freiwillig und anonym: höchstens 1× pro Tag Versionsnummer und Kanal an den Entwickler. Ausschalten und Daten löschen jederzeit möglich." },
+      { id: "umfragen", t: "Umfragen", p: "System", k: "umfrage meinung abstimmen popup fragen feedback datenschutz", go: ["umfopen"], h: "Fragen des Entwicklers. Mitmachen ist freiwillig; Abruf und Popup lassen sich ausschalten." },
       { id: "versions", t: "Versionen", p: "System", k: "version changelog beta modulversion", go: ["mver"] },
     ];
     MODS.forEach((m) => { const ms = MOD_SET[m.id]; if (ms) C.push({ id: `modules.on.${m.id}`, t: `Modul ${m.n} ${m.name}`, p: "Module", k: `modul ${m.short} ${ms.txt}`.toLowerCase(), go: [ms.act], v: () => (this._stIsOn(m) ? "An" : "Aus"), h: ms.txt }); });

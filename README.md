@@ -523,6 +523,26 @@ Ab 2026.11.5b3 enthält ein Fehler außerdem bis zu drei Stellen im Code von Str
 
 Der Dienst ist offen: `statistik-worker/` (Cloudflare Worker, Anleitung in `docs/Anleitung_Statistik-Cloudflare-Worker.pdf`) und alternativ `statistik-server/` (eigener Container, z. B. Proxmox).
 
+---
+
+## Umfragen und Datenschutz
+
+Ab `2026.11.5b11` (Testversion) kann der Entwickler kurze **Umfragen** stellen, zum Beispiel welches Modul als Nächstes ausgebaut werden soll. Mitmachen ist **freiwillig**. Eine neue Umfrage erscheint für Administratoren einmal als Fenster (nie im Tablet-Modus), als Karte auf der Startseite und unter **Einstellungen → System → Umfragen**. Nach „Später“ kommt das Fenster höchstens noch einmal nach 3 Tagen, eine neue Umfrage frühestens nach einer Woche.
+
+**Abruf:** Etwa 1× pro Tag holt die Integration die Liste der Umfragen von `stats.stromwaerme.dev`. Dabei wird **nichts** über deine Installation mitgeschickt – keine Kennung, keine Version, keine Module. Alle bekommen dieselbe Liste, und ob eine Umfrage zu deinem Kanal oder deinen Modulen passt, entscheidet dein Home Assistant selbst. Wie bei jeder Verbindung sieht der Server technisch die IP-Adresse; sie wird nicht gespeichert. Mit **„Umfragen laden“ → Aus** wird nichts mehr abgerufen.
+
+**Antworten** werden erst gesendet, wenn du auf „Absenden“ tippst:
+
+```json
+{ "schema": 1, "survey": "3f9a1c0b7d2e", "rev": 1, "rid": "5b1e9c2a-8f4d-4a7b-9c1e-2d6f0a8b3c45", "version": "2026.11.5b11", "channel": "beta", "answers": { "q1": 0, "q2": 4, "q3": "Mehr Anleitungen" } }
+```
+
+- `rid`: ein Zufallscode **nur für diese eine Umfrage**. Er ist nicht die Kennung der Versions-Statistik und verbindet deine Antworten verschiedener Umfragen nicht miteinander. Mit ihm kannst du genau deine Antwort ändern oder löschen.
+- `answers`: nur das, was du ausgewählt oder geschrieben hast. Freitext ist freiwillig (höchstens 500 Zeichen) – bitte keine Namen oder Adressen hineinschreiben.
+- Nicht gesendet: Name, Standort, Räume, Geräte, Messwerte. Die IP-Adresse wird nicht gespeichert.
+
+**Ändern und löschen:** Bis zum Ende der Umfrage kannst du deine Antwort ändern oder zurückziehen. **„Meine Antworten auf dem Server löschen“** entfernt jederzeit alle Antworten dieser Installation. Antworten werden spätestens 12 Monate nach Ende der Umfrage automatisch gelöscht. Ein Zwischenstand (nur Zahlen, nie Freitexte) wird nur gezeigt, wenn der Entwickler ihn freigibt, und erst ab 10 Antworten.
+
 ## Sponsor werden
 
 „Strom & Wärme“ entsteht in meiner Freizeit und bleibt **kostenlos und offen**. Als Dank für ein Sponsoring gibt es Extras – freigeschaltet direkt im Panel mit deinem GitHub-Konto. **Es wird nichts gesperrt, was ohne Sponsoring schon da war.**

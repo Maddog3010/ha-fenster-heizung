@@ -128,7 +128,7 @@
       ["dv", "tablet", "Dieses Gerät", "Tablet-Modus, Zeiträume, Ansicht", ""],
       ["ad", "package", "Addons", (() => { const L = this._adState().addons || [], n = L.filter((a) => a.installed).length; return `${n} installiert · ${L.length - n} im Katalog`; })(), (() => { const L = this._adState().addons || [], u = L.filter((a) => a.update).length, e = L.filter((a) => a.status === "error").length; return e ? `<em class="sxc er">${e}</em>` : u ? `<em class="sxc wa">${u}</em>` : ""; })()],
       ["ex", "flask", "Erweiterungen", "Store und Labs", this._labCount() ? `<em class="sxc ok">${this._labCount()} ${this._labCount() === 1 ? "Lab" : "Labs"}</em>` : ""],
-      ["sy", "shield", "System", "Sichern, Diagnose, Versionen", ""],
+      ["sy", "shield", "System", "Sichern, Diagnose, Versionen", adm && this._umfOpenList().length ? `<em class="sxc ok">Umfrage</em>` : ""],
       ["sp", "heart", "Sponsor", "Schlüssel und Extras", ""]];
     const area = AREAS.some((a) => a[0] === this._stA) ? this._stA : wide ? "ov" : "";
     const card = (body, ttl) => `<div class="card sxl stcard">${ttl ? `<div class="stch">${ttl}</div>` : ""}${body}</div>`;
@@ -153,6 +153,7 @@
           ${row("clock", "Änderungsverlauf", "Wer hat wann was geändert, jede Änderung einzeln zurücknehmen", "mdstlog", "", (this._stLog || []).length ? `<em class="sxc">${this._stLog.length}</em>` : "")}
           ${row("shield", "Diagnose", "Ventile, Fenster und Verbindung prüfen", "diag")}
           ${this._admin() ? this._stsRow(row) : ""}
+          ${this._admin() ? this._umfRow(row) : ""}
           ${this._admin() ? (this._errD || this._errLd || ((this._errLd = 1), this._errLoad().then(() => this._render()).catch(() => {})), this._errRow(row)) : ""}
           ${row("layers", "Versionen &amp; Updates", "Nach Updates suchen, letzte Änderungen, Module und Addons", "mver", "", this._upd && vgt(this._upd.latest, this._ver) ? `<em class="sxc warn">Update</em>` : "")}`),
       sp: () => card(this._spnRow()),
