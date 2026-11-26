@@ -21,6 +21,7 @@ DEFAULTS: dict[str, Any] = {
     "updates": True,
     "summer": {"mode": "auto", "temp": 18.0, "days": 3},
     "wxadj": {"on": False, "mild": 12.0, "down": 1.0, "frost": 0.0, "up": 1.0},
+    "frost": {"watt": 2000, "price_on": False, "price": 40.0},  # Zusatzheizung bei Frost: Regeln für alle Heizer
     "pv": {"sensor": "", "sign": "export", "reserve": 200, "delay": 3, "minrun": 10,
            "soc_sensor": "", "soc_min": 80, "price": 32.0, "feed": 8.0,
            "price_mode": "fix", "price_sensor": "",
@@ -72,7 +73,14 @@ def clean_general(raw: Any) -> dict[str, Any]:
     vv = raw.get("valve") if isinstance(raw.get("valve"), dict) else {}
     dv = DEFAULTS["valve"]
     days = s.get("days")
+    fr = raw.get("frost") if isinstance(raw.get("frost"), dict) else {}
+    df = DEFAULTS["frost"]
     return {
+        "frost": {
+            "watt": int(_number(fr.get("watt"), 100, 20000, df["watt"])),
+            "price_on": fr.get("price_on") is True,
+            "price": _number(fr.get("price"), -20, 200, df["price"], 1),
+        },
         "updates": raw.get("updates") is not False,
         "summer": {
             "mode": s.get("mode") if s.get("mode") in SUMMER_MODES else ds["mode"],

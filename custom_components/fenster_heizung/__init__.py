@@ -50,6 +50,7 @@ from .tibber import TibberManager
 from .extbackup import ExtBackup
 from .wallbox import WallboxManager
 from .backup import SafeStore
+from .eingabe import EingabeFehler
 from .const import (
     ACTION_OFF,
     CONF_ACTION,
@@ -143,10 +144,10 @@ def normalize_entries(raw: Any) -> list[dict[str, Any]]:
             continue
         m = re.fullmatch(r"([01]?\d|2[0-3]):([0-5]\d)", str(e.get("time", "")))
         if not m:
-            raise ValueError(f"Ungültige Uhrzeit: {e.get('time')}")
+            raise EingabeFehler(f"Ungültige Uhrzeit: {e.get('time')}")
         temp = round(float(e.get("temp")) * 2) / 2
         if not PLAN_MIN_TEMP <= temp <= PLAN_MAX_TEMP:
-            raise ValueError(f"Temperatur außerhalb {PLAN_MIN_TEMP}-{PLAN_MAX_TEMP} °C: {temp}")
+            raise EingabeFehler(f"Temperatur außerhalb {PLAN_MIN_TEMP}-{PLAN_MAX_TEMP} °C: {temp}")
         out.append(
             {
                 "id": str(e.get("id") or f"e{len(out)}")[:16],
@@ -271,6 +272,7 @@ class WindowController:
         self._evaluate()
 
     async def async_stop(self) -> None:
+        await self.heater.async_frost_off()  # Zusatzheizung nie ohne Regelung weiterlaufen lassen
         self.pr.stop()
         self._cancel_timer()
         self._retry_clear()

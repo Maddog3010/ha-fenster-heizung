@@ -54,7 +54,7 @@
     if (this._tmSleep) { if (moved || newWarn) this._tmWake(); return; }
     if (newWarn && !this._modal) { this._tmView = "st"; this._tmLast = Date.now(); this._render(); return; }
     if (c.sleep && idle >= c.sleep * 60000) { this._tmSleep = true; this._modal = null; this._renderModal(); this._render(); return; }
-    if (c.idle_home && idle >= c.idle_home * 60000 && !this._tmHomed) { this._tmHomed = true; this._tm2Unl = 0; const paged = Object.values(this._tmPg || {}).some(Boolean) || Object.keys(this._tm2T || {}).length > 0; if (!this._modal) { this._tmPg = {}; this._tm2T = {}; } if ((this._tmV() !== "st" || paged) && !this._modal) { this._tmView = "st"; this._render(); } }
+    if (c.idle_home && idle >= c.idle_home * 60000 && !this._tmHomed) { this._tmHomed = true; this._tm2Unl = 0; const full = this._tm2On() && !!this._evWallFull && !this._modal; if (full) this._tm2FullOff(); const paged = full || Object.values(this._tmPg || {}).some(Boolean) || Object.keys(this._tm2T || {}).length > 0; if (!this._modal) { this._tmPg = {}; this._tm2T = {}; } if ((this._tmV() !== "st" || paged) && !this._modal) { this._tmView = "st"; this._render(); } }
   }
   _tmV() { return this._tmView || "st"; }
   _tmItems() {
@@ -177,9 +177,9 @@
   _tmAct(a, b) {
     const k = b.dataset.k, m = this._modal;
     if (a.startsWith("tm2")) { this._tm2Act(a, b); return; }
-    if (a === "tmgo") { this._tmPg = {}; this._tm2T = {}; this._tmView = k; this._tmHomed = false; this._render(); }
-    else if (a === "tmbub") { const d = this._hzBubDef(k) || {}; if (d.mod && this._mdList().some((x) => x.id === d.mod)) { this._tmView = d.mod; this._render(); } }
-    else if (a === "tmgomore") { this._tmPg = {}; this._tm2T = {}; this._tmView = k; this._tmHomed = false; this._modal = null; this._renderModal(); this._render(); }
+    if (a === "tmgo") { this._tm2FullOff(); this._tmPg = {}; this._tm2T = {}; this._tmView = k; this._tmHomed = false; this._render(); }
+    else if (a === "tmbub") { const d = this._hzBubDef(k) || {}; if (d.mod && this._mdList().some((x) => x.id === d.mod)) { this._tm2FullOff(); this._tmView = d.mod; this._render(); } }
+    else if (a === "tmgomore") { this._tm2FullOff(); this._tmPg = {}; this._tm2T = {}; this._tmView = k; this._tmHomed = false; this._modal = null; this._renderModal(); this._render(); }
     else if (a === "tmmore") { if (this._tmPg) this._tmPg.more = 0; this._modal = { type: "tmmore" }; this._renderModal(); }
     else if (a === "tmlock") { this._tmPin = ""; this._tmPinThen = ""; this._tm2Back = null; const me = this._tmMe(); if (me.has_pin) this._tmPinOpen("unlock"); else this._tmPinOpen("new"); }
     else if (a === "tmopen") { this._modal = { type: "tmnorm" }; this._renderModal(); if (this._admin()) this._tmAdminList(); }

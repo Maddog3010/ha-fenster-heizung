@@ -1,9 +1,10 @@
   /* ================= Tablet-Modus · Stufe 2: gemeinsames für Modulseiten ohne Scrollen =================
-     Reiter in der Kopfzeile, Inhalt füllt genau die Resthöhe. Modul 1 (hier), 2 (12d4), 3 (12d5), 4 (12d6) und 19 (12d7).
+     Reiter in der Kopfzeile, Inhalt füllt genau die Resthöhe. Modul 1 (hier), 2 (12d4), 3 (12d5), 4 (12d6), 19 (12d7), 8 (12d8) sowie 14 und 16 (12d9).
      Anzeigen geht immer. Einstellungen ändern fragt nach der PIN, wenn das Tablet eine hat (2 Minuten frei). */
   static TM2_TABS = { fh: [["rooms", "Räume"], ["stats", "Statistik"]], ww: [["now", "Jetzt"], ["times", "Zeiten"], ["hist", "Verlauf"]],
-    en: [["now", "Jetzt"], ["hist", "Verlauf"], ["cost", "Kosten"]], gs: [["dev", "Geräte"], ["win", "Startfenster"], ["stats", "Statistik"]], ef: [["now", "Jetzt"], ["strom", "Strom"]] };
-  _tm2Fit(v) { return v === "st" || (!!this.constructor.TM2_TABS[v] && this._mdList().some((m) => m.id === v)); }
+    en: [["now", "Jetzt"], ["hist", "Verlauf"], ["cost", "Kosten"]], gs: [["dev", "Geräte"], ["win", "Startfenster"], ["stats", "Statistik"]], ef: [["now", "Jetzt"], ["strom", "Strom"]],
+    ev: [["load", "Laden"], ["plan", "Planung"], ["stat", "Statistik"]], dt: [["price", "Preise"], ["dev", "Geräte"], ["check", "Tarif-Check"]], sp: [["now", "Prognose"], ["acc", "Treffsicherheit"], ["sites", "Anlagen"]] };
+  _tm2Fit(v) { if (v === "ev" && this._evWallFull) return false; return v === "st" || (!!this.constructor.TM2_TABS[v] && this._mdList().some((m) => m.id === v)); }
   _tm2Tab(v) { const T = this.constructor.TM2_TABS[v], cur = (this._tm2T || {})[v]; return T.some((t) => t[0] === cur) ? cur : T[0][0]; }
   _tm2Tabs(v) {
     if (!this._tm2Ready(v)) return "";
@@ -16,9 +17,12 @@
     if (v === "ww") return this._wwConfigured();
     if (v === "en") return this._enConfigured();
     if (v === "gs") return !!this._gsState().devices.length;
+    if (v === "ev") return this._wbOn();
+    if (v === "dt") return this._tm2TfReady();
+    if (v === "sp") return this._tm2SpReady();
     return !!this._efxD && this._efxSp() && !!this._tm2EfNodes().length;
   }
-  _tm2ModBody(v) { return v === "fh" ? this._tm2Fh() : v === "ww" ? this._tm2Ww() : v === "en" ? this._tm2En() : v === "gs" ? this._tm2Gs() : this._tm2Ef(); }
+  _tm2ModBody(v) { return v === "fh" ? this._tm2Fh() : v === "ww" ? this._tm2Ww() : v === "en" ? this._tm2En() : v === "gs" ? this._tm2Gs() : v === "ev" ? this._tm2Ev() : v === "dt" ? this._tm2Dt() : v === "sp" ? this._tm2Sp() : this._tm2Ef(); }
   _tm2ModStatus(v) {
     if (v === "ww") return this._wwConfigured() ? this._wwStatus()[1] : "Noch nicht eingerichtet";
     if (v === "en") {
@@ -31,6 +35,17 @@
       if (!this._gsState().devices.length) return "Noch keine Geräte";
       const l = this._tm2GsDevs(), run = l.filter((d) => d.running).length, done = l.filter((d) => this._gsMode(d) === "done").length;
       return !this._gsD ? "Wird geladen" : [run ? `${run} ${run === 1 ? "Gerät läuft" : "Geräte laufen"}` : "Kein Gerät läuft", done ? `${done} fertig` : ""].filter(Boolean).join(" · ");
+    }
+    if (v === "ev") { const d = this._evData(); return d.any ? esc(this._tm2EvLine(d, this._evNow(d))) : "Noch nicht eingerichtet"; }
+    if (v === "dt") {
+      const S = this._tf(); if (!this._tfD) return "Wird geladen";
+      if (S.error) return "Nicht geladen";
+      return !S.src ? "Noch keine Preise" : S.src === "fix" ? "Festpreis" : S.now.lv ? `Gerade ${this._tfName(S.now.lv).toLowerCase()}` : esc(S.src_name || "");
+    }
+    if (v === "sp") {
+      if (!this._spD) return "Wird geladen";
+      if (!this._tm2SpReady()) return "Noch keine Prognose";
+      const C = this._spCalc(); return C.night ? `Morgen ${this._spF(C.tmr)} kWh erwartet` : `Heute ${this._spF(C.base)} kWh erwartet`;
     }
     if (v === "ef") {
       if (!this._tm2Ready("ef")) return "Für Sponsoren";
@@ -53,6 +68,13 @@
       } else if (kind === "en") this._tm2EnChart(box, w, h);
       else if (kind === "gs") this._tm2GsChart(box, w, h);
       else if (kind === "gsfc") box.innerHTML = this._tm2GsForecast(box.dataset.id, w, h);
+      else if (kind === "evsc") this._tm2EvDraw(box, w, h);
+      else if (kind === "evplan") this._tm2EvPlanChart(box, w, h);
+      else if (kind === "evst") this._tm2EvStatChart(box, w, h);
+      else if (kind === "dt") this._tm2DtChart(box, w, h);
+      else if (kind === "dtck") this._tm2DtCkChart(box, w, h);
+      else if (kind === "sp") this._tm2SpChart(box, w, h);
+      else if (kind === "spacc") this._tm2SpAccChart(box, w, h);
       else {
         const rooms = (kind === "fhroom" ? this._collect().filter((r) => r.id === box.dataset.id) : [...this._collect()].sort((a, b) => a.ci - b.ci));
         box.innerHTML = this._chart(rooms, { w, h });
@@ -101,7 +123,7 @@
   _tm2RoomTile(r) {
     const s = this._rkState(r), g = this._tm2Tgt(r), off = r.mode === "regelung_aus", id = esc(r.id);
     const facts = [s.cur != null ? `Ist ${num(s.cur, 1)} °C` : "", s.hum != null ? `${num(s.hum)} % Feuchte` : ""].filter(Boolean).join(" · ") || "Kein Messwert";
-    const badge = `${s.htr && s.htr.status === "pv" ? `<i class="b" title="Elektroheizer läuft">${ic("bolt", 14)}</i>` : ""}${s.lfs.length ? `<i class="b" title="Entfeuchter steht hier">${ic("fan", 14)}</i>` : ""}`;
+    const badge = `${htrOn(s.htr) ? `<i class="b" title="Elektroheizer läuft">${ic("bolt", 14)}</i>` : ""}${s.lfs.length ? `<i class="b" title="Entfeuchter steht hier">${ic("fan", 14)}</i>` : ""}`;
     return `<div class="tm2room k-${s.k}" style="--c:${s.col}"><button class="tm2ri" data-act="tm2room" data-id="${id}" aria-label="${esc(r.name)} öffnen">
       <span class="tm2rn"><span class="hti">${ic(s.anyOpen ? "windowOpen" : this._icon(r), 24)}</span><span><b>${esc(r.name)}</b><small>${esc(s.lab)}</small></span>${badge}</span>
       <span class="tm2rv">${g.t != null && !off ? num(g.t, 1) : "–"}<small>°C</small></span><span class="tm2rf">${facts}</span></button>${this._tm2PM(r, g)}</div>`;
@@ -125,7 +147,7 @@
     const H = window.innerHeight, per = this._tm2Land() ? (H >= 1000 ? 9 : H >= 760 ? 6 : H >= 640 ? 5 : 3) : H >= 1150 ? 5 : H >= 880 ? 3 : 2;
     const list = [...rooms].sort((a, b) => (b.sc.day?.min || 0) - (a.sc.day?.min || 0)), p = this._tm2Page("fhstat", list.length, per);
     const hs = this._htrRooms(), kwh = hs.reduce((a, r) => a + (Number(r.htr.heute_kwh) || 0), 0), pvk = hs.reduce((a, r) => a + (Number(r.htr.heute_pv_kwh) || 0), 0);
-    const htr = hs.length ? `<div class="tm2htr">${ic("bolt", 22)}<span><b>PV-Heizer heute: ${num(kwh, 1)} kWh</b><small>${kwh > 0 ? Math.round((pvk / kwh) * 100) : 0} % aus Überschuss · jetzt ${wfmt(this._htrTotal())}</small></span></div>` : "";
+    const htr = hs.length ? `<div class="tm2htr">${ic("bolt", 22)}<span><b>${hs.some((r) => htrFrost(r.htr)) ? "Elektroheizer" : "PV-Heizer"} heute: ${num(kwh, 1)} kWh</b><small>${hs.every((r) => r.htr.modus === "frost") ? `Netzstrom ${num(hs.reduce((a, r) => a + (Number(r.htr.heute_kosten) || 0), 0), 2)} €` : `${kwh > 0 ? Math.round((pvk / kwh) * 100) : 0} % aus Überschuss`} · jetzt ${wfmt(this._htrTotal())}</small></span></div>` : "";
     const row = (r) => `<button class="tm2sr" data-act="rep" data-id="${esc(r.id)}" aria-label="Bericht ${esc(r.name)}"><i style="background:${r.color}"></i><span><b>${esc(r.name)}</b><small>${num(r.sc.day?.min || 0)} Min. · ${r.pauses || 0}× · ${num(r.sc.day?.gas || 0, 2)} ${unitOf(FUELS[r.fuel || "erdgas"])}</small></span>${ic("chev", 18)}</button>`;
     return `${this._tm2Sums(rooms)}<div class="tm2stat"><div class="card tm2cc"><h2>${ic("clock", 18)}Pausenzeit pro Tag · 14 Tage</h2><div class="tm2ch" data-tm2ch="fh"></div></div>
       <section class="card tm2sl" data-sw="fhstat" style="--n:${per}"><h2>${ic("chart", 18)}Heute je Raum</h2><div class="tm2srs">${list.slice(p.from, p.to).map(row).join("")}</div>${this._tm2Pager("fhstat", p, "")}${htr}</section></div>`;

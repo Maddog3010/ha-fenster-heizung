@@ -118,6 +118,8 @@ DEFAULT_AIR_EVERY = 8
 HTR_KEYS = (
     "htr_on", "htr_entity", "htr_steps", "htr_watt", "htr_target", "htr_prio", "htr_from", "htr_to",
     "htr_presets", "htr_devtemp", "htr_auto", "htr_thermo",
+    "htr_mode", "htr_frost_out", "htr_frost_target", "htr_frost_wait", "htr_frost_from", "htr_frost_to",
+    "htr_frost_run", "htr_frost_day", "htr_frost_stage", "htr_frost_ok",
 )
 PV_TICK_SECONDS = 30
 HEATER_KEEP_DAYS = 14

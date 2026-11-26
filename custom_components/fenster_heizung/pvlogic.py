@@ -1,4 +1,4 @@
-"""Reine Rechenlogik für Elektroheizer mit PV-Überschuss (ohne Home-Assistant-Importe)."""
+"""Reine Rechenlogik für Elektroheizer: PV-Überschuss und Zusatzheizung bei Frost (ohne Home-Assistant-Importe)."""
 from __future__ import annotations
 
 import re
@@ -14,6 +14,25 @@ STATUS_WINDOW = "fenster"
 STATUS_TIME = "zeit"
 STATUS_OFF = "aus"
 STATUS_SOC = "soc"
+
+# Zusatzheizung bei Frost (Netzstrom)
+STATUS_FROST = "frost"  # heizt zu
+FROST_WAIT = "frost_wartet"  # Heizkörper bekommt zuerst Zeit
+FROST_WARM = "frost_warm"
+FROST_MILD = "frost_mild"  # draußen nicht kalt genug
+FROST_PAUSE = "frost_pause"
+FROST_LIMIT = "frost_limit"  # Tageslimit
+FROST_SENSOR = "frost_sensor"  # Raumsensor ohne Werte
+FROST_OUT = "frost_aussen"  # keine Außentemperatur
+FROST_PRICE = "frost_preis"  # Strom über der Preisgrenze (Modul 14)
+FROST_GRID = "frost_netz"  # Netzleistung aller Heizer erreicht
+FROST_AWAY = "frost_abwesend"
+FROST_HEATOFF = "frost_heizaus"  # Sommermodus oder „Heizung aus“
+FROST_CONFIRM = "frost_ok"  # Sicherheitsabfrage fehlt
+
+FROST_START_GAP = 0.5  # Start erst so weit unter dem Ziel
+FROST_OUT_HYST = 1.0  # Ende erst so weit über der Frostgrenze
+FROST_PAUSE_S = 900  # Pause nach der längsten Laufzeit am Stück
 
 
 def parse_steps(raw: Any) -> list[int]:
@@ -153,3 +172,90 @@ def soc_allows(soc: float | None, minimum: float, running: bool) -> bool:
     if soc is None or minimum <= 0:
         return True
     return soc >= minimum - (5.0 if running else 0.0)
+
+
+def frost_state() -> dict[str, float | None]:
+    """Merker der Frostregel: kalt seit, läuft seit, Pause bis."""
+    return {"cold": None, "run": None, "pause": None}
+
+
+def frost_step(
+    f: dict[str, Any],
+    st: dict[str, float | None],
+    now: float,
+    *,
+    outdoor: float | None,
+    temp: float | None,
+    blocked: str | None,
+    price_high: bool,
+    minrun_s: float,
+    day_s: float,
+) -> tuple[str, bool, float | None]:
+    """Soll bei Frost zugeheizt werden? Ändert `st` und liefert (Status, an, Restzeit in Sekunden).
+
+    f: out (Frostgrenze), target, wait, max_run, max_day (Zeiten in Sekunden).
+    - Sperren (Fenster, Abwesenheit, Sensor, Tageslimit …) schalten sofort ab.
+    - Ziel erreicht, mild oder zu teuer beenden den Lauf erst nach der Mindestlaufzeit.
+    """
+    stop = blocked or (FROST_SENSOR if temp is None else None) or (FROST_OUT if outdoor is None else None)
+    if stop is None and day_s >= f["max_day"]:
+        stop = FROST_LIMIT
+    if stop:
+        st["cold"] = st["run"] = None
+        return stop, False, None
+    run = st.get("run")
+    if run is not None:
+        ran = now - run
+        if ran >= f["max_run"]:
+            st["run"] = None
+            st["pause"] = now + FROST_PAUSE_S
+            return FROST_PAUSE, False, float(FROST_PAUSE_S)
+        reason = None
+        if temp >= f["target"]:
+            reason = FROST_WARM
+        elif outdoor >= f["out"] + FROST_OUT_HYST:
+            reason = FROST_MILD
+        elif price_high:
+            reason = FROST_PRICE
+        if reason and ran >= minrun_s:
+            st["run"] = None
+            if reason != FROST_PRICE:  # wegen des Preises gestoppt: der Raum bleibt „kalt seit“
+                st["cold"] = None
+            return reason, False, None
+        return STATUS_FROST, True, None
+    pause = st.get("pause")
+    if pause is not None and now < pause:
+        return FROST_PAUSE, False, pause - now
+    st["pause"] = None
+    if outdoor >= f["out"]:
+        st["cold"] = None
+        return FROST_MILD, False, None
+    if temp > f["target"] - FROST_START_GAP:
+        st["cold"] = None
+        return FROST_WARM, False, None
+    if st.get("cold") is None:
+        st["cold"] = now
+    rest = f["wait"] - (now - st["cold"])
+    if rest > 0:
+        return FROST_WAIT, False, rest
+    if price_high:
+        return FROST_PRICE, False, None
+    st["run"] = now
+    return STATUS_FROST, True, None
+
+
+def frost_grid(heaters: list[dict[str, Any]], limit_w: float) -> dict[Any, int]:
+    """Netzleistung aller Frost-Heizer begrenzen. Priorität entscheidet; passt die Wunschstufe nicht, eine niedrigere.
+
+    Jeder Eintrag: id, prio, steps, want (gewünschte Stufe).
+    """
+    remaining = float(limit_w)
+    out: dict[Any, int] = {}
+    for h in sorted(heaters, key=lambda x: (x["prio"], str(x["id"]))):
+        stage = h["want"]
+        while stage > 0 and h["steps"][stage - 1] > remaining:
+            stage -= 1
+        if stage > 0:
+            remaining -= h["steps"][stage - 1]
+        out[h["id"]] = stage
+    return out

@@ -15,7 +15,7 @@
       .catch(() => { fail = true; this._wbStFail = (this._wbStFail || 0) + 1; const had = this._wbStD && this._wbStD.data && !this._wbStD.data.error;
         if (had) this._wbStD = { ...this._wbStD, ts: Date.now() - 27000 }; /* letzten Stand behalten, in 3 s neu versuchen */
         else if (this._wbStFail >= 3) this._wbStD = { data: { error: true }, ts: Date.now() - 20000 }; })
-      .finally(() => { this._wbStBusy = false; if (fail && this._wbStFail < 3) setTimeout(() => this._wbStatLoad(true), 1500); if (["stat", "laden"].includes(this._wbStT()) && this._wbVisible()) this._render(); });
+      .finally(() => { this._wbStBusy = false; if (fail && this._wbStFail < 3) setTimeout(() => this._wbStatLoad(true), 1500); if ((["stat", "laden"].includes(this._wbStT()) || this._tm2Shows("ev")) && this._wbVisible()) this._render(); });
   }
   _wbStS() { const n = new Date(); return this._wbStV || (this._wbStV = { per: "m", y: n.getFullYear(), m: n.getMonth(), what: "e", by: "src" }); }
   _wbStat() {

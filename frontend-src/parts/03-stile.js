@@ -245,6 +245,9 @@ button.rico::after{content:"";position:absolute;right:-5px;bottom:-5px;width:18p
 .stp{display:flex;gap:6px;margin-top:9px}.stp span{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;padding:5px 2px;border-radius:10px;border:1px solid var(--line);font-size:.72rem;color:var(--mut)}.stp span b{font-size:.68rem}.stp span small{font-size:.66rem;opacity:.75}
 .stp span.on{border-color:var(--c);background:color-mix(in srgb,var(--c) 20%,transparent);color:var(--primary-text-color);font-weight:700}
 .htrn{display:flex;gap:6px;align-items:center;font-size:.74rem;margin-top:8px;color:var(--c)}.htrn.mut{color:var(--mut)}
+.ehfrs{display:flex;gap:6px;align-items:center;font-size:.86rem;min-width:0}.ehfrs b{overflow-wrap:anywhere}
+.ehchk{display:flex;gap:11px;align-items:center;width:100%;text-align:left;background:transparent;border:1px solid var(--line);border-radius:14px;padding:12px;margin:0 0 8px;color:inherit;font:inherit;font-size:.9rem;line-height:1.35;cursor:pointer}.ehchk i{flex:none;width:24px;height:24px;border-radius:7px;border:2px solid var(--mut);display:grid;place-items:center;font-style:normal}.ehchk.on{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 10%,transparent)}.ehchk.on i{background:var(--teal);border-color:var(--teal);color:#042f2e}
+.ehtf .mut b{color:var(--primary-text-color)}
 .stpv{display:flex;gap:6px;margin:2px 0 8px}.stpv span{display:flex;gap:6px;align-items:center;font-size:.78rem;padding:4px 10px;border-radius:99px;border:1px solid var(--line)}.stpv b{color:var(--teal)}
 .stsc{margin-top:10px}.stbar{position:relative;height:10px;border-radius:6px;background:color-mix(in srgb,var(--mut) 22%,transparent);margin-bottom:22px}
 .stbar i{position:absolute;left:0;top:0;bottom:0;border-radius:6px;background:#fbbf24}
@@ -607,6 +610,9 @@ button.rico::after{content:"";position:absolute;right:-5px;bottom:-5px;width:18p
 .oclr{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--mut);display:grid;place-items:center;cursor:pointer}
 .oseg{margin:0}.oseg button{padding:9px 8px}
 .ochips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.omiss{display:flex;gap:8px;align-items:flex-start;margin-top:8px;padding:8px 10px;border-radius:10px;font-size:.8rem;line-height:1.4;border:1px solid color-mix(in srgb,#f59e0b 45%,transparent);background:color-mix(in srgb,#f59e0b 12%,transparent)}
+.omiss .ic{color:#f59e0b;flex:none}.omiss.err{border-color:color-mix(in srgb,#ef4444 60%,transparent);background:color-mix(in srgb,#ef4444 13%,transparent)}.omiss.err .ic{color:#ef4444}
+.oh .oneed{font-style:normal;font-weight:700;color:#f59e0b}
 .och{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:5px 6px 5px 11px;font-size:.82rem;background:color-mix(in srgb,var(--teal) 10%,transparent);word-break:break-all}
 .och button{width:20px;height:20px;border-radius:50%;border:0;background:color-mix(in srgb,var(--primary-text-color) 12%,transparent);color:inherit;display:grid;place-items:center;cursor:pointer;padding:0;flex:none}
 .oadd{border-style:dashed;color:var(--teal);font-weight:600;padding:6px 10px;border-radius:999px;font-size:.82rem}
@@ -1414,6 +1420,7 @@ button.hzr{cursor:pointer}
 .tmclk{text-align:right;line-height:1}.tmclk span{display:block;font-size:2.6rem;font-weight:300;letter-spacing:-1px}.tmclk small{display:block;font-size:.85rem;color:var(--mut);margin-top:3px}
 .tmgear{width:50px;height:50px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--mut);display:grid;place-items:center;cursor:pointer;flex:none}
 .tmbody{flex:1;min-height:0;overflow:auto;padding:10px 20px 16px;display:grid;gap:14px;align-content:start;-webkit-overflow-scrolling:touch}
+.tmbody .evtabs{overflow:visible;flex-wrap:wrap}
 .tmbody .hzbubs{flex-wrap:wrap;overflow:visible;padding:0}
 .tmgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
 .tmgrid .hzt{align-items:flex-start;text-align:left;min-height:150px;padding:18px;border-radius:24px;gap:8px;background:var(--card)}

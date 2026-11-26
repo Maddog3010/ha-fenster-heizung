@@ -23,7 +23,7 @@
     const back = this._modal && this._modal.type !== "ehwiz" ? this._modal : null, z = r ? this._ehRoomTemp(r).ziel : null;
     this._pkId = null;
     this._modal = { type: "ehwiz", step: 1, fixed: !!r, back, busy: false, err: "",
-      d: { room: r ? r.id : "", entity: "", name: "", tpl: "oel", steps: [800, 1200, 2000], txt: "", target: z != null && isFinite(z) ? Math.round(z * 2) / 2 : 21, thermo: "off", auto: "on", prio: 5, from: "", to: "", more: false } };
+      d: { room: r ? r.id : "", entity: "", name: "", tpl: "oel", steps: [800, 1200, 2000], txt: "", target: z != null && isFinite(z) ? Math.round(z * 2) / 2 : 21, thermo: "off", auto: "on", prio: 5, from: "", to: "", more: false, ...this._ehFrostDraft({ mode: this._pv().sensor ? "pv" : "frost" }) } };
     this._renderModal();
     try { this._ehD = await this._hass.callWS({ type: "fenster_heizung/heizer_get" }); } catch (_) { this._ehD = null; }
     if (this._modal && this._modal.type === "ehwiz") this._renderModal();
@@ -48,7 +48,7 @@
     if (M.step === 1) {
       const C = this._ehCands(), sug = C.free.filter((e) => S.EH_HINT.test(e + " " + ((st[e].attributes || {}).friendly_name || ""))).slice(0, 4);
       ok = !!d.entity;
-      body = `<h3 class="wzt">Welches Gerät?</h3><div class="mut sm" style="margin:-4px 0 8px">Ein Schalter (z. B. die Steckdose des Heizers) oder ein Klima-Gerät. Modul 1 schaltet es nur bei genug PV-Überschuss ein.</div>
+      body = `<h3 class="wzt">Welches Gerät?</h3><div class="mut sm" style="margin:-4px 0 8px">Ein Schalter (z. B. die Steckdose des Heizers) oder ein Klima-Gerät. Modul 1 schaltet es bei PV-Überschuss oder, wenn du das wählst, bei Frost ein.</div>
         ${sug.length ? `<div class="lsec">${ic("bolt", 15)}Passt wahrscheinlich</div><div class="lfkind">${sug.map((e) => `<button class="${d.entity === e ? "sel" : ""}" data-act="ehxent" data-k="${esc(e)}"><b>${esc(this._wzName(e))}</b><span>${esc(e)}${e.startsWith("climate.") ? ` · Klima-Gerät${((st[e].attributes || {}).preset_modes || []).length ? `, ${st[e].attributes.preset_modes.length} Voreinstellungen` : ""}` : " · Schalter"}</span></button>`).join("")}</div>` : ""}
         <div class="lsec">${ic("search", 15)}${sug.length ? "Oder ein anderes Gerät" : "Gerät wählen"}</div>
         ${this._wzSel(C.free, d.entity, "ehxe", `data-k="entity"`, "– Gerät wählen –", S.EH_HINT)}
@@ -60,7 +60,7 @@
     } else if (M.step === 3) {
       ok = W.length > 0;
       const cl = d.entity.startsWith("climate."), pm = cl ? ((st[d.entity] || {}).attributes || {}).preset_modes || [] : [];
-      body = `<h3 class="wzt">Wie viel Leistung?</h3><div class="mut sm" style="margin:-4px 0 8px">Nach der Leistung entscheidet Modul 1, ob der Überschuss reicht. Hat der Heizer Stufen, wird bei mehr Überschuss höher geschaltet.</div>
+      body = `<h3 class="wzt">Wie viel Leistung?</h3><div class="mut sm" style="margin:-4px 0 8px">Nach der Leistung entscheidet Modul 1, ob PV-Überschuss oder Netzgrenze reichen. Hat der Heizer Stufen, wird bei mehr Überschuss höher geschaltet.</div>
         <div class="lfkind">${S.EH_TPL.map(([k, l, w, i]) => `<button class="${d.tpl === k ? "sel" : ""}" data-act="ehxtpl" data-k="${k}"><b>${ic(i, 14)} ${l}</b><span>${w.length > 1 ? w.map((x) => num(x, 0)).join(" · ") + " W" : `eine Stufe, ${num(w[0], 0)} W`}</span></button>`).join("")}
         ${d.entity.startsWith("switch.") && !M.edit ? `<button class="${d.tpl === "mess" ? "sel" : ""}" data-act="ehxtpl" data-k="mess"><b>${ic("chart", 14)} Messen</b><span>Mit dem Leistungssensor der Steckdose, Stufe für Stufe (je 30 Sekunden)</span></button>` : ""}
         <button class="${d.tpl === "own" ? "sel" : ""}" data-act="ehxtpl" data-k="own"><b>${ic("pencil", 14)} Eigene Werte</b><span>Leistung laut Typenschild, Stufen mit Komma trennen</span></button></div>
@@ -70,17 +70,21 @@
         ${cl ? `<div class="gst">${ic("info", 15)}${pm.length ? `Klima-Gerät mit ${pm.length} Voreinstellungen: Die Stufen werden ihnen automatisch zugeordnet, ändern kannst du das in den Raumeinstellungen.` : "Klima-Gerät ohne Voreinstellungen: Modul 1 schaltet nur ein und aus (höchste Stufe)."}</div>` : W.length > 1 ? `<div class="gst">${ic("info", 15)}Eine Steckdose kennt nur Ein und Aus: Modul 1 rechnet mit der höchsten Stufe. Stell den Heizer am Gerät auf diese Stufe.</div>` : ""}`;
     } else {
       if (!d.name) d.name = this._wzName(d.entity) || "Elektroheizer";
-      ok = !!d.name.trim() && (!d.from === !d.to);
+      const fr = d.mode !== "pv", pvm = d.mode !== "frost";
+      ok = !!d.name.trim() && (!d.from === !d.to) && !(fr && room && !room.rtEid);
       body = `<h3 class="wzt">${M.edit ? "Regeln" : "Fast fertig"}</h3>
         <div class="lsec">${ic("pencil", 15)}Name</div><input class="otxt" type="text" maxlength="40" data-f="ehxname" value="${esc(d.name)}" aria-label="Name des Heizers">
         <div class="ehsum"><span>${ic("bolt", 15)}<b>${esc(this._wzName(d.entity))}</b></span><span>${ic("home", 15)}<b>${esc(room ? room.name : "–")}</b></span><span>${ic("flame", 15)}<b>${W.map((w) => num(w, 0)).join(" · ")} W</b></span></div>
-        ${row("Heizen bis", "Der Heizer schaltet ab, sobald der Raum so warm ist.", step("target", "°C", 0.5, 10, 30, 1))}
-        ${row("Thermostate, solange er heizt", "Ausschalten: Die Heizkörper des Raums ruhen, danach regeln sie wieder.", seg("thermo", [["off", "Ausschalten"], ["on", "Weiterlaufen"]]))}
-        ${W.length > 1 && d.entity.startsWith("climate.") ? row("Stufen regeln", "Automatisch: höhere Stufe bei mehr Überschuss.", seg("auto", [["on", "Automatisch"], ["off", "Fest"]])) : ""}
-        <button class="lnk" data-act="ehxmore" style="margin:8px 0 4px">${ic("chev", 14)} ${d.more ? "Weniger" : "Mehr Einstellungen (Priorität, Zeitfenster)"}</button>
-        ${d.more ? row("Priorität", "1 wird zuerst versorgt, wenn der Überschuss nicht für alle reicht.", step("prio", "", 1, 1, 9)) + row("Erlaubt ab", "Optional. Leer = ganztägig.", tin("from", "Erlaubt ab")) + row("Erlaubt bis", "", tin("to", "Erlaubt bis")) + (d.from || d.to ? `<button class="lnk" data-act="ehxnotime">Zeitfenster entfernen</button>` : "") : ""}
+        ${row("Wann soll er heizen?", this._pv().sensor ? "„Frost“ heizt auch mit Netzstrom zu, wenn der Raum zu kalt bleibt." : "Ohne PV-Sensor bleibt „PV-Überschuss“ ohne Wirkung. „Frost“ heizt mit Netzstrom.", seg("mode", [["pv", "PV-Überschuss"], ["frost", "Frost"], ["both", "Beides"]]))}
+        ${pvm ? row("Heizen bis", fr ? "Gilt für PV-Überschuss." : "Der Heizer schaltet ab, sobald der Raum so warm ist.", step("target", "°C", 0.5, 10, 30, 1)) : ""}
+        ${pvm ? row("Thermostate, solange er heizt", `Ausschalten: Die Heizkörper des Raums ruhen, danach regeln sie wieder.${fr ? " Bei Frost bleiben sie immer an." : ""}`, seg("thermo", [["off", "Ausschalten"], ["on", "Weiterlaufen"]])) : ""}
+        ${pvm && W.length > 1 && d.entity.startsWith("climate.") ? row("Stufen regeln", "Automatisch: höhere Stufe bei mehr Überschuss.", seg("auto", [["on", "Automatisch"], ["off", "Fest"]])) : ""}
+        ${fr ? this._ehFrostRows(d, room, W, row, step, tin) : ""}
+        <button class="lnk" data-act="ehxmore" style="margin:8px 0 4px">${ic("chev", 14)} ${d.more ? "Weniger" : pvm ? "Mehr Einstellungen (Priorität, Zeitfenster)" : "Mehr Einstellungen (Priorität)"}</button>
+        ${d.more ? row("Priorität", "1 wird zuerst versorgt, wenn Überschuss oder Netzgrenze nicht für alle reichen.", step("prio", "", 1, 1, 9)) + (pvm ? row(fr ? "PV erlaubt ab" : "Erlaubt ab", "Optional. Leer = ganztägig.", tin("from", "Erlaubt ab")) + row(fr ? "PV erlaubt bis" : "Erlaubt bis", "", tin("to", "Erlaubt bis")) + (d.from || d.to ? `<button class="lnk" data-act="ehxnotime">Zeitfenster entfernen</button>` : "") : "") : ""}
         ${!M.edit ? `<button class="btn2" data-act="ehxtest" style="width:100%;margin:8px 0 0" ${M.testUntil && M.testUntil > Date.now() ? "disabled" : ""}>${ic("play", 15)} ${M.testUntil && M.testUntil > Date.now() ? `Testlauf läuft noch ${Math.ceil((M.testUntil - Date.now()) / 1000)} s …` : "Testlauf (30 Sekunden ein)"}</button><div class="mut sm" style="margin:4px 0 0">Prüft, ob Modul 1 das Gerät schalten kann – unabhängig vom Überschuss. Danach ist es wieder wie vorher.</div>` : ""}
-        <div class="gst on">${ic("sun", 15)}${this._pvNow() != null ? `Heizt nur mit PV-Überschuss. Gerade frei: ${wfmt(Math.max(0, this._pvNow()))}${this._pvNow() >= Math.min(...W) ? " – er könnte gleich starten." : "."}` : "Heizt nur mit PV-Überschuss. Den Netz-Sensor wählst du unter Haus › Energiequellen."}</div>`;
+        <div class="gst on">${ic(pvm ? "sun" : "bolt", 15)}${!pvm ? "Heizt nur bei Frost, mit Netzstrom." : fr ? `Heizt mit PV-Überschuss. Bei Frost zusätzlich mit Netzstrom.${this._pv().sensor ? "" : " Den Netz-Sensor für PV wählst du unter Haus › Energiequellen."}` : this._pvNow() != null ? `Heizt nur mit PV-Überschuss. Gerade frei: ${wfmt(Math.max(0, this._pvNow()))}${this._pvNow() >= Math.min(...W) ? " – er könnte gleich starten." : "."}` : "Heizt nur mit PV-Überschuss. Den Netz-Sensor wählst du unter Haus › Energiequellen."}</div>`;
+      if (M.confirm) return this._ehConfirmModal(M, room, Math.max(...W));
     }
     return `<div class="ov" data-act="ehxcancel"></div><div class="sheet" role="dialog" aria-modal="true" aria-label="Elektroheizer ${M.edit ? "bearbeiten" : "hinzufügen"}">
       <div class="sh"><div><b>Elektroheizer ${M.edit ? "bearbeiten" : "hinzufügen"}</b><span>Schritt ${pos + 1} von ${steps.length}${room && M.fixed ? " · " + esc(room.name) : ""}</span></div><button class="ibtn" data-act="ehxcancel" aria-label="Schließen">${ic("close", 20)}</button></div>
@@ -100,10 +104,12 @@
   }
   _ehAct(a, b) {
     if (a === "ehxnew") { this._ehOpen(b.dataset.id || ""); return; }
+    if (a === "ehxfrp") { this._gen.frost = { ...this._frost(), price_on: b.dataset.k === "on" }; this._saveGen(); this._renderModal(); return; }
     if (this._ehAct3(a, b) || this._ehAct4(a, b)) return;
     const M = this._modal; if (!M || M.type !== "ehwiz") return;
     const d = M.d, steps = this._ehStepList(M), pos = steps.indexOf(M.step);
     M.err = "";
+    if (this._ehFrostAct(a, b)) return;
     if (a === "ehxcancel") { this._pkId = null; this._ehStopTick(); this._modal = M.back; this._renderModal(); return; }
     if (a === "ehxent") { d.entity = b.dataset.k; d.name = ""; }
     else if (a === "ehxroom") { d.room = b.dataset.k; if (!M.fixed) { const r = this._ehRooms().find((x) => x.id === d.room), z = r ? this._ehRoomTemp(r).ziel : null; if (z != null && isFinite(z)) d.target = Math.round(z * 2) / 2; } }
@@ -122,14 +128,15 @@
   }
   async _ehSave() {
     const M = this._modal, d = M.d, W = this._ehSteps(d); if (M.busy) return;
+    if (d.mode !== "pv" && !d.frost_ok) { M.confirm = [false, false, false]; this._renderModal(); const sh = this.shadowRoot.querySelector("#modal .sheet"); if (sh) sh.scrollTop = 0; return; }
     M.busy = true; this._renderModal();
-    const heater = { room: d.room, entity: d.entity, name: d.name.trim(), steps: W, watt: Math.max(...W), target: d.target, thermo: d.thermo, auto: d.auto, prio: d.prio, from: d.from || null, to: d.to || null };
+    const heater = { room: d.room, entity: d.entity, name: d.name.trim(), steps: W, watt: Math.max(...W), target: d.target, thermo: d.thermo, auto: d.auto, prio: d.prio, from: d.from || null, to: d.to || null, ...this._ehFrostData(d) };
     if (M.edit) { delete heater.room; delete heater.entity; }
     try {
       const r = M.edit ? await this._hass.callWS({ type: "fenster_heizung/heizer_update", hid: M.edit, heater }) : await this._hass.callWS({ type: "fenster_heizung/heizer_add", heater });
       if (M.edit) { this._ehD = r; this._modal = M.back; this._renderModal(); this._render(); this._toast(`„${heater.name}“ gespeichert`); return; }
       this._ehD = r; this._modal = M.back && (M.back.type === "fh" || M.back.type === "ehlist") ? M.back : null;  /* Raumdialog nicht zurückholen: sein Entwurf kennt den Heizer noch nicht */ this._renderModal(); this._render();
-      this._toast(`„${heater.name}“ eingerichtet – heizt mit PV-Überschuss`);
+      this._toast(`„${heater.name}“ eingerichtet – heizt ${this._ehModeText(heater.mode)}`);
     } catch (e) { M.busy = false; M.err = (e && e.message) || "Speichern fehlgeschlagen"; this._renderModal(); }
   }
   _ehStepList(M) { return M.edit ? [3, 4] : M.fixed ? [1, 3, 4] : [1, 2, 3, 4]; }
@@ -145,45 +152,48 @@
   /* Zeile im Reiter „Geräte“ der Modul-1-Einstellungen */
   _ehGeraeteRow() {
     const hs = this._ehRooms().filter((r) => r.htr), n = hs.length;
-    const txt = n === 1 ? `${esc(this._ehName(hs[0]))} · ${esc(hs[0].name)} · nur mit PV-Überschuss` : n ? `${n} Geräte: ${esc(hs.map((r) => this._ehName(r)).join(", "))}` : "Heizer mit PV-Überschuss einbinden";
+    const txt = n === 1 ? `${esc(this._ehName(hs[0]))} · ${esc(hs[0].name)} · ${htrFrost(hs[0].htr) ? this._ehModeText(hs[0].htr.modus) : "nur mit PV-Überschuss"}` : n ? `${n} Geräte: ${esc(hs.map((r) => this._ehName(r)).join(", "))}` : "Heizer für PV-Überschuss oder Frost einbinden";
     return `<button class="sxrow" data-act="ehxlist"><span class="sxi">${ic("bolt", 20)}</span><span class="sxt"><b>Elektroheizer</b><small>${txt}</small></span><em class="sxc ${n ? "ok" : ""}">${n ? "Eingerichtet" : "Neu"}</em><span class="sxg">${ic("chev", 16)}</span></button>`;
   }
   _ehListModal() {
     const M = this._modal, rooms = this._ehRooms(), hs = rooms.filter((r) => r.htr).sort((a, b) => ((a.htr.prio || 5) - (b.htr.prio || 5)) || a.name.localeCompare(b.name, "de")), adm = this._admin();
-    const rows = hs.map((r) => { const h = r.htr, on = h.status === "pv", ps = this._ehPaused(r), st = stepsOf(h); return `<button class="sxrow" data-act="rkhtr" data-id="${esc(r.id)}"><span class="sxi">${ic("bolt", 20)}</span><span class="sxt"><b>${esc(this._ehName(r))}</b><small>${esc(r.name)} · ${st.length > 1 ? `${st.length} Stufen bis ${wfmt(Math.max(...st))}` : wfmt(h.watt)}</small></span><em class="sxc ${on ? "ok" : ps ? "off" : ""}">${ps ? "pausiert" : on ? "☀ " + wfmt(h.watt_now) : "wartet"}</em><span class="sxg">${ic("chev", 16)}</span></button>`; }).join("");
+    const rows = hs.map((r) => { const h = r.htr, on = htrOn(h), ps = this._ehPaused(r), st = stepsOf(h); return `<button class="sxrow" data-act="rkhtr" data-id="${esc(r.id)}"><span class="sxi">${ic("bolt", 20)}</span><span class="sxt"><b>${esc(this._ehName(r))}</b><small>${esc(r.name)} · ${st.length > 1 ? `${st.length} Stufen bis ${wfmt(Math.max(...st))}` : wfmt(h.watt)}${h.modus === "both" ? " · PV und Frost" : h.modus === "frost" ? " · Frost" : ""}</small></span><em class="sxc ${on ? "ok" : ps ? "off" : ""}">${ps ? "pausiert" : on ? (h.status === "frost" ? "❄ " : "☀ ") + wfmt(h.watt_now) : "wartet"}</em><span class="sxg">${ic("chev", 16)}</span></button>`; }).join("");
     return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
       <div class="sh"><div><b>${M.back ? `<button class="lnk ehbk" data-act="ehxlback" aria-label="Zurück">‹</button>` : ""}Elektroheizer</b><span>Modul 1 · Geräte · ${hs.length ? `${hs.length} ${hs.length === 1 ? "Heizer" : "Heizer"}` : "noch keiner eingerichtet"}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="lsec">${ic("bolt", 15)}Deine Heizer</div>
       <div class="fhs"><div class="sxl">${rows || `<div class="mut sm" style="padding:12px 14px">Noch kein Elektroheizer eingerichtet.</div>`}</div>
       ${adm && rooms.some((r) => !r.htr) ? `<div style="padding:0 12px 12px"><button class="btn2 pri" data-act="ehxnew" style="width:100%">${ic("plus", 16)} Elektroheizer hinzufügen</button></div>` : ""}</div>
       ${this._ehTrashBlock()}
+      ${this._ehFrostRules(hs)}
       ${this._ehPvRules()}
       <div class="foot2">${M.back ? `<button class="btn2" data-act="ehxlback">Zurück</button>` : ""}<button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
   /* PV-Regeln für alle Heizer (bis Build 2 im Reiter „Elektroheizer“) */
   _ehPvRules() {
-    const pv = this._pv(), pvn = this._pvNow(), rp = this._rate("price"), rf = this._rate("feed");
+    const pv = this._pv(), pvn = this._pvNow(), rp = this._rate("price"), rf = this._rate("feed"), hts = this._ehRooms().filter((r) => r.htr), anyFr = hts.some((r) => htrFrost(r.htr));
+    const prices = `<div class="hslk">${this._hsLink("pr", `Bezug ${num(rp, 2)} ct/kWh, Einspeisung ${num(rf, 2)} ct/kWh`)}</div>`;
+    if (!pv.sensor && hts.length && hts.every((r) => r.htr.modus === "frost")) return `<div class="mut sm" style="margin:10px 0 0">Alle Heizer laufen nur bei Frost. Kommt eine PV-Anlage dazu, wählst du den Netz-Sensor hier:</div><div class="hslk">${this._hsLink("en", "Netz noch nicht gewählt")}</div>${prices}`;
     const n = (k, l, u, h, lo, hi, st) => `<div class="of"><div class="ol"><b>${l}</b><span>${h}</span></div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="gpvn" data-k="${k}" value="${pv[k]}" min="${lo}" max="${hi}" step="${st}"><i>${u}</i></span></div></div>`;
     return `<div class="lsec">${ic("sun", 15)}PV-Regeln für alle Heizer</div><div class="fhs open fhst"><div class="sxrow stinfo"><span class="sxi">${ic("bolt", 20)}</span><span class="sxt"><b>PV-Überschuss für Elektroheizer${this._stHelpBtn("general.pv.reserve")}</b><small>${pv.sensor ? (pvn != null ? `${wfmt(pvn)} Überschuss, ${wfmt(this._htrTotal())} an Heizer verteilt.` : "Sensor gewählt, noch kein Wert.") : "Noch kein Sensor für die Einspeisung gewählt."}</small></span><em class="sxc ${pv.sensor ? "ok" : ""}">${pv.sensor ? "Eingerichtet" : "Offen"}</em></div><div class="fhb">
-      <div class="mut sm" style="margin:2px 0 4px">Elektroheizer heizen nur bei genug Überschuss. Diese Regeln gelten für alle Heizer.</div>
+      <div class="mut sm" style="margin:2px 0 4px">${anyFr ? "Diese Regeln gelten für den Betrieb mit PV-Überschuss." : "Elektroheizer heizen nur bei genug Überschuss. Diese Regeln gelten für alle Heizer."}</div>
       <div class="hslk">${this._hsLink("en", `Netz ${pv.sensor ? esc(this._wzName(pv.sensor)) + (pv.sign === "import" ? " (Bezug positiv)" : " (Einspeisung positiv)") : "noch nicht gewählt"}${pv.soc_sensor ? " · Ladestand " + esc(this._wzName(pv.soc_sensor)) : ""}`)}</div>
-      ${n("reserve", "Reserve", "W", "Bleibt zusätzlich zur Heizerleistung übrig.", 0, 2000, 50)}${n("delay", "Einschalten nach", "Min.", "So lange muss der Überschuss anliegen.", 0, 30, 1)}${n("minrun", "Mindestlaufzeit", "Min.", "Kürzer läuft ein Heizer nicht an einem Stück.", 0, 120, 5)}
+      ${n("reserve", "Reserve", "W", "Bleibt zusätzlich zur Heizerleistung übrig.", 0, 2000, 50)}${n("delay", "Einschalten nach", "Min.", "So lange muss der Überschuss anliegen.", 0, 30, 1)}${anyFr ? "" : n("minrun", "Mindestlaufzeit", "Min.", "Kürzer läuft ein Heizer nicht an einem Stück.", 0, 120, 5)}
       ${pv.soc_sensor ? n("soc_min", "Heizer erst ab", "%", "Die Batterie wird zuerst geladen.", 0, 100, 5) : ""}
       <div class="gst ${pvn != null ? "on" : ""}">${ic(pvn != null ? "bolt" : "info", 15)}${pvn != null ? `Aktuell ${wfmt(pvn)} Überschuss, ${wfmt(this._htrTotal())} an Heizer verteilt.` : "Noch kein Sensor gewählt."}</div></div></div>
-      <div class="hslk">${this._hsLink("pr", `Bezug ${num(rp, 2)} ct/kWh, Einspeisung ${num(rf, 2)} ct/kWh`)}</div>`;
+      ${prices}`;
   }
   /* Geräte-Blatt eines Heizers (Raumkarte, Liste) */
   _ehDevSheet(r) {
-    const adm = this._admin(), h = r.htr, on = h && h.status === "pv", ps = this._ehPaused(r), e = this._ehOf(r.id), st = h ? stepsOf(h) : [];
+    const adm = this._admin(), h = r.htr, on = htrOn(h), ps = this._ehPaused(r), e = this._ehOf(r.id), st = h ? stepsOf(h) : [];
     if (!h) return "";
     const it = (act, icon, t, sub, cls = "") => `<button class="rk2mi ${cls}" data-act="${act}" data-id="${esc(r.id)}">${ic(icon, 20)}<span><b>${t}</b><small>${sub}</small></span>${ic("chev", 16)}</button>`;
     return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
       <div class="sh"><div><b>${esc(this._ehName(r))}</b><span>${esc(r.name)} · ${esc((h.entity || "").split(".")[0] === "climate" ? "Klima-Gerät" : "Schalter")}${ps ? " · pausiert" : ""}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="rk2sht">${this._gx("heater", 64, { stage: on ? Math.min(3, h.stufe || 2) : 0, on })}</div>${this._htrBox(r)}
       ${adm ? `<div class="rk2menu" style="margin-top:10px">
-        ${it("ehxedit", "pencil", "Bearbeiten", `Name, Leistung${st.length > 1 ? ` (${st.length} Stufen)` : ""}, Heizen bis, Zeitfenster`)}
+        ${it("ehxedit", "pencil", "Bearbeiten", `Name, Leistung${st.length > 1 ? ` (${st.length} Stufen)` : ""}, ${htrFrost(h) ? "PV oder Frost, Regeln" : "Heizen bis, Zeitfenster"}`)}
         ${it("ehxmove", "home", "In anderen Raum stellen", "Statistik und Einstellungen ziehen mit")}
-        ${it("ehxpause", ps ? "play" : "pause", ps ? "Fortsetzen" : "Pausieren", ps ? "Heizt wieder mit PV-Überschuss" : "Bleibt eingerichtet, heizt nicht")}
+        ${it("ehxpause", ps ? "play" : "pause", ps ? "Fortsetzen" : "Pausieren", ps ? `Heizt wieder ${this._ehModeText(h.modus)}` : "Bleibt eingerichtet, heizt nicht")}
         ${it("ehxdel", "trash", "Heizer entfernen", "Gerät aus, Thermostate zurück, 30 Tage im Papierkorb", "dng")}
         ${it("hrep", "chart", "Bericht", "Überschuss, Stufen und Raumtemperatur eines Tages")}</div>` : ""}
       ${e ? "" : `<div class="mut sm" style="margin:8px 0 0">Wird geladen …</div>`}
@@ -194,7 +204,7 @@
     const S = this.constructor, st = (e.steps && e.steps.length ? e.steps : [e.watt || 1500]), T = S.EH_TPL.find((x) => x[2].join() === st.join());
     this._pkId = null;
     this._modal = { type: "ehwiz", step: 3, fixed: true, edit: e.id, back: this._modal, busy: false, err: "",
-      d: { room, entity: e.entity, name: e.name, tpl: T ? T[0] : "own", steps: T ? T[2] : st, txt: st.join(", "), target: Number(e.target) || 21, thermo: e.thermo === "on" ? "on" : "off", auto: e.auto === "off" ? "off" : "on", prio: Number(e.prio) || 5, from: (e.from || "").slice(0, 5), to: (e.to || "").slice(0, 5), more: !!(e.from || Number(e.prio) !== 5) } };
+      d: { room, entity: e.entity, name: e.name, tpl: T ? T[0] : "own", steps: T ? T[2] : st, txt: st.join(", "), target: Number(e.target) || 21, thermo: e.thermo === "on" ? "on" : "off", auto: e.auto === "off" ? "off" : "on", prio: Number(e.prio) || 5, from: (e.from || "").slice(0, 5), to: (e.to || "").slice(0, 5), more: !!(e.from || Number(e.prio) !== 5), ...this._ehFrostDraft(e) } };
     this._renderModal();
   }
   _ehMoveModal() {
@@ -222,7 +232,7 @@
     if (a === "ehxpause") {
       const r = this._ehRooms().find((x) => x.id === id), e = this._ehOf(id); if (!r || !e) { this._ehLoad(); return true; }
       const pause = !this._ehPaused(r);
-      this._ehCall({ type: "fenster_heizung/heizer_update", hid: e.id, heater: { paused: pause } }, pause ? `„${e.name}“ pausiert` : `„${e.name}“ heizt wieder mit PV-Überschuss`).then(() => this._renderModal());
+      this._ehCall({ type: "fenster_heizung/heizer_update", hid: e.id, heater: { paused: pause } }, pause ? `„${e.name}“ pausiert` : `„${e.name}“ heizt wieder ${this._ehModeText(e.mode)}`).then(() => this._renderModal());
       return true;
     }
     if (!M || M.type !== "ehmove") return false;

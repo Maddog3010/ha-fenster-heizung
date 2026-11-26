@@ -208,7 +208,7 @@
     d += (F1[type] || F1.wohnen)();
     /* Geräte im Raum: Elektroheizer an der Wand neben dem Fenster, Luftentfeuchter in der Ecke links */
     if (s.htr && !mess) {
-      const on = s.htr.status === "pv" && (Number(s.htr.watt_now) || 0) > 0, hx = 100, hy = 58;
+      const on = htrOn(s.htr) && (Number(s.htr.watt_now) || 0) > 0, hx = 100, hy = 58;
       d += `<rect x="${hx + 1}" y="${hy + 2}" width="36" height="24" rx="5" fill="#000" opacity=".18"/><rect x="${hx}" y="${hy}" width="36" height="24" rx="5" fill="#e2e8f0" stroke="#94a3b8" stroke-opacity=".7"/>` +
         [0, 1, 2, 3, 4].map((i) => `<rect x="${hx + 5 + i * 5.6}" y="${hy + 5}" width="3.2" height="14" rx="1.6" fill="${on ? "#fb923c" : "#94a3b8"}"/>`).join("") +
         `<circle cx="${hx + 32}" cy="${hy + 3.6}" r="1.8" fill="${on ? "#fbbf24" : "#64748b"}"/>` +
@@ -234,7 +234,7 @@
   /* Bildbereich: eigenes Foto (Vorrang) oder Raumbild. Der Schlüssel entscheidet, ob neu gezeichnet wird. */
   _rkPic(r, s, mini = false) {
     const ph = (this._cfg.layout.photos || {})[r.id], type = this._rkType(r), an = this._rkCfg().anim;
-    const key = [mini ? "m" : "c", r.id, type, s.k, s.open.length ? "o" : s.tilt.length ? "t" : "c", s.night ? 1 : 0, s.heating || (s.act === "heating") ? 1 : 0, an, ph ? ph.length + ph.slice(-12) : "", type === "carport" && this._out().t != null && this._out().t <= 0 ? "fr" : "", s.htr ? s.htr.status + (s.htr.status === "pv" && s.htr.watt_now > 0 ? "1" : "0") : "", (s.lfs || []).map((d) => { const L = d.S.live || {}; return (L.running || (L.on && !L.has_pw) ? "r" : "s") + (L.full ? "f" : "") + (L.fill != null ? Math.round(L.fill * 10) : ""); }).join(","), s.here ? "p" : ""].join("|");
+    const key = [mini ? "m" : "c", r.id, type, s.k, s.open.length ? "o" : s.tilt.length ? "t" : "c", s.night ? 1 : 0, s.heating || (s.act === "heating") ? 1 : 0, an, ph ? ph.length + ph.slice(-12) : "", type === "carport" && this._out().t != null && this._out().t <= 0 ? "fr" : "", s.htr ? s.htr.status + (htrOn(s.htr) && s.htr.watt_now > 0 ? "1" : "0") : "", (s.lfs || []).map((d) => { const L = d.S.live || {}; return (L.running || (L.on && !L.has_pw) ? "r" : "s") + (L.full ? "f" : "") + (L.fill != null ? Math.round(L.fill * 10) : ""); }).join(","), s.here ? "p" : ""].join("|");
     const cls = `rk2art${s.k === "aus" ? " gr" : ""}${mini ? " mini" : ""}${s.night ? " nt" : ""}`;
     if (ph) return `<div class="${cls} ph" data-kk="${esc(key)}" data-an="${an}" style="background-image:url('${esc(ph)}');--c:${s.col}"><i class="rkv"></i></div>`;
     return `<div class="${cls}" data-kk="${esc(key)}" data-an="${an}" style="--c:${s.col}">${this._rkArt(type, s)}</div>`;
@@ -300,7 +300,7 @@
     if (!s.pts.length) return adm ? `<button class="rk2pl none" data-act="plan" data-id="${id}">${ic("plus", 15)}Heizplan einrichten</button>` : "";
     const segs0 = segs(s.pts, s.today), t0 = s.today * 1440, nm = s.now % 1440;
     const cuts = s.pts.filter((p) => p.w > s.now && p.w < t0 + 1440).filter((p, i, a) => (i ? a[i - 1].t : s.curPlan) !== p.t).slice(0, 2);
-    const cap = !s.planOn ? (s.away ? "Heizplan ruht · Abwesenheit" : s.summer ? "Heizplan ruht · Sommermodus" : "Heizplan aus") : `Jetzt <b>${num(s.curPlan, 1)}°</b>${cuts.map((p) => ` · ab ${fmtT(p.w % 1440)} <b>${num(p.t, 1)}°</b>`).join("")}${r.htr ? ` · <span class="nw"><span class="sun">☀</span> PV-Heizer</span>` : ""}${s.pres && s.pres.anwesend && !s.pres.gesperrt ? ` · <span class="nw pr">● ${s.pres.modus === "exact" ? "genau" : "mind."} ${num(s.pres.temp, 1)}°</span>` : ""}`;
+    const cap = !s.planOn ? (s.away ? "Heizplan ruht · Abwesenheit" : s.summer ? "Heizplan ruht · Sommermodus" : "Heizplan aus") : `Jetzt <b>${num(s.curPlan, 1)}°</b>${cuts.map((p) => ` · ab ${fmtT(p.w % 1440)} <b>${num(p.t, 1)}°</b>`).join("")}${r.htr ? ` · <span class="nw"><span class="sun">${r.htr.modus === "frost" ? "❄" : "☀"}</span> ${r.htr.modus === "frost" ? "Frost-Heizer" : htrFrost(r.htr) ? "Elektroheizer" : "PV-Heizer"}</span>` : ""}${s.pres && s.pres.anwesend && !s.pres.gesperrt ? ` · <span class="nw pr">● ${s.pres.modus === "exact" ? "genau" : "mind."} ${num(s.pres.temp, 1)}°</span>` : ""}`;
     const inner = `<div class="rk2bd${s.planOn ? "" : " off"}">${segs0.map((g) => `<i style="flex:${g.e - g.s};background:${this._rkCol(g.t, s.lo, s.hi)}" title="${fmtT(g.s)}–${fmtT(g.e % 1440 || 1440)} · ${num(g.t, 1)} °C"></i>`).join("")}<b style="left:${(nm / 14.4).toFixed(2)}%"></b></div>
       <div class="tla"><span>0</span><span>6</span><span>12</span><span>18</span><span>24</span></div><div class="rk2pc">${ic("plan", 14)}<span>${cap}</span></div>`;
     return adm ? `<button class="rk2pl" data-act="plan" data-id="${id}" aria-label="Heizplan bearbeiten">${inner}</button>` : `<div class="rk2pl">${inner}</div>`;
@@ -353,7 +353,7 @@
     return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
       <div class="sh"><div><b>${esc(r.name)}</b><span><i class="rk2dot" style="background:${s.col}"></i>${esc(s.lab)} · ${esc(this._rkTypeName(this._rkType(r)))}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="rk2menu">${it("why", "info", "Warum?", "Was die Regelung gerade tut und weshalb")}${it("rep", "chart", "Bericht", "Temperatur, Fenster und Pausen eines Tages")}
-      ${r.htr ? it("rkhtr", "bolt", "Elektroheizer", "Stufen, Laufzeit, Bericht") + it("hrep", "chart", "Heizer-Bericht", "Elektroheizer mit PV-Überschuss") : adm ? it("ehxnew", "bolt", "Elektroheizer hinzufügen", "Heizen mit PV-Überschuss in diesem Raum") : ""}
+      ${r.htr ? it("rkhtr", "bolt", "Elektroheizer", "Stufen, Laufzeit, Bericht") + it("hrep", "chart", "Heizer-Bericht", `Elektroheizer ${this._ehModeText(r.htr.modus)}`) : adm ? it("ehxnew", "bolt", "Elektroheizer hinzufügen", "Mit PV-Überschuss oder bei Frost") : ""}
       ${s.lfs.map((d) => `<button class="rk2mi" data-act="lfrk" data-id="${id}" data-d="${esc(d.id)}">${ic("fan", 20)}<span><b>${esc(d.name)}</b><small>Luftentfeuchter · Standort, Tank, Statistik</small></span>${ic("chev", 16)}</button>`).join("")}
       ${adm ? it("plan", "plan", "Heizplan bearbeiten", s.pts.length ? "Zeiten und Temperaturen" : "Noch kein Heizplan") : ""}
       ${adm ? it("opt", "sliders", "Raumeinstellungen", "Fenster, Thermostate, Sensoren, Regelung") : ""}
@@ -394,14 +394,14 @@
     return out.length ? `<div class="rk2dvs">${out.join("")}</div>` : "";
   }
   _rkHtrTile(r, h) {
-    const [lab] = HTR[h.status] || HTR.aus, st = stepsOf(h), on = h.status === "pv" && (Number(h.watt_now) || 0) > 0;
-    const tone = { pv: "#fb923c", wartet: "#f59e0b", soc: "#f59e0b", fenster: "#60a5fa", warm: "#2dd4bf" }[h.status] || "#94a3b8";
+    const [lab] = HTR[h.status] || HTR.aus, st = stepsOf(h), on = htrOn(h) && (Number(h.watt_now) || 0) > 0, fr = h.status === "frost";
+    const tone = { pv: "#fb923c", frost: "#fb923c", frost_wartet: "#f59e0b", frost_netz: "#f59e0b", frost_sensor: "#f59e0b", wartet: "#f59e0b", soc: "#f59e0b", fenster: "#60a5fa", warm: "#2dd4bf" }[h.status] || "#94a3b8";
     const share = h.heute_kwh > 0 ? Math.round((h.heute_pv_kwh / h.heute_kwh) * 100) : null;
     const val = on ? (st.length > 1 ? `Stufe ${h.stufe} · ${wfmt(h.watt_now)}` : wfmt(h.watt_now)) : lab;
-    const sub = [on ? "mit PV-Überschuss" : h.status === "wartet" && st.length ? `ab ${wfmt(st[0] + this._pv().reserve)} Überschuss` : "", h.heute_kwh > 0 ? `${num(h.heute_kwh, 1)} kWh heute${share != null ? ` · ${share} % PV` : ""}` : ""].filter(Boolean).join(" · ");
+    const sub = [on ? (fr ? "bei Frost, Netzstrom" : "mit PV-Überschuss") : h.status === "frost_wartet" && h.frost && h.frost.rest_min ? `noch ${h.frost.rest_min} Min.` : h.status === "wartet" && st.length ? `ab ${wfmt(st[0] + this._pv().reserve)} Überschuss` : "", h.heute_kwh > 0 ? `${num(h.heute_kwh, 1)} kWh heute${share != null && h.modus !== "frost" ? ` · ${share} % PV` : ""}` : ""].filter(Boolean).join(" · ");
     const bar = st.length > 1 ? `<div class="rk2stp">${st.map((w, i) => `<i class="${on && h.stufe >= i + 1 ? "on" : ""}" title="Stufe ${i + 1} · ${wfmt(w)}"></i>`).join("")}</div>` : "";
     return `<div class="rk2dv${on ? " run" : ""}" style="--c:${tone}"><button class="rk2dvb" data-act="rkhtr" data-id="${esc(r.id)}" aria-label="Elektroheizer öffnen">
-      <span class="rk2dvi">${this._gx("heater", 38, { stage: on ? Math.min(3, h.stufe || 2) : 0, on })}</span><span class="rk2dvt"><small>Elektroheizer${on ? ` <i class="sun">☀</i>` : ""}</small><b>${esc(val)}</b>${sub ? `<em>${esc(sub)}</em>` : ""}${bar}</span></button>
+      <span class="rk2dvi">${this._gx("heater", 38, { stage: on ? Math.min(3, h.stufe || 2) : 0, on })}</span><span class="rk2dvt"><small>Elektroheizer${on ? ` <i class="sun">${fr ? "❄" : "☀"}</i>` : ""}</small><b>${esc(val)}</b>${sub ? `<em>${esc(sub)}</em>` : ""}${bar}</span></button>
       ${r.htrSw ? `<button class="sw ${r.htrOn ? "on" : ""}" data-act="sw" data-sw="${esc(r.htrSw)}" aria-pressed="${!!r.htrOn}" aria-label="Elektroheizer ein oder aus"></button>` : ""}</div>`;
   }
   _rkLfTile(r, d) {

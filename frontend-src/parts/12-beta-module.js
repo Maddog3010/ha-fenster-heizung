@@ -15,7 +15,7 @@
     this._hass.callWS({ type: "fenster_heizung/sp_get" }).then((r) => { this._spD = { d: r || {}, ts: Date.now() }; }).catch(() => { this._spD = { d: { error: true }, ts: Date.now() }; })
       .finally(() => { this._spBusy = false; if (this._spWantR) { this._spWantR = false; if (!this._spVisible() && !this._modal) this._render(); } if (this._spVisible()) { this._render(); if (this._modal && this._modal.type === "spset") this._renderModal(); } });
   }
-  _spVisible() { return !!(this._modal && this._modal.type === "spset") || (!!this._mdActive && this._mdActive() === "sp" && !this._stOpen); }
+  _spVisible() { return !!(this._modal && this._modal.type === "spset") || (!!this._mdActive && this._mdActive() === "sp" && !this._stOpen) || !!(this._tm2Shows && this._tm2Shows("sp")); }
   _sp() { const d = (this._spD && this._spD.d) || {}; return { ...d, cfg: { src: "forecast", fc_sensor: "", act: "", mode: "day", look: "new", corr: true, sites: [], since: "", ...(d.cfg || {}) } }; }
   _spSave(cfg) {
     if (!(this._spD && this._spD.d && this._spD.d.cfg)) { this._toast("Noch nicht geladen, bitte kurz warten und nochmal versuchen"); return; }

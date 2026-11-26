@@ -269,7 +269,7 @@
   _evPageNew(d) {
     const wbOn = this._wbOn(), t = this._wbStT(), box = this._betaBox("Die Darstellung nutzt die Sensoren, die du in den Einstellungen wählst.");
     if (!wbOn) return `${box}${this._evSay(d)}${this._evBand(d)}${this._evTiles(d)}${this._wbCard(d)}`;
-    const back = this._tmOn && this._tmOn() && this._evWallFull ? `<button class="btn2 evwback" data-act="wbwall" data-k="">${ic("home", 18)}Zur Wandansicht</button>` : "";
+    const back = this._tmOn && this._tmOn() && !this._tm2On() && this._evWallFull ? `<button class="btn2 evwback" data-act="wbwall" data-k="">${ic("home", 18)}Zur Wandansicht</button>` : "";
     const head = `${back}${box}${this._evTabsNew()}${this._evSay(d)}`;
     if (t === "plan") return `${head}${this._evPlanNew(d)}`;
     if (t === "stat") return `${head}${this._evStatNew()}`;

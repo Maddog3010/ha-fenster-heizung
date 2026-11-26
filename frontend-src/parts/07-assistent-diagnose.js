@@ -394,7 +394,7 @@
     const r = this._collect().find((x) => x.id === m.id) || this._msList().find((x) => x.id === m.id) || { name: "" };
     if (m.type === "advent") { box.innerHTML = this._advModal(); return; }
     if (m.type === "tm2room") { box.innerHTML = this._tm2RoomModal(m); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; this._tm2Charts(); return; }
-    if (m.type === "tm2x") { box.innerHTML = m.k === "gs" ? this._tm2GsModal(m) : this._tm2EnModal(m); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (m.type === "tm2x") { box.innerHTML = m.k === "gs" ? this._tm2GsModal(m) : m.k === "ev" ? this._tm2EvModal() : m.k === "sp" ? this._tm2SpModal(m) : this._tm2EnModal(m); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "tm2ww" || m.type === "tm2prob") { box.innerHTML = this._tm2WwModal(m); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "sai") { box.innerHTML = this._saiModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "lfset") { box.innerHTML = this._lfSetModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }

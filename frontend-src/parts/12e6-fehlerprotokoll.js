@@ -28,7 +28,8 @@
     this._errQ.push(t);
     try { this._hass.callWS({ type: "fenster_heizung/err_report", dev: this._errDev(), ...p }).catch(() => { /* älteres Backend */ }); } catch (_) { /* egal */ }
   }
-  /* Fehlgeschlagener Befehl: nur echte Programmfehler – „nicht bereit“, „nicht gefunden“ usw. sind erwartete Antworten */
+  /* Fehlgeschlagener Befehl: nur echte Programmfehler – „nicht bereit“, „nicht gefunden“ und Hinweise zur Eingabe
+     („invalid_input“, z. B. „mindestens eine Entität wählen“) sind erwartete Antworten */
   _errCmd(msg, e) {
     const type = String((msg && msg.type) || "");
     if (!type.startsWith("fenster_heizung/") || type === "fenster_heizung/err_report" || type === "fenster_heizung/err_list") return;

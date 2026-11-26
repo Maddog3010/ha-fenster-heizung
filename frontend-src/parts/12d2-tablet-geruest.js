@@ -53,7 +53,7 @@
       <header class="tmh tm2h">${land ? "" : `<img class="blogo" src="${LOGO_URL}" alt="" draggable="false">`}<div class="tmht"><b>${title}</b><span>${sub}</span></div>${land ? tabs : ""}
       <div class="tmclk"><span data-tmclk>${d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</span><small data-tmdate>${d.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}</small></div>${land ? "" : this._tm2Lock()}</header>
       ${land || !tabs ? "" : `<div class="tm2tr">${tabs}</div>`}
-      <div class="tmbody${fit ? " tm2fit" : ""}${mod ? ` tm2mod tm2-${v}` : ""}"${fit ? "" : ` style="zoom:${zoom}"`}>${mod ? this._tm2ModBody(v) : this._tmBody(v)}</div></div>${land ? "" : nav}</div>`;
+      <div class="tmbody${fit ? " tm2fit" : ""}${mod ? ` tm2mod tm2-${v}` : ""}"${fit ? "" : ` style="zoom:${zoom}"`}>${mod ? this._tm2ModBody(v) : `${v === "ev" && this._evWallFull ? `<button class="btn2 evwback" data-act="wbwall" data-k="">${ic("back", 18)}Zurück zur Tablet-Seite</button>` : ""}${this._tmBody(v)}`}</div></div>${land ? "" : nav}</div>`;
     const nb = sr.querySelector(".tmbody"); if (nb && keep && !fit) nb.scrollTop = keep;
     this._tm2Bind();
     if (mod) { this._tm2Charts(); if (this._modal && (this._modal.type === "tm2room" || this._modal.type === "tm2x")) this._renderModal(); }
@@ -186,6 +186,10 @@
     if (a === "tm2x") { this._modal = { type: "tm2x", k, s: b.dataset.s || "", id: b.dataset.id || "" }; this._renderModal(); return true; }
     if (a === "tm2run") { if (this._modal && this._modal.type === "tm2x") { this._modal.run = +k; this._renderModal(); } return true; }
     if (a === "tm2rest") { this._tmSave({ rest: k }); return true; }
+    if (a === "tm2tfday") { this._tm2TfDay = k; this._tmHomed = false; this._render(); return true; }
+    if (a === "tm2spgs") { (this._tm2T = this._tm2T || {}).gs = "win"; this._tmView = "gs"; this._tmHomed = false; this._render(); return true; }
+    /* Modul 8: ganze Seite zum Bearbeiten (kommt über tm2g, also erst nach der PIN) */
+    if (a === "tm2evfull") { this._evWallFull = true; this._wbTab = k === "set" && this._evNew() ? "veh" : k; this._tmHomed = false; this._render(); return true; }
     if (a === "tm2prob") { this._modal = { type: "tm2prob" }; this._renderModal(); return true; }
     if (a === "tm2ww") { this._modal = { type: "tm2ww", kind: k }; this._renderModal(); return true; }
     /* Ändern erst nach der PIN: data-g ist die eigentliche Aktion */

@@ -171,17 +171,20 @@
       if (hv) { if (h.leistung_sensor) { heat = parseFloat(hv.s); if (!isFinite(heat)) heat = 0; } else if (["on", "heat", "auto", "heat_cool"].includes(hv.s)) { const stp = stepsOf(h), pi = (h.presets || []).indexOf(hv.a && hv.a.preset_mode); heat = pi >= 0 && stp[pi] ? stp[pi] : stp[0] || Number(h.watt) || 0; } else heat = 0; }
       const pv = at(ps, m); let ex = pv ? parseFloat(pv.s) : 0; if (!isFinite(ex)) ex = 0; if (p.sign === "import") ex = -ex;
       const tv = at(ts, m), temp = tv && tv.a && tv.a.current_temperature != null ? Number(tv.a.current_temperature) : null;
-      pts.push({ t: m, heat, pv: Math.max(0, ex) + heat, temp });
+      pts.push({ t: m, heat, pv: htrFrost(h) ? (p.sensor && pv ? Math.max(0, ex + heat) : 0) : Math.max(0, ex) + heat, temp });  /* bei Frost zählt Netzbezug nicht als PV */
     }
+    const fr = htrFrost(h), grid = (q, w) => fr && q.pv < w * 0.5;
+    let wasGrid = false;
     let kwh = 0, pvk = 0, mins = 0; const ev = []; let prev = 0;
     for (const q of pts) {
       kwh += (q.heat * 5) / 60000; pvk += (Math.min(q.heat, q.pv) * 5) / 60000; if (q.heat > 0) mins += 5;
-      if (q.heat > 0 && prev === 0) ev.push({ t: q.t, c: "#34d399", x: "Heizer an", y: `Überschuss ${wfmt(q.pv)}${stepsOf(h).length > 1 ? " · Stufe " + (stepsOf(h).indexOf(q.heat) + 1) : ""}${h.thermo_aus ? " · Thermostat aus" : ""}` });
-      if (q.heat === 0 && prev > 0) ev.push({ t: q.t, c: "#94a3b8", x: "Heizer aus", y: q.temp != null && q.temp >= (Number(h.ziel) || 99) - 0.3 ? `Zieltemperatur ${num(h.ziel, 1)} °C erreicht` : "Überschuss zu gering" }); if (h.thermo_aus && q.heat === 0 && prev > 0) ev[ev.length - 1].y += " · Thermostat regelt wieder";
-      if (q.heat > 0 && prev > 0 && q.heat !== prev) ev.push({ t: q.t, c: q.heat > prev ? "#fbbf24" : "#fb923c", x: q.heat > prev ? "Stufe erhöht" : "Stufe verringert", y: `${wfmt(prev)} → ${wfmt(q.heat)} bei ${wfmt(q.pv)} Überschuss` });
+      if (q.heat > 0 && prev === 0) ev.push({ t: q.t, c: "#34d399", x: "Heizer an", y: `${grid(q, q.heat) ? "Netzstrom (Frost)" : "Überschuss " + wfmt(q.pv)}${stepsOf(h).length > 1 ? " · Stufe " + (stepsOf(h).indexOf(q.heat) + 1) : ""}${h.thermo_aus ? " · Thermostat aus" : ""}` });
+      if (q.heat === 0 && prev > 0) ev.push({ t: q.t, c: "#94a3b8", x: "Heizer aus", y: wasGrid || h.modus === "frost" ? "Zuheizen beendet" : q.temp != null && q.temp >= (Number(h.ziel) || 99) - 0.3 ? `Zieltemperatur ${num(h.ziel, 1)} °C erreicht` : "Überschuss zu gering" }); if (h.thermo_aus && q.heat === 0 && prev > 0) ev[ev.length - 1].y += " · Thermostat regelt wieder";
+      if (q.heat > 0 && prev > 0 && q.heat !== prev) ev.push({ t: q.t, c: q.heat > prev ? "#fbbf24" : "#fb923c", x: q.heat > prev ? "Stufe erhöht" : "Stufe verringert", y: `${wfmt(prev)} → ${wfmt(q.heat)}${grid(q, q.heat) ? "" : ` bei ${wfmt(q.pv)} Überschuss`}` });
+      if (q.heat > 0) wasGrid = grid(q, q.heat);
       prev = q.heat;
     }
-    return { steps: stepsOf(h), pts, kwh, pvk, mins, ev, hasT: pts.some((q) => q.temp != null) };
+    return { steps: stepsOf(h), pts, kwh, pvk, mins, ev, hasT: pts.some((q) => q.temp != null), noPv: fr && !p.sensor };
   }
   _hrChart(d) {
     const cw = this.clientWidth || 390, avail = cw >= 720 ? Math.min(780, cw * 0.94) : cw, W = Math.max(300, Math.min(748, Math.floor(avail - 32))), H = W < 500 ? 240 : 280, L = 42, R = d.hasT ? 34 : 10, T = 12, B = 26, iw = W - L - R, ih = H - T - B;
@@ -189,12 +192,12 @@
     const tv = d.pts.map((q) => q.temp).filter((v) => v != null), tlo = tv.length ? Math.floor(Math.min(...tv) - 1) : 0, thi = tv.length ? Math.ceil(Math.max(...tv) + 1) : 1;
     const x = (m) => L + (iw * m) / 1440, y = (w) => T + ih * (1 - w / wmax), yt = (t) => T + ih * (1 - (t - tlo) / (thi - tlo));
     this._hrGeo = { W, x, L, iw };
-    let s = `<svg class="hchart" viewBox="0 0 ${W} ${H}" role="img" aria-label="PV-Überschuss und Heizerleistung">`;
+    let s = `<svg class="hchart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${d.noPv ? "Heizerleistung" : "PV-Überschuss und Heizerleistung"}">`;
     for (let i = 0; i <= 4; i++) { const w = (wmax * i) / 4; s += `<line x1="${L}" x2="${W - R}" y1="${y(w)}" y2="${y(w)}" stroke="var(--line)" stroke-dasharray="3 4"/><text x="${L - 6}" y="${y(w) + 4}" text-anchor="end" font-size="10.5" fill="var(--mut)">${w >= 1000 ? num(w / 1000, 1) + " kW" : w + " W"}</text>`; }
     for (const hh of [0, 6, 12, 18, 24]) s += `<line x1="${x(hh * 60)}" x2="${x(hh * 60)}" y1="${T}" y2="${T + ih}" stroke="var(--line)" stroke-dasharray="3 4"/><text x="${x(hh * 60)}" y="${H - 8}" text-anchor="${hh === 0 ? "start" : hh === 24 ? "end" : "middle"}" font-size="10.5" fill="var(--mut)">${String(hh).padStart(2, "0")}:00</text>`;
     const a = d.pts[0], z = d.pts[d.pts.length - 1], dx = x(5) - x(0);
     for (const w of d.steps || []) if (w <= wmax) s += `<line x1="${L}" x2="${W - R}" y1="${y(w)}" y2="${y(w)}" stroke="var(--teal)" stroke-width="1" stroke-dasharray="2 3" opacity=".55"/>`;
-    s += `<path d="${d.pts.map((q, i) => `${i ? "L" : "M"}${x(q.t).toFixed(1)} ${y(q.pv).toFixed(1)}`).join(" ")} L${x(z.t)} ${T + ih} L${x(a.t)} ${T + ih} Z" fill="#fbbf24" opacity=".2"/><path d="${d.pts.map((q, i) => `${i ? "L" : "M"}${x(q.t).toFixed(1)} ${y(q.pv).toFixed(1)}`).join(" ")}" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linejoin="round"/>`;
+    if (!d.noPv) s += `<path d="${d.pts.map((q, i) => `${i ? "L" : "M"}${x(q.t).toFixed(1)} ${y(q.pv).toFixed(1)}`).join(" ")} L${x(z.t)} ${T + ih} L${x(a.t)} ${T + ih} Z" fill="#fbbf24" opacity=".2"/><path d="${d.pts.map((q, i) => `${i ? "L" : "M"}${x(q.t).toFixed(1)} ${y(q.pv).toFixed(1)}`).join(" ")}" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linejoin="round"/>`;
     for (const q of d.pts) if (q.heat > 0) s += `<rect x="${x(q.t).toFixed(1)}" y="${y(q.heat).toFixed(1)}" width="${(dx + 0.6).toFixed(1)}" height="${(T + ih - y(q.heat)).toFixed(1)}" fill="var(--teal)" opacity=".62"/>`;
     if (tv.length) {
       s += `<path d="${d.pts.filter((q) => q.temp != null).map((q, i) => `${i ? "L" : "M"}${x(q.t).toFixed(1)} ${yt(q.temp).toFixed(1)}`).join(" ")}" fill="none" stroke="#7dd3fc" stroke-width="1.8" stroke-dasharray="5 4"/>`;
@@ -207,8 +210,10 @@
     const d = this._hrData; if (!d || !d.pts.length || !this._hrGeo) return;
     const sr = this.shadowRoot, p = d.pts.reduce((a, q) => (Math.abs(q.t - min) < Math.abs(a.t - min) ? q : a), d.pts[0]), xl = sr.getElementById("hxl"), out = sr.getElementById("hxr");
     if (xl) { xl.setAttribute("x1", this._hrGeo.x(p.t)); xl.setAttribute("x2", this._hrGeo.x(p.t)); }
-    if (out) out.innerHTML = `<b>${String(Math.floor(p.t / 60)).padStart(2, "0")}:${String(p.t % 60).padStart(2, "0")} Uhr</b><span><i style="background:#fbbf24"></i>Überschuss ${wfmt(p.pv)}</span><span><i style="background:var(--teal)"></i>Heizer ${p.heat > 0 ? wfmt(p.heat) : "aus"}</span>${p.temp != null ? `<span><i style="background:#7dd3fc"></i>${num(p.temp, 1)} °C</span>` : ""}`;
+    if (out) out.innerHTML = `<b>${String(Math.floor(p.t / 60)).padStart(2, "0")}:${String(p.t % 60).padStart(2, "0")} Uhr</b>${d.noPv ? "" : `<span><i style="background:#fbbf24"></i>Überschuss ${wfmt(p.pv)}</span>`}<span><i style="background:var(--teal)"></i>Heizer ${p.heat > 0 ? wfmt(p.heat) : "aus"}</span>${p.temp != null ? `<span><i style="background:#7dd3fc"></i>${num(p.temp, 1)} °C</span>` : ""}`;
   }
+  /* Heizerbericht ohne PV: Netzstrom statt PV-Anteil und Vorteil; `cost` = heutige Kosten, sonst geschätzt mit dem Strompreis */
+  _hrNetTiles(kwh, cost) { return `<div style="--a:#60a5fa"><span>${ic("bolt", 15)}aus dem Netz</span><b>${num(kwh, 1)} <small>kWh</small></b></div><div style="--a:#a78bfa"><span>${ic("flame", 15)}${cost == null ? "≈ Kosten" : "Kosten"}</span><b>${num(cost == null ? (kwh * this._price()) / 100 : cost, 2)} <small>€</small></b></div>`; }
   _hrBody(r, m) {
     const h = r.htr; if (!h) return `<div class="mut">Für diesen Raum ist kein Elektroheizer eingerichtet.</div>`;
     const p = this._pv(), vk = h.verlauf || {}, today = this._isoDay(0), days = Array.from({ length: 7 }, (_, i) => this._isoDay(i - 6));
@@ -220,11 +225,11 @@
     else if (m.data) {
       const d = m.data; this._hrData = d;
       const share = d.kwh > 0 ? Math.round((d.pvk / d.kwh) * 100) : 0, gain = (d.pvk * Math.max(0, this._price() - this._feed())) / 100;
-      body = `<div class="hrt"><div style="--a:var(--teal)"><span>${ic("clock", 15)}Laufzeit</span><b>${hmin(d.mins)}</b></div><div style="--a:#fbbf24"><span>${ic("bolt", 15)}Energie</span><b>${num(d.kwh, 1)} <small>kWh</small></b></div><div style="--a:#34d399"><span>${ic("sun", 15)}aus PV</span><b>${share} <small>%</small></b></div><div style="--a:#a78bfa"><span>${ic("flame", 15)}Vorteil</span><b>${num(gain, 2)} <small>€</small></b></div></div>
-        <div class="hlg"><span><i style="background:#fbbf24"></i>PV-Überschuss</span><span><i style="background:var(--teal)"></i>Heizer (gestrichelt: Stufen)</span>${d.hasT ? `<span><i style="background:#7dd3fc"></i>Raumtemperatur</span>` : ""}</div>
+      body = `<div class="hrt"><div style="--a:var(--teal)"><span>${ic("clock", 15)}Laufzeit</span><b>${hmin(d.mins)}</b></div><div style="--a:#fbbf24"><span>${ic("bolt", 15)}Energie</span><b>${num(d.kwh, 1)} <small>kWh</small></b></div>${d.noPv ? this._hrNetTiles(d.kwh, m.day === today ? Number(h.heute_kosten) || 0 : null) : `<div style="--a:#34d399"><span>${ic("sun", 15)}aus PV</span><b>${share} <small>%</small></b></div><div style="--a:#a78bfa"><span>${ic("flame", 15)}Vorteil</span><b>${num(gain, 2)} <small>€</small></b></div>`}</div>
+        <div class="hlg">${d.noPv ? "" : `<span><i style="background:#fbbf24"></i>PV-Überschuss</span>`}<span><i style="background:var(--teal)"></i>Heizer (gestrichelt: Stufen)</span>${d.hasT ? `<span><i style="background:#7dd3fc"></i>Raumtemperatur</span>` : ""}</div>
         <div class="hcw">${this._hrChart(d)}</div><div class="hxr" id="hxr"></div>
         <div class="lsec" style="margin-top:14px">Ereignisse</div>${d.ev.length ? d.ev.map((e) => `<div class="hre"><em>${String(Math.floor(e.t / 60)).padStart(2, "0")}:${String(e.t % 60).padStart(2, "0")}</em><i style="background:${e.c}"></i><div><b>${e.x}</b><span>${e.y}</span></div></div>`).join("") : `<div class="mut sm">An diesem Tag hat der Heizer nicht geheizt.</div>`}
-        <div class="mut sm" style="margin-top:10px">Vorteil = PV-Strom statt Netzbezug (${num(this._price(), 2)} ct/kWh${p.price_mode === "entity" && p.price_sensor ? ", aktuell" : ""}) abzüglich entgangener Einspeisevergütung (${num(this._feed(), 2)} ct/kWh${p.feed_mode === "entity" && p.feed_sensor ? ", aktuell" : ""}).</div>`;
+        ${d.noPv ? `<div class="mut sm" style="margin-top:10px">Ohne PV-Sensor kommt der ganze Strom aus dem Netz.</div>` : `<div class="mut sm" style="margin-top:10px">Vorteil = PV-Strom statt Netzbezug (${num(this._price(), 2)} ct/kWh${p.price_mode === "entity" && p.price_sensor ? ", aktuell" : ""}) abzüglich entgangener Einspeisevergütung (${num(this._feed(), 2)} ct/kWh${p.feed_mode === "entity" && p.feed_sensor ? ", aktuell" : ""}).</div>`}`;
     }
     return `<div class="hrds">${chips}</div>${body}`;
   }
@@ -234,10 +239,11 @@
     const pvd = (r, iso) => (iso === today ? Number(r.htr.heute_pv_kwh) || 0 : r.htr.verlauf && r.htr.verlauf[iso] ? Number(r.htr.verlauf[iso][1]) || 0 : 0);
     const tot = days.map((iso) => rs.reduce((a, r) => a + kw(r, iso), 0)), mx = Math.max(0.1, ...tot);
     const sum = tot.reduce((a, b) => a + b, 0), pvs = days.reduce((a, iso) => a + rs.reduce((b, r) => b + pvd(r, iso), 0), 0), gain = (pvs * Math.max(0, this._price() - this._feed())) / 100;
+    const noPv = !p.sensor && rs.every((r) => r.htr.modus === "frost");
     const cols = days.map((iso, i) => `<div class="hac"><em>${num(tot[i], 1)}</em><div class="hab">${rs.map((r) => `<b style="height:${(kw(r, iso) / mx) * 100}%;background:${r.color}" title="${esc(r.name)} ${num(kw(r, iso), 1)} kWh"></b>`).join("")}</div><span>${new Date(iso + "T12:00:00").toLocaleDateString("de-DE", { weekday: "short" }).slice(0, 2)}</span></div>`).join("");
-    return `<div class="hrt"><div style="--a:#fbbf24"><span>${ic("bolt", 15)}Energie, 7 Tage</span><b>${num(sum, 1)} <small>kWh</small></b></div><div style="--a:#34d399"><span>${ic("sun", 15)}aus PV</span><b>${sum > 0 ? Math.round((pvs / sum) * 100) : 0} <small>%</small></b></div><div style="--a:#a78bfa"><span>${ic("flame", 15)}Vorteil</span><b>${num(gain, 2)} <small>€</small></b></div><div style="--a:var(--teal)"><span>${ic("clock", 15)}Heizer</span><b>${rs.length}</b></div></div>
+    return `<div class="hrt"><div style="--a:#fbbf24"><span>${ic("bolt", 15)}Energie, 7 Tage</span><b>${num(sum, 1)} <small>kWh</small></b></div>${noPv ? this._hrNetTiles(sum, null) : `<div style="--a:#34d399"><span>${ic("sun", 15)}aus PV</span><b>${sum > 0 ? Math.round((pvs / sum) * 100) : 0} <small>%</small></b></div><div style="--a:#a78bfa"><span>${ic("flame", 15)}Vorteil</span><b>${num(gain, 2)} <small>€</small></b></div>`}<div style="--a:var(--teal)"><span>${ic("clock", 15)}Heizer</span><b>${rs.length}</b></div></div>
       <div class="hac-w">${cols}</div><div class="hlg">${rs.map((r) => `<span><i style="background:${r.color}"></i>${esc(r.name)}</span>`).join("")}</div>
-      <div class="lsec" style="margin-top:12px">Pro Raum</div>${rs.map((r) => { const k = days.reduce((a, iso) => a + kw(r, iso), 0), pk = days.reduce((a, iso) => a + pvd(r, iso), 0); return `<div class="hre"><i style="background:${r.color}"></i><div style="flex:1"><b>${esc(r.name)}</b><span>${wfmt(r.htr.watt)} · Ziel ${num(r.htr.ziel, 1)} °C</span></div><div style="text-align:right"><b>${num(k, 1)} kWh</b><span>${k > 0 ? Math.round((pk / k) * 100) : 0} % PV</span></div></div>`; }).join("")}`;
+      <div class="lsec" style="margin-top:12px">Pro Raum</div>${rs.map((r) => { const k = days.reduce((a, iso) => a + kw(r, iso), 0), pk = days.reduce((a, iso) => a + pvd(r, iso), 0); return `<div class="hre"><i style="background:${r.color}"></i><div style="flex:1"><b>${esc(r.name)}</b><span>${wfmt(r.htr.watt)} · Ziel ${num(r.htr.modus === "frost" && r.htr.frost ? r.htr.frost.ziel : r.htr.ziel, 1)} °C</span></div><div style="text-align:right"><b>${num(k, 1)} kWh</b><span>${noPv ? "Netzstrom" : `${k > 0 ? Math.round((pk / k) * 100) : 0} % PV`}</span></div></div>`; }).join("")}`;
   }
   _repOpen(id) { this._modal = { type: "rep", id, day: this._isoDay(0), keepScroll: 99999 }; this._repLoad(this._modal); this._renderModal(); }
   async _repLoad(m) {
@@ -493,10 +499,11 @@
   _pvChip() { if (!this._htrRooms().length) return ""; const w = this._pvNow(); return w == null ? "" : `<span class="chip">${ic("bolt", 16)}PV-Überschuss ${wfmt(w)}</span>`; }
   _htrBox(r) {
     const h = r.htr; if (!h) return "";
-    const [lab, c] = HTR[h.status] || HTR.aus, on = h.status === "pv", share = h.heute_kwh > 0 ? Math.round((h.heute_pv_kwh / h.heute_kwh) * 100) : null;
-    return `<div class="htr ${c}"><div class="htrh"><span class="htri">${ic("bolt", 18)}</span><div class="htrt"><b>Elektroheizer</b><span>${on ? (stepsOf(h).length > 1 ? `Stufe ${h.stufe} von ${stepsOf(h).length} · ` : "Heizt mit PV-Überschuss · ") + wfmt(h.watt_now) : lab}</span></div>
+    const [, c] = HTR[h.status] || HTR.aus, on = htrOn(h), share = h.heute_kwh > 0 ? Math.round((h.heute_pv_kwh / h.heute_kwh) * 100) : null, many = stepsOf(h).length > 1;
+    const head = on ? `${many ? `Stufe ${h.stufe} von ${stepsOf(h).length} · ` : ""}${h.status === "frost" ? "Zuheizen bei Frost (Netzstrom) · " : many ? "" : "Heizt mit PV-Überschuss · "}${wfmt(h.watt_now)}` : this._htrLab(h);
+    return `<div class="htr ${c}${h.status === "frost" ? " frun" : ""}"><div class="htrh"><span class="htri">${ic("bolt", 18)}</span><div class="htrt"><b>Elektroheizer</b><span>${head}</span></div>
       <button class="why" data-act="hrep" data-id="${esc(r.id)}" aria-label="Heizer-Bericht">${ic("chart", 13)}Bericht</button>${r.htrSw ? `<button class="sw ${r.htrOn ? "on" : ""}" data-act="sw" data-sw="${esc(r.htrSw)}" aria-pressed="${!!r.htrOn}" aria-label="Elektroheizer ein oder aus"></button>` : ""}</div>
-      ${this._stepBar(h)}<div class="htrm"><span>${num(h.heute_kwh, 1)} kWh heute${share != null ? ` · ${share} % PV` : ""}</span><span>${hmin(h.heute_min)} Laufzeit</span><span>Ziel ${num(h.ziel, 1)} °C</span></div>${h.thermo_aus ? (on ? `<div class="htrn">${ic("check", 13)}Thermostat ist aus, solange der Heizer läuft</div>` : `<div class="htrn mut">${ic("clock", 13)}Thermostat regelt, bis der Heizer startet</div>`) : ""}</div>`;
+      ${this._stepBar(h)}${htrFrost(h) ? this._htrFrostMeta(h, share) : `<div class="htrm"><span>${num(h.heute_kwh, 1)} kWh heute${share != null ? ` · ${share} % PV` : ""}</span><span>${hmin(h.heute_min)} Laufzeit</span><span>Ziel ${num(h.ziel, 1)} °C</span></div>`}${this._htrKeep(h) ? `<div class="htrn">${ic("check", 13)}Bei Frost bleiben die Heizkörper an</div>` : h.modus !== "frost" && h.thermo_aus ? (on ? `<div class="htrn">${ic("check", 13)}Thermostat ist aus, solange der Heizer läuft</div>` : `<div class="htrn mut">${ic("clock", 13)}Thermostat regelt, bis der Heizer startet</div>`) : ""}</div>`;
   }
   _presetRows(d, st, row) {
     const e = st[d.htr_entity]; if (!d.htr_entity || !d.htr_entity.startsWith("climate.") || !e) return "";
@@ -509,6 +516,7 @@
   }
   _seg2(d, k, opts) { return `<div class="seg oseg">${opts.map(([v, l]) => `<button class="${d[k] === v ? "sel" : ""}" data-act="oset" data-k="${k}" data-v="${v}">${l}</button>`).join("")}</div>`; }
   _stepScale(h) {
+    if (h.modus === "frost") return "";
     const st = stepsOf(h), p = this._pv(); let av = this._pvNow(); if (av != null) av = Math.max(0, av - this._htrRooms().filter((x) => x.htr !== h && (x.htr.prio || 9) < (h.prio || 9)).reduce((a, x) => a + (Number(x.htr.watt_now) || 0), 0)); if (av == null || h.status === "warm" || h.status === "aus" || h.status === "zeit") return "";
     const th = st.map((w) => w + p.reserve), max = Math.max(av, th[th.length - 1]) * 1.05, pc = (w) => Math.min(100, (w / max) * 100);
     const i = h.status === "pv" ? (h.stufe || 1) - 1 : -1, auto = h.auto !== "off";
@@ -517,12 +525,12 @@
   }
   _stepBar(h) {
     const st = stepsOf(h), p = this._pv();
-    return `${st.length > 1 ? `<div class="stp">${st.map((w, i) => `<span class="${h.status === "pv" && h.stufe === i + 1 ? "on" : ""}"><b>${i + 1}</b>${wfmt(w)}${h.presets && h.presets[i] ? `<small>${esc(h.presets[i])}</small>` : ""}</span>`).join("")}</div>` : ""}${this._stepScale(h)}${h.status === "wartet" ? `<div class="htrn mut">${ic("bolt", 13)}Startet ab ${wfmt(st[0] + p.reserve)} Überschuss (Stufe 1 plus ${wfmt(p.reserve)} Reserve)</div>` : ""}`;
+    return `${st.length > 1 ? `<div class="stp">${st.map((w, i) => `<span class="${htrOn(h) && h.stufe === i + 1 ? "on" : ""}"><b>${i + 1}</b>${wfmt(w)}${h.presets && h.presets[i] ? `<small>${esc(h.presets[i])}</small>` : ""}</span>`).join("")}</div>` : ""}${this._stepScale(h)}${h.status === "wartet" ? `<div class="htrn mut">${ic("bolt", 13)}Startet ab ${wfmt(st[0] + p.reserve)} Überschuss (Stufe 1 plus ${wfmt(p.reserve)} Reserve)</div>` : ""}`;
   }
   _htrChip(r) {
     const h = r.htr; if (!h) return "";
     const [lab, c] = HTR[h.status] || HTR.aus;
-    return `<span class="achip ${c}">${ic("bolt", 12)}${h.status === "pv" ? (stepsOf(h).length > 1 ? "Stufe " + h.stufe + " · " : "PV-Heizer ") + wfmt(h.watt_now) : lab}</span>`;
+    return `<span class="achip ${c}">${ic("bolt", 12)}${htrOn(h) ? (stepsOf(h).length > 1 ? "Stufe " + h.stufe + " · " : h.status === "frost" ? "Frost-Heizer " : "PV-Heizer ") + wfmt(h.watt_now) : lab}</span>`;
   }
   _pvBlock() {
     const rs = this._htrRooms(); if (!rs.length) return "";
@@ -530,12 +538,12 @@
     const kwh = rs.reduce((a, r) => a + (Number(r.htr.heute_kwh) || 0), 0), pvk = rs.reduce((a, r) => a + (Number(r.htr.heute_pv_kwh) || 0), 0);
     const share = kwh > 0 ? Math.round((pvk / kwh) * 100) : 0, gain = (pvk * Math.max(0, this._price() - this._feed())) / 100, cap = Math.max(w ?? 0, tot, 1);
     const seg = rs.filter((r) => r.htr.watt_now > 0).map((r) => `<i style="width:${(r.htr.watt_now / cap) * 100}%;background:${r.color}" title="${esc(r.name)} ${wfmt(r.htr.watt_now)}"></i>`).join("");
-    const rk = this._rkOn();
-    return `<div class="card pvb${rk ? " rk2pvb" : ""}"><div class="pvh"><span class="pt">${rk ? this._gx("heater", 30, { stage: rs.some((r) => r.htr.watt_now > 0) ? 2 : 0, on: rs.some((r) => r.htr.watt_now > 0) }) : ic("bolt", 18)}PV-Heizer</span><button class="lnk" data-act="hrepall">${ic("chart", 15)}Bericht</button></div>
-      ${w == null ? `<div class="mut sm">Noch kein PV-Sensor gewählt. Das stellst du unter „Allgemein“ ein.</div>` : `<div class="pvbig"><b>${wfmt(w)}</b><span>PV-Überschuss${soc != null ? ` · Batterie ${num(soc)} %${p.soc_min ? ` (ab ${num(p.soc_min)} % für Heizer)` : ""}` : ""}</span></div>
+    const rk = this._rkOn(), anyFr = rs.some((r) => htrFrost(r.htr)), onlyFr = rs.every((r) => r.htr.modus === "frost"), cost = rs.reduce((a, r) => a + (Number(r.htr.heute_kosten) || 0), 0);
+    return `<div class="card pvb${rk ? " rk2pvb" : ""}"><div class="pvh"><span class="pt">${rk ? this._gx("heater", 30, { stage: rs.some((r) => r.htr.watt_now > 0) ? 2 : 0, on: rs.some((r) => r.htr.watt_now > 0) }) : ic("bolt", 18)}${anyFr ? "Elektroheizer" : "PV-Heizer"}</span><button class="lnk" data-act="hrepall">${ic("chart", 15)}Bericht</button></div>
+      ${w == null ? (onlyFr ? "" : `<div class="mut sm">Noch kein PV-Sensor gewählt. Das stellst du unter „Allgemein“ ein.</div>`) : `<div class="pvbig"><b>${wfmt(w)}</b><span>PV-Überschuss${soc != null ? ` · Batterie ${num(soc)} %${p.soc_min ? ` (ab ${num(p.soc_min)} % für Heizer)` : ""}` : ""}</span></div>
       <div class="pvbar">${seg}</div><div class="pvlg"><span>${wfmt(tot)} an Heizer verteilt</span><span>${wfmt(Math.max(0, w - tot))} frei</span></div>`}
-      <div class="pvrows">${rs.map((r) => { const h = r.htr, [lab, c] = HTR[h.status] || HTR.aus; return `<div class="pvr">${rk ? this._rkMiniById(r.id, "pvm") : `<i style="background:${r.color}"></i>`}<b>${esc(r.name)}${rk && stepsOf(h).length > 1 ? `<span class="rk2stp pv">${stepsOf(h).map((x, i) => `<i class="${h.status === "pv" && h.watt_now > 0 && h.stufe >= i + 1 ? "on" : ""}"></i>`).join("")}</span>` : ""}</b><span class="pill ${c}">${lab}</span><em>${h.watt_now > 0 ? (stepsOf(h).length > 1 ? `St. ${h.stufe}/${stepsOf(h).length} · ` : "") + wfmt(h.watt_now) : "bis " + wfmt(stepsOf(h).slice(-1)[0])}</em></div>`; }).join("")}</div>
-      <div class="pvt"><div><b>${num(kwh, 1)} kWh</b><span>Heizer heute</span></div><div><b>${share} %</b><span>aus PV-Überschuss</span></div><div><b>≈ ${num(gain, 2)} €</b><span>Vorteil heute</span></div></div></div>`;
+      <div class="pvrows">${rs.map((r) => { const h = r.htr, [lab, c] = HTR[h.status] || HTR.aus; return `<div class="pvr">${rk ? this._rkMiniById(r.id, "pvm") : `<i style="background:${r.color}"></i>`}<b>${esc(r.name)}${rk && stepsOf(h).length > 1 ? `<span class="rk2stp pv">${stepsOf(h).map((x, i) => `<i class="${htrOn(h) && h.watt_now > 0 && h.stufe >= i + 1 ? "on" : ""}"></i>`).join("")}</span>` : ""}</b><span class="pill ${c}">${lab}</span><em>${h.watt_now > 0 ? (stepsOf(h).length > 1 ? `St. ${h.stufe}/${stepsOf(h).length} · ` : "") + wfmt(h.watt_now) : "bis " + wfmt(stepsOf(h).slice(-1)[0])}</em></div>`; }).join("")}</div>
+      <div class="pvt"><div><b>${num(kwh, 1)} kWh</b><span>Heizer heute</span></div>${onlyFr ? `<div><b>${num(Math.max(0, kwh - pvk), 1)} kWh</b><span>aus dem Netz</span></div><div><b>${num(cost, 2)} €</b><span>Netzstrom heute</span></div>` : `<div><b>${share} %</b><span>aus PV-Überschuss</span></div><div><b>≈ ${num(gain, 2)} €</b><span>Vorteil heute</span></div>`}</div></div>`;
   }
   _airLite(r) {
     if (r.airOff || r.humEid) return null;
@@ -728,6 +736,7 @@
     if (f === "gpvs" || f === "gpvb") { this._gen.pv = { ...this._pv(), [f === "gpvs" ? "sensor" : "soc_sensor"]: t.value }; this._saveGen(); this._render(); this._renderModal(); return true; }
     if (f === "gpvp") { this._gen.pv = { ...this._pv(), [t.dataset.p + "_sensor"]: t.value }; this._saveGen(); this._render(); this._renderModal(); return true; }
     if (f === "gpvn") { const v = Number(t.value), lo = t.min !== "" && t.min != null ? Number(t.min) : 0, hi = t.max !== "" && t.max != null ? Number(t.max) : 100; this._gen.pv = { ...this._pv(), [t.dataset.k]: isFinite(v) ? Math.min(hi, Math.max(lo, Math.round(v * 100) / 100)) : 0 }; this._saveGen(); this._render(); this._renderModal(); return true; }
+    if (f === "gfr") { const v = Number(t.value), k = t.dataset.k; if (t.value !== "" && isFinite(v)) { this._gen.frost = { ...this._frost(), [k]: Math.min(Number(t.max), Math.max(Number(t.min), k === "watt" ? Math.round(v) : Math.round(v * 10) / 10)) }; this._saveGen(); } this._render(); this._renderModal(); return true; }
     if (f === "gth") { const v = Math.min(35, Math.max(5, Number(t.value) || 18)); this._gen.summer = { ...this._gen.summer, temp: v }; this._saveGen(); this._render(); this._renderModal(); return true; }
     if (f === "rsfile") {
       const file = t.files && t.files[0]; if (!file) return true;

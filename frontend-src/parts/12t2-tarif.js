@@ -17,7 +17,7 @@
   }
   _tfRedraw() {
     if (this._modal && this._modal.type === "tfset") this._renderModal();
-    if ((this._mdActive && this._mdActive() === "dt" && !this._stOpen) || this._tfWantR) { this._tfWantR = false; this._render(); }
+    if ((this._mdActive && this._mdActive() === "dt" && !this._stOpen) || (this._tm2Shows && this._tm2Shows("dt")) || this._tfWantR) { this._tfWantR = false; this._render(); }
   }
   _tf() { const d = (this._tfD && this._tfD.d) || {}; return { series: [], found: [], ...d, cfg: { src: "auto", sensor: "", boerse: "auto", add: 18.6, vat: 19, down: 3, up: 4, res: "q", win_h: 3, ...(d.cfg || {}), nne: { on: false, ht_from: 17, ht_to: 20, ht_ct: 6.1, nt_from: 0, nt_to: 6, nt_ct: -4.2, ...((d.cfg || {}).nne || {}) }, devs: { ...((d.cfg || {}).devs || {}) }, alarm: this._tfAlarmCfg((d.cfg || {}).alarm) }, now: d.now || {}, devs: d.devs || [], alarm: d.alarm || {}, alog: d.alog || [] }; }
   _tfAlarmCfg(a = {}) { const x = a || {}; return { to: x.to || [], below: { on: false, ct: 20, ...(x.below || {}) }, above: { on: false, ct: 40, ...(x.above || {}) }, neg: { on: true, ...(x.neg || {}) }, tomorrow: { on: false, ...(x.tomorrow || {}) }, lead: x.lead || 0, quiet: { on: true, from: 22, to: 7, ...(x.quiet || {}) } }; }
@@ -153,7 +153,7 @@
       <div class="card"><h2>${ic("bolt", 18)}Festpreis</h2><div class="wxtiles tftiles"><div class="wxtl" style="--tc:#2dd4bf"><div class="wxtn">Arbeitspreis</div><div class="wxtv">${this._tfCt(S.now.ct)}<small>ct/kWh</small></div><div class="wxts">aus den Haus-Werten</div></div></div>
       ${adm ? `<button class="btn2" style="margin-top:12px" data-act="tfxopen">${ic("sliders", 16)} Quelle wählen</button>` : ""}</div>${this._tfSrcCard(S)}`;
     return `${this._tfBanner(S)}${this._tfTiles(S)}${this._betaBox("Neu in v0.9: „Lohnt sich dein Tarif?“, Wochenansicht und „Daten prüfen“ in den Einstellungen.")}
-      ${this._tfDevCard(S)}${this._tfDays(S)}${this._tfCheckCard(S)}<div class="wxcols">${this._tfSlots(S)}${this._tfAlarmCard(S)}</div>${this._tfSrcCard(S)}`;
+      ${this._ehTarifCard(S)}${this._tfDevCard(S)}${this._tfDays(S)}${this._tfCheckCard(S)}<div class="wxcols">${this._tfSlots(S)}${this._tfAlarmCard(S)}</div>${this._tfSrcCard(S)}`;
   }
   /* Startseite: Preis, Stufe, Mini-Band der nächsten 12 Stunden */
   _tfStartK(K) {

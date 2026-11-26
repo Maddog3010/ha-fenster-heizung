@@ -6,7 +6,7 @@
   _wbOn(c) { c = c || this._wb(); const w = c.wbx || {}; return w.kind === "ha" ? !!((w.ent || {}).switch || (w.ent || {}).current) : !!c.ip; }
   _wbHa(c) { c = c || this._wb(); return (c.wbx || {}).kind === "ha"; }
   _wbName() { const s = this._wbSnap(), c = s.cfg, i = s.info || {}; return this._wbHa(c) ? (c.wbx.name || i.type || "Wallbox") : (i.name || i.type || "go-e Charger"); }
-  _wbVisible() { return !this._modal && ((this._igOpen && this._admin()) || (!this._stOpen && !this._ortOpen && this._mdActive() === "ev")); }
+  _wbVisible() { return !this._modal && ((this._igOpen && this._admin()) || (!this._stOpen && !this._ortOpen && this._mdActive() === "ev") || !!(this._tm2Shows && this._tm2Shows("ev"))); }
   _wbLoad(force) {
     if (!this._hass || this._wbBusy) return;
     if (!force && this._wbD && Date.now() - this._wbD.ts < 4000) return;

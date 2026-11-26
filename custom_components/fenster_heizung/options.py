@@ -4,6 +4,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from .eingabe import EingabeFehler
 from .pvlogic import parse_steps
 from .const import (
     ACTION_OFF,
@@ -75,6 +76,12 @@ _NUMBERS: dict[str, tuple[float, float, float, bool]] = {
     "htr_watt": (50, 10000, 1500, True),
     "htr_target": (10, 30, 22.0, False),
     "htr_prio": (1, 9, 5, True),
+    "htr_frost_out": (-20, 10, 0.0, False),
+    "htr_frost_target": (10, 25, 21.0, False),
+    "htr_frost_wait": (0, 120, 20, True),
+    "htr_frost_run": (15, 180, 60, True),
+    "htr_frost_day": (1, 24, 8, True),
+    "htr_frost_stage": (1, 8, 1, True),
 }
 
 LABELS = {
@@ -95,6 +102,12 @@ LABELS = {
     "htr_watt": "Leistung des Heizers",
     "htr_target": "Heizen bis",
     "htr_prio": "Priorität",
+    "htr_frost_out": "Frostgrenze draußen",
+    "htr_frost_target": "Zuheizen bis",
+    "htr_frost_wait": "Wartezeit",
+    "htr_frost_run": "Höchstens am Stück",
+    "htr_frost_day": "Höchstens am Tag",
+    "htr_frost_stage": "Leistungsstufe bei Frost",
 }
 
 
@@ -106,9 +119,9 @@ def _num(raw: dict, key: str) -> float | int:
     try:
         val = float(val)
     except (TypeError, ValueError):
-        raise ValueError(f"{LABELS[key]}: keine Zahl") from None
+        raise EingabeFehler(f"{LABELS[key]}: keine Zahl") from None
     if not lo <= val <= hi:
-        raise ValueError(f"{LABELS[key]}: erlaubt sind {lo:g} bis {hi:g}")
+        raise EingabeFehler(f"{LABELS[key]}: erlaubt sind {lo:g} bis {hi:g}")
     return int(round(val)) if whole else round(val, 2)
 
 
@@ -119,11 +132,11 @@ def _entity_list(raw: dict, key: str, domain: str) -> list[str]:
     out: list[str] = []
     for v in vals:
         if not isinstance(v, str) or not _ENTITY.match(v) or not v.startswith(domain + "."):
-            raise ValueError(f"{LABELS[key]}: ungültige Entität „{str(v)[:40]}“")
+            raise EingabeFehler(f"{LABELS[key]}: ungültige Entität „{str(v)[:40]}“")
         if v not in out:
             out.append(v)
     if not out:
-        raise ValueError(f"{LABELS[key]}: mindestens eine Entität wählen")
+        raise EingabeFehler(f"{LABELS[key]}: mindestens eine Entität wählen")
     return out[:20]
 
 
@@ -132,7 +145,7 @@ def _opt_entity(raw: dict, key: str, domains: tuple[str, ...]) -> str | None:
     if val in (None, ""):
         return None
     if not isinstance(val, str) or not _ENTITY.match(val) or val.split(".")[0] not in domains:
-        raise ValueError(f"Ungültige Entität „{str(val)[:40]}“")
+        raise EingabeFehler(f"Ungültige Entität „{str(val)[:40]}“")
     return val
 
 
@@ -142,7 +155,7 @@ def _time(raw: dict, key: str) -> str | None:
         return None
     m = _TIME.match(str(val).strip())
     if not m:
-        raise ValueError("Uhrzeit wie 22:00 angeben")
+        raise EingabeFehler("Uhrzeit wie 22:00 angeben")
     return f"{int(m.group(1)):02d}:{m.group(2)}:{m.group(3) or '00'}"
 
 
@@ -161,17 +174,23 @@ def _heater(raw: dict, out: dict[str, Any]) -> None:
     out["htr_from"] = _time(raw, "htr_from")
     out["htr_to"] = _time(raw, "htr_to")
     if bool(out["htr_from"]) != bool(out["htr_to"]):
-        raise ValueError("Elektroheizer: Beginn und Ende des Zeitfensters angeben (oder beides leer lassen)")
+        raise EingabeFehler("Elektroheizer: Beginn und Ende des Zeitfensters angeben (oder beides leer lassen)")
+    out["htr_mode"] = raw.get("htr_mode") if raw.get("htr_mode") in ("frost", "both") else "pv"
+    for key in ("htr_frost_out", "htr_frost_target", "htr_frost_wait", "htr_frost_run", "htr_frost_day", "htr_frost_stage"):
+        out[key] = _num(raw, key)
+    out["htr_frost_from"] = _time(raw, "htr_frost_from") or "06:00:00"
+    out["htr_frost_to"] = _time(raw, "htr_frost_to") or "22:00:00"
+    out["htr_frost_ok"] = "on" if raw.get("htr_frost_ok") == "on" else "off"
     if out["htr_on"] == "on" and not out["htr_entity"]:
-        raise ValueError("Elektroheizer: Schalter oder Gerät des Heizers wählen")
+        raise EingabeFehler("Elektroheizer: Schalter oder Gerät des Heizers wählen")
     if out["htr_entity"] and out["htr_entity"] in (raw.get(CONF_THERMOSTATS) or []):
-        raise ValueError("Elektroheizer: Das Gerät darf nicht zugleich Heizungsthermostat des Raums sein")
+        raise EingabeFehler("Elektroheizer: Das Gerät darf nicht zugleich Heizungsthermostat des Raums sein")
 
 
 def clean_options(raw: Any) -> dict[str, Any]:
     """Raumeinstellungen prüfen und in das Format des Optionsdialogs bringen."""
     if not isinstance(raw, dict):
-        raise ValueError("Ungültige Einstellungen")
+        raise EingabeFehler("Ungültige Einstellungen")
     out: dict[str, Any] = {
         CONF_WINDOWS: _entity_list(raw, CONF_WINDOWS, "binary_sensor"),
         CONF_THERMOSTATS: _entity_list(raw, CONF_THERMOSTATS, "climate"),
@@ -182,7 +201,7 @@ def clean_options(raw: Any) -> dict[str, Any]:
         out[key] = _num(raw, key)
     action = raw.get(CONF_ACTION) or ACTION_OFF
     if action not in (ACTION_OFF, ACTION_SETBACK):
-        raise ValueError("Ungültige Aktion")
+        raise EingabeFehler("Ungültige Aktion")
     out[CONF_ACTION] = action
     out[CONF_HEATING_ENTITY] = _opt_entity(raw, CONF_HEATING_ENTITY, _HEATING_DOMAINS)
     states = str(raw.get(CONF_HEATING_OFF_STATES) or "").strip()[:200]
@@ -200,14 +219,14 @@ def clean_options(raw: Any) -> dict[str, Any]:
     out[CONF_BLOCK_FROM] = _time(raw, CONF_BLOCK_FROM)
     out[CONF_BLOCK_TO] = _time(raw, CONF_BLOCK_TO)
     if bool(out[CONF_BLOCK_FROM]) != bool(out[CONF_BLOCK_TO]):
-        raise ValueError("Sperrzeit: Beginn und Ende angeben (oder beides leer lassen)")
+        raise EingabeFehler("Sperrzeit: Beginn und Ende angeben (oder beides leer lassen)")
     services = raw.get(CONF_NOTIFY_SERVICE) or []
     if not isinstance(services, list):
-        raise ValueError("Benachrichtigungs-Aktionen: ungültig")
+        raise EingabeFehler("Benachrichtigungs-Aktionen: ungültig")
     clean_services: list[str] = []
     for s in services:
         if not isinstance(s, str) or not _NOTIFY.match(s):
-            raise ValueError(f"Benachrichtigung „{str(s)[:40]}“ ist ungültig (notify.name)")
+            raise EingabeFehler(f"Benachrichtigung „{str(s)[:40]}“ ist ungültig (notify.name)")
         if s not in clean_services:
             clean_services.append(s)
     out[CONF_NOTIFY_SERVICE] = clean_services or None
@@ -216,7 +235,7 @@ def clean_options(raw: Any) -> dict[str, Any]:
     out[CONF_NOTIFY_MESSAGE] = str(raw.get(CONF_NOTIFY_MESSAGE) or "").strip()[:500] or DEFAULT_NOTIFY_MESSAGE
     fuel = raw.get(CONF_FUEL) or DEFAULT_FUEL
     if fuel not in FUELS:
-        raise ValueError("Ungültiger Brennstoff")
+        raise EingabeFehler("Ungültiger Brennstoff")
     out[CONF_FUEL] = fuel
     epu = raw.get(CONF_ENERGY_PER_UNIT)
     if epu in (None, "", 0, "0"):
@@ -225,8 +244,8 @@ def clean_options(raw: Any) -> dict[str, Any]:
         try:
             epu = float(epu)
         except (TypeError, ValueError):
-            raise ValueError(f"{LABELS[CONF_ENERGY_PER_UNIT]}: keine Zahl") from None
+            raise EingabeFehler(f"{LABELS[CONF_ENERGY_PER_UNIT]}: keine Zahl") from None
         if not 0 < epu <= 40:
-            raise ValueError(f"{LABELS[CONF_ENERGY_PER_UNIT]}: erlaubt sind 0 bis 40")
+            raise EingabeFehler(f"{LABELS[CONF_ENERGY_PER_UNIT]}: erlaubt sind 0 bis 40")
         out[CONF_ENERGY_PER_UNIT] = round(epu, 2)
     return out

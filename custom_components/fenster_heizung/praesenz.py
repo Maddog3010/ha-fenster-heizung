@@ -25,6 +25,7 @@ from homeassistant.helpers.event import async_track_state_change_event
 from homeassistant.util import dt as dt_util
 
 from .const import CONF_THERMOSTATS, HEATING_MODES, PR_KEYS  # noqa: F401
+from .eingabe import EingabeFehler
 PR_DEF = {"pr_on": "off", "pr_entity": None, "pr_temp": 21.0, "pr_mode": "min", "pr_on_delay": 2, "pr_off_delay": 15, "pr_idle": 0.0, "pr_idle_after": 60, "pr_in_away": "off", "pr_turn_on": "off"}
 ON_STATES = ("on", "home", "detected", "occupied", "present", "true", "motion", "anwesend")
 
@@ -38,15 +39,15 @@ def clean_presence(raw: dict[str, Any], out: dict[str, Any], opt_entity, num) ->
         try:
             v = float(v) if v not in (None, "") else PR_DEF[key]
         except (TypeError, ValueError):
-            raise ValueError(f"Präsenzmelder: {key} ist keine Zahl") from None
+            raise EingabeFehler(f"Präsenzmelder: {key} ist keine Zahl") from None
         if not lo <= v <= hi:
-            raise ValueError(f"Präsenzmelder: erlaubt sind {lo} bis {hi}")
+            raise EingabeFehler(f"Präsenzmelder: erlaubt sind {lo} bis {hi}")
         out[key] = round(v * 2) / 2 if key in ("pr_temp", "pr_idle") else int(v)
     out["pr_mode"] = "exact" if raw.get("pr_mode") == "exact" else "min"
     out["pr_in_away"] = "on" if raw.get("pr_in_away") == "on" else "off"
     out["pr_turn_on"] = "on" if raw.get("pr_turn_on") == "on" else "off"
     if out["pr_on"] == "on" and not out["pr_entity"]:
-        raise ValueError("Präsenzmelder: Melder wählen")
+        raise EingabeFehler("Präsenzmelder: Melder wählen")
 
 
 class RoomPresence:

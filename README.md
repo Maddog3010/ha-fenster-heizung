@@ -191,6 +191,7 @@ Die Module 5, 6, 7, 10, 12 und 13 zeigen **Konzeptseiten** zum Durchklicken (mit
 - **Messraum:** Räume nur mit Temperatur und Feuchte, ohne Thermostat, auch außen (Terrasse, Carport). Fehlen Messräume, die noch in der Sicherung stehen, holt „Zurückholen“ sie mit Symbol, Farbe und Foto zurück.
 - **Luftentfeuchter:** Regelung nach der Raumfeuchte, Standort per Tipp, Handy oder NFC, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom. Mit **Nachtmodus** und eigener Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts und Meldungen erst am Morgen.
 - **Elektroheizer mit PV-Überschuss** und **Bericht** mit Heizzeit, Pausen und Ersparnis.
+- **Zusatzheizung bei Frost (neu ab 2026.11.5b10, Testversion):** Ein Elektroheizer hilft mit Netzstrom, wenn es draußen friert und der Raum zu kalt bleibt – auch ohne PV-Anlage. Mit Raumsensor (Pflicht), Uhrzeit, Laufzeitgrenzen, höchster Netzleistung und auf Wunsch einer Preisgrenze über Modul 14.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul_fenster_heizung.png" width="560" alt="Modul 1"></p>
 <p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_entfeuchter_nacht.png" width="300" alt="Entfeuchter Nachtmodus"> <img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_entfeuchter_karte.png" width="360" alt="Entfeuchter-Karte"></p>
@@ -393,6 +394,8 @@ Für Tablets an der Wand: große Knöpfe, Uhr im Kopf, untere Leiste mit den akt
 
 **Neu ab 2026.11.5b8 (Testversion):** Ebenso Energie, Gerätestrom und Hausfluss.
 
+**Neu ab 2026.11.5b10 (Testversion):** Dazu E-Auto, Stromtarif und Solar-Prognose.
+
 - **Einschalten:** Knopf im Kopf (ab 600 px Breite), Einstellung „Automatisch“ oder Direktlink `?tablet=1`, zum Beispiel als Start-URL in Fully Kiosk.
 - **PIN:** sechs Ziffern schützen die Einstellungen, im neuen Aufbau auch Heizplan, Fensterregelung und Warmwasser-Einstellungen. Nach fünf falschen Eingaben ist die Eingabe 60 Sekunden gesperrt.
 - **Ruhemodus** mit dunkler Uhr, Wetter, Alarm und Personen. Eine Warnung weckt das Tablet auf. Ab 2026.11.5b8 gibt es im neuen Aufbau auch die Ruhebilder Energie und Hausfluss (Einstellung „Ruhebild“).
@@ -590,6 +593,7 @@ Lieber ohne GitHub-Anmeldung? Dann gibt es weiter einen **Sponsor-Schlüssel**: 
 ## Wichtige Hinweise
 
 - Die Integration schaltet **Thermostate, Elektroheizer, Heizstäbe, Pumpen, Luftentfeuchter und auf Wunsch die Wallbox**. Prüfe nach der Einrichtung, ob alles wie gewünscht reagiert. Die Nutzung erfolgt auf eigene Verantwortung.
+- Die Zusatzheizung bei Frost (Testversion) schaltet einen Elektroheizer auch ohne Aufsicht ein. Nutze nur ein Gerät, das der Hersteller dafür freigibt, ohne Verlängerungskabel, und stelle an der Steckdose zusätzlich ein automatisches Aus ein.
 - Die Warmwasser-Regelung ersetzt keinen Verbrühschutz und keine Sicherheitseinrichtung deiner Anlage.
 - Module in den Stufen In Entwicklung, Beta und Vorabversion, Labs und Testversionen können sich ändern.
 - Energie- und Kostenwerte, Ersparnis, Prognosen und Rechner sind **Schätzungen**.

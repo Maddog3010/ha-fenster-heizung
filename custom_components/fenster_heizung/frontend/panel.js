@@ -373,7 +373,11 @@ const vnum = (a) => { const m = String(a || "0").trim().replace(/^v/i, "").match
 const vbeta = (a) => /^\s*v?[\d.]+b\d+\s*$/i.test(String(a || ""));
 const vgt = (a, b) => { const x = vnum(a), y = vnum(b); for (let i = 0; i < 6; i++) { if (x[i] !== y[i]) return x[i] > y[i]; } return false; };
 /* Elektroheizer mit PV-Überschuss */
-const HTR = { pv: ["Heizt mit PV-Überschuss", "green"], wartet: ["Wartet auf Überschuss", "amber"], warm: ["Raum warm genug", "slate"], fenster: ["Fenster offen", "amber"], zeit: ["Außerhalb des Zeitfensters", "gray"], aus: ["Heizer pausiert", "gray"], soc: ["Batterie lädt zuerst", "amber"] };
+const HTR = { pv: ["Heizt mit PV-Überschuss", "green"], wartet: ["Wartet auf Überschuss", "amber"], warm: ["Raum warm genug", "slate"], fenster: ["Fenster offen", "amber"], zeit: ["Außerhalb des Zeitfensters", "gray"], aus: ["Heizer pausiert", "gray"], soc: ["Batterie lädt zuerst", "amber"], frost: ["Heizt bei Frost zu", "amber"], frost_wartet: ["Wartet auf den Heizkörper", "amber"], frost_warm: ["Raum warm genug", "slate"], frost_mild: ["Draußen nicht kalt genug", "gray"], frost_pause: ["Pause", "slate"], frost_limit: ["Tageslimit erreicht", "gray"], frost_sensor: ["Raumsensor ohne Werte", "amber"], frost_aussen: ["Keine Außentemperatur", "amber"], frost_preis: ["Strom zu teuer", "gray"], frost_netz: ["Netzgrenze erreicht", "amber"], frost_abwesend: ["Aus: abwesend", "gray"], frost_heizaus: ["Aus: Heizung aus", "gray"], frost_ok: ["Bestätigung fehlt", "amber"] };
+/* Zusatzheizung bei Frost: Regeln für alle Heizer; `htrOn` = der Heizer läuft (PV oder Frost) */
+const FRDEF = { watt: 2000, price_on: false, price: 40 };
+const htrOn = (h) => !!h && (h.status === "pv" || h.status === "frost");
+const htrFrost = (h) => !!h && (h.modus === "frost" || h.modus === "both");
 const WZ_STEPS = ["Willkommen", "Räume", "Fenstermeldung", "Heizung & Energie", "Luftfeuchte", "PV & Elektroheizer", "Meldungen", "Zusammenfassung"];
 const DG_ROLES = { window: "Fenstersensor", thermo: "Thermostat", hum: "Luftfeuchte", rtemp: "Raumtemperatur", heater: "Elektroheizer", power: "Heizer-Leistung", pv: "PV-Einspeisung", soc: "Batterie", price: "Strompreis", feed: "Einspeisevergütung", outdoor: "Außentemperatur", heating: "Heizungs-Status" };
 const num2 = (v) => (Number(v) || 0).toLocaleString("de-DE", { maximumFractionDigits: 1 });
@@ -786,22 +790,22 @@ const MV_STG = [
   ["stabil", "ab 1.0", "Geprüft und für den Alltag gedacht.", "Einstellungen bleiben bei Updates erhalten, neue Funktionen kommen nur dazu.", "Neue Funktionen heben die Version an (1.1, 1.2). Ein großer Umbau macht daraus 2.0."]];
 const MV = {
   gr: { v: "0.12", b: 4, d: "2026-11-25", p: "2026.11.5b6", log: [["0.12", 4, "2026.11.5b6", "Fenster: Breite und Höhe, Rollladen bei jeder Fensterart (auch bodentief) – auch in 2026.11.4.7"], ["0.12", 3, "2026.11.5b5", "Zaun und andere lange, gedrehte Elemente springen beim Speichern nicht mehr; Breite/Tiefe ändern lässt die Mitte an ihrem Platz; gedrehte Markierung (auch in 2026.11.4.6)"], ["0.12", 2, "2026.11.4.4b3", "Handy: Plan in der Ansicht wie im Bearbeiten – Symbole an ihrem Platz, normale Schrift; die Handy-Leiste mit großer Schrift ist unter Ansicht ▾ › Groß wählbar. Raumnamen weichen der Heizkörper-Temperatur aus"], ["0.12", 1, "2026.11.4.4b1", "Fenster- und Türkontakte im Fenster bzw. in der Tür: zu, gekippt, offen und „?“ im Plan, Chip „offen · 25 min“ (nicht auf dem Handy), Übernehmen alter Kontakt-Elemente, „Kontakte aus Modul 1 zuordnen“; Heizkörper mit Wärmeschein und Temperatur zur Raumseite"], ["0.11", 15, "2026.11.4.1", "Handy-Ansicht Build 4: Sonderfälle – in schmalen Räumen werden Symbole zu Punkten, zu viele enden mit „+2“, in sehr kleinen Räumen zeigt ein Farbpunkt die Temperatur; Raum antippen zeigt alles im Raum-Blatt"], ["0.11", 14, "2026.11.4.1", "Handy-Ansicht Build 3: neue Werkzeugleiste – Etage, Ansicht, Bearbeiten und „⋯“ in einer Zeile, Ebenen als Wischleiste; der Plan beginnt weiter oben"], ["0.11", 13, "2026.11.4.1", "Handy-Ansicht Build 2: Status-Leiste je Raum – Temperatur links, Geräte mit Zustand, Melder und Lampen rechts, bei schmalen Räumen zweizeilig; nichts überlagert mehr den Raumnamen"], ["0.11", 12, "2026.11.4.1", "Handy-Ansicht Build 1: Raumnamen bleiben immer im Raum (vorher ragte z. B. „Sportzimmer“ in den Nachbarraum), Trennung an der Wortfuge („Sport-/zimmer“), Schrift nach Raumbreite"], ["0.10.1", 11, "2026.11.4", "Stufe Beta: Modul 0 ist mit Version 2026.11.4 zum Testen freigegeben – der Grundriss läuft mit echten Daten und wird von Modul 1, 11 und 18 genutzt"], ["0.10.1", 10, "2026.11.4b58", "Puppenhaus entfernt (nur noch der Plan, im Banner wieder das Haus-Symbol). Werkzeugleiste im Baukasten bleibt am Handy/iPad nach dem Wischen stehen und springt nicht mehr an den Anfang (auch Ebenen- und Etagen-Knöpfe)."], ["0.10", 10, "2026.11.4b56", "Puppenhaus (alle Etagen schräg übereinander, Antippen klappt flach, auch im Banner), Sonnenlicht durch die Fenster mit Tageszeit-Regler und Nordrichtung, Möbel (19) und Außenbereich (42: Garten & Pflanzen, Spielen & Freizeit, Wege, Bauten & Technik) mit Größe in cm, Grundstück als eigene Etage mit Haus-Umriss, Zustände (Pool, Bewässerung, Gartenlampe …). Raumnamen passen sich dem Raum an und verdecken keine Melder mehr"], ["0.9", 9, "2026.11.4b55", "Haustechnik, Sensoren und Notfall-Punkte im Plan (34 Teile, mit Zustand aus Home Assistant, Kegel für Bewegungsmelder und Kamera, WLAN-Reichweite, Notizen); Notfall-Punkte auch in Modul 11. Raum-Sensoren in Home Assistant (Fläche, Temperatur, Lampen an, Fenster offen, belegt, Wohnfläche). Bereiche und Etagen aus dem Plan anlegen"], ["0.8", 8, "2026.11.4b55", "Zoom (+/−, Strg+Mausrad, zwei Finger), Verschieben, Vollbild und Raum-Fokus im Plan. Export als PDF (A4 quer, alle Etagen, mit Titel, Fläche und Datum), PNG und SVG. Dashboard-Karte „Grundriss“ (custom:sw-grundriss-card) mit Stil, Etage, Ebenen und Raum-Blatt"], ["0.7", 7, "2026.11.4b54", "Baukasten 2.0: Raster 5–50 cm, Wände rasten auf 15° ein, Maße im Plan. Türen und Fenster schräg auf jeder Wand, frei drehbar, mit Breite und Art (Doppel-, Schiebe-, Pendel-, Falt-, Terrassentür, Garagentor; bodentief, Dachfenster, Rollladen), Abstand zur Ecke, wandern mit dem Raum. Plan-Check, Maßstab messen, Etage kopieren, Tastatur. Treppenarten (L, U halbgewendelt, Wendel, Dachboden), mobile Heizer und Luftentfeuchter aus Modul 1 (Entfeuchter folgt seinem Standort), Markise mit Stand"], ["0.6", 6, "2026.11.4b54", "Eine Optik überall: Modul 1, 11 und der Baukasten zeichnen den Grundriss wie Modul 0. Neuer Baukasten mit Leiste oben, Werkzeugen links, Eigenschaften daneben und Ablage zum Ziehen. Ebene „Jetzt“ und Raum-Blatt beim Antippen eines Raums"], ["0.5", 5, "2026.11.4b53", "Neue Optik des Grundrisses: Wandstärken, Böden je Raumart, Türen mit Schwenkbogen, Fenster mit Glas (offen = gelb), Treppen, Raumsymbol und m², Maße, Nordpfeil, Maßstab; Stile Modern, Bauplan und Hell"], ["0.4", 4, "2026.11.4b53", "Sichern & Einlesen: Plan als Datei, Einlesen mit Vorschau (ersetzen oder Etagen dazu), Verlauf der letzten 15 Stände und Umzugs-Kopie wiederherstellen"], ["0.3", 3, "2026.11.4b52", "Baukasten zieht aus Modul 11 nach Modul 0: Bearbeiten in Modul 1, 11 und 18 führt hierher und zurück, Reiter Ebenen mit Bauplan, Melder, Lampen und Wärme"], ["0.2", 2, "2026.11.4b52", "Reiter Räume: eine Liste Plan-Raum ↔ Bereich ↔ Raum in Modul 1 mit „genutzt von“, Zuordnung aus Modul 18 übernommen, Einstellungen mit Rückfrage beim Ausschalten"], ["0.1", 1, "2026.11.4b52", "Neues Modul: der Grundriss gehört dem Kern, Umzug aus Modul 11, Plan mit Ebenen Melder und Lampen ansehen"]] },
-  fh: { v: "1.9", b: 11, d: "2026-11-25", p: "2026.11.5b8", log: [["1.9", 11, "2026.11.5b8", "Thermostat lehnt einen Befehl ab: zwei weitere Versuche, keine Meldung als Programmfehler mehr (auch in 2026.11.4.8)"], ["1.9", 10, "2026.11.5b7", "Tablet-Modus: passt ohne Scrollen auf eine Seite (Reiter Räume und Statistik, Raum-Fenster)"], ["1.9", 9, "2026.11.4b59", "Elektroheizer 2.0 Build 1–4: Entfernen-Dialog mit Rückgängig, Papierkorb (30 Tage) zum Wiederherstellen, Leistung messen und Testlauf im Assistenten; Heizer unter Modul 1 · Einstellungen › Geräte (eigener Reiter entfällt) mit Liste und PV-Regeln, Geräte-Blatt mit Bearbeiten, Pausieren und „In anderen Raum stellen“ (Statistik zieht mit), Raumeinstellungen nur noch mit Kurzinfo; Einrichtungs-Assistent in vier Schritten (Gerät mit Vorschlägen, Raum als Kachel, Leistung per Vorlage, Regeln mit Vorschlägen) aus Raumkarte „⋯“, Modul-1-Einstellungen, Raumeinstellungen und Grundriss; eigene Geräteliste mit fester ID und Namen, automatische Übernahme bestehender Heizer (Reste in den Papierkorb), Entfernen räumt auf (Gerät aus, Thermostate zurück, Schalter-Entität gelöscht, Statistik auf Wunsch behalten)"], ["1.8", 8, "2026.11.3b10", "Haus-Szene: Solarmodule liegen jetzt gerade auf der Dachfläche (unten 4, darüber 3, links vom Schornstein) statt schräg über der Dachkante; Glanz bei Überschuss, Schnee bei Frost"], ["1.8", 7, "2026.11.3b9", "Messräume im Grundriss (Zuordnung im Grundriss oder in den Raumeinstellungen) und Messräume innen oder außen: außen ohne Wohlfühlbereich, mit Frost- und Glättehinweis, als Außenfläche im Grundriss und als Außentemperatur des Hauses wählbar"], ["1.8", 6, "2026.11.3b8", "Grundriss in der neuen Optik: Räume als Kacheln mit Licht in der Temperaturfarbe, Ziel-Temperatur, Status-Plakette wie in der Detail-Ansicht, HD-Heizkörper mit Wärme, Fenster mit Glas, Punktraster und Zusammenfassung (Ø, heizen, Fenster offen)"], ["1.8", 5, "2026.11.3b7", "Grundriss aus Modul 11 erscheint zuverlässig: erneuter Abruf nach Fehler (z. B. nach Neustart von Home Assistant) und jede Minute, Hinweis wenn der Grundriss nur Wände hat"], ["1.8", 4, "2026.11.3b4", "Karten lückenlos: jede Karte rutscht in die freie Lücke der kürzeren Spalte"], ["1.8", 3, "2026.11.3b3", "Luftentfeuchter: Betriebsart „Nur mit PV-Überschuss“ mit Start- und Aus-Verzögerung, Schimmelschutz und Batterie-Ladung als Überschuss; Haus-Szene: Sponsor-Extra Haus-Stile und Himmel-Themen (W7), Himmel gemeinsam mit Modul 3; Animationen halten an, wenn nicht sichtbar; eigene Animationsstufe im Tablet-Modus (Standard Aus)"], ["1.8", 2, "2026.11.3b2", "„Warum?“ als Zeitleiste; Präsenzmelder je Raum (Mindestens/Genau, Verzögerungen, Leerlauf-Absenkung); Haus-Szene in der Kopfkarte (Räume nach Etagen, Zustand, Wärmequelle, PV, Tageszeit und Wetter); Grundriss als Wärmekarte (dritte Ansicht, Baukasten aus Modul 11) mit Hinweis-Plaketten; acht neue Raumbilder (Esszimmer, Wintergarten, Keller / Hauswirtschaft, Werkstatt, Fitness, Dachboden, Garage, Carport / Außen); Messräume: Raumbild wählbar und aus dem Namen erkannt, Menü „⋯“ mit Messraum einstellen und Raumbild & Farbe"], ["1.8", 1, "2026.11.3b1", "Raumkarte 2.0: Raumbild je Raumtyp mit Zustand als Licht, Fenster und Heizkörper, Temperatur-Ring, Heizplan-Band mit Temperaturfarben, Fenster-Uhr, Hinweis-Plaketten, Menü „⋯“, Kompakt-Liste mit Mini-Bild, Elektroheizer und Luftentfeuchter als Kacheln und im Raumbild; Schalter „Raumkarten wie bisher“"], ["1.7", 1, "2026.11.2b10", "Luftentfeuchter-Nachtmodus: eigene Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts, Meldungen bis zum Morgen zurückhalten"], ["1.6", 3, "2026.11.2b7", "Messräume verschwinden nicht mehr, wenn das Dashboard die Einstellungen nicht laden konnte; fehlende Messräume lassen sich aus der Sicherung zurückholen"], ["1.6", 2, "2026.11.2b2", "Anwesenheit: Standort-Einstellungen und Temperatur bei Abwesenheit fallen nicht mehr auf die Grundwerte zurück"], ["1.6", 1, "2026.11.1b16", "Luftentfeuchter: NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“, neue Tag-Aktionen Entfeuchter heute aus und Wassertank geleert"], ["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  fh: { v: "1.9", b: 12, d: "2026-11-26", p: "2026.11.5b10", log: [["1.9", 12, "2026.11.5b10", "Zusatzheizung bei Frost (PV-Überschuss, Frost oder Beides) mit Netzgrenze und Preisgrenze; Raum-Dialog zeigt, was fehlt (auch in 2026.11.4.10)"], ["1.9", 11, "2026.11.5b8", "Thermostat lehnt einen Befehl ab: zwei weitere Versuche, keine Meldung als Programmfehler mehr (auch in 2026.11.4.8)"], ["1.9", 10, "2026.11.5b7", "Tablet-Modus: passt ohne Scrollen auf eine Seite (Reiter Räume und Statistik, Raum-Fenster)"], ["1.9", 9, "2026.11.4b59", "Elektroheizer 2.0 Build 1–4: Entfernen-Dialog mit Rückgängig, Papierkorb (30 Tage) zum Wiederherstellen, Leistung messen und Testlauf im Assistenten; Heizer unter Modul 1 · Einstellungen › Geräte (eigener Reiter entfällt) mit Liste und PV-Regeln, Geräte-Blatt mit Bearbeiten, Pausieren und „In anderen Raum stellen“ (Statistik zieht mit), Raumeinstellungen nur noch mit Kurzinfo; Einrichtungs-Assistent in vier Schritten (Gerät mit Vorschlägen, Raum als Kachel, Leistung per Vorlage, Regeln mit Vorschlägen) aus Raumkarte „⋯“, Modul-1-Einstellungen, Raumeinstellungen und Grundriss; eigene Geräteliste mit fester ID und Namen, automatische Übernahme bestehender Heizer (Reste in den Papierkorb), Entfernen räumt auf (Gerät aus, Thermostate zurück, Schalter-Entität gelöscht, Statistik auf Wunsch behalten)"], ["1.8", 8, "2026.11.3b10", "Haus-Szene: Solarmodule liegen jetzt gerade auf der Dachfläche (unten 4, darüber 3, links vom Schornstein) statt schräg über der Dachkante; Glanz bei Überschuss, Schnee bei Frost"], ["1.8", 7, "2026.11.3b9", "Messräume im Grundriss (Zuordnung im Grundriss oder in den Raumeinstellungen) und Messräume innen oder außen: außen ohne Wohlfühlbereich, mit Frost- und Glättehinweis, als Außenfläche im Grundriss und als Außentemperatur des Hauses wählbar"], ["1.8", 6, "2026.11.3b8", "Grundriss in der neuen Optik: Räume als Kacheln mit Licht in der Temperaturfarbe, Ziel-Temperatur, Status-Plakette wie in der Detail-Ansicht, HD-Heizkörper mit Wärme, Fenster mit Glas, Punktraster und Zusammenfassung (Ø, heizen, Fenster offen)"], ["1.8", 5, "2026.11.3b7", "Grundriss aus Modul 11 erscheint zuverlässig: erneuter Abruf nach Fehler (z. B. nach Neustart von Home Assistant) und jede Minute, Hinweis wenn der Grundriss nur Wände hat"], ["1.8", 4, "2026.11.3b4", "Karten lückenlos: jede Karte rutscht in die freie Lücke der kürzeren Spalte"], ["1.8", 3, "2026.11.3b3", "Luftentfeuchter: Betriebsart „Nur mit PV-Überschuss“ mit Start- und Aus-Verzögerung, Schimmelschutz und Batterie-Ladung als Überschuss; Haus-Szene: Sponsor-Extra Haus-Stile und Himmel-Themen (W7), Himmel gemeinsam mit Modul 3; Animationen halten an, wenn nicht sichtbar; eigene Animationsstufe im Tablet-Modus (Standard Aus)"], ["1.8", 2, "2026.11.3b2", "„Warum?“ als Zeitleiste; Präsenzmelder je Raum (Mindestens/Genau, Verzögerungen, Leerlauf-Absenkung); Haus-Szene in der Kopfkarte (Räume nach Etagen, Zustand, Wärmequelle, PV, Tageszeit und Wetter); Grundriss als Wärmekarte (dritte Ansicht, Baukasten aus Modul 11) mit Hinweis-Plaketten; acht neue Raumbilder (Esszimmer, Wintergarten, Keller / Hauswirtschaft, Werkstatt, Fitness, Dachboden, Garage, Carport / Außen); Messräume: Raumbild wählbar und aus dem Namen erkannt, Menü „⋯“ mit Messraum einstellen und Raumbild & Farbe"], ["1.8", 1, "2026.11.3b1", "Raumkarte 2.0: Raumbild je Raumtyp mit Zustand als Licht, Fenster und Heizkörper, Temperatur-Ring, Heizplan-Band mit Temperaturfarben, Fenster-Uhr, Hinweis-Plaketten, Menü „⋯“, Kompakt-Liste mit Mini-Bild, Elektroheizer und Luftentfeuchter als Kacheln und im Raumbild; Schalter „Raumkarten wie bisher“"], ["1.7", 1, "2026.11.2b10", "Luftentfeuchter-Nachtmodus: eigene Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts, Meldungen bis zum Morgen zurückhalten"], ["1.6", 3, "2026.11.2b7", "Messräume verschwinden nicht mehr, wenn das Dashboard die Einstellungen nicht laden konnte; fehlende Messräume lassen sich aus der Sicherung zurückholen"], ["1.6", 2, "2026.11.2b2", "Anwesenheit: Standort-Einstellungen und Temperatur bei Abwesenheit fallen nicht mehr auf die Grundwerte zurück"], ["1.6", 1, "2026.11.1b16", "Luftentfeuchter: NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“, neue Tag-Aktionen Entfeuchter heute aus und Wassertank geleert"], ["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   ww: { v: "1.1", b: 3, d: "2026-11-25", p: "2026.11.5b7", log: [["1.1", 3, "2026.11.5b7", "Tablet-Modus: passt ohne Scrollen auf eine Seite (Reiter Jetzt, Zeiten, Verlauf)"], ["1.1", 2, "2026.11.4b46", "Neues Banner: Speicher im Schnitt mit Temperatur oben und unten, Zirkulation, Aufheizen und PV-Überschuss"], ["1.1", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.0", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   en: { v: "1.6", b: 6, d: "2026-11-25", p: "2026.11.5b8", log: [["1.6", 6, "2026.11.5b8", "Tablet-Modus: passt ohne Scrollen auf eine Seite (Reiter Jetzt, Verlauf, Kosten), Ruhebild Energie"], ["1.6", 5, "2026.11.3", "Gaszähler mit Karte für Tag, Woche, Monat und Jahr, Abrechnungsjahr, Preisliste mit „gültig ab“ und Abschlag; Einstellungen in Reitern (Strom, Zähler, Gas, Anzeige)"], ["1.6", 4, "2026.11.3b21", "Autarkie-Ring im Banner sprang hin und her"], ["1.6", 3, "2026.11.3b20", "Flüsse in der Szene liefen nur beim Scrollen: Bewegung läuft jetzt über jeden Neuaufbau weiter"], ["1.6", 2, "2026.11.3b4", "Karten lückenlos beim Verschieben; Kosten-Treppe passt ihre Höhe an, Beschriftungen werden nicht mehr verdeckt; Energie-Szene ohne Zuschnitt, größere Werte, lange Namen gekürzt"], ["1.6", 1, "2026.11.3b3", "Neue Optik Stufe 4: Preisband unter der Tageskurve, Woche/Monat/Jahr gespiegelt (Solar oben, Netzbezug unten), Solar-Kalender im Jahr, Kosten-Treppe mit Symbolen, Sparschwein mit Anschaffungskosten, Verteilung als Ring mit Auto und Geräten aus Modul 4, Werte zählen beim Zeitraumwechsel hoch; W7 Sponsor-Extra Haus-Stile und Himmel-Themen; Energiefluss und Szene ohne Neustart der Animation bei neuen Werten"], ["1.5", 1, "2026.11.3b3", "Neue Optik Stufe 3: Energie-Szene im Banner (Haus mit Dach-PV, Balkon, Batterie, Strommast, Auto), Himmel und Wetter wie Modul 1, Summe mit Σ bei vergangenen Zeiträumen, Antippen führt zu Modul 8/13/14/16, flacher Streifen am Handy, Mini-Szene auf der Startseite"], ["1.4", 1, "2026.11.3b3", "Neue Optik Stufe 2: Energiefluss HD mit Geräte-Plaketten, Balkon als eigener Knoten, Batterie mit Füllstand, Auto aus Modul 8, Linienstärke nach Leistung, Antippen zeigt Werte; Hinweise mit Bild und Knopf, günstigster Strom des Tages; Schalter „Energiefluss wie bisher“"], ["1.3", 1, "2026.11.3b2", "Neue Optik Stufe 1: HD-Symbole an den Kacheln (Solar mit Balkon, Netzbezug, Einspeisung, Verbrauch), Kacheln 2.0 mit Verlauf als Fläche und Punkt „jetzt“, Vergleich als Plakette, Doppelring Autarkie/Eigenverbrauch, Preis-Skala; Schalter „Kacheln wie bisher“"], ["1.2", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   gs: { v: "1.5", b: 2, d: "2026-11-25", p: "2026.11.5b8", log: [["1.5", 2, "2026.11.5b8", "Tablet-Modus: passt ohne Scrollen auf eine Seite (Reiter Geräte, Startfenster, Statistik), Gerätefenster"], ["1.5", 1, "2026.11.2b13", "Stufe 4 der neuen Optik: Geräte-Szene im Banner, Tablet-Modus als Geräte-Wand (quer) und Liste (hoch), Bewegung Aus/Dezent/Voll, Standby je Gerät, Monatsziel im Banner, Jahresrückblick zum Teilen"], ["1.4", 1, "2026.11.2b12", "Stufe 3 der neuen Optik (ohne Rangliste): bestes Startfenster als Bild mit Solarprognose und Preisband, „Um … erinnern“, Startfenster aller Geräte auf einen Blick; bei gleichem Solar-Anteil gewinnt der günstigere Preis"], ["1.3", 2, "2026.11.2b11", "Stufe 2 der neuen Optik: Geräte-Seite mit Programm-Kurve nach Herkunft, Durchlauf-Protokoll und typischem Lauf; auf dem Handy Liste der Geräte, Details beim Antippen"], ["1.3", 1, "2026.11.2b10", "Anpassen: Karten und Geräte verschieben und ausblenden"], ["1.2", 3, "2026.11.2b8", "Merkt sich die letzten Läufe mit Startzeit (für den Energie-Coach)"], ["1.2", 2, "2026.11.2b3", "„Erinnern“ funktioniert wieder"], ["1.2", 1, "2026.11.2b2", "Gerätekarten 2.0: HD-Bild mit Herkunfts-Ring, Prozentzeile statt Balken, „noch ~ Min. · fertig ~ Uhr“ ab 3 Läufen, drei Felder, Startempfehlung mit „Erinnern“, Schalter „Karten wie bisher“"], ["1.1", 2, "2026.11.1b1", "Bis zu 15 statt 8 Geräte, mit Zähler beim Hinzufügen"], ["1.1", 1, "2026.1030.0b2", "Tag, Woche, Monat und Jahr mit Blättern, Gerätetypen mit Symbol, Farben wie Modul 3, Diagramm zum Antippen, Vergleich zur Vorperiode"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   lu: { v: "0.1", b: 2, d: "2026-11-22", p: "2026.11.4b47", log: [["0.1", 2, "2026.11.4b47", "Neues Banner: Haus-Schnitt mit den Räumen in der Farbe ihrer Luftfeuchte, Lüfter und Luftströme, kritischster Raum als große Zahl"], ["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   rb: { v: "0.1", b: 2, d: "2026-11-22", p: "2026.11.4b47", log: [["0.1", 2, "2026.11.4b47", "Neues Banner: Fassade mit der Sonne auf ihrem Bogen (Richtung und Höhe aus sun.sun), nachts Mond und Licht in den Fenstern"], ["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   wp: { v: "0.1", b: 2, d: "2026-11-22", p: "2026.11.4b47", log: [["0.1", 2, "2026.11.4b47", "Neues Banner: Außengerät mit drehendem Lüfter und Thermometer, bei Frost Reif und Schnee, Hinweis auf Abtauen"], ["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
-  ev: { v: "1.0.2", b: 1, d: "2026-11-25", p: "2026.11.5b5", log: [["1.0.2", 1, "2026.11.5b5", "Nicht angekommene Befehle nicht mehr alle 10 s neu senden, Höchststrom der go-e beachten, kein falsches „von Hand umgestellt“, höchstens alle 3 h eine Meldung; „Heute“ zeigt auch Nachtladungen ab gestern (auch in 2026.11.4.6)"], ["1.0.1", 2, "2026.11.4.1", "Kilometer je Tag ohne Sprünge: Lieferte der Kilometer-Sensor tagelang keinen Wert, landete die ganze Strecke auf einem Tag – jetzt wird sie auf die Tage verteilt. Neu: Kilometerstände nachtragen (Statistik › Kilometer & Verbrauch)"], ["1.0", 1, "2026.11.4", "Stabil: Laden mit Sonne und nach Preis, Planung bis zur Abfahrt, Ladestatistik mit Nachweis, go-e und andere Wallboxen, mehrere Fahrzeuge und Gastfahrzeug, Modus beim Anstecken – keine Änderungen gegenüber dem Release-Kandidaten"], ["0.9", 10, "2026.11.4b37", "Release-Kandidat: Modus beim Anstecken je Fahrzeug, Befehls-Rückmeldung (kein „von Hand umgestellt“ mehr bei nicht angekommenem Befehl), veralteter Ladestand mit Schätzung, Diagnose, Einrichtungs-Check erweitert, Entscheidungen bleiben nach Neustart"], ["0.9", 9, "2026.11.4b36", "„Wer lädt gerade?“: Gastfahrzeug oder ein Fahrzeug von Hand wählen (bis zum Abstecken); Gastfahrzeug auch beim Bearbeiten von Ladungen"], ["0.9", 8, "2026.11.4b23", "„Nur mit Karte“ bei offener Zugangskontrolle der go-e: Ladelimit gilt trotzdem (vorher lud die Wallbox ohne Karte ungeregelt bis 100 %); nachts keine Sonne mehr in der Statistik, Sonnenanteil von Hand änderbar"], ["0.9", 7, "2026.11.3", "Laufende Ladung überlebt einen Neustart von Home Assistant, fehlende kWh zuerst der Ladung zurechnen, Hinweis in der Tagesansicht; go-e-Import, mehrere Ladungen bearbeiten, Kosten ändern, Kilometer-Statistik"], ["0.9", 6, "2026.11.3b24", "Carport-Szene näher an der Wirklichkeit: Kabelkanal am Träger, Wechselrichter an der Hauswand, Netzstrom aus dem Haus, Ladekabel vor dem Auto mit Typ-2-Stecker in der Ladeklappe; nach dem Zurückwechseln in die App keine leeren Werte mehr; „Heute“ übersichtlicher"], ["0.9", 5, "2026.11.3b23", "Eine Ladung reicht bis zum Abstecken (kein neuer Eintrag nach Phasenwechsel), getrennte Teile zusammenführen, Ladenachweis als echte PDF-Datei"], ["0.9", 4, "2026.11.3b22", "Überschuss-Balken mit eingestellter Leistung, Start/Stopp mit Restzeit, Überschuss-Vorschau, Abfahrt aus dem Kalender je Fahrzeug (Lab übernommen), Tablet-Wandansicht, Strompreis-Chip, Kilometer & Verbrauch in der Statistik"], ["0.9", 3, "2026.11.3b20", "Laden startete nach einem Stopp nicht wieder (Wallbox meldete „fertig“); Ziel-Etikett bleibt in der Karte"], ["0.9", 2, "2026.11.3b18", "Ladungen bearbeiten: Fahrzeug-Werte rechnen mit, jede Änderung wird angezeigt, „Unbekannt“ zuordnen"], ["0.9", 1, "2026.11.3b17", "Vorabversion: Hausakku nicht ins Auto entladen, Auto vor dem Hausakku, § 14a Dimmen, Anwesenheit, Ladenachweis, Ladungen bearbeiten, Startseite, robuster bei Funkstille und alten Werten"], ["0.8", 1, "2026.11.3b16", "Planung als ein Band mit Satz, Statistik mit Tag/Woche/Monat/Jahr, pro 100 km und je Karte, geschätzter Ladestand ohne Sensor, Sensoren und Ereignis „Ladung beendet“"], ["0.7", 2, "2026.11.3b16", "Autos realistischer gezeichnet: echte Proportionen, Radläufe, Aero-Felgen, LED-Licht, Spiegelungen, Ladeklappe mit Stecker"], ["0.7", 1, "2026.11.3b16", "Neue Optik: Carport-Szene als Banner, Satz-Zeile, Ladeband bis zum Ziel, Kacheln 2.0, Modus-Karten, Heute-Zeitleiste, „Warum gerade so?“, Register „Fahrzeuge“, Handy und Hell"], ["0.6", 1, "2026.11.3b16", "Technik-Stufe: ein Ladeplan aus dem Backend, Sensoren und Aussehen je Fahrzeug, Quellen aus Haus-Werten und Modul 16, andere Wallboxen über Home Assistant, Tests"], ["0.5", 3, "2026.11.2b10", "Nach dem Umschalten der Phasen gilt „fertig“ kurz als Pause, die Ladung läuft weiter; Akkukapazität mit einer Nachkommastelle"], ["0.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
+  ev: { v: "1.0.2", b: 2, d: "2026-11-26", p: "2026.11.5b10", log: [["1.0.2", 2, "2026.11.5b10", "Tablet-Modus: passt ohne Scrollen auf eine Seite (Reiter Laden, Planung, Statistik)"], ["1.0.2", 1, "2026.11.5b5", "Nicht angekommene Befehle nicht mehr alle 10 s neu senden, Höchststrom der go-e beachten, kein falsches „von Hand umgestellt“, höchstens alle 3 h eine Meldung; „Heute“ zeigt auch Nachtladungen ab gestern (auch in 2026.11.4.6)"], ["1.0.1", 2, "2026.11.4.1", "Kilometer je Tag ohne Sprünge: Lieferte der Kilometer-Sensor tagelang keinen Wert, landete die ganze Strecke auf einem Tag – jetzt wird sie auf die Tage verteilt. Neu: Kilometerstände nachtragen (Statistik › Kilometer & Verbrauch)"], ["1.0", 1, "2026.11.4", "Stabil: Laden mit Sonne und nach Preis, Planung bis zur Abfahrt, Ladestatistik mit Nachweis, go-e und andere Wallboxen, mehrere Fahrzeuge und Gastfahrzeug, Modus beim Anstecken – keine Änderungen gegenüber dem Release-Kandidaten"], ["0.9", 10, "2026.11.4b37", "Release-Kandidat: Modus beim Anstecken je Fahrzeug, Befehls-Rückmeldung (kein „von Hand umgestellt“ mehr bei nicht angekommenem Befehl), veralteter Ladestand mit Schätzung, Diagnose, Einrichtungs-Check erweitert, Entscheidungen bleiben nach Neustart"], ["0.9", 9, "2026.11.4b36", "„Wer lädt gerade?“: Gastfahrzeug oder ein Fahrzeug von Hand wählen (bis zum Abstecken); Gastfahrzeug auch beim Bearbeiten von Ladungen"], ["0.9", 8, "2026.11.4b23", "„Nur mit Karte“ bei offener Zugangskontrolle der go-e: Ladelimit gilt trotzdem (vorher lud die Wallbox ohne Karte ungeregelt bis 100 %); nachts keine Sonne mehr in der Statistik, Sonnenanteil von Hand änderbar"], ["0.9", 7, "2026.11.3", "Laufende Ladung überlebt einen Neustart von Home Assistant, fehlende kWh zuerst der Ladung zurechnen, Hinweis in der Tagesansicht; go-e-Import, mehrere Ladungen bearbeiten, Kosten ändern, Kilometer-Statistik"], ["0.9", 6, "2026.11.3b24", "Carport-Szene näher an der Wirklichkeit: Kabelkanal am Träger, Wechselrichter an der Hauswand, Netzstrom aus dem Haus, Ladekabel vor dem Auto mit Typ-2-Stecker in der Ladeklappe; nach dem Zurückwechseln in die App keine leeren Werte mehr; „Heute“ übersichtlicher"], ["0.9", 5, "2026.11.3b23", "Eine Ladung reicht bis zum Abstecken (kein neuer Eintrag nach Phasenwechsel), getrennte Teile zusammenführen, Ladenachweis als echte PDF-Datei"], ["0.9", 4, "2026.11.3b22", "Überschuss-Balken mit eingestellter Leistung, Start/Stopp mit Restzeit, Überschuss-Vorschau, Abfahrt aus dem Kalender je Fahrzeug (Lab übernommen), Tablet-Wandansicht, Strompreis-Chip, Kilometer & Verbrauch in der Statistik"], ["0.9", 3, "2026.11.3b20", "Laden startete nach einem Stopp nicht wieder (Wallbox meldete „fertig“); Ziel-Etikett bleibt in der Karte"], ["0.9", 2, "2026.11.3b18", "Ladungen bearbeiten: Fahrzeug-Werte rechnen mit, jede Änderung wird angezeigt, „Unbekannt“ zuordnen"], ["0.9", 1, "2026.11.3b17", "Vorabversion: Hausakku nicht ins Auto entladen, Auto vor dem Hausakku, § 14a Dimmen, Anwesenheit, Ladenachweis, Ladungen bearbeiten, Startseite, robuster bei Funkstille und alten Werten"], ["0.8", 1, "2026.11.3b16", "Planung als ein Band mit Satz, Statistik mit Tag/Woche/Monat/Jahr, pro 100 km und je Karte, geschätzter Ladestand ohne Sensor, Sensoren und Ereignis „Ladung beendet“"], ["0.7", 2, "2026.11.3b16", "Autos realistischer gezeichnet: echte Proportionen, Radläufe, Aero-Felgen, LED-Licht, Spiegelungen, Ladeklappe mit Stecker"], ["0.7", 1, "2026.11.3b16", "Neue Optik: Carport-Szene als Banner, Satz-Zeile, Ladeband bis zum Ziel, Kacheln 2.0, Modus-Karten, Heute-Zeitleiste, „Warum gerade so?“, Register „Fahrzeuge“, Handy und Hell"], ["0.6", 1, "2026.11.3b16", "Technik-Stufe: ein Ladeplan aus dem Backend, Sensoren und Aussehen je Fahrzeug, Quellen aus Haus-Werten und Modul 16, andere Wallboxen über Home Assistant, Tests"], ["0.5", 3, "2026.11.2b10", "Nach dem Umschalten der Phasen gilt „fertig“ kurz als Pause, die Ladung läuft weiter; Akkukapazität mit einer Nachkommastelle"], ["0.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   wx: { v: "1.0", b: 3, d: "2026-11-17", p: "2026.11.4b3", log: [["1.0", 3, "2026.11.4b3", "Wetterkarte zeigt Warnungen und Regen wieder"], ["1.0", 2, "2026.11.4b2", "Wetterkarte flackert nicht mehr"], ["1.0", 1, "2026.11.4b1", "Stabil: DWD-Wetterkarte (Warnungen und Regenradar), Rückblick, schneller warnen, Speichern nur bei Änderung, Änderungsverlauf mit Rückgängig, Feinschliff"], ["0.9", 1, "2026.11.3b11", "Vorabversion: Vorsorge (Akku, Auto, Hitzeschutz, Frost), Alarm auf dem Wandtablet, Startseite mit amtlichen Warnungen und Stufen, Sensoren und Ereignis für Automationen, Verlauf mit Filter"], ["0.8", 1, "2026.11.3b11", "48-Stunden-Zeitleiste, Aktionen als Ablaufkarten mit Stufe, Bedingung, Verzögerung und Aussperrschutz, Quittieren, Aussetzen, Knöpfe in der Meldung, Einstellungen mit Reitern"], ["0.7", 1, "2026.11.3b11", "Neue Optik Stufe 1: Wetter-Szene als Banner, Warnkacheln 2.0 mit Bogen, Stufenfarben wie beim DWD, Handy-Ansicht"], ["0.6", 1, "2026.11.3b11", "Stufe 1 der Fertigstellung: alle amtlichen Warnungen mit Vorabinformation, Stufen 1–4, Hagel getrennt, Starkregen in mm/h, Glätte, Wetterquelle wird geprüft"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   ga: { v: "0.1", b: 2, d: "2026-11-22", p: "2026.11.4b48", log: [["0.1", 2, "2026.11.4b48", "Neues Banner: Beet mit dem aktuellen Wetter (Sonne, Wolken, Regen, Schnee), Hinweise zum Gießen und bei Frost"], ["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   sf: { v: "1.0", b: 1, d: "2026-11-23", p: "2026.11.4", log: [["1.0", 1, "2026.11.4", "Stabil: Alarm mit Stufen und „Verstanden“, Melder-Übersicht mit Batterien und Prüfungen, Test am Melder wird erkannt, Grundriss mit Ausgängen, Diagnose und Anleitung – keine Änderungen gegenüber der Testwoche"], ["0.9", 12, "2026.11.4b39", "Testwoche: Stufen mit eigener Melderart, Fehlalarm zählt nicht als Prüfung, Mitteilungen verschwinden am Alarmende, Kontaktperson bekommt Entwarnung, Selbsttest in der Ruhezeit, Diagnose, Anleitung"], ["0.9", 11, "2026.11.4b39", "Quellen-Wächter (eine Meldung, wenn alle Melder einer Quelle ausfallen), Wochen-Selbsttest, Sensoren „nicht erreichbar“ und „Letzter Alarm“, Dienste für Automationen, Abzeichen „Vorab“"], ["0.9", 10, "2026.11.4b21", "Anpassen in der Übersicht, Ereignisse kompakt"], ["0.9", 9, "2026.11.4b20", "Grundriss: Durchgang und Räume mit gestricheltem Rand"], ["0.9", 8, "2026.11.4b19", "Ausgänge im Grundriss selbst markieren: Außentür oder Treppe nach unten"], ["0.9", 7, "2026.11.4b18", "Test per Testknopf wird automatisch eingetragen (Test-Entität oder kurzer Alarm)"], ["0.9", 6, "2026.11.4b17", "Test per Testknopf wird sofort erkannt und eingetragen"], ["0.9", 5, "2026.11.4b16", "Räume im Grundriss mit freier Form: L, T, U und beliebige Ecken"], ["0.9", 4, "2026.11.4b15", "Grundriss-Bearbeiten-Feld und Batterie-Verlauf auf dem Tablet korrigiert"], ["0.9", 3, "2026.11.4b14", "Batterie-Verlauf mit festem Maximum, Einbaudatum als Kalender-Karte statt Monatsrad"], ["0.9", 2, "2026.11.4b13", "Neue Menüstruktur: Reiter Melder, Melder-Seite, Einstellungen mit Bereichs-Reitern, Auswahl-Seiten statt Aufklappmenüs"], ["0.9", 1, "2026.11.4b12", "Vorabversion: Einstellungsfenster und Auswahlmenüs in der neuen Optik"], ["0.8", 5, "2026.11.4b11", "Kein roter Alarm mehr beim Zurückwechseln in die App (Warndienste, Ladephase)"], ["0.8", 4, "2026.11.4b10", "Warndienst-Sensoren (z. B. NINA) lösen keinen Alarm mehr aus"], ["0.8", 3, "2026.11.4b9", "Grundriss 2.0 (Fluchtweg um Wände herum, Maßstab, Abdeckung, Halos, Rückgängig, Mehrfachauswahl), PDF-Dateien über das Teilen-Menü, Anwesenheit wie Modul 6"], ["0.8", 2, "2026.11.4b8", "Alle Reiter in der neuen Optik: Übersicht mit „Als Nächstes“, Grundriss mit Kacheln, Legende und Melderliste, Wartung mit Kennzahlen und Lebensdauer-Karten, Einstellungen mit Sprungleiste"], ["0.8", 1, "2026.11.4b7", "Ausgeschaltete Melder ohne Warnungen (Frage nach langer Funkstille), Alarm mit Stufen und „Verstanden“, Alarm-Ansicht für Handy und Wandtablet, Fehlalarm-Hilfe, Fluchtweg im Grundriss, Sensoren und Ereignis für Automationen"], ["0.7", 1, "2026.11.4b5", "Neue Optik: Haus-Szene im Banner, Kennzahl-Kacheln, Zeitleiste, Melder-Karten 2.0 mit Detailblatt, Wartung mit Jahresband und Batterie-Prognose; Schalter „Karten wie bisher“"], ["0.6", 1, "2026.11.4b5", "Technik: Melder-Ausfall in Sekunden erkannt, Plan und Hintergrundbild in eigenem Speicher, Batterie-Prognose seit dem letzten Tausch mit früher Erinnerung, Schema-Version, Tests"], ["0.5", 4, "2026.11.1b16", "Neue Tag-Aktion „Melder geprüft“ für ein NFC-Tag neben dem Melder"], ["0.5", 3, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   pl: { v: "0.1", b: 2, d: "2026-11-22", p: "2026.11.4b48", log: [["0.1", 2, "2026.11.4b48", "Neues Banner: Pool mit Wellen und Saunahütte, Außentemperatur, PV-Überschuss und Strompreis"], ["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   bt: { v: "0.1", b: 2, d: "2026-11-22", p: "2026.11.4b48", log: [["0.1", 2, "2026.11.4b48", "Neues Banner: Akku mit Füllstand und PV-Dach, Fluss bei PV-Überschuss, Untergrenze aus Modul 1"], ["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
-  dt: { v: "0.9", b: 1, d: "2026-11-21", p: "2026.11.4b38", log: [["0.9", 1, "2026.11.4b38", "Vorabversion: „Lohnt sich dein Tarif?“ (Monat und Jahr gegen Festpreis), Kachel „Gespart im Monat“, Wochenansicht, Daten prüfen, Hinweis auf der Startseite bei negativen Preisen, Sensor Ersparnis Monat, Diagnose"], ["0.8", 1, "2026.11.4b1", "Bestes Fenster je Gerät, Preisalarm, Sensoren und Ereignis"], ["0.7", 1, "2026.11.4b1", "Neue Optik: Preisband-Banner, Kacheln 2.0, Heute und morgen mit Sonne"], ["0.6", 1, "2026.11.4b1", "Tarif-Dienst: Tibber direkt, Preis-Sensoren, Viertelstunden, morgen, Endpreis, Push"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
+  dt: { v: "0.9", b: 2, d: "2026-11-26", p: "2026.11.5b10", log: [["0.9", 2, "2026.11.5b10", "Tablet-Modus: passt ohne Scrollen auf eine Seite (Reiter Preise, Geräte, Tarif-Check), Preisgrenze der Frost-Heizer"], ["0.9", 1, "2026.11.4b38", "Vorabversion: „Lohnt sich dein Tarif?“ (Monat und Jahr gegen Festpreis), Kachel „Gespart im Monat“, Wochenansicht, Daten prüfen, Hinweis auf der Startseite bei negativen Preisen, Sensor Ersparnis Monat, Diagnose"], ["0.8", 1, "2026.11.4b1", "Bestes Fenster je Gerät, Preisalarm, Sensoren und Ereignis"], ["0.7", 1, "2026.11.4b1", "Neue Optik: Preisband-Banner, Kacheln 2.0, Heute und morgen mit Sonne"], ["0.6", 1, "2026.11.4b1", "Tarif-Dienst: Tibber direkt, Preis-Sensoren, Viertelstunden, morgen, Endpreis, Push"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   wa: { v: "0.2", b: 3, d: "2026-11-22", p: "2026.11.4b46", log: [["0.2", 3, "2026.11.4b46", "Neues Banner: Kalenderblatt mit dem nächsten Termin und Ampel-Ringen für die wichtigsten Termine"], ["0.2", 2, "2026.11.4b40", "Termine: eigener Speicher, anlegen, bearbeiten, löschen, Abstand in Tagen bis Jahren, Vorlagen, Erledigt mit Rückgängig, Ampel mit Vorwarnung, Kosten des Jahres, Diagnose"], ["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
-  sp: { v: "1.0", b: 2, d: "2026-11-12", p: "2026.11.3", log: [["1.0", 2, "2026.11.3b12", "Anlagen wählen: mehrere Prognose-Dienste (Forecast.Solar, Solcast, Open-Meteo) für dasselbe Dach werden nicht mehr ungefragt addiert – Auswahl je Anlage, „Nur …“-Knöpfe, Vorgabe aus dem Energie-Dashboard, Warnung auf der Seite; Korrektur lernt nach einer Änderung neu"], ["1.0", 1, "2026.11.3b8", "Stabil: Anlagen einzeln, fünf Sensoren für Automationen (heute, morgen, Rest heute, korrigiert, beste Zeit), Kachel mit Sonnenbogen auf der Startseite, Tablet-Wand, Ertragssensor aus dem Energie-Dashboard vorschlagen, Einrichtungs-Check, Lab „Lernfaktor“ fest eingebaut"], ["0.9", 5, "2026.11.3b8", "Treffsicherheit & Tipps: korrigierte Prognose (lernt aus 14 Tagen), Tage im Vergleich 7/14/30 und Treffer-Kalender mit Tag als Kurve, Empfehlungen mit Startzeit, Hinweis bei Schnee oder Störung"], ["0.9", 4, "2026.11.3b7", "Technik: Prognose über die Energie-Schnittstelle (Forecast.Solar, Solcast, Open-Meteo), Solcast-Sensoren, Ertrag je Stunde aus der Langzeitstatistik, Kurve von heute früh als Messlatte, Speicher mit Schema-Version (400 Tage), Abruf nur alle 30 Min. im Hintergrund"], ["0.9", 3, "2026.11.3b7", "Neue Optik Stufe 1: Sonnenbogen-Banner (nachts Mond und morgen), Kacheln mit HD-Bildern und Ring, Prognose und Ertrag je Stunde in einer Kurve, beste Zeit mit Geräten und Knopf ins Modul, Preisband, Verlauf mit Abweichung je Tag, Handy und Hell, Schalter „Wie bisher“"], ["0.9", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.9", 1, "3.0.6.5", "Start der Zählung"]] },
+  sp: { v: "1.0", b: 3, d: "2026-11-26", p: "2026.11.5b10", log: [["1.0", 3, "2026.11.5b10", "Tablet-Modus: passt ohne Scrollen auf eine Seite (Reiter Prognose, Treffsicherheit, Anlagen)"], ["1.0", 2, "2026.11.3b12", "Anlagen wählen: mehrere Prognose-Dienste (Forecast.Solar, Solcast, Open-Meteo) für dasselbe Dach werden nicht mehr ungefragt addiert – Auswahl je Anlage, „Nur …“-Knöpfe, Vorgabe aus dem Energie-Dashboard, Warnung auf der Seite; Korrektur lernt nach einer Änderung neu"], ["1.0", 1, "2026.11.3b8", "Stabil: Anlagen einzeln, fünf Sensoren für Automationen (heute, morgen, Rest heute, korrigiert, beste Zeit), Kachel mit Sonnenbogen auf der Startseite, Tablet-Wand, Ertragssensor aus dem Energie-Dashboard vorschlagen, Einrichtungs-Check, Lab „Lernfaktor“ fest eingebaut"], ["0.9", 5, "2026.11.3b8", "Treffsicherheit & Tipps: korrigierte Prognose (lernt aus 14 Tagen), Tage im Vergleich 7/14/30 und Treffer-Kalender mit Tag als Kurve, Empfehlungen mit Startzeit, Hinweis bei Schnee oder Störung"], ["0.9", 4, "2026.11.3b7", "Technik: Prognose über die Energie-Schnittstelle (Forecast.Solar, Solcast, Open-Meteo), Solcast-Sensoren, Ertrag je Stunde aus der Langzeitstatistik, Kurve von heute früh als Messlatte, Speicher mit Schema-Version (400 Tage), Abruf nur alle 30 Min. im Hintergrund"], ["0.9", 3, "2026.11.3b7", "Neue Optik Stufe 1: Sonnenbogen-Banner (nachts Mond und morgen), Kacheln mit HD-Bildern und Ring, Prognose und Ertrag je Stunde in einer Kurve, beste Zeit mit Geräten und Knopf ins Modul, Preisband, Verlauf mit Abweichung je Tag, Handy und Hell, Schalter „Wie bisher“"], ["0.9", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.9", 1, "3.0.6.5", "Start der Zählung"]] },
   ef: { v: "1.1", b: 3, d: "2026-11-25", p: "2026.11.5b8", log: [["1.1", 3, "2026.11.5b8", "Tablet-Modus: passt ohne Scrollen auf eine Seite (Reiter Jetzt, Strom), Ruhebild Hausfluss"], ["1.1", 2, "2026.11.3", "Bis zu vier Kacheln links und rechts und zwei unten, bis zu fünf Quellen am Handy, hellere Kacheln, Verbraucher mit Solar-Anteil genauer"], ["1.1", 1, "2026.11.3b19", "Strom-Reiter: „Woher kam der Strom?“ mit Anteil von Solar, Akku und Netz, Akku- und Netz-Bilanz und wohin der Solarstrom ging"], ["1.0", 1, "2026.11.3b6", "Stabil: Schnellstart aus den Haus-Werten, Einrichtungs-Prüfung, Kosten im Strom-Reiter und Vorteil heute auf dem Tablet, Fluss-Bild als Bild teilen, Tablet-Modus zeichnet nur alle 5 s neu, Feinschliff der Optik (Haus als freier Ring, ruhigere Kacheln, klarere Schrift)"], ["0.9", 1, "2026.11.3b5", "Vorabversion: Strom-Reiter mit Lichtsäulen und Verbrauchern mit Solar-Anteil (Tag/Woche/Monat/Jahr), Animationen „Voll“, Kacheln ziehen, Vorlagen, Gruppen-Kachel, Tageswerte-Leiste, Sponsor-Abzeichen im Banner"], ["0.8", 1, "2026.11.3b5", "Banner & Themen (Konzept Neue Optik A, F, H): Lichtband-Banner mit Herkunfts-Balken, Themen Nachtglas, Blaupause, Sternenhimmel, Haus im Garten, Kachelform Rund, Hell-Variante, Handy als Fluss-Spalte oder Kachel-Raster, Wand-Ansicht im Tablet-Modus mit Ruhebild"], ["0.7", 1, "2026.11.3b5", "Linien & Haus (Konzept Neue Optik C/D): Leuchtlinien mit Stärke nach Leistung und Verlauf als Option, Haus mit Herkunfts-Ring und wählbarem Haus-Bild, Bilder mit Zustand (Läuft ab, Ladestand-Ring), Status-Punkt, Kachel „keine Daten“"], ["0.6", 3, "2026.11.2b10", "Eigenes mdi-Symbol: „Mdi:…“ (iPhone) und „_“ werden richtig übernommen, sonst ein Hinweis"], ["0.6", 2, "2026.11.2b3", "Aktive Kacheln heben sich deutlicher von ruhenden ab"], ["0.6", 1, "2026.11.2b2", "24 HD-Bilder im Bildkatalog, alte Symbole einmalig umgestellt (Schalter „Alte Symbole behalten“), ruhige Kacheln ohne farbigen Rahmen"], ["0.5", 6, "3.0.7.6", "Fluss in den Linien richtet sich nach der Leistung: wenig Watt wenige langsame Punkte, viel Watt viele schnelle"], ["0.5", 5, "3.0.7.5", "Handy: die beiden oberen Kacheln stehen nebeneinander mittig über dem Haus"], ["0.5", 4, "3.0.7.4", "Fluss in den Linien läuft durchgängig (drei Punkte, bleibt beim Neuzeichnen im Takt, kein Punkt mehr oben links), Handy-Ansicht wie Tablet: Haus mittig, Linien wie im Vorbild"], ["0.5", 3, "3.0.7.3", "Jetzt-Ansicht flackerte bei neuen Werten: Kachelgröße und Linien stehen jetzt schon beim Neuzeichnen"], ["0.5", 2, "3.0.7.2", "Fluss-Bild passt sich Tablet und Desktop an (Kachelgröße nach der Höhe, Einstellung „Größe“), Banner bleibt oben, Umschalter „Jetzt | Strom“, Linien wie im Vorbild, Haus mittig"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
 };
 /* Letzter Stand von Modul 8 (Wallbox, Statistik, Vorhersage) über die Lebensdauer einer Seite hinaus: Die Home-Assistant-App baut die
@@ -1056,6 +1060,9 @@ button.rico::after{content:"";position:absolute;right:-5px;bottom:-5px;width:18p
 .stp{display:flex;gap:6px;margin-top:9px}.stp span{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;padding:5px 2px;border-radius:10px;border:1px solid var(--line);font-size:.72rem;color:var(--mut)}.stp span b{font-size:.68rem}.stp span small{font-size:.66rem;opacity:.75}
 .stp span.on{border-color:var(--c);background:color-mix(in srgb,var(--c) 20%,transparent);color:var(--primary-text-color);font-weight:700}
 .htrn{display:flex;gap:6px;align-items:center;font-size:.74rem;margin-top:8px;color:var(--c)}.htrn.mut{color:var(--mut)}
+.ehfrs{display:flex;gap:6px;align-items:center;font-size:.86rem;min-width:0}.ehfrs b{overflow-wrap:anywhere}
+.ehchk{display:flex;gap:11px;align-items:center;width:100%;text-align:left;background:transparent;border:1px solid var(--line);border-radius:14px;padding:12px;margin:0 0 8px;color:inherit;font:inherit;font-size:.9rem;line-height:1.35;cursor:pointer}.ehchk i{flex:none;width:24px;height:24px;border-radius:7px;border:2px solid var(--mut);display:grid;place-items:center;font-style:normal}.ehchk.on{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 10%,transparent)}.ehchk.on i{background:var(--teal);border-color:var(--teal);color:#042f2e}
+.ehtf .mut b{color:var(--primary-text-color)}
 .stpv{display:flex;gap:6px;margin:2px 0 8px}.stpv span{display:flex;gap:6px;align-items:center;font-size:.78rem;padding:4px 10px;border-radius:99px;border:1px solid var(--line)}.stpv b{color:var(--teal)}
 .stsc{margin-top:10px}.stbar{position:relative;height:10px;border-radius:6px;background:color-mix(in srgb,var(--mut) 22%,transparent);margin-bottom:22px}
 .stbar i{position:absolute;left:0;top:0;bottom:0;border-radius:6px;background:#fbbf24}
@@ -1418,6 +1425,9 @@ button.rico::after{content:"";position:absolute;right:-5px;bottom:-5px;width:18p
 .oclr{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--mut);display:grid;place-items:center;cursor:pointer}
 .oseg{margin:0}.oseg button{padding:9px 8px}
 .ochips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.omiss{display:flex;gap:8px;align-items:flex-start;margin-top:8px;padding:8px 10px;border-radius:10px;font-size:.8rem;line-height:1.4;border:1px solid color-mix(in srgb,#f59e0b 45%,transparent);background:color-mix(in srgb,#f59e0b 12%,transparent)}
+.omiss .ic{color:#f59e0b;flex:none}.omiss.err{border-color:color-mix(in srgb,#ef4444 60%,transparent);background:color-mix(in srgb,#ef4444 13%,transparent)}.omiss.err .ic{color:#ef4444}
+.oh .oneed{font-style:normal;font-weight:700;color:#f59e0b}
 .och{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:5px 6px 5px 11px;font-size:.82rem;background:color-mix(in srgb,var(--teal) 10%,transparent);word-break:break-all}
 .och button{width:20px;height:20px;border-radius:50%;border:0;background:color-mix(in srgb,var(--primary-text-color) 12%,transparent);color:inherit;display:grid;place-items:center;cursor:pointer;padding:0;flex:none}
 .oadd{border-style:dashed;color:var(--teal);font-weight:600;padding:6px 10px;border-radius:999px;font-size:.82rem}
@@ -2225,6 +2235,7 @@ button.hzr{cursor:pointer}
 .tmclk{text-align:right;line-height:1}.tmclk span{display:block;font-size:2.6rem;font-weight:300;letter-spacing:-1px}.tmclk small{display:block;font-size:.85rem;color:var(--mut);margin-top:3px}
 .tmgear{width:50px;height:50px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--mut);display:grid;place-items:center;cursor:pointer;flex:none}
 .tmbody{flex:1;min-height:0;overflow:auto;padding:10px 20px 16px;display:grid;gap:14px;align-content:start;-webkit-overflow-scrolling:touch}
+.tmbody .evtabs{overflow:visible;flex-wrap:wrap}
 .tmbody .hzbubs{flex-wrap:wrap;overflow:visible;padding:0}
 .tmgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
 .tmgrid .hzt{align-items:flex-start;text-align:left;min-height:150px;padding:18px;border-radius:24px;gap:8px;background:var(--card)}
@@ -3826,6 +3837,7 @@ const CSS_TM2M = `
 .tm2 .tmbody.tm2mod{display:flex;flex-direction:column;gap:10px}
 .tm2mod>.card,.tm2mod .tm2four>.card,.tm2mod .tm2stat>.card,.tm2mod .tm2wwh>.card,.tm2mod .tm2wwr>.card{margin:0;min-width:0;min-height:0}
 .tm2none{margin:auto;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:32px 48px}
+.tm2none .btn2{display:inline-flex;align-items:center;gap:8px}
 .tm2mini{flex:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:rgba(127,127,127,.08);color:inherit;font:inherit;font-size:.85rem;font-weight:600;cursor:pointer}
 .tm2sh{flex:none;display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:44px}
 .tm2sh>span:first-child{display:flex;align-items:center;gap:8px;font-weight:700;min-width:0}
@@ -4055,6 +4067,72 @@ button.tm2chip{min-height:44px;cursor:pointer}.tm2chip.wa{border-color:color-mix
 @media(max-height:660px),(max-width:700px){.tm2rwv{gap:12px;padding:2px 14px}.tm2rwv>svg{width:34px;height:34px}.tm2rwv small{font-size:.8rem;line-height:1.2}.tm2rwv b{font-size:1.4rem;line-height:1.15}.tm2rwv em{font-size:.72rem;line-height:1.2}}
 @media(max-height:660px){.tm2rwt b{font-size:1.8rem}.tm2rwn>svg{width:44px;height:44px}.tm2rwn.hub>svg{width:100%;height:auto}.tm2rwl,.tm2rwen,.tm2rwef{gap:8px}}
 @media(max-height:660px),(max-width:700px){.tm2rwn>svg{width:40px;height:40px}.tm2rwn.hub>svg{width:100%;height:auto}.tm2rwn small{font-size:.85rem;line-height:1.15}.tm2rwn b{font-size:min(2.6rem,6vh);line-height:1.05}.tm2rwn em{font-size:.75rem;line-height:1.15}}
+/* Stufe 4: Modul 8, 14, 16 */
+.tm2ax{font-size:12px;fill:var(--mut)}.tm2ax.b{font-weight:700;fill:var(--primary-text-color)}
+.tm2gl{stroke:var(--line);stroke-dasharray:3 5}.tm2dl{stroke:var(--primary-text-color);stroke-width:1.5;stroke-dasharray:6 5;opacity:.7}
+.tm2note{flex:none;display:block;color:var(--mut);font-size:.8rem;margin-top:-6px}.tm2nox{padding:8px 0}
+.tm2sums.three,.tm2.tm2 .tm2sums.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.tm2shr .tm2legend{display:flex;align-items:center;gap:5px;font-size:.76rem;color:var(--mut)}.tm2sh .tm2legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-left:8px}.tm2sh>.tm2legend{display:flex;align-items:center;gap:5px;font-size:.76rem;color:var(--mut)}
+.tm2.port .tm2sh .tm2legend{display:none}
+.tm2dseg{width:190px}.tm2ckseg.tm2seg{width:240px}
+.tm2evsc{flex:1 1 0;min-height:150px;position:relative;overflow:hidden;border-radius:20px;background:#3f86d6}.tm2evsc.nt{background:#0b1530}
+.tm2evpic{position:absolute;inset:0}.tm2evsvg{display:block;width:100%;height:100%}
+.tm2evbadge{position:absolute;left:14px;bottom:14px;max-width:46%;padding:10px 18px;border-radius:16px;background:rgba(9,17,27,.76);color:#fff}
+.tm2evbadge b{display:block;font-size:1.7rem;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tm2evbadge small{display:block;font-size:.9rem;color:#d5e0ea}.tm2evbadge small.d{font-size:.78rem;color:#a9bccb}
+.tm2.port .tm2evbadge{top:62px;bottom:auto;max-width:70%}
+.tm2evtr{position:absolute;right:12px;top:10px;display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:8px;max-width:calc(100% - 24px)}
+.tm2evtr .tm2mini,.tm2evtr .chip{background:rgba(9,17,27,.76);color:#fff;border-color:rgba(255,255,255,.14)}
+.tm2evw{position:absolute;left:14px;top:62px;max-width:60%;display:flex;gap:8px;align-items:center;padding:8px 14px;border-radius:12px;background:rgba(120,53,15,.92);color:#fff;font-size:.86rem;z-index:1}
+.tm2evw svg{flex:none}.tm2.port .tm2evw{top:auto;bottom:12px;max-width:calc(100% - 28px)}
+.tm2.tm2 .card.tm2sur{flex:none;margin:0;padding:6px 16px 10px}.tm2sur .tm2sh{min-height:34px}.tm2sur .tm2sh .tm2mini{min-height:44px}
+.tm2sur .tm2sh em{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tm2surb{position:relative;height:20px;border-radius:999px;background:rgba(127,127,127,.18);overflow:hidden}.tm2surb i{position:absolute;left:0;top:0;bottom:0}.tm2surb i.s{background:#fbbf24}.tm2surb i.g{background:#f97316;opacity:.75}.tm2surb span{position:absolute;top:0;bottom:0;width:3px;margin-left:-1px;background:var(--primary-text-color)}
+.tm2surx{position:relative;display:flex;justify-content:space-between;margin-top:5px;font-size:.74rem;color:var(--mut)}.tm2surx span.m{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.tm2lbl{flex:none;display:flex;justify-content:space-between;gap:10px;font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin:0 2px -4px}.tm2lbl em{font-style:normal;text-transform:none;letter-spacing:0;color:var(--teal)}
+.tm2evm,.tm2evq{flex:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.tm2evq{grid-template-columns:repeat(3,minmax(0,1fr))}
+.tm2evm button,.tm2evq button{min-width:0;border:1px solid var(--line);border-radius:16px;background:var(--card);color:inherit;font:inherit;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.tm2evm button{height:86px;flex-direction:column;gap:4px}.tm2evq button{min-height:58px;gap:10px;padding:0 8px}
+.tm2evm button b,.tm2evq button b{font-size:1rem;line-height:1.15}
+.tm2evm button.sel{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 17%,var(--card));color:var(--teal)}
+.tm2evm button:disabled,.tm2evq button:disabled{opacity:.5;cursor:default}.tm2evm button.sel:disabled{opacity:.8}
+.tm2evq.on{display:flex;align-items:center;gap:12px;min-height:58px;padding:0 8px 0 16px;border:1px solid var(--teal);border-radius:16px;background:color-mix(in srgb,var(--teal) 13%,var(--card))}
+.tm2evq.on>span{flex:1;min-width:0}.tm2evq.on b{display:block}.tm2evq.on small{display:block;color:var(--mut);font-size:.8rem}.tm2evq.on button.stop{min-height:44px;padding:0 24px;font-weight:700;color:#f87171;border-color:#f8717180}
+.tm2.port .tm2evm{grid-template-columns:repeat(2,minmax(0,1fr))}.tm2.port .tm2evq button{flex-direction:column;gap:2px;min-height:74px;text-align:center}
+.tm2.short .tm2evm button{height:64px}.tm2.short .tm2evq button{min-height:46px}.tm2.short .tm2lbl{display:none}.tm2.short .tm2evsc{min-height:90px}.tm2.short .tm2evbadge b{font-size:1.25rem}.tm2.short .tm2evbadge small.d{display:none}
+.tm2.tm2 .card.tm2evpl,.tm2.tm2 .card.tm2dtb,.tm2.tm2 .card.tm2ckc,.tm2.tm2 .card.tm2spc{flex:1;min-height:0;margin:0;gap:6px}
+.tm2sesc{touch-action:pan-y}.tm2sesl{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column}
+.tm2ses{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:6px 0;border-top:1px solid var(--line)}.tm2ses span{min-width:0}.tm2ses b{display:block;font-size:.9rem;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tm2ses small{display:block;font-size:.74rem;color:var(--mut)}.tm2ses .n{flex:1}.tm2ses .v{text-align:right}
+.tm2.port .tm2stat .tm2sesc{height:330px}
+.tm2band{height:100%;padding:0 8px}.tm2band .tfax{font-size:.76rem}.tm2band .tfl{font-size:.76rem}
+.tm2dtg .tm2cc{touch-action:pan-y}.tm2dtl{flex:1;min-height:0;display:grid;grid-auto-rows:minmax(0,86px);align-content:start;gap:8px}
+.tm2dtd{display:grid;grid-template-columns:34px minmax(0,1fr) auto 150px;align-items:center;gap:12px;padding:4px 12px;border:1px solid var(--line);border-left:4px solid var(--lc);border-radius:14px;min-height:0;overflow:hidden}
+.tm2dtd .i{color:var(--mut);display:grid;place-items:center}.tm2dtd span{min-width:0}.tm2dtd b{display:block;font-size:1.02rem;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tm2dtd small{display:block;font-size:.78rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tm2dtd .w{text-align:right}
+.tm2dtn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px}.tm2dtn.go{color:#34d399;font-weight:700}
+button.tm2dtn{border-radius:12px;border:1px solid color-mix(in srgb,var(--teal) 50%,transparent);background:color-mix(in srgb,var(--teal) 13%,transparent);color:var(--teal);font:inherit;font-size:.86rem;font-weight:700;cursor:pointer}button.tm2dtn.on{background:var(--teal);color:#06241f}
+.tm2dtsl{flex:1;min-height:0;display:grid;grid-auto-rows:minmax(0,64px);align-content:start;gap:4px}.tm2dts{display:flex;align-items:center;gap:12px;border-top:1px solid var(--line);min-height:0;overflow:hidden}.tm2dts i{font-style:normal;color:var(--mut);width:18px}.tm2dts b{flex:1}.tm2dts span{font-weight:800}
+.tm2.port .tm2dtg{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) 250px}.tm2.port .tm2dtd{grid-template-columns:30px minmax(0,1fr) auto 132px;gap:8px;padding:4px 8px}.tm2.port .tm2dtsl{grid-auto-rows:minmax(0,1fr)}
+.tm2.tm2 .tm2spn{grid-template-columns:repeat(4,minmax(0,1fr))}.tm2.tm2.port .tm2spn{grid-template-columns:repeat(2,minmax(0,1fr))}
+.tm2big4{min-width:0;display:flex;flex-direction:column;align-items:center;padding:8px 10px;border-radius:18px;border:1px solid var(--line);border-top:4px solid var(--a);background:var(--card);text-align:center}
+.tm2big4 span{font-size:.9rem;color:var(--mut)}.tm2big4 b{font-size:3rem;line-height:1.1;white-space:nowrap}.tm2big4 b small{font-size:1rem;margin-left:5px;color:var(--mut)}.tm2big4 em{font-style:normal;font-size:.8rem;color:var(--mut);max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tm2.short .tm2big4 b{font-size:1.7rem}.tm2.short .tm2big4{padding:3px 6px}.tm2.port .tm2big4 b{font-size:2.5rem}
+@media(max-width:1100px) and (orientation:landscape){.tm2big4 b{font-size:2.3rem}}
+.tm2spf{flex:none;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:10px}.tm2.port .tm2spf{grid-template-columns:minmax(0,1fr)}
+.tm2.tm2 .tm2spf>.card{margin:0;display:flex;align-items:center;gap:14px;padding:8px 14px;min-height:64px;min-width:0}
+.tm2spf span{flex:1;min-width:0}.tm2spf b{display:block;font-size:1.02rem;line-height:1.25}.tm2spf small{display:block;font-size:.8rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}button.tm2spa{color:inherit;font:inherit;text-align:left;cursor:pointer}.tm2spa>svg:last-child{transform:rotate(-90deg)}
+.tm2warn .tm2mini{margin-left:auto}
+.tm2stat.tm2spac{grid-template-columns:minmax(0,1fr) 400px}.tm2.port .tm2stat.tm2spac{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) minmax(0,1fr)}
+.tm2calh,.tm2calg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}.tm2calh{flex:none;margin-bottom:4px}.tm2calh i{font-style:normal;text-align:center;font-size:.72rem;color:var(--mut)}
+.tm2calg{flex:1;min-height:0;grid-template-rows:repeat(4,minmax(0,1fr))}
+.tm2calg>*{min-width:0;min-height:0;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:10px;border:0;padding:0;color:inherit;font:inherit;background:rgba(127,127,127,.1)}.tm2calg button{cursor:pointer}
+.tm2calg small{font-size:.68rem;color:var(--mut);line-height:1.1}.tm2calg b{font-size:.98rem;line-height:1.2}
+.tm2calg .g{background:color-mix(in srgb,#34d399 38%,transparent)}.tm2calg .y{background:color-mix(in srgb,#f59e0b 40%,transparent)}.tm2calg .r{background:color-mix(in srgb,#f87171 42%,transparent)}.tm2calg .f{opacity:.35}
+.tm2.short .tm2calg{gap:3px}.tm2.short .tm2calg small{display:none}
+.tm2gsh .tm2mini.end{margin-left:auto}
+.tm2sites{flex:1;min-height:0;display:grid;grid-template-columns:repeat(var(--c),minmax(0,1fr));grid-template-rows:repeat(var(--r),minmax(0,1fr));gap:10px}
+.tm2.tm2 .card.tm2site{margin:0;min-width:0;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:6px;border-top:4px solid var(--a)}
+.tm2site .h{flex:none;display:flex;justify-content:space-between;gap:10px}.tm2site .h b{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tm2site .h em{font-style:normal;color:var(--mut)}
+.tm2site .v{flex:none}.tm2site .v b{display:block;font-size:2.4rem;line-height:1.1}.tm2site .v small{font-size:.85rem;font-weight:500;color:var(--mut);margin-left:6px}.tm2site .v span{font-size:.85rem;color:var(--mut)}
+.tm2site .sl{flex:1;min-height:0;width:100%;max-height:240px;margin-top:auto}
 `;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
@@ -4181,6 +4259,7 @@ class FensterHeizungPanel extends HTMLElement {
       this._gen.summer = { mode: "auto", temp: 18, days: 3, ...(this._gen.summer || {}) };
       this._gen.wxadj = { on: false, mild: 12, down: 1, frost: 0, up: 1, ...(this._gen.wxadj || {}) };
       this._gen.pv = { ...PVDEF, ...(this._gen.pv || {}) };
+      this._gen.frost = { ...FRDEF, ...(this._gen.frost || {}) };
       this._mdApply(r);
       this._cfgOk = true; this._cfgTry = 0;
     } catch (e) {
@@ -4501,17 +4580,20 @@ class FensterHeizungPanel extends HTMLElement {
       if (hv) { if (h.leistung_sensor) { heat = parseFloat(hv.s); if (!isFinite(heat)) heat = 0; } else if (["on", "heat", "auto", "heat_cool"].includes(hv.s)) { const stp = stepsOf(h), pi = (h.presets || []).indexOf(hv.a && hv.a.preset_mode); heat = pi >= 0 && stp[pi] ? stp[pi] : stp[0] || Number(h.watt) || 0; } else heat = 0; }
       const pv = at(ps, m); let ex = pv ? parseFloat(pv.s) : 0; if (!isFinite(ex)) ex = 0; if (p.sign === "import") ex = -ex;
       const tv = at(ts, m), temp = tv && tv.a && tv.a.current_temperature != null ? Number(tv.a.current_temperature) : null;
-      pts.push({ t: m, heat, pv: Math.max(0, ex) + heat, temp });
+      pts.push({ t: m, heat, pv: htrFrost(h) ? (p.sensor && pv ? Math.max(0, ex + heat) : 0) : Math.max(0, ex) + heat, temp });  /* bei Frost zählt Netzbezug nicht als PV */
     }
+    const fr = htrFrost(h), grid = (q, w) => fr && q.pv < w * 0.5;
+    let wasGrid = false;
     let kwh = 0, pvk = 0, mins = 0; const ev = []; let prev = 0;
     for (const q of pts) {
       kwh += (q.heat * 5) / 60000; pvk += (Math.min(q.heat, q.pv) * 5) / 60000; if (q.heat > 0) mins += 5;
-      if (q.heat > 0 && prev === 0) ev.push({ t: q.t, c: "#34d399", x: "Heizer an", y: `Überschuss ${wfmt(q.pv)}${stepsOf(h).length > 1 ? " · Stufe " + (stepsOf(h).indexOf(q.heat) + 1) : ""}${h.thermo_aus ? " · Thermostat aus" : ""}` });
-      if (q.heat === 0 && prev > 0) ev.push({ t: q.t, c: "#94a3b8", x: "Heizer aus", y: q.temp != null && q.temp >= (Number(h.ziel) || 99) - 0.3 ? `Zieltemperatur ${num(h.ziel, 1)} °C erreicht` : "Überschuss zu gering" }); if (h.thermo_aus && q.heat === 0 && prev > 0) ev[ev.length - 1].y += " · Thermostat regelt wieder";
-      if (q.heat > 0 && prev > 0 && q.heat !== prev) ev.push({ t: q.t, c: q.heat > prev ? "#fbbf24" : "#fb923c", x: q.heat > prev ? "Stufe erhöht" : "Stufe verringert", y: `${wfmt(prev)} → ${wfmt(q.heat)} bei ${wfmt(q.pv)} Überschuss` });
+      if (q.heat > 0 && prev === 0) ev.push({ t: q.t, c: "#34d399", x: "Heizer an", y: `${grid(q, q.heat) ? "Netzstrom (Frost)" : "Überschuss " + wfmt(q.pv)}${stepsOf(h).length > 1 ? " · Stufe " + (stepsOf(h).indexOf(q.heat) + 1) : ""}${h.thermo_aus ? " · Thermostat aus" : ""}` });
+      if (q.heat === 0 && prev > 0) ev.push({ t: q.t, c: "#94a3b8", x: "Heizer aus", y: wasGrid || h.modus === "frost" ? "Zuheizen beendet" : q.temp != null && q.temp >= (Number(h.ziel) || 99) - 0.3 ? `Zieltemperatur ${num(h.ziel, 1)} °C erreicht` : "Überschuss zu gering" }); if (h.thermo_aus && q.heat === 0 && prev > 0) ev[ev.length - 1].y += " · Thermostat regelt wieder";
+      if (q.heat > 0 && prev > 0 && q.heat !== prev) ev.push({ t: q.t, c: q.heat > prev ? "#fbbf24" : "#fb923c", x: q.heat > prev ? "Stufe erhöht" : "Stufe verringert", y: `${wfmt(prev)} → ${wfmt(q.heat)}${grid(q, q.heat) ? "" : ` bei ${wfmt(q.pv)} Überschuss`}` });
+      if (q.heat > 0) wasGrid = grid(q, q.heat);
       prev = q.heat;
     }
-    return { steps: stepsOf(h), pts, kwh, pvk, mins, ev, hasT: pts.some((q) => q.temp != null) };
+    return { steps: stepsOf(h), pts, kwh, pvk, mins, ev, hasT: pts.some((q) => q.temp != null), noPv: fr && !p.sensor };
   }
   _hrChart(d) {
     const cw = this.clientWidth || 390, avail = cw >= 720 ? Math.min(780, cw * 0.94) : cw, W = Math.max(300, Math.min(748, Math.floor(avail - 32))), H = W < 500 ? 240 : 280, L = 42, R = d.hasT ? 34 : 10, T = 12, B = 26, iw = W - L - R, ih = H - T - B;
@@ -4519,12 +4601,12 @@ class FensterHeizungPanel extends HTMLElement {
     const tv = d.pts.map((q) => q.temp).filter((v) => v != null), tlo = tv.length ? Math.floor(Math.min(...tv) - 1) : 0, thi = tv.length ? Math.ceil(Math.max(...tv) + 1) : 1;
     const x = (m) => L + (iw * m) / 1440, y = (w) => T + ih * (1 - w / wmax), yt = (t) => T + ih * (1 - (t - tlo) / (thi - tlo));
     this._hrGeo = { W, x, L, iw };
-    let s = `<svg class="hchart" viewBox="0 0 ${W} ${H}" role="img" aria-label="PV-Überschuss und Heizerleistung">`;
+    let s = `<svg class="hchart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${d.noPv ? "Heizerleistung" : "PV-Überschuss und Heizerleistung"}">`;
     for (let i = 0; i <= 4; i++) { const w = (wmax * i) / 4; s += `<line x1="${L}" x2="${W - R}" y1="${y(w)}" y2="${y(w)}" stroke="var(--line)" stroke-dasharray="3 4"/><text x="${L - 6}" y="${y(w) + 4}" text-anchor="end" font-size="10.5" fill="var(--mut)">${w >= 1000 ? num(w / 1000, 1) + " kW" : w + " W"}</text>`; }
     for (const hh of [0, 6, 12, 18, 24]) s += `<line x1="${x(hh * 60)}" x2="${x(hh * 60)}" y1="${T}" y2="${T + ih}" stroke="var(--line)" stroke-dasharray="3 4"/><text x="${x(hh * 60)}" y="${H - 8}" text-anchor="${hh === 0 ? "start" : hh === 24 ? "end" : "middle"}" font-size="10.5" fill="var(--mut)">${String(hh).padStart(2, "0")}:00</text>`;
     const a = d.pts[0], z = d.pts[d.pts.length - 1], dx = x(5) - x(0);
     for (const w of d.steps || []) if (w <= wmax) s += `<line x1="${L}" x2="${W - R}" y1="${y(w)}" y2="${y(w)}" stroke="var(--teal)" stroke-width="1" stroke-dasharray="2 3" opacity=".55"/>`;
-    s += `<path d="${d.pts.map((q, i) => `${i ? "L" : "M"}${x(q.t).toFixed(1)} ${y(q.pv).toFixed(1)}`).join(" ")} L${x(z.t)} ${T + ih} L${x(a.t)} ${T + ih} Z" fill="#fbbf24" opacity=".2"/><path d="${d.pts.map((q, i) => `${i ? "L" : "M"}${x(q.t).toFixed(1)} ${y(q.pv).toFixed(1)}`).join(" ")}" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linejoin="round"/>`;
+    if (!d.noPv) s += `<path d="${d.pts.map((q, i) => `${i ? "L" : "M"}${x(q.t).toFixed(1)} ${y(q.pv).toFixed(1)}`).join(" ")} L${x(z.t)} ${T + ih} L${x(a.t)} ${T + ih} Z" fill="#fbbf24" opacity=".2"/><path d="${d.pts.map((q, i) => `${i ? "L" : "M"}${x(q.t).toFixed(1)} ${y(q.pv).toFixed(1)}`).join(" ")}" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linejoin="round"/>`;
     for (const q of d.pts) if (q.heat > 0) s += `<rect x="${x(q.t).toFixed(1)}" y="${y(q.heat).toFixed(1)}" width="${(dx + 0.6).toFixed(1)}" height="${(T + ih - y(q.heat)).toFixed(1)}" fill="var(--teal)" opacity=".62"/>`;
     if (tv.length) {
       s += `<path d="${d.pts.filter((q) => q.temp != null).map((q, i) => `${i ? "L" : "M"}${x(q.t).toFixed(1)} ${yt(q.temp).toFixed(1)}`).join(" ")}" fill="none" stroke="#7dd3fc" stroke-width="1.8" stroke-dasharray="5 4"/>`;
@@ -4537,8 +4619,10 @@ class FensterHeizungPanel extends HTMLElement {
     const d = this._hrData; if (!d || !d.pts.length || !this._hrGeo) return;
     const sr = this.shadowRoot, p = d.pts.reduce((a, q) => (Math.abs(q.t - min) < Math.abs(a.t - min) ? q : a), d.pts[0]), xl = sr.getElementById("hxl"), out = sr.getElementById("hxr");
     if (xl) { xl.setAttribute("x1", this._hrGeo.x(p.t)); xl.setAttribute("x2", this._hrGeo.x(p.t)); }
-    if (out) out.innerHTML = `<b>${String(Math.floor(p.t / 60)).padStart(2, "0")}:${String(p.t % 60).padStart(2, "0")} Uhr</b><span><i style="background:#fbbf24"></i>Überschuss ${wfmt(p.pv)}</span><span><i style="background:var(--teal)"></i>Heizer ${p.heat > 0 ? wfmt(p.heat) : "aus"}</span>${p.temp != null ? `<span><i style="background:#7dd3fc"></i>${num(p.temp, 1)} °C</span>` : ""}`;
+    if (out) out.innerHTML = `<b>${String(Math.floor(p.t / 60)).padStart(2, "0")}:${String(p.t % 60).padStart(2, "0")} Uhr</b>${d.noPv ? "" : `<span><i style="background:#fbbf24"></i>Überschuss ${wfmt(p.pv)}</span>`}<span><i style="background:var(--teal)"></i>Heizer ${p.heat > 0 ? wfmt(p.heat) : "aus"}</span>${p.temp != null ? `<span><i style="background:#7dd3fc"></i>${num(p.temp, 1)} °C</span>` : ""}`;
   }
+  /* Heizerbericht ohne PV: Netzstrom statt PV-Anteil und Vorteil; `cost` = heutige Kosten, sonst geschätzt mit dem Strompreis */
+  _hrNetTiles(kwh, cost) { return `<div style="--a:#60a5fa"><span>${ic("bolt", 15)}aus dem Netz</span><b>${num(kwh, 1)} <small>kWh</small></b></div><div style="--a:#a78bfa"><span>${ic("flame", 15)}${cost == null ? "≈ Kosten" : "Kosten"}</span><b>${num(cost == null ? (kwh * this._price()) / 100 : cost, 2)} <small>€</small></b></div>`; }
   _hrBody(r, m) {
     const h = r.htr; if (!h) return `<div class="mut">Für diesen Raum ist kein Elektroheizer eingerichtet.</div>`;
     const p = this._pv(), vk = h.verlauf || {}, today = this._isoDay(0), days = Array.from({ length: 7 }, (_, i) => this._isoDay(i - 6));
@@ -4550,11 +4634,11 @@ class FensterHeizungPanel extends HTMLElement {
     else if (m.data) {
       const d = m.data; this._hrData = d;
       const share = d.kwh > 0 ? Math.round((d.pvk / d.kwh) * 100) : 0, gain = (d.pvk * Math.max(0, this._price() - this._feed())) / 100;
-      body = `<div class="hrt"><div style="--a:var(--teal)"><span>${ic("clock", 15)}Laufzeit</span><b>${hmin(d.mins)}</b></div><div style="--a:#fbbf24"><span>${ic("bolt", 15)}Energie</span><b>${num(d.kwh, 1)} <small>kWh</small></b></div><div style="--a:#34d399"><span>${ic("sun", 15)}aus PV</span><b>${share} <small>%</small></b></div><div style="--a:#a78bfa"><span>${ic("flame", 15)}Vorteil</span><b>${num(gain, 2)} <small>€</small></b></div></div>
-        <div class="hlg"><span><i style="background:#fbbf24"></i>PV-Überschuss</span><span><i style="background:var(--teal)"></i>Heizer (gestrichelt: Stufen)</span>${d.hasT ? `<span><i style="background:#7dd3fc"></i>Raumtemperatur</span>` : ""}</div>
+      body = `<div class="hrt"><div style="--a:var(--teal)"><span>${ic("clock", 15)}Laufzeit</span><b>${hmin(d.mins)}</b></div><div style="--a:#fbbf24"><span>${ic("bolt", 15)}Energie</span><b>${num(d.kwh, 1)} <small>kWh</small></b></div>${d.noPv ? this._hrNetTiles(d.kwh, m.day === today ? Number(h.heute_kosten) || 0 : null) : `<div style="--a:#34d399"><span>${ic("sun", 15)}aus PV</span><b>${share} <small>%</small></b></div><div style="--a:#a78bfa"><span>${ic("flame", 15)}Vorteil</span><b>${num(gain, 2)} <small>€</small></b></div>`}</div>
+        <div class="hlg">${d.noPv ? "" : `<span><i style="background:#fbbf24"></i>PV-Überschuss</span>`}<span><i style="background:var(--teal)"></i>Heizer (gestrichelt: Stufen)</span>${d.hasT ? `<span><i style="background:#7dd3fc"></i>Raumtemperatur</span>` : ""}</div>
         <div class="hcw">${this._hrChart(d)}</div><div class="hxr" id="hxr"></div>
         <div class="lsec" style="margin-top:14px">Ereignisse</div>${d.ev.length ? d.ev.map((e) => `<div class="hre"><em>${String(Math.floor(e.t / 60)).padStart(2, "0")}:${String(e.t % 60).padStart(2, "0")}</em><i style="background:${e.c}"></i><div><b>${e.x}</b><span>${e.y}</span></div></div>`).join("") : `<div class="mut sm">An diesem Tag hat der Heizer nicht geheizt.</div>`}
-        <div class="mut sm" style="margin-top:10px">Vorteil = PV-Strom statt Netzbezug (${num(this._price(), 2)} ct/kWh${p.price_mode === "entity" && p.price_sensor ? ", aktuell" : ""}) abzüglich entgangener Einspeisevergütung (${num(this._feed(), 2)} ct/kWh${p.feed_mode === "entity" && p.feed_sensor ? ", aktuell" : ""}).</div>`;
+        ${d.noPv ? `<div class="mut sm" style="margin-top:10px">Ohne PV-Sensor kommt der ganze Strom aus dem Netz.</div>` : `<div class="mut sm" style="margin-top:10px">Vorteil = PV-Strom statt Netzbezug (${num(this._price(), 2)} ct/kWh${p.price_mode === "entity" && p.price_sensor ? ", aktuell" : ""}) abzüglich entgangener Einspeisevergütung (${num(this._feed(), 2)} ct/kWh${p.feed_mode === "entity" && p.feed_sensor ? ", aktuell" : ""}).</div>`}`;
     }
     return `<div class="hrds">${chips}</div>${body}`;
   }
@@ -4564,10 +4648,11 @@ class FensterHeizungPanel extends HTMLElement {
     const pvd = (r, iso) => (iso === today ? Number(r.htr.heute_pv_kwh) || 0 : r.htr.verlauf && r.htr.verlauf[iso] ? Number(r.htr.verlauf[iso][1]) || 0 : 0);
     const tot = days.map((iso) => rs.reduce((a, r) => a + kw(r, iso), 0)), mx = Math.max(0.1, ...tot);
     const sum = tot.reduce((a, b) => a + b, 0), pvs = days.reduce((a, iso) => a + rs.reduce((b, r) => b + pvd(r, iso), 0), 0), gain = (pvs * Math.max(0, this._price() - this._feed())) / 100;
+    const noPv = !p.sensor && rs.every((r) => r.htr.modus === "frost");
     const cols = days.map((iso, i) => `<div class="hac"><em>${num(tot[i], 1)}</em><div class="hab">${rs.map((r) => `<b style="height:${(kw(r, iso) / mx) * 100}%;background:${r.color}" title="${esc(r.name)} ${num(kw(r, iso), 1)} kWh"></b>`).join("")}</div><span>${new Date(iso + "T12:00:00").toLocaleDateString("de-DE", { weekday: "short" }).slice(0, 2)}</span></div>`).join("");
-    return `<div class="hrt"><div style="--a:#fbbf24"><span>${ic("bolt", 15)}Energie, 7 Tage</span><b>${num(sum, 1)} <small>kWh</small></b></div><div style="--a:#34d399"><span>${ic("sun", 15)}aus PV</span><b>${sum > 0 ? Math.round((pvs / sum) * 100) : 0} <small>%</small></b></div><div style="--a:#a78bfa"><span>${ic("flame", 15)}Vorteil</span><b>${num(gain, 2)} <small>€</small></b></div><div style="--a:var(--teal)"><span>${ic("clock", 15)}Heizer</span><b>${rs.length}</b></div></div>
+    return `<div class="hrt"><div style="--a:#fbbf24"><span>${ic("bolt", 15)}Energie, 7 Tage</span><b>${num(sum, 1)} <small>kWh</small></b></div>${noPv ? this._hrNetTiles(sum, null) : `<div style="--a:#34d399"><span>${ic("sun", 15)}aus PV</span><b>${sum > 0 ? Math.round((pvs / sum) * 100) : 0} <small>%</small></b></div><div style="--a:#a78bfa"><span>${ic("flame", 15)}Vorteil</span><b>${num(gain, 2)} <small>€</small></b></div>`}<div style="--a:var(--teal)"><span>${ic("clock", 15)}Heizer</span><b>${rs.length}</b></div></div>
       <div class="hac-w">${cols}</div><div class="hlg">${rs.map((r) => `<span><i style="background:${r.color}"></i>${esc(r.name)}</span>`).join("")}</div>
-      <div class="lsec" style="margin-top:12px">Pro Raum</div>${rs.map((r) => { const k = days.reduce((a, iso) => a + kw(r, iso), 0), pk = days.reduce((a, iso) => a + pvd(r, iso), 0); return `<div class="hre"><i style="background:${r.color}"></i><div style="flex:1"><b>${esc(r.name)}</b><span>${wfmt(r.htr.watt)} · Ziel ${num(r.htr.ziel, 1)} °C</span></div><div style="text-align:right"><b>${num(k, 1)} kWh</b><span>${k > 0 ? Math.round((pk / k) * 100) : 0} % PV</span></div></div>`; }).join("")}`;
+      <div class="lsec" style="margin-top:12px">Pro Raum</div>${rs.map((r) => { const k = days.reduce((a, iso) => a + kw(r, iso), 0), pk = days.reduce((a, iso) => a + pvd(r, iso), 0); return `<div class="hre"><i style="background:${r.color}"></i><div style="flex:1"><b>${esc(r.name)}</b><span>${wfmt(r.htr.watt)} · Ziel ${num(r.htr.modus === "frost" && r.htr.frost ? r.htr.frost.ziel : r.htr.ziel, 1)} °C</span></div><div style="text-align:right"><b>${num(k, 1)} kWh</b><span>${noPv ? "Netzstrom" : `${k > 0 ? Math.round((pk / k) * 100) : 0} % PV`}</span></div></div>`; }).join("")}`;
   }
   _repOpen(id) { this._modal = { type: "rep", id, day: this._isoDay(0), keepScroll: 99999 }; this._repLoad(this._modal); this._renderModal(); }
   async _repLoad(m) {
@@ -4823,10 +4908,11 @@ class FensterHeizungPanel extends HTMLElement {
   _pvChip() { if (!this._htrRooms().length) return ""; const w = this._pvNow(); return w == null ? "" : `<span class="chip">${ic("bolt", 16)}PV-Überschuss ${wfmt(w)}</span>`; }
   _htrBox(r) {
     const h = r.htr; if (!h) return "";
-    const [lab, c] = HTR[h.status] || HTR.aus, on = h.status === "pv", share = h.heute_kwh > 0 ? Math.round((h.heute_pv_kwh / h.heute_kwh) * 100) : null;
-    return `<div class="htr ${c}"><div class="htrh"><span class="htri">${ic("bolt", 18)}</span><div class="htrt"><b>Elektroheizer</b><span>${on ? (stepsOf(h).length > 1 ? `Stufe ${h.stufe} von ${stepsOf(h).length} · ` : "Heizt mit PV-Überschuss · ") + wfmt(h.watt_now) : lab}</span></div>
+    const [, c] = HTR[h.status] || HTR.aus, on = htrOn(h), share = h.heute_kwh > 0 ? Math.round((h.heute_pv_kwh / h.heute_kwh) * 100) : null, many = stepsOf(h).length > 1;
+    const head = on ? `${many ? `Stufe ${h.stufe} von ${stepsOf(h).length} · ` : ""}${h.status === "frost" ? "Zuheizen bei Frost (Netzstrom) · " : many ? "" : "Heizt mit PV-Überschuss · "}${wfmt(h.watt_now)}` : this._htrLab(h);
+    return `<div class="htr ${c}${h.status === "frost" ? " frun" : ""}"><div class="htrh"><span class="htri">${ic("bolt", 18)}</span><div class="htrt"><b>Elektroheizer</b><span>${head}</span></div>
       <button class="why" data-act="hrep" data-id="${esc(r.id)}" aria-label="Heizer-Bericht">${ic("chart", 13)}Bericht</button>${r.htrSw ? `<button class="sw ${r.htrOn ? "on" : ""}" data-act="sw" data-sw="${esc(r.htrSw)}" aria-pressed="${!!r.htrOn}" aria-label="Elektroheizer ein oder aus"></button>` : ""}</div>
-      ${this._stepBar(h)}<div class="htrm"><span>${num(h.heute_kwh, 1)} kWh heute${share != null ? ` · ${share} % PV` : ""}</span><span>${hmin(h.heute_min)} Laufzeit</span><span>Ziel ${num(h.ziel, 1)} °C</span></div>${h.thermo_aus ? (on ? `<div class="htrn">${ic("check", 13)}Thermostat ist aus, solange der Heizer läuft</div>` : `<div class="htrn mut">${ic("clock", 13)}Thermostat regelt, bis der Heizer startet</div>`) : ""}</div>`;
+      ${this._stepBar(h)}${htrFrost(h) ? this._htrFrostMeta(h, share) : `<div class="htrm"><span>${num(h.heute_kwh, 1)} kWh heute${share != null ? ` · ${share} % PV` : ""}</span><span>${hmin(h.heute_min)} Laufzeit</span><span>Ziel ${num(h.ziel, 1)} °C</span></div>`}${this._htrKeep(h) ? `<div class="htrn">${ic("check", 13)}Bei Frost bleiben die Heizkörper an</div>` : h.modus !== "frost" && h.thermo_aus ? (on ? `<div class="htrn">${ic("check", 13)}Thermostat ist aus, solange der Heizer läuft</div>` : `<div class="htrn mut">${ic("clock", 13)}Thermostat regelt, bis der Heizer startet</div>`) : ""}</div>`;
   }
   _presetRows(d, st, row) {
     const e = st[d.htr_entity]; if (!d.htr_entity || !d.htr_entity.startsWith("climate.") || !e) return "";
@@ -4839,6 +4925,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _seg2(d, k, opts) { return `<div class="seg oseg">${opts.map(([v, l]) => `<button class="${d[k] === v ? "sel" : ""}" data-act="oset" data-k="${k}" data-v="${v}">${l}</button>`).join("")}</div>`; }
   _stepScale(h) {
+    if (h.modus === "frost") return "";
     const st = stepsOf(h), p = this._pv(); let av = this._pvNow(); if (av != null) av = Math.max(0, av - this._htrRooms().filter((x) => x.htr !== h && (x.htr.prio || 9) < (h.prio || 9)).reduce((a, x) => a + (Number(x.htr.watt_now) || 0), 0)); if (av == null || h.status === "warm" || h.status === "aus" || h.status === "zeit") return "";
     const th = st.map((w) => w + p.reserve), max = Math.max(av, th[th.length - 1]) * 1.05, pc = (w) => Math.min(100, (w / max) * 100);
     const i = h.status === "pv" ? (h.stufe || 1) - 1 : -1, auto = h.auto !== "off";
@@ -4847,12 +4934,12 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _stepBar(h) {
     const st = stepsOf(h), p = this._pv();
-    return `${st.length > 1 ? `<div class="stp">${st.map((w, i) => `<span class="${h.status === "pv" && h.stufe === i + 1 ? "on" : ""}"><b>${i + 1}</b>${wfmt(w)}${h.presets && h.presets[i] ? `<small>${esc(h.presets[i])}</small>` : ""}</span>`).join("")}</div>` : ""}${this._stepScale(h)}${h.status === "wartet" ? `<div class="htrn mut">${ic("bolt", 13)}Startet ab ${wfmt(st[0] + p.reserve)} Überschuss (Stufe 1 plus ${wfmt(p.reserve)} Reserve)</div>` : ""}`;
+    return `${st.length > 1 ? `<div class="stp">${st.map((w, i) => `<span class="${htrOn(h) && h.stufe === i + 1 ? "on" : ""}"><b>${i + 1}</b>${wfmt(w)}${h.presets && h.presets[i] ? `<small>${esc(h.presets[i])}</small>` : ""}</span>`).join("")}</div>` : ""}${this._stepScale(h)}${h.status === "wartet" ? `<div class="htrn mut">${ic("bolt", 13)}Startet ab ${wfmt(st[0] + p.reserve)} Überschuss (Stufe 1 plus ${wfmt(p.reserve)} Reserve)</div>` : ""}`;
   }
   _htrChip(r) {
     const h = r.htr; if (!h) return "";
     const [lab, c] = HTR[h.status] || HTR.aus;
-    return `<span class="achip ${c}">${ic("bolt", 12)}${h.status === "pv" ? (stepsOf(h).length > 1 ? "Stufe " + h.stufe + " · " : "PV-Heizer ") + wfmt(h.watt_now) : lab}</span>`;
+    return `<span class="achip ${c}">${ic("bolt", 12)}${htrOn(h) ? (stepsOf(h).length > 1 ? "Stufe " + h.stufe + " · " : h.status === "frost" ? "Frost-Heizer " : "PV-Heizer ") + wfmt(h.watt_now) : lab}</span>`;
   }
   _pvBlock() {
     const rs = this._htrRooms(); if (!rs.length) return "";
@@ -4860,12 +4947,12 @@ class FensterHeizungPanel extends HTMLElement {
     const kwh = rs.reduce((a, r) => a + (Number(r.htr.heute_kwh) || 0), 0), pvk = rs.reduce((a, r) => a + (Number(r.htr.heute_pv_kwh) || 0), 0);
     const share = kwh > 0 ? Math.round((pvk / kwh) * 100) : 0, gain = (pvk * Math.max(0, this._price() - this._feed())) / 100, cap = Math.max(w ?? 0, tot, 1);
     const seg = rs.filter((r) => r.htr.watt_now > 0).map((r) => `<i style="width:${(r.htr.watt_now / cap) * 100}%;background:${r.color}" title="${esc(r.name)} ${wfmt(r.htr.watt_now)}"></i>`).join("");
-    const rk = this._rkOn();
-    return `<div class="card pvb${rk ? " rk2pvb" : ""}"><div class="pvh"><span class="pt">${rk ? this._gx("heater", 30, { stage: rs.some((r) => r.htr.watt_now > 0) ? 2 : 0, on: rs.some((r) => r.htr.watt_now > 0) }) : ic("bolt", 18)}PV-Heizer</span><button class="lnk" data-act="hrepall">${ic("chart", 15)}Bericht</button></div>
-      ${w == null ? `<div class="mut sm">Noch kein PV-Sensor gewählt. Das stellst du unter „Allgemein“ ein.</div>` : `<div class="pvbig"><b>${wfmt(w)}</b><span>PV-Überschuss${soc != null ? ` · Batterie ${num(soc)} %${p.soc_min ? ` (ab ${num(p.soc_min)} % für Heizer)` : ""}` : ""}</span></div>
+    const rk = this._rkOn(), anyFr = rs.some((r) => htrFrost(r.htr)), onlyFr = rs.every((r) => r.htr.modus === "frost"), cost = rs.reduce((a, r) => a + (Number(r.htr.heute_kosten) || 0), 0);
+    return `<div class="card pvb${rk ? " rk2pvb" : ""}"><div class="pvh"><span class="pt">${rk ? this._gx("heater", 30, { stage: rs.some((r) => r.htr.watt_now > 0) ? 2 : 0, on: rs.some((r) => r.htr.watt_now > 0) }) : ic("bolt", 18)}${anyFr ? "Elektroheizer" : "PV-Heizer"}</span><button class="lnk" data-act="hrepall">${ic("chart", 15)}Bericht</button></div>
+      ${w == null ? (onlyFr ? "" : `<div class="mut sm">Noch kein PV-Sensor gewählt. Das stellst du unter „Allgemein“ ein.</div>`) : `<div class="pvbig"><b>${wfmt(w)}</b><span>PV-Überschuss${soc != null ? ` · Batterie ${num(soc)} %${p.soc_min ? ` (ab ${num(p.soc_min)} % für Heizer)` : ""}` : ""}</span></div>
       <div class="pvbar">${seg}</div><div class="pvlg"><span>${wfmt(tot)} an Heizer verteilt</span><span>${wfmt(Math.max(0, w - tot))} frei</span></div>`}
-      <div class="pvrows">${rs.map((r) => { const h = r.htr, [lab, c] = HTR[h.status] || HTR.aus; return `<div class="pvr">${rk ? this._rkMiniById(r.id, "pvm") : `<i style="background:${r.color}"></i>`}<b>${esc(r.name)}${rk && stepsOf(h).length > 1 ? `<span class="rk2stp pv">${stepsOf(h).map((x, i) => `<i class="${h.status === "pv" && h.watt_now > 0 && h.stufe >= i + 1 ? "on" : ""}"></i>`).join("")}</span>` : ""}</b><span class="pill ${c}">${lab}</span><em>${h.watt_now > 0 ? (stepsOf(h).length > 1 ? `St. ${h.stufe}/${stepsOf(h).length} · ` : "") + wfmt(h.watt_now) : "bis " + wfmt(stepsOf(h).slice(-1)[0])}</em></div>`; }).join("")}</div>
-      <div class="pvt"><div><b>${num(kwh, 1)} kWh</b><span>Heizer heute</span></div><div><b>${share} %</b><span>aus PV-Überschuss</span></div><div><b>≈ ${num(gain, 2)} €</b><span>Vorteil heute</span></div></div></div>`;
+      <div class="pvrows">${rs.map((r) => { const h = r.htr, [lab, c] = HTR[h.status] || HTR.aus; return `<div class="pvr">${rk ? this._rkMiniById(r.id, "pvm") : `<i style="background:${r.color}"></i>`}<b>${esc(r.name)}${rk && stepsOf(h).length > 1 ? `<span class="rk2stp pv">${stepsOf(h).map((x, i) => `<i class="${htrOn(h) && h.watt_now > 0 && h.stufe >= i + 1 ? "on" : ""}"></i>`).join("")}</span>` : ""}</b><span class="pill ${c}">${lab}</span><em>${h.watt_now > 0 ? (stepsOf(h).length > 1 ? `St. ${h.stufe}/${stepsOf(h).length} · ` : "") + wfmt(h.watt_now) : "bis " + wfmt(stepsOf(h).slice(-1)[0])}</em></div>`; }).join("")}</div>
+      <div class="pvt"><div><b>${num(kwh, 1)} kWh</b><span>Heizer heute</span></div>${onlyFr ? `<div><b>${num(Math.max(0, kwh - pvk), 1)} kWh</b><span>aus dem Netz</span></div><div><b>${num(cost, 2)} €</b><span>Netzstrom heute</span></div>` : `<div><b>${share} %</b><span>aus PV-Überschuss</span></div><div><b>≈ ${num(gain, 2)} €</b><span>Vorteil heute</span></div>`}</div></div>`;
   }
   _airLite(r) {
     if (r.airOff || r.humEid) return null;
@@ -5058,6 +5145,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (f === "gpvs" || f === "gpvb") { this._gen.pv = { ...this._pv(), [f === "gpvs" ? "sensor" : "soc_sensor"]: t.value }; this._saveGen(); this._render(); this._renderModal(); return true; }
     if (f === "gpvp") { this._gen.pv = { ...this._pv(), [t.dataset.p + "_sensor"]: t.value }; this._saveGen(); this._render(); this._renderModal(); return true; }
     if (f === "gpvn") { const v = Number(t.value), lo = t.min !== "" && t.min != null ? Number(t.min) : 0, hi = t.max !== "" && t.max != null ? Number(t.max) : 100; this._gen.pv = { ...this._pv(), [t.dataset.k]: isFinite(v) ? Math.min(hi, Math.max(lo, Math.round(v * 100) / 100)) : 0 }; this._saveGen(); this._render(); this._renderModal(); return true; }
+    if (f === "gfr") { const v = Number(t.value), k = t.dataset.k; if (t.value !== "" && isFinite(v)) { this._gen.frost = { ...this._frost(), [k]: Math.min(Number(t.max), Math.max(Number(t.min), k === "watt" ? Math.round(v) : Math.round(v * 10) / 10)) }; this._saveGen(); } this._render(); this._renderModal(); return true; }
     if (f === "gth") { const v = Math.min(35, Math.max(5, Number(t.value) || 18)); this._gen.summer = { ...this._gen.summer, temp: v }; this._saveGen(); this._render(); this._renderModal(); return true; }
     if (f === "rsfile") {
       const file = t.files && t.files[0]; if (!file) return true;
@@ -6461,7 +6549,7 @@ class FensterHeizungPanel extends HTMLElement {
     d += (F1[type] || F1.wohnen)();
     /* Geräte im Raum: Elektroheizer an der Wand neben dem Fenster, Luftentfeuchter in der Ecke links */
     if (s.htr && !mess) {
-      const on = s.htr.status === "pv" && (Number(s.htr.watt_now) || 0) > 0, hx = 100, hy = 58;
+      const on = htrOn(s.htr) && (Number(s.htr.watt_now) || 0) > 0, hx = 100, hy = 58;
       d += `<rect x="${hx + 1}" y="${hy + 2}" width="36" height="24" rx="5" fill="#000" opacity=".18"/><rect x="${hx}" y="${hy}" width="36" height="24" rx="5" fill="#e2e8f0" stroke="#94a3b8" stroke-opacity=".7"/>` +
         [0, 1, 2, 3, 4].map((i) => `<rect x="${hx + 5 + i * 5.6}" y="${hy + 5}" width="3.2" height="14" rx="1.6" fill="${on ? "#fb923c" : "#94a3b8"}"/>`).join("") +
         `<circle cx="${hx + 32}" cy="${hy + 3.6}" r="1.8" fill="${on ? "#fbbf24" : "#64748b"}"/>` +
@@ -6487,7 +6575,7 @@ class FensterHeizungPanel extends HTMLElement {
   /* Bildbereich: eigenes Foto (Vorrang) oder Raumbild. Der Schlüssel entscheidet, ob neu gezeichnet wird. */
   _rkPic(r, s, mini = false) {
     const ph = (this._cfg.layout.photos || {})[r.id], type = this._rkType(r), an = this._rkCfg().anim;
-    const key = [mini ? "m" : "c", r.id, type, s.k, s.open.length ? "o" : s.tilt.length ? "t" : "c", s.night ? 1 : 0, s.heating || (s.act === "heating") ? 1 : 0, an, ph ? ph.length + ph.slice(-12) : "", type === "carport" && this._out().t != null && this._out().t <= 0 ? "fr" : "", s.htr ? s.htr.status + (s.htr.status === "pv" && s.htr.watt_now > 0 ? "1" : "0") : "", (s.lfs || []).map((d) => { const L = d.S.live || {}; return (L.running || (L.on && !L.has_pw) ? "r" : "s") + (L.full ? "f" : "") + (L.fill != null ? Math.round(L.fill * 10) : ""); }).join(","), s.here ? "p" : ""].join("|");
+    const key = [mini ? "m" : "c", r.id, type, s.k, s.open.length ? "o" : s.tilt.length ? "t" : "c", s.night ? 1 : 0, s.heating || (s.act === "heating") ? 1 : 0, an, ph ? ph.length + ph.slice(-12) : "", type === "carport" && this._out().t != null && this._out().t <= 0 ? "fr" : "", s.htr ? s.htr.status + (htrOn(s.htr) && s.htr.watt_now > 0 ? "1" : "0") : "", (s.lfs || []).map((d) => { const L = d.S.live || {}; return (L.running || (L.on && !L.has_pw) ? "r" : "s") + (L.full ? "f" : "") + (L.fill != null ? Math.round(L.fill * 10) : ""); }).join(","), s.here ? "p" : ""].join("|");
     const cls = `rk2art${s.k === "aus" ? " gr" : ""}${mini ? " mini" : ""}${s.night ? " nt" : ""}`;
     if (ph) return `<div class="${cls} ph" data-kk="${esc(key)}" data-an="${an}" style="background-image:url('${esc(ph)}');--c:${s.col}"><i class="rkv"></i></div>`;
     return `<div class="${cls}" data-kk="${esc(key)}" data-an="${an}" style="--c:${s.col}">${this._rkArt(type, s)}</div>`;
@@ -6553,7 +6641,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (!s.pts.length) return adm ? `<button class="rk2pl none" data-act="plan" data-id="${id}">${ic("plus", 15)}Heizplan einrichten</button>` : "";
     const segs0 = segs(s.pts, s.today), t0 = s.today * 1440, nm = s.now % 1440;
     const cuts = s.pts.filter((p) => p.w > s.now && p.w < t0 + 1440).filter((p, i, a) => (i ? a[i - 1].t : s.curPlan) !== p.t).slice(0, 2);
-    const cap = !s.planOn ? (s.away ? "Heizplan ruht · Abwesenheit" : s.summer ? "Heizplan ruht · Sommermodus" : "Heizplan aus") : `Jetzt <b>${num(s.curPlan, 1)}°</b>${cuts.map((p) => ` · ab ${fmtT(p.w % 1440)} <b>${num(p.t, 1)}°</b>`).join("")}${r.htr ? ` · <span class="nw"><span class="sun">☀</span> PV-Heizer</span>` : ""}${s.pres && s.pres.anwesend && !s.pres.gesperrt ? ` · <span class="nw pr">● ${s.pres.modus === "exact" ? "genau" : "mind."} ${num(s.pres.temp, 1)}°</span>` : ""}`;
+    const cap = !s.planOn ? (s.away ? "Heizplan ruht · Abwesenheit" : s.summer ? "Heizplan ruht · Sommermodus" : "Heizplan aus") : `Jetzt <b>${num(s.curPlan, 1)}°</b>${cuts.map((p) => ` · ab ${fmtT(p.w % 1440)} <b>${num(p.t, 1)}°</b>`).join("")}${r.htr ? ` · <span class="nw"><span class="sun">${r.htr.modus === "frost" ? "❄" : "☀"}</span> ${r.htr.modus === "frost" ? "Frost-Heizer" : htrFrost(r.htr) ? "Elektroheizer" : "PV-Heizer"}</span>` : ""}${s.pres && s.pres.anwesend && !s.pres.gesperrt ? ` · <span class="nw pr">● ${s.pres.modus === "exact" ? "genau" : "mind."} ${num(s.pres.temp, 1)}°</span>` : ""}`;
     const inner = `<div class="rk2bd${s.planOn ? "" : " off"}">${segs0.map((g) => `<i style="flex:${g.e - g.s};background:${this._rkCol(g.t, s.lo, s.hi)}" title="${fmtT(g.s)}–${fmtT(g.e % 1440 || 1440)} · ${num(g.t, 1)} °C"></i>`).join("")}<b style="left:${(nm / 14.4).toFixed(2)}%"></b></div>
       <div class="tla"><span>0</span><span>6</span><span>12</span><span>18</span><span>24</span></div><div class="rk2pc">${ic("plan", 14)}<span>${cap}</span></div>`;
     return adm ? `<button class="rk2pl" data-act="plan" data-id="${id}" aria-label="Heizplan bearbeiten">${inner}</button>` : `<div class="rk2pl">${inner}</div>`;
@@ -6606,7 +6694,7 @@ class FensterHeizungPanel extends HTMLElement {
     return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
       <div class="sh"><div><b>${esc(r.name)}</b><span><i class="rk2dot" style="background:${s.col}"></i>${esc(s.lab)} · ${esc(this._rkTypeName(this._rkType(r)))}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="rk2menu">${it("why", "info", "Warum?", "Was die Regelung gerade tut und weshalb")}${it("rep", "chart", "Bericht", "Temperatur, Fenster und Pausen eines Tages")}
-      ${r.htr ? it("rkhtr", "bolt", "Elektroheizer", "Stufen, Laufzeit, Bericht") + it("hrep", "chart", "Heizer-Bericht", "Elektroheizer mit PV-Überschuss") : adm ? it("ehxnew", "bolt", "Elektroheizer hinzufügen", "Heizen mit PV-Überschuss in diesem Raum") : ""}
+      ${r.htr ? it("rkhtr", "bolt", "Elektroheizer", "Stufen, Laufzeit, Bericht") + it("hrep", "chart", "Heizer-Bericht", `Elektroheizer ${this._ehModeText(r.htr.modus)}`) : adm ? it("ehxnew", "bolt", "Elektroheizer hinzufügen", "Mit PV-Überschuss oder bei Frost") : ""}
       ${s.lfs.map((d) => `<button class="rk2mi" data-act="lfrk" data-id="${id}" data-d="${esc(d.id)}">${ic("fan", 20)}<span><b>${esc(d.name)}</b><small>Luftentfeuchter · Standort, Tank, Statistik</small></span>${ic("chev", 16)}</button>`).join("")}
       ${adm ? it("plan", "plan", "Heizplan bearbeiten", s.pts.length ? "Zeiten und Temperaturen" : "Noch kein Heizplan") : ""}
       ${adm ? it("opt", "sliders", "Raumeinstellungen", "Fenster, Thermostate, Sensoren, Regelung") : ""}
@@ -6647,14 +6735,14 @@ class FensterHeizungPanel extends HTMLElement {
     return out.length ? `<div class="rk2dvs">${out.join("")}</div>` : "";
   }
   _rkHtrTile(r, h) {
-    const [lab] = HTR[h.status] || HTR.aus, st = stepsOf(h), on = h.status === "pv" && (Number(h.watt_now) || 0) > 0;
-    const tone = { pv: "#fb923c", wartet: "#f59e0b", soc: "#f59e0b", fenster: "#60a5fa", warm: "#2dd4bf" }[h.status] || "#94a3b8";
+    const [lab] = HTR[h.status] || HTR.aus, st = stepsOf(h), on = htrOn(h) && (Number(h.watt_now) || 0) > 0, fr = h.status === "frost";
+    const tone = { pv: "#fb923c", frost: "#fb923c", frost_wartet: "#f59e0b", frost_netz: "#f59e0b", frost_sensor: "#f59e0b", wartet: "#f59e0b", soc: "#f59e0b", fenster: "#60a5fa", warm: "#2dd4bf" }[h.status] || "#94a3b8";
     const share = h.heute_kwh > 0 ? Math.round((h.heute_pv_kwh / h.heute_kwh) * 100) : null;
     const val = on ? (st.length > 1 ? `Stufe ${h.stufe} · ${wfmt(h.watt_now)}` : wfmt(h.watt_now)) : lab;
-    const sub = [on ? "mit PV-Überschuss" : h.status === "wartet" && st.length ? `ab ${wfmt(st[0] + this._pv().reserve)} Überschuss` : "", h.heute_kwh > 0 ? `${num(h.heute_kwh, 1)} kWh heute${share != null ? ` · ${share} % PV` : ""}` : ""].filter(Boolean).join(" · ");
+    const sub = [on ? (fr ? "bei Frost, Netzstrom" : "mit PV-Überschuss") : h.status === "frost_wartet" && h.frost && h.frost.rest_min ? `noch ${h.frost.rest_min} Min.` : h.status === "wartet" && st.length ? `ab ${wfmt(st[0] + this._pv().reserve)} Überschuss` : "", h.heute_kwh > 0 ? `${num(h.heute_kwh, 1)} kWh heute${share != null && h.modus !== "frost" ? ` · ${share} % PV` : ""}` : ""].filter(Boolean).join(" · ");
     const bar = st.length > 1 ? `<div class="rk2stp">${st.map((w, i) => `<i class="${on && h.stufe >= i + 1 ? "on" : ""}" title="Stufe ${i + 1} · ${wfmt(w)}"></i>`).join("")}</div>` : "";
     return `<div class="rk2dv${on ? " run" : ""}" style="--c:${tone}"><button class="rk2dvb" data-act="rkhtr" data-id="${esc(r.id)}" aria-label="Elektroheizer öffnen">
-      <span class="rk2dvi">${this._gx("heater", 38, { stage: on ? Math.min(3, h.stufe || 2) : 0, on })}</span><span class="rk2dvt"><small>Elektroheizer${on ? ` <i class="sun">☀</i>` : ""}</small><b>${esc(val)}</b>${sub ? `<em>${esc(sub)}</em>` : ""}${bar}</span></button>
+      <span class="rk2dvi">${this._gx("heater", 38, { stage: on ? Math.min(3, h.stufe || 2) : 0, on })}</span><span class="rk2dvt"><small>Elektroheizer${on ? ` <i class="sun">${fr ? "❄" : "☀"}</i>` : ""}</small><b>${esc(val)}</b>${sub ? `<em>${esc(sub)}</em>` : ""}${bar}</span></button>
       ${r.htrSw ? `<button class="sw ${r.htrOn ? "on" : ""}" data-act="sw" data-sw="${esc(r.htrSw)}" aria-pressed="${!!r.htrOn}" aria-label="Elektroheizer ein oder aus"></button>` : ""}</div>`;
   }
   _rkLfTile(r, d) {
@@ -7723,7 +7811,7 @@ class FensterHeizungPanel extends HTMLElement {
     const back = this._modal && this._modal.type !== "ehwiz" ? this._modal : null, z = r ? this._ehRoomTemp(r).ziel : null;
     this._pkId = null;
     this._modal = { type: "ehwiz", step: 1, fixed: !!r, back, busy: false, err: "",
-      d: { room: r ? r.id : "", entity: "", name: "", tpl: "oel", steps: [800, 1200, 2000], txt: "", target: z != null && isFinite(z) ? Math.round(z * 2) / 2 : 21, thermo: "off", auto: "on", prio: 5, from: "", to: "", more: false } };
+      d: { room: r ? r.id : "", entity: "", name: "", tpl: "oel", steps: [800, 1200, 2000], txt: "", target: z != null && isFinite(z) ? Math.round(z * 2) / 2 : 21, thermo: "off", auto: "on", prio: 5, from: "", to: "", more: false, ...this._ehFrostDraft({ mode: this._pv().sensor ? "pv" : "frost" }) } };
     this._renderModal();
     try { this._ehD = await this._hass.callWS({ type: "fenster_heizung/heizer_get" }); } catch (_) { this._ehD = null; }
     if (this._modal && this._modal.type === "ehwiz") this._renderModal();
@@ -7748,7 +7836,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (M.step === 1) {
       const C = this._ehCands(), sug = C.free.filter((e) => S.EH_HINT.test(e + " " + ((st[e].attributes || {}).friendly_name || ""))).slice(0, 4);
       ok = !!d.entity;
-      body = `<h3 class="wzt">Welches Gerät?</h3><div class="mut sm" style="margin:-4px 0 8px">Ein Schalter (z. B. die Steckdose des Heizers) oder ein Klima-Gerät. Modul 1 schaltet es nur bei genug PV-Überschuss ein.</div>
+      body = `<h3 class="wzt">Welches Gerät?</h3><div class="mut sm" style="margin:-4px 0 8px">Ein Schalter (z. B. die Steckdose des Heizers) oder ein Klima-Gerät. Modul 1 schaltet es bei PV-Überschuss oder, wenn du das wählst, bei Frost ein.</div>
         ${sug.length ? `<div class="lsec">${ic("bolt", 15)}Passt wahrscheinlich</div><div class="lfkind">${sug.map((e) => `<button class="${d.entity === e ? "sel" : ""}" data-act="ehxent" data-k="${esc(e)}"><b>${esc(this._wzName(e))}</b><span>${esc(e)}${e.startsWith("climate.") ? ` · Klima-Gerät${((st[e].attributes || {}).preset_modes || []).length ? `, ${st[e].attributes.preset_modes.length} Voreinstellungen` : ""}` : " · Schalter"}</span></button>`).join("")}</div>` : ""}
         <div class="lsec">${ic("search", 15)}${sug.length ? "Oder ein anderes Gerät" : "Gerät wählen"}</div>
         ${this._wzSel(C.free, d.entity, "ehxe", `data-k="entity"`, "– Gerät wählen –", S.EH_HINT)}
@@ -7760,7 +7848,7 @@ class FensterHeizungPanel extends HTMLElement {
     } else if (M.step === 3) {
       ok = W.length > 0;
       const cl = d.entity.startsWith("climate."), pm = cl ? ((st[d.entity] || {}).attributes || {}).preset_modes || [] : [];
-      body = `<h3 class="wzt">Wie viel Leistung?</h3><div class="mut sm" style="margin:-4px 0 8px">Nach der Leistung entscheidet Modul 1, ob der Überschuss reicht. Hat der Heizer Stufen, wird bei mehr Überschuss höher geschaltet.</div>
+      body = `<h3 class="wzt">Wie viel Leistung?</h3><div class="mut sm" style="margin:-4px 0 8px">Nach der Leistung entscheidet Modul 1, ob PV-Überschuss oder Netzgrenze reichen. Hat der Heizer Stufen, wird bei mehr Überschuss höher geschaltet.</div>
         <div class="lfkind">${S.EH_TPL.map(([k, l, w, i]) => `<button class="${d.tpl === k ? "sel" : ""}" data-act="ehxtpl" data-k="${k}"><b>${ic(i, 14)} ${l}</b><span>${w.length > 1 ? w.map((x) => num(x, 0)).join(" · ") + " W" : `eine Stufe, ${num(w[0], 0)} W`}</span></button>`).join("")}
         ${d.entity.startsWith("switch.") && !M.edit ? `<button class="${d.tpl === "mess" ? "sel" : ""}" data-act="ehxtpl" data-k="mess"><b>${ic("chart", 14)} Messen</b><span>Mit dem Leistungssensor der Steckdose, Stufe für Stufe (je 30 Sekunden)</span></button>` : ""}
         <button class="${d.tpl === "own" ? "sel" : ""}" data-act="ehxtpl" data-k="own"><b>${ic("pencil", 14)} Eigene Werte</b><span>Leistung laut Typenschild, Stufen mit Komma trennen</span></button></div>
@@ -7770,17 +7858,21 @@ class FensterHeizungPanel extends HTMLElement {
         ${cl ? `<div class="gst">${ic("info", 15)}${pm.length ? `Klima-Gerät mit ${pm.length} Voreinstellungen: Die Stufen werden ihnen automatisch zugeordnet, ändern kannst du das in den Raumeinstellungen.` : "Klima-Gerät ohne Voreinstellungen: Modul 1 schaltet nur ein und aus (höchste Stufe)."}</div>` : W.length > 1 ? `<div class="gst">${ic("info", 15)}Eine Steckdose kennt nur Ein und Aus: Modul 1 rechnet mit der höchsten Stufe. Stell den Heizer am Gerät auf diese Stufe.</div>` : ""}`;
     } else {
       if (!d.name) d.name = this._wzName(d.entity) || "Elektroheizer";
-      ok = !!d.name.trim() && (!d.from === !d.to);
+      const fr = d.mode !== "pv", pvm = d.mode !== "frost";
+      ok = !!d.name.trim() && (!d.from === !d.to) && !(fr && room && !room.rtEid);
       body = `<h3 class="wzt">${M.edit ? "Regeln" : "Fast fertig"}</h3>
         <div class="lsec">${ic("pencil", 15)}Name</div><input class="otxt" type="text" maxlength="40" data-f="ehxname" value="${esc(d.name)}" aria-label="Name des Heizers">
         <div class="ehsum"><span>${ic("bolt", 15)}<b>${esc(this._wzName(d.entity))}</b></span><span>${ic("home", 15)}<b>${esc(room ? room.name : "–")}</b></span><span>${ic("flame", 15)}<b>${W.map((w) => num(w, 0)).join(" · ")} W</b></span></div>
-        ${row("Heizen bis", "Der Heizer schaltet ab, sobald der Raum so warm ist.", step("target", "°C", 0.5, 10, 30, 1))}
-        ${row("Thermostate, solange er heizt", "Ausschalten: Die Heizkörper des Raums ruhen, danach regeln sie wieder.", seg("thermo", [["off", "Ausschalten"], ["on", "Weiterlaufen"]]))}
-        ${W.length > 1 && d.entity.startsWith("climate.") ? row("Stufen regeln", "Automatisch: höhere Stufe bei mehr Überschuss.", seg("auto", [["on", "Automatisch"], ["off", "Fest"]])) : ""}
-        <button class="lnk" data-act="ehxmore" style="margin:8px 0 4px">${ic("chev", 14)} ${d.more ? "Weniger" : "Mehr Einstellungen (Priorität, Zeitfenster)"}</button>
-        ${d.more ? row("Priorität", "1 wird zuerst versorgt, wenn der Überschuss nicht für alle reicht.", step("prio", "", 1, 1, 9)) + row("Erlaubt ab", "Optional. Leer = ganztägig.", tin("from", "Erlaubt ab")) + row("Erlaubt bis", "", tin("to", "Erlaubt bis")) + (d.from || d.to ? `<button class="lnk" data-act="ehxnotime">Zeitfenster entfernen</button>` : "") : ""}
+        ${row("Wann soll er heizen?", this._pv().sensor ? "„Frost“ heizt auch mit Netzstrom zu, wenn der Raum zu kalt bleibt." : "Ohne PV-Sensor bleibt „PV-Überschuss“ ohne Wirkung. „Frost“ heizt mit Netzstrom.", seg("mode", [["pv", "PV-Überschuss"], ["frost", "Frost"], ["both", "Beides"]]))}
+        ${pvm ? row("Heizen bis", fr ? "Gilt für PV-Überschuss." : "Der Heizer schaltet ab, sobald der Raum so warm ist.", step("target", "°C", 0.5, 10, 30, 1)) : ""}
+        ${pvm ? row("Thermostate, solange er heizt", `Ausschalten: Die Heizkörper des Raums ruhen, danach regeln sie wieder.${fr ? " Bei Frost bleiben sie immer an." : ""}`, seg("thermo", [["off", "Ausschalten"], ["on", "Weiterlaufen"]])) : ""}
+        ${pvm && W.length > 1 && d.entity.startsWith("climate.") ? row("Stufen regeln", "Automatisch: höhere Stufe bei mehr Überschuss.", seg("auto", [["on", "Automatisch"], ["off", "Fest"]])) : ""}
+        ${fr ? this._ehFrostRows(d, room, W, row, step, tin) : ""}
+        <button class="lnk" data-act="ehxmore" style="margin:8px 0 4px">${ic("chev", 14)} ${d.more ? "Weniger" : pvm ? "Mehr Einstellungen (Priorität, Zeitfenster)" : "Mehr Einstellungen (Priorität)"}</button>
+        ${d.more ? row("Priorität", "1 wird zuerst versorgt, wenn Überschuss oder Netzgrenze nicht für alle reichen.", step("prio", "", 1, 1, 9)) + (pvm ? row(fr ? "PV erlaubt ab" : "Erlaubt ab", "Optional. Leer = ganztägig.", tin("from", "Erlaubt ab")) + row(fr ? "PV erlaubt bis" : "Erlaubt bis", "", tin("to", "Erlaubt bis")) + (d.from || d.to ? `<button class="lnk" data-act="ehxnotime">Zeitfenster entfernen</button>` : "") : "") : ""}
         ${!M.edit ? `<button class="btn2" data-act="ehxtest" style="width:100%;margin:8px 0 0" ${M.testUntil && M.testUntil > Date.now() ? "disabled" : ""}>${ic("play", 15)} ${M.testUntil && M.testUntil > Date.now() ? `Testlauf läuft noch ${Math.ceil((M.testUntil - Date.now()) / 1000)} s …` : "Testlauf (30 Sekunden ein)"}</button><div class="mut sm" style="margin:4px 0 0">Prüft, ob Modul 1 das Gerät schalten kann – unabhängig vom Überschuss. Danach ist es wieder wie vorher.</div>` : ""}
-        <div class="gst on">${ic("sun", 15)}${this._pvNow() != null ? `Heizt nur mit PV-Überschuss. Gerade frei: ${wfmt(Math.max(0, this._pvNow()))}${this._pvNow() >= Math.min(...W) ? " – er könnte gleich starten." : "."}` : "Heizt nur mit PV-Überschuss. Den Netz-Sensor wählst du unter Haus › Energiequellen."}</div>`;
+        <div class="gst on">${ic(pvm ? "sun" : "bolt", 15)}${!pvm ? "Heizt nur bei Frost, mit Netzstrom." : fr ? `Heizt mit PV-Überschuss. Bei Frost zusätzlich mit Netzstrom.${this._pv().sensor ? "" : " Den Netz-Sensor für PV wählst du unter Haus › Energiequellen."}` : this._pvNow() != null ? `Heizt nur mit PV-Überschuss. Gerade frei: ${wfmt(Math.max(0, this._pvNow()))}${this._pvNow() >= Math.min(...W) ? " – er könnte gleich starten." : "."}` : "Heizt nur mit PV-Überschuss. Den Netz-Sensor wählst du unter Haus › Energiequellen."}</div>`;
+      if (M.confirm) return this._ehConfirmModal(M, room, Math.max(...W));
     }
     return `<div class="ov" data-act="ehxcancel"></div><div class="sheet" role="dialog" aria-modal="true" aria-label="Elektroheizer ${M.edit ? "bearbeiten" : "hinzufügen"}">
       <div class="sh"><div><b>Elektroheizer ${M.edit ? "bearbeiten" : "hinzufügen"}</b><span>Schritt ${pos + 1} von ${steps.length}${room && M.fixed ? " · " + esc(room.name) : ""}</span></div><button class="ibtn" data-act="ehxcancel" aria-label="Schließen">${ic("close", 20)}</button></div>
@@ -7800,10 +7892,12 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _ehAct(a, b) {
     if (a === "ehxnew") { this._ehOpen(b.dataset.id || ""); return; }
+    if (a === "ehxfrp") { this._gen.frost = { ...this._frost(), price_on: b.dataset.k === "on" }; this._saveGen(); this._renderModal(); return; }
     if (this._ehAct3(a, b) || this._ehAct4(a, b)) return;
     const M = this._modal; if (!M || M.type !== "ehwiz") return;
     const d = M.d, steps = this._ehStepList(M), pos = steps.indexOf(M.step);
     M.err = "";
+    if (this._ehFrostAct(a, b)) return;
     if (a === "ehxcancel") { this._pkId = null; this._ehStopTick(); this._modal = M.back; this._renderModal(); return; }
     if (a === "ehxent") { d.entity = b.dataset.k; d.name = ""; }
     else if (a === "ehxroom") { d.room = b.dataset.k; if (!M.fixed) { const r = this._ehRooms().find((x) => x.id === d.room), z = r ? this._ehRoomTemp(r).ziel : null; if (z != null && isFinite(z)) d.target = Math.round(z * 2) / 2; } }
@@ -7822,14 +7916,15 @@ class FensterHeizungPanel extends HTMLElement {
   }
   async _ehSave() {
     const M = this._modal, d = M.d, W = this._ehSteps(d); if (M.busy) return;
+    if (d.mode !== "pv" && !d.frost_ok) { M.confirm = [false, false, false]; this._renderModal(); const sh = this.shadowRoot.querySelector("#modal .sheet"); if (sh) sh.scrollTop = 0; return; }
     M.busy = true; this._renderModal();
-    const heater = { room: d.room, entity: d.entity, name: d.name.trim(), steps: W, watt: Math.max(...W), target: d.target, thermo: d.thermo, auto: d.auto, prio: d.prio, from: d.from || null, to: d.to || null };
+    const heater = { room: d.room, entity: d.entity, name: d.name.trim(), steps: W, watt: Math.max(...W), target: d.target, thermo: d.thermo, auto: d.auto, prio: d.prio, from: d.from || null, to: d.to || null, ...this._ehFrostData(d) };
     if (M.edit) { delete heater.room; delete heater.entity; }
     try {
       const r = M.edit ? await this._hass.callWS({ type: "fenster_heizung/heizer_update", hid: M.edit, heater }) : await this._hass.callWS({ type: "fenster_heizung/heizer_add", heater });
       if (M.edit) { this._ehD = r; this._modal = M.back; this._renderModal(); this._render(); this._toast(`„${heater.name}“ gespeichert`); return; }
       this._ehD = r; this._modal = M.back && (M.back.type === "fh" || M.back.type === "ehlist") ? M.back : null;  /* Raumdialog nicht zurückholen: sein Entwurf kennt den Heizer noch nicht */ this._renderModal(); this._render();
-      this._toast(`„${heater.name}“ eingerichtet – heizt mit PV-Überschuss`);
+      this._toast(`„${heater.name}“ eingerichtet – heizt ${this._ehModeText(heater.mode)}`);
     } catch (e) { M.busy = false; M.err = (e && e.message) || "Speichern fehlgeschlagen"; this._renderModal(); }
   }
   _ehStepList(M) { return M.edit ? [3, 4] : M.fixed ? [1, 3, 4] : [1, 2, 3, 4]; }
@@ -7845,45 +7940,48 @@ class FensterHeizungPanel extends HTMLElement {
   /* Zeile im Reiter „Geräte“ der Modul-1-Einstellungen */
   _ehGeraeteRow() {
     const hs = this._ehRooms().filter((r) => r.htr), n = hs.length;
-    const txt = n === 1 ? `${esc(this._ehName(hs[0]))} · ${esc(hs[0].name)} · nur mit PV-Überschuss` : n ? `${n} Geräte: ${esc(hs.map((r) => this._ehName(r)).join(", "))}` : "Heizer mit PV-Überschuss einbinden";
+    const txt = n === 1 ? `${esc(this._ehName(hs[0]))} · ${esc(hs[0].name)} · ${htrFrost(hs[0].htr) ? this._ehModeText(hs[0].htr.modus) : "nur mit PV-Überschuss"}` : n ? `${n} Geräte: ${esc(hs.map((r) => this._ehName(r)).join(", "))}` : "Heizer für PV-Überschuss oder Frost einbinden";
     return `<button class="sxrow" data-act="ehxlist"><span class="sxi">${ic("bolt", 20)}</span><span class="sxt"><b>Elektroheizer</b><small>${txt}</small></span><em class="sxc ${n ? "ok" : ""}">${n ? "Eingerichtet" : "Neu"}</em><span class="sxg">${ic("chev", 16)}</span></button>`;
   }
   _ehListModal() {
     const M = this._modal, rooms = this._ehRooms(), hs = rooms.filter((r) => r.htr).sort((a, b) => ((a.htr.prio || 5) - (b.htr.prio || 5)) || a.name.localeCompare(b.name, "de")), adm = this._admin();
-    const rows = hs.map((r) => { const h = r.htr, on = h.status === "pv", ps = this._ehPaused(r), st = stepsOf(h); return `<button class="sxrow" data-act="rkhtr" data-id="${esc(r.id)}"><span class="sxi">${ic("bolt", 20)}</span><span class="sxt"><b>${esc(this._ehName(r))}</b><small>${esc(r.name)} · ${st.length > 1 ? `${st.length} Stufen bis ${wfmt(Math.max(...st))}` : wfmt(h.watt)}</small></span><em class="sxc ${on ? "ok" : ps ? "off" : ""}">${ps ? "pausiert" : on ? "☀ " + wfmt(h.watt_now) : "wartet"}</em><span class="sxg">${ic("chev", 16)}</span></button>`; }).join("");
+    const rows = hs.map((r) => { const h = r.htr, on = htrOn(h), ps = this._ehPaused(r), st = stepsOf(h); return `<button class="sxrow" data-act="rkhtr" data-id="${esc(r.id)}"><span class="sxi">${ic("bolt", 20)}</span><span class="sxt"><b>${esc(this._ehName(r))}</b><small>${esc(r.name)} · ${st.length > 1 ? `${st.length} Stufen bis ${wfmt(Math.max(...st))}` : wfmt(h.watt)}${h.modus === "both" ? " · PV und Frost" : h.modus === "frost" ? " · Frost" : ""}</small></span><em class="sxc ${on ? "ok" : ps ? "off" : ""}">${ps ? "pausiert" : on ? (h.status === "frost" ? "❄ " : "☀ ") + wfmt(h.watt_now) : "wartet"}</em><span class="sxg">${ic("chev", 16)}</span></button>`; }).join("");
     return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
       <div class="sh"><div><b>${M.back ? `<button class="lnk ehbk" data-act="ehxlback" aria-label="Zurück">‹</button>` : ""}Elektroheizer</b><span>Modul 1 · Geräte · ${hs.length ? `${hs.length} ${hs.length === 1 ? "Heizer" : "Heizer"}` : "noch keiner eingerichtet"}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="lsec">${ic("bolt", 15)}Deine Heizer</div>
       <div class="fhs"><div class="sxl">${rows || `<div class="mut sm" style="padding:12px 14px">Noch kein Elektroheizer eingerichtet.</div>`}</div>
       ${adm && rooms.some((r) => !r.htr) ? `<div style="padding:0 12px 12px"><button class="btn2 pri" data-act="ehxnew" style="width:100%">${ic("plus", 16)} Elektroheizer hinzufügen</button></div>` : ""}</div>
       ${this._ehTrashBlock()}
+      ${this._ehFrostRules(hs)}
       ${this._ehPvRules()}
       <div class="foot2">${M.back ? `<button class="btn2" data-act="ehxlback">Zurück</button>` : ""}<button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
   /* PV-Regeln für alle Heizer (bis Build 2 im Reiter „Elektroheizer“) */
   _ehPvRules() {
-    const pv = this._pv(), pvn = this._pvNow(), rp = this._rate("price"), rf = this._rate("feed");
+    const pv = this._pv(), pvn = this._pvNow(), rp = this._rate("price"), rf = this._rate("feed"), hts = this._ehRooms().filter((r) => r.htr), anyFr = hts.some((r) => htrFrost(r.htr));
+    const prices = `<div class="hslk">${this._hsLink("pr", `Bezug ${num(rp, 2)} ct/kWh, Einspeisung ${num(rf, 2)} ct/kWh`)}</div>`;
+    if (!pv.sensor && hts.length && hts.every((r) => r.htr.modus === "frost")) return `<div class="mut sm" style="margin:10px 0 0">Alle Heizer laufen nur bei Frost. Kommt eine PV-Anlage dazu, wählst du den Netz-Sensor hier:</div><div class="hslk">${this._hsLink("en", "Netz noch nicht gewählt")}</div>${prices}`;
     const n = (k, l, u, h, lo, hi, st) => `<div class="of"><div class="ol"><b>${l}</b><span>${h}</span></div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="gpvn" data-k="${k}" value="${pv[k]}" min="${lo}" max="${hi}" step="${st}"><i>${u}</i></span></div></div>`;
     return `<div class="lsec">${ic("sun", 15)}PV-Regeln für alle Heizer</div><div class="fhs open fhst"><div class="sxrow stinfo"><span class="sxi">${ic("bolt", 20)}</span><span class="sxt"><b>PV-Überschuss für Elektroheizer${this._stHelpBtn("general.pv.reserve")}</b><small>${pv.sensor ? (pvn != null ? `${wfmt(pvn)} Überschuss, ${wfmt(this._htrTotal())} an Heizer verteilt.` : "Sensor gewählt, noch kein Wert.") : "Noch kein Sensor für die Einspeisung gewählt."}</small></span><em class="sxc ${pv.sensor ? "ok" : ""}">${pv.sensor ? "Eingerichtet" : "Offen"}</em></div><div class="fhb">
-      <div class="mut sm" style="margin:2px 0 4px">Elektroheizer heizen nur bei genug Überschuss. Diese Regeln gelten für alle Heizer.</div>
+      <div class="mut sm" style="margin:2px 0 4px">${anyFr ? "Diese Regeln gelten für den Betrieb mit PV-Überschuss." : "Elektroheizer heizen nur bei genug Überschuss. Diese Regeln gelten für alle Heizer."}</div>
       <div class="hslk">${this._hsLink("en", `Netz ${pv.sensor ? esc(this._wzName(pv.sensor)) + (pv.sign === "import" ? " (Bezug positiv)" : " (Einspeisung positiv)") : "noch nicht gewählt"}${pv.soc_sensor ? " · Ladestand " + esc(this._wzName(pv.soc_sensor)) : ""}`)}</div>
-      ${n("reserve", "Reserve", "W", "Bleibt zusätzlich zur Heizerleistung übrig.", 0, 2000, 50)}${n("delay", "Einschalten nach", "Min.", "So lange muss der Überschuss anliegen.", 0, 30, 1)}${n("minrun", "Mindestlaufzeit", "Min.", "Kürzer läuft ein Heizer nicht an einem Stück.", 0, 120, 5)}
+      ${n("reserve", "Reserve", "W", "Bleibt zusätzlich zur Heizerleistung übrig.", 0, 2000, 50)}${n("delay", "Einschalten nach", "Min.", "So lange muss der Überschuss anliegen.", 0, 30, 1)}${anyFr ? "" : n("minrun", "Mindestlaufzeit", "Min.", "Kürzer läuft ein Heizer nicht an einem Stück.", 0, 120, 5)}
       ${pv.soc_sensor ? n("soc_min", "Heizer erst ab", "%", "Die Batterie wird zuerst geladen.", 0, 100, 5) : ""}
       <div class="gst ${pvn != null ? "on" : ""}">${ic(pvn != null ? "bolt" : "info", 15)}${pvn != null ? `Aktuell ${wfmt(pvn)} Überschuss, ${wfmt(this._htrTotal())} an Heizer verteilt.` : "Noch kein Sensor gewählt."}</div></div></div>
-      <div class="hslk">${this._hsLink("pr", `Bezug ${num(rp, 2)} ct/kWh, Einspeisung ${num(rf, 2)} ct/kWh`)}</div>`;
+      ${prices}`;
   }
   /* Geräte-Blatt eines Heizers (Raumkarte, Liste) */
   _ehDevSheet(r) {
-    const adm = this._admin(), h = r.htr, on = h && h.status === "pv", ps = this._ehPaused(r), e = this._ehOf(r.id), st = h ? stepsOf(h) : [];
+    const adm = this._admin(), h = r.htr, on = htrOn(h), ps = this._ehPaused(r), e = this._ehOf(r.id), st = h ? stepsOf(h) : [];
     if (!h) return "";
     const it = (act, icon, t, sub, cls = "") => `<button class="rk2mi ${cls}" data-act="${act}" data-id="${esc(r.id)}">${ic(icon, 20)}<span><b>${t}</b><small>${sub}</small></span>${ic("chev", 16)}</button>`;
     return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
       <div class="sh"><div><b>${esc(this._ehName(r))}</b><span>${esc(r.name)} · ${esc((h.entity || "").split(".")[0] === "climate" ? "Klima-Gerät" : "Schalter")}${ps ? " · pausiert" : ""}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="rk2sht">${this._gx("heater", 64, { stage: on ? Math.min(3, h.stufe || 2) : 0, on })}</div>${this._htrBox(r)}
       ${adm ? `<div class="rk2menu" style="margin-top:10px">
-        ${it("ehxedit", "pencil", "Bearbeiten", `Name, Leistung${st.length > 1 ? ` (${st.length} Stufen)` : ""}, Heizen bis, Zeitfenster`)}
+        ${it("ehxedit", "pencil", "Bearbeiten", `Name, Leistung${st.length > 1 ? ` (${st.length} Stufen)` : ""}, ${htrFrost(h) ? "PV oder Frost, Regeln" : "Heizen bis, Zeitfenster"}`)}
         ${it("ehxmove", "home", "In anderen Raum stellen", "Statistik und Einstellungen ziehen mit")}
-        ${it("ehxpause", ps ? "play" : "pause", ps ? "Fortsetzen" : "Pausieren", ps ? "Heizt wieder mit PV-Überschuss" : "Bleibt eingerichtet, heizt nicht")}
+        ${it("ehxpause", ps ? "play" : "pause", ps ? "Fortsetzen" : "Pausieren", ps ? `Heizt wieder ${this._ehModeText(h.modus)}` : "Bleibt eingerichtet, heizt nicht")}
         ${it("ehxdel", "trash", "Heizer entfernen", "Gerät aus, Thermostate zurück, 30 Tage im Papierkorb", "dng")}
         ${it("hrep", "chart", "Bericht", "Überschuss, Stufen und Raumtemperatur eines Tages")}</div>` : ""}
       ${e ? "" : `<div class="mut sm" style="margin:8px 0 0">Wird geladen …</div>`}
@@ -7894,7 +7992,7 @@ class FensterHeizungPanel extends HTMLElement {
     const S = this.constructor, st = (e.steps && e.steps.length ? e.steps : [e.watt || 1500]), T = S.EH_TPL.find((x) => x[2].join() === st.join());
     this._pkId = null;
     this._modal = { type: "ehwiz", step: 3, fixed: true, edit: e.id, back: this._modal, busy: false, err: "",
-      d: { room, entity: e.entity, name: e.name, tpl: T ? T[0] : "own", steps: T ? T[2] : st, txt: st.join(", "), target: Number(e.target) || 21, thermo: e.thermo === "on" ? "on" : "off", auto: e.auto === "off" ? "off" : "on", prio: Number(e.prio) || 5, from: (e.from || "").slice(0, 5), to: (e.to || "").slice(0, 5), more: !!(e.from || Number(e.prio) !== 5) } };
+      d: { room, entity: e.entity, name: e.name, tpl: T ? T[0] : "own", steps: T ? T[2] : st, txt: st.join(", "), target: Number(e.target) || 21, thermo: e.thermo === "on" ? "on" : "off", auto: e.auto === "off" ? "off" : "on", prio: Number(e.prio) || 5, from: (e.from || "").slice(0, 5), to: (e.to || "").slice(0, 5), more: !!(e.from || Number(e.prio) !== 5), ...this._ehFrostDraft(e) } };
     this._renderModal();
   }
   _ehMoveModal() {
@@ -7922,7 +8020,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "ehxpause") {
       const r = this._ehRooms().find((x) => x.id === id), e = this._ehOf(id); if (!r || !e) { this._ehLoad(); return true; }
       const pause = !this._ehPaused(r);
-      this._ehCall({ type: "fenster_heizung/heizer_update", hid: e.id, heater: { paused: pause } }, pause ? `„${e.name}“ pausiert` : `„${e.name}“ heizt wieder mit PV-Überschuss`).then(() => this._renderModal());
+      this._ehCall({ type: "fenster_heizung/heizer_update", hid: e.id, heater: { paused: pause } }, pause ? `„${e.name}“ pausiert` : `„${e.name}“ heizt wieder ${this._ehModeText(e.mode)}`).then(() => this._renderModal());
       return true;
     }
     if (!M || M.type !== "ehmove") return false;
@@ -8058,6 +8156,95 @@ class FensterHeizungPanel extends HTMLElement {
       }
     }
     return false;
+  }
+  /* ================= Modul 1 · Elektroheizer: Zusatzheizung bei Frost =================
+     Je Heizer „Wann soll er heizen?“ (PV-Überschuss, Frost, Beides). Frost heizt mit Netzstrom, wenn es draußen unter der
+     Frostgrenze und der Raum zu kalt ist; vor dem ersten Einschalten steht eine Sicherheitsabfrage. Für alle Heizer gelten
+     Netzleistung und Preisgrenze (Preis aus Modul 14, nur mit dynamischem Tarif). Die Regelung steht in heater.py/pvlogic.py. */
+  _frost() { return { ...FRDEF, ...((this._gen || {}).frost || {}) }; }
+  _ehModeText(m) { return m === "frost" ? "bei Frost" : m === "both" ? "bei PV-Überschuss und Frost" : "mit PV-Überschuss"; }
+  _ehFrostDraft(s = {}) {
+    const n = (k, d) => (s[k] === undefined || s[k] === null || s[k] === "" || !isFinite(Number(s[k])) ? d : Number(s[k]));
+    return { mode: s.mode === "frost" || s.mode === "both" ? s.mode : "pv", frost_out: n("frost_out", 0), frost_target: n("frost_target", 21), frost_wait: n("frost_wait", 20),
+      frost_from: String(s.frost_from || "06:00").slice(0, 5), frost_to: String(s.frost_to || "22:00").slice(0, 5), frost_run: n("frost_run", 60), frost_day: n("frost_day", 8), frost_stage: n("frost_stage", 1), frost_ok: s.frost_ok === "on" || s.frost_ok === true };
+  }
+  _ehFrostData(d) {
+    return { mode: d.mode, frost_out: d.frost_out, frost_target: d.frost_target, frost_wait: d.frost_wait, frost_from: d.frost_from, frost_to: d.frost_to, frost_run: d.frost_run, frost_day: d.frost_day, frost_stage: d.frost_stage, frost_ok: d.mode !== "pv" && d.frost_ok };
+  }
+  _ehFrostRows(d, room, W, row, step, tin) {
+    const stage = Math.max(1, Math.min(W.length, d.frost_stage)), watt = W[stage - 1] || 0, F = this._frost(), many = W.length > 1 && d.entity.startsWith("climate.");
+    const sensor = room && room.rtEid;
+    return `<div class="ehfr"><div class="lsec">❄ Zusatzheizung bei Frost</div>
+      ${sensor ? row("Raumsensor", "Pflicht. Ohne aktuelle Werte (2 Stunden) geht der Heizer aus.", `<span class="ehfrs">${ic("thermo", 15)}<b>${esc(this._wzName(room.rtEid))}</b></span>`) : `<div class="gbox">Für die Zusatzheizung braucht „${esc(room ? room.name : "der Raum")}“ einen Raumtemperatur-Sensor.${room ? `<button class="btn2" data-act="opt" data-id="${esc(room.id)}" style="width:100%;margin-top:8px">${ic("sliders", 15)} Raumeinstellungen öffnen</button>` : ""}</div>`}
+      ${row("Frostgrenze draußen", "Zugeheizt wird nur, wenn es draußen kälter ist. Ende erst 1 °C darüber.", step("frost_out", "°C", 0.5, -20, 10, 1))}
+      ${row("Zuheizen bis", "Start ab 0,5 °C darunter.", step("frost_target", "°C", 0.5, 10, 25, 1))}
+      ${row("Wartezeit", "So lange muss der Raum zu kalt sein. Der Heizkörper bekommt zuerst Zeit.", step("frost_wait", "Min.", 5, 0, 120))}
+      ${row("Uhrzeit ab", "Außerhalb bleibt der Heizer aus. Gleiche Zeiten = ganztägig.", tin("frost_from", "Frost erlaubt ab"))}${row("Uhrzeit bis", "", tin("frost_to", "Frost erlaubt bis"))}
+      ${row("Höchstens am Stück", "Danach 15 Min. Pause.", step("frost_run", "Min.", 15, 15, 180))}
+      ${row("Höchstens am Tag", "Danach bis Mitternacht aus.", step("frost_day", "Std.", 1, 1, 24))}
+      ${many ? row("Leistungsstufe bei Frost", `Stufe ${stage} · ${wfmt(watt)}`, step("frost_stage", "", 1, 1, W.length)) : ""}
+      ${watt > F.watt ? `<div class="gbox">${wfmt(watt)} liegen über der Netzleistung aller Heizer (${wfmt(F.watt)}). So heizt er bei Frost nicht. Ändern kannst du die Grenze in der Heizerliste.</div>` : `<div class="mut sm" style="margin:6px 0 0">Alle Frost-Heizer zusammen: höchstens ${wfmt(F.watt)}${F.price_on ? `, nur bis ${num(F.price, 1)} ct/kWh` : ""}. Einstellbar in der Heizerliste.</div>`}</div>`;
+  }
+  /* Sicherheitsabfrage vor dem ersten Einschalten */
+  _ehConfirmModal(M, room, watt) {
+    const items = ["Das Gerät hat Überhitzungs- und Kippschutz.", "Der Hersteller erlaubt den unbeaufsichtigten Betrieb.", `Die Steckdose ist für ${wfmt(watt)} ausgelegt, ohne Verlängerungskabel.`];
+    return `<div class="ov" data-act="ehxcfno"></div><div class="sheet" role="dialog" aria-modal="true" aria-label="Zusatzheizung einschalten">
+      <div class="sh"><div><b>Zusatzheizung einschalten?</b><span>${esc(M.d.name || "Elektroheizer")}${room ? " · " + esc(room.name) : ""}</span></div><button class="ibtn" data-act="ehxcfno" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="mut sm" style="margin:0 0 10px">Der Heizer läuft dann auch ohne Aufsicht und mit Netzstrom. Bitte bestätige:</div>
+      ${items.map((t, i) => `<button class="ehchk${M.confirm[i] ? " on" : ""}" data-act="ehxcfchk" data-i="${i}" role="checkbox" aria-checked="${!!M.confirm[i]}"><i>${M.confirm[i] ? ic("check", 16) : ""}</i><span>${t}</span></button>`).join("")}
+      <div class="gbox"><b>Empfohlen:</b> An der Steckdose ein automatisches Aus nach ${num(M.d.frost_run + 10)} Minuten einstellen. Das schützt, wenn Home Assistant ausfällt.</div>
+      ${M.err ? `<div class="gbox" style="margin-top:10px">${esc(M.err)}</div>` : ""}
+      <div class="foot2"><button class="btn2" data-act="ehxcfno">Abbrechen</button><button class="btn2 pri" data-act="ehxcfok" ${M.confirm.every(Boolean) && !M.busy ? "" : "disabled"}>Einschalten</button></div></div>`;
+  }
+  _ehFrostAct(a, b) {
+    const M = this._modal, d = M.d;
+    if (a === "ehxseg" && b.dataset.k === "mode") { if (b.dataset.v === "pv") d.frost_ok = false; return false; }
+    if (a === "ehxcfchk") { M.confirm[+b.dataset.i] = !M.confirm[+b.dataset.i]; }
+    else if (a === "ehxcfno") { M.confirm = null; }
+    else if (a === "ehxcfok") { if (!M.confirm || !M.confirm.every(Boolean)) return true; M.confirm = null; d.frost_ok = true; this._ehSave(); return true; }
+    else return false;
+    this._renderModal(); return true;
+  }
+  /* Heizerliste: Regeln für alle Heizer, sobald einer bei Frost heizt */
+  _ehFrostRules(rooms) {
+    const hs = rooms.filter((r) => htrFrost(r.htr)); if (!hs.length) return "";
+    const F = this._frost(), pv = this._pv(), live = (this._ehD && this._ehD.frost) || null, adm = this._admin();
+    const n = (f, k, l, u, h, v, lo, hi, st) => `<div class="of"><div class="ol"><b>${l}</b><span>${h}</span></div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="${f}" data-k="${k}" value="${v}" min="${lo}" max="${hi}" step="${st}" ${adm ? "" : "disabled"}><i>${u}</i></span></div></div>`;
+    const ct = live && live.ct != null ? Number(live.ct) : null, high = F.price_on && ct != null && ct > F.price;
+    const price = !F.price_on ? "" : !live ? `<div class="gst">${ic("info", 15)}Strompreis wird geladen …</div>` : !live.tarif ? `<div class="gbox">Die Preisgrenze braucht Modul 14 mit dynamischem Tarif (Tibber oder Preis-Sensor). Ohne Preise wird trotzdem geheizt.</div>` : ct == null ? `<div class="gbox">Gerade liefert Modul 14 keinen Preis. Es wird trotzdem geheizt.</div>` : `<div class="gst ${high ? "" : "on"}">${ic("bolt", 15)}Strom jetzt ${num(ct, 1)} ct/kWh: ${high ? "zu teuer, Frost-Heizer warten" : "Zuheizen erlaubt"}.</div>`;
+    const big = hs.filter((r) => { const w = stepsOf(r.htr)[0]; return w > F.watt; });
+    return `<div class="lsec">❄ Frost-Regeln für alle Heizer</div><div class="fhs open fhst"><div class="fhb">
+      ${n("gfr", "watt", "Netzleistung aller Heizer", "W", "Mehr ziehen alle Frost-Heizer zusammen nie. Die Priorität entscheidet. Andere Verbraucher zählen nicht mit.", F.watt, 100, 20000, 100)}
+      ${big.length ? `<div class="gbox">${esc(big.map((r) => this._ehName(r)).join(", "))}: mehr Leistung als die Grenze, heizt so nicht bei Frost.</div>` : ""}
+      <div class="of"><div class="ol"><b>Preisgrenze (Modul 14)</b><span>Teurer als die Grenze: Frost-Heizer warten.</span></div><div class="oc"><div class="seg oseg">${[["off", "Aus"], ["on", "An"]].map(([k, l]) => `<button class="${(F.price_on ? "on" : "off") === k ? "sel" : ""}" data-act="ehxfrp" data-k="${k}" ${adm ? "" : "disabled"}>${l}</button>`).join("")}</div></div></div>
+      ${F.price_on ? n("gfr", "price", "Heizen nur bis", "ct/kWh", "Gesamtpreis je kWh.", F.price, -20, 200, 0.5) : ""}${price}
+      ${n("gpvn", "minrun", "Mindestlaufzeit", "Min.", `Kürzer läuft ein Heizer nicht an einem Stück${pv.sensor ? " (PV und Frost)" : ""}. Störungen schalten sofort ab.`, pv.minrun, 0, 120, 5)}</div></div>`;
+  }
+  _htrLab(h) {
+    const f = h.frost || {}, base = (HTR[h.status] || HTR.aus)[0];
+    if (h.status === "frost_wartet" && f.rest_min) return `Wartet noch ${f.rest_min} Min. auf den Heizkörper`;
+    if (h.status === "frost_pause" && f.rest_min) return `Pause · noch ${f.rest_min} Min.`;
+    if (h.status === "frost_mild" && f.aussen != null) return `Aus: draußen ${num(f.aussen, 1)} °C`;
+    if (h.status === "frost_preis") return "Strom über der Preisgrenze";
+    if (h.status === "frost_abwesend") return "Aus: abwesend oder Urlaub";
+    if (h.status === "frost_heizaus") return "Aus: Sommermodus oder Heizung aus";
+    if (h.status === "frost_ok") return "Sicherheitsabfrage fehlt (Heizer bearbeiten)";
+    if (h.status === "zeit" && h.modus === "frost") return "Außerhalb der Uhrzeit";
+    return base;
+  }
+  _htrKeep(h) { const f = h.frost; return !!(htrFrost(h) && f && (h.status === "frost" || (f.aussen != null && f.aussen < f.grenze))); }
+  _htrFrostMeta(h, share) {
+    const f = h.frost || {}, kwh = Number(h.heute_kwh) || 0, net = Math.max(0, kwh - (Number(h.heute_pv_kwh) || 0)), cost = num(Number(h.heute_kosten) || 0, 2), both = h.modus === "both";
+    const meta = both ? [`${num(kwh, 1)} kWh heute${share != null ? ` · ${share} % PV` : ""}`, `${cost} € Netzstrom`, `PV bis ${num(h.ziel, 1)} °C · Frost bis ${num(f.ziel, 1)} °C`] : [`${num(net, 1)} kWh Netz heute`, `${cost} €`, `Ziel ${num(f.ziel, 1)} °C`];
+    const info = [f.aussen != null ? `Draußen ${num(f.aussen, 1)} °C` : "Draußen unbekannt", f.raum != null ? `Raum ${num(f.raum, 1)} °C` : "Raumsensor ohne Werte", `Frostgrenze ${num(f.grenze, 1)} °C`].join(" · ");
+    return `<div class="htrm">${meta.map((m) => `<span>${m}</span>`).join("")}</div><div class="htrn mut">${ic("thermo", 13)}${info}</div>`;
+  }
+  /* Modul 14: Hinweis auf die Preisgrenze der Frost-Heizer */
+  _ehTarifCard(S) {
+    const hs = this._htrRooms().filter((r) => htrFrost(r.htr)); if (!hs.length) return "";
+    const F = this._frost(), ct = S.now && S.now.ct != null ? Number(S.now.ct) : null, high = F.price_on && ct != null && ct > F.price;
+    return `<div class="card ehtf"><h2>❄ Frost-Heizer</h2><div class="mut sm">${F.price_on ? `Heizen bei Frost nur bis ${num(F.price, 1)} ct/kWh.${ct != null ? ` Jetzt ${num(ct, 1)} ct: <b>${high ? "zu teuer, sie warten" : "erlaubt"}</b>.` : ""}` : "Noch keine Preisgrenze: Bei Frost wird unabhängig vom Strompreis geheizt."}</div>
+      ${this._admin() ? `<button class="btn2" data-act="ehxlist" style="margin-top:10px">${ic("sliders", 16)} Preisgrenze einstellen</button>` : ""}</div>`;
   }
   _build() {
     const sr = this.shadowRoot;
@@ -8385,6 +8572,12 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "ohost" || a === "odel") { this._modal = null; this._renderModal(); this._nav(HA_PAGE); return; }
     else if (a === "osave") {
       if (m.busy) return;
+      const miss = [!d.window_sensors.length && "einen Fenstersensor", !d.thermostats.length && "ein Thermostat"].filter(Boolean);
+      if (miss.length) {   /* ohne beides lehnt das Backend ab: gleich hier zeigen, wo etwas fehlt */
+        m.miss = true; m.open.add("dev"); this._renderModal();
+        const x = this.shadowRoot.querySelector("#modal .omiss"); if (x) x.scrollIntoView({ block: "center" });
+        this._toast(`Bitte noch ${miss.join(" und ")} wählen`); return;
+      }
       m.busy = true; this._renderModal();
       try {
         await this._hass.callWS({ type: "fenster_heizung/set_options", entry_id: m.id, options: d });
@@ -8405,14 +8598,16 @@ class FensterHeizungPanel extends HTMLElement {
     const txt = (k, o = {}) => row(o.l, o.h, `<input class="otxt" data-f="oval" data-k="${k}" value="${esc(d[k])}">`);
     const time = (k, o) => row(o.l, o.h, `<span class="onum"><span class="tin">${this._tIn(d[k] || "", false, `Uhrzeit`)}<input type="hidden" data-f="oval" data-k="${k}" value="${d[k] || ""}"></span>${d[k] ? `<button class="oclr" data-act="oclr" data-k="${k}" aria-label="Zurücksetzen">${ic("close", 14)}</button>` : ""}</span>`);
     const seg = (k, opts) => `<div class="seg oseg">${opts.map(([v, l]) => `<button class="${d[k] === v ? "sel" : ""}" data-act="oset" data-k="${k}" data-v="${v}">${l}</button>`).join("")}</div>`;
-    const multi = (k, cand, l, h) => row(l, h, `<div class="ochips">${d[k].map((e) => `<span class="och">${fn(e)}<button data-act="orm" data-k="${k}" data-e="${esc(e)}" aria-label="Entfernen">${ic("close", 12)}</button></span>`).join("")}${this._wzSel(cand.filter((e) => !d[k].includes(e)), "", "oadd", `data-k="${k}"`, "＋ hinzufügen")}</div>`);
+    const need = (k, text) => (d[k].length ? "" : `<div class="omiss${m.miss ? " err" : ""}" role="alert">${ic("alert", 15)}<span>${text}</span></div>`);
+    const multi = (k, cand, l, h, warn = "") => row(l, h, `<div class="ochips">${d[k].map((e) => `<span class="och">${fn(e)}<button data-act="orm" data-k="${k}" data-e="${esc(e)}" aria-label="Entfernen">${ic("close", 12)}</button></span>`).join("")}${this._wzSel(cand.filter((e) => !d[k].includes(e)), "", "oadd", `data-k="${k}"`, "＋ hinzufügen")}</div>${warn}`);
     const one = (k, cand, l, h) => { const c = d[k] && !cand.includes(d[k]) ? [d[k], ...cand] : cand; return row(l, h, this._wzSel(c, d[k], "oval", `data-k="${k}"`, "– keine –")); };
     const FU = { erdgas: ["Erdgas", "m³", 10], heizoel: ["Heizöl", "l", 10], fluessiggas: ["Flüssiggas", "l", 6.6], pellets: ["Pellets", "kg", 4.8], strom: ["Wärmepumpe / Strom", "kWh", 1] }, fu = FU[d.fuel] || FU.erdgas;
     const sec = (id, ic2, title, sum, body) => `<section class="osec ${m.open.has(id) ? "open" : ""}"><button class="oh" data-act="osec" data-k="${id}" aria-expanded="${m.open.has(id)}"><span class="oi">${ic(ic2, 18)}</span><div><b>${title}</b><span>${sum}</span></div>${ic("chev", 18)}</button>${m.open.has(id) ? `<div class="ob">${body}</div>` : ""}</section>`;
     const A = d.action === "setback" ? `Absenken auf ${num0(d.setback_temp)} °C` : "Thermostat aus";
     return [
-      sec("dev", "window", "Fenster &amp; Thermostate", `${d.window_sensors.length} Fenster · ${d.thermostats.length} Thermostat${d.thermostats.length === 1 ? "" : "e"}`,
-        multi("window_sensors", ent("binary_sensor"), "Fenstersensoren") + multi("thermostats", ent("climate"), "Heizungsthermostate") + this._hsRoomNote(d.thermostats)),
+      sec("dev", "window", "Fenster &amp; Thermostate", `${d.window_sensors.length ? `${d.window_sensors.length} Fenster` : `<i class="oneed">Fenstersensor fehlt</i>`} · ${d.thermostats.length ? `${d.thermostats.length} Thermostat${d.thermostats.length === 1 ? "" : "e"}` : `<i class="oneed">Thermostat fehlt</i>`}`,
+        multi("window_sensors", ent("binary_sensor"), "Fenstersensoren", "", need("window_sensors", "Mindestens einen Fenstersensor wählen, sonst lässt sich der Raum nicht speichern.")) +
+        multi("thermostats", ent("climate"), "Heizungsthermostate", "", need("thermostats", "Mindestens ein Thermostat wählen, sonst lässt sich der Raum nicht speichern.")) + this._hsRoomNote(d.thermostats)),
       sec("ctl", "radiator", "Regelung", `${d.open_delay} s auf · ${d.close_delay} s zu · ${A}`,
         num("open_delay", "s", { l: "Verzögerung nach Öffnen", h: "So lange muss das Fenster offen sein, bevor die Heizung pausiert.", min: 0, max: 3600, step: 5 }) +
         num("close_delay", "s", { l: "Verzögerung nach Schließen", min: 0, max: 3600, step: 5 }) +
@@ -8870,7 +9065,7 @@ class FensterHeizungPanel extends HTMLElement {
     const r = this._collect().find((x) => x.id === m.id) || this._msList().find((x) => x.id === m.id) || { name: "" };
     if (m.type === "advent") { box.innerHTML = this._advModal(); return; }
     if (m.type === "tm2room") { box.innerHTML = this._tm2RoomModal(m); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; this._tm2Charts(); return; }
-    if (m.type === "tm2x") { box.innerHTML = m.k === "gs" ? this._tm2GsModal(m) : this._tm2EnModal(m); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (m.type === "tm2x") { box.innerHTML = m.k === "gs" ? this._tm2GsModal(m) : m.k === "ev" ? this._tm2EvModal() : m.k === "sp" ? this._tm2SpModal(m) : this._tm2EnModal(m); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "tm2ww" || m.type === "tm2prob") { box.innerHTML = this._tm2WwModal(m); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "sai") { box.innerHTML = this._saiModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "lfset") { box.innerHTML = this._lfSetModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -9643,7 +9838,7 @@ class FensterHeizungPanel extends HTMLElement {
   _wbOn(c) { c = c || this._wb(); const w = c.wbx || {}; return w.kind === "ha" ? !!((w.ent || {}).switch || (w.ent || {}).current) : !!c.ip; }
   _wbHa(c) { c = c || this._wb(); return (c.wbx || {}).kind === "ha"; }
   _wbName() { const s = this._wbSnap(), c = s.cfg, i = s.info || {}; return this._wbHa(c) ? (c.wbx.name || i.type || "Wallbox") : (i.name || i.type || "go-e Charger"); }
-  _wbVisible() { return !this._modal && ((this._igOpen && this._admin()) || (!this._stOpen && !this._ortOpen && this._mdActive() === "ev")); }
+  _wbVisible() { return !this._modal && ((this._igOpen && this._admin()) || (!this._stOpen && !this._ortOpen && this._mdActive() === "ev") || !!(this._tm2Shows && this._tm2Shows("ev"))); }
   _wbLoad(force) {
     if (!this._hass || this._wbBusy) return;
     if (!force && this._wbD && Date.now() - this._wbD.ts < 4000) return;
@@ -10140,7 +10335,7 @@ class FensterHeizungPanel extends HTMLElement {
     this._hass.callWS({ type: "fenster_heizung/wb_forecast" }).then((r) => { this._wbFcD = { data: r || {}, ts: Date.now() }; FH_CACHE.fc = this._wbFcD; this._wbFcFail = 0; })
       .catch(() => { fail = true; this._wbFcFail = (this._wbFcFail || 0) + 1; const had = this._wbFcD && this._wbFcD.data && !this._wbFcD.data.error;
         if (had) this._wbFcD = { ...this._wbFcD, ts: Date.now() - 57000 }; else if (this._wbFcFail >= 3) this._wbFcD = { data: { error: true }, ts: Date.now() - 50000 }; })
-      .finally(() => { this._wbFcBusy = false; if (fail && this._wbFcFail < 3) setTimeout(() => this._wbFcLoad(true), 1500); if (["plan", "laden"].includes(this._wbStT()) && this._wbVisible()) this._render(); });
+      .finally(() => { this._wbFcBusy = false; if (fail && this._wbFcFail < 3) setTimeout(() => this._wbFcLoad(true), 1500); if ((["plan", "laden"].includes(this._wbStT()) || this._tm2Shows("ev")) && this._wbVisible()) this._render(); });
   }
   _wbPlan(d, onlyRest) {
     this._wbFcLoad(); this._tbLoad();
@@ -10225,7 +10420,7 @@ class FensterHeizungPanel extends HTMLElement {
       .catch(() => { fail = true; this._wbStFail = (this._wbStFail || 0) + 1; const had = this._wbStD && this._wbStD.data && !this._wbStD.data.error;
         if (had) this._wbStD = { ...this._wbStD, ts: Date.now() - 27000 }; /* letzten Stand behalten, in 3 s neu versuchen */
         else if (this._wbStFail >= 3) this._wbStD = { data: { error: true }, ts: Date.now() - 20000 }; })
-      .finally(() => { this._wbStBusy = false; if (fail && this._wbStFail < 3) setTimeout(() => this._wbStatLoad(true), 1500); if (["stat", "laden"].includes(this._wbStT()) && this._wbVisible()) this._render(); });
+      .finally(() => { this._wbStBusy = false; if (fail && this._wbStFail < 3) setTimeout(() => this._wbStatLoad(true), 1500); if ((["stat", "laden"].includes(this._wbStT()) || this._tm2Shows("ev")) && this._wbVisible()) this._render(); });
   }
   _wbStS() { const n = new Date(); return this._wbStV || (this._wbStV = { per: "m", y: n.getFullYear(), m: n.getMonth(), what: "e", by: "src" }); }
   _wbStat() {
@@ -10919,7 +11114,7 @@ class FensterHeizungPanel extends HTMLElement {
   _evPageNew(d) {
     const wbOn = this._wbOn(), t = this._wbStT(), box = this._betaBox("Die Darstellung nutzt die Sensoren, die du in den Einstellungen wählst.");
     if (!wbOn) return `${box}${this._evSay(d)}${this._evBand(d)}${this._evTiles(d)}${this._wbCard(d)}`;
-    const back = this._tmOn && this._tmOn() && this._evWallFull ? `<button class="btn2 evwback" data-act="wbwall" data-k="">${ic("home", 18)}Zur Wandansicht</button>` : "";
+    const back = this._tmOn && this._tmOn() && !this._tm2On() && this._evWallFull ? `<button class="btn2 evwback" data-act="wbwall" data-k="">${ic("home", 18)}Zur Wandansicht</button>` : "";
     const head = `${back}${box}${this._evTabsNew()}${this._evSay(d)}`;
     if (t === "plan") return `${head}${this._evPlanNew(d)}`;
     if (t === "stat") return `${head}${this._evStatNew()}`;
@@ -12229,7 +12424,7 @@ class FensterHeizungPanel extends HTMLElement {
     this._hass.callWS({ type: "fenster_heizung/sp_get" }).then((r) => { this._spD = { d: r || {}, ts: Date.now() }; }).catch(() => { this._spD = { d: { error: true }, ts: Date.now() }; })
       .finally(() => { this._spBusy = false; if (this._spWantR) { this._spWantR = false; if (!this._spVisible() && !this._modal) this._render(); } if (this._spVisible()) { this._render(); if (this._modal && this._modal.type === "spset") this._renderModal(); } });
   }
-  _spVisible() { return !!(this._modal && this._modal.type === "spset") || (!!this._mdActive && this._mdActive() === "sp" && !this._stOpen); }
+  _spVisible() { return !!(this._modal && this._modal.type === "spset") || (!!this._mdActive && this._mdActive() === "sp" && !this._stOpen) || !!(this._tm2Shows && this._tm2Shows("sp")); }
   _sp() { const d = (this._spD && this._spD.d) || {}; return { ...d, cfg: { src: "forecast", fc_sensor: "", act: "", mode: "day", look: "new", corr: true, sites: [], since: "", ...(d.cfg || {}) } }; }
   _spSave(cfg) {
     if (!(this._spD && this._spD.d && this._spD.d.cfg)) { this._toast("Noch nicht geladen, bitte kurz warten und nochmal versuchen"); return; }
@@ -13958,7 +14153,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (this._tmSleep) { if (moved || newWarn) this._tmWake(); return; }
     if (newWarn && !this._modal) { this._tmView = "st"; this._tmLast = Date.now(); this._render(); return; }
     if (c.sleep && idle >= c.sleep * 60000) { this._tmSleep = true; this._modal = null; this._renderModal(); this._render(); return; }
-    if (c.idle_home && idle >= c.idle_home * 60000 && !this._tmHomed) { this._tmHomed = true; this._tm2Unl = 0; const paged = Object.values(this._tmPg || {}).some(Boolean) || Object.keys(this._tm2T || {}).length > 0; if (!this._modal) { this._tmPg = {}; this._tm2T = {}; } if ((this._tmV() !== "st" || paged) && !this._modal) { this._tmView = "st"; this._render(); } }
+    if (c.idle_home && idle >= c.idle_home * 60000 && !this._tmHomed) { this._tmHomed = true; this._tm2Unl = 0; const full = this._tm2On() && !!this._evWallFull && !this._modal; if (full) this._tm2FullOff(); const paged = full || Object.values(this._tmPg || {}).some(Boolean) || Object.keys(this._tm2T || {}).length > 0; if (!this._modal) { this._tmPg = {}; this._tm2T = {}; } if ((this._tmV() !== "st" || paged) && !this._modal) { this._tmView = "st"; this._render(); } }
   }
   _tmV() { return this._tmView || "st"; }
   _tmItems() {
@@ -14081,9 +14276,9 @@ class FensterHeizungPanel extends HTMLElement {
   _tmAct(a, b) {
     const k = b.dataset.k, m = this._modal;
     if (a.startsWith("tm2")) { this._tm2Act(a, b); return; }
-    if (a === "tmgo") { this._tmPg = {}; this._tm2T = {}; this._tmView = k; this._tmHomed = false; this._render(); }
-    else if (a === "tmbub") { const d = this._hzBubDef(k) || {}; if (d.mod && this._mdList().some((x) => x.id === d.mod)) { this._tmView = d.mod; this._render(); } }
-    else if (a === "tmgomore") { this._tmPg = {}; this._tm2T = {}; this._tmView = k; this._tmHomed = false; this._modal = null; this._renderModal(); this._render(); }
+    if (a === "tmgo") { this._tm2FullOff(); this._tmPg = {}; this._tm2T = {}; this._tmView = k; this._tmHomed = false; this._render(); }
+    else if (a === "tmbub") { const d = this._hzBubDef(k) || {}; if (d.mod && this._mdList().some((x) => x.id === d.mod)) { this._tm2FullOff(); this._tmView = d.mod; this._render(); } }
+    else if (a === "tmgomore") { this._tm2FullOff(); this._tmPg = {}; this._tm2T = {}; this._tmView = k; this._tmHomed = false; this._modal = null; this._renderModal(); this._render(); }
     else if (a === "tmmore") { if (this._tmPg) this._tmPg.more = 0; this._modal = { type: "tmmore" }; this._renderModal(); }
     else if (a === "tmlock") { this._tmPin = ""; this._tmPinThen = ""; this._tm2Back = null; const me = this._tmMe(); if (me.has_pin) this._tmPinOpen("unlock"); else this._tmPinOpen("new"); }
     else if (a === "tmopen") { this._modal = { type: "tmnorm" }; this._renderModal(); if (this._admin()) this._tmAdminList(); }
@@ -14241,7 +14436,7 @@ class FensterHeizungPanel extends HTMLElement {
       <header class="tmh tm2h">${land ? "" : `<img class="blogo" src="${LOGO_URL}" alt="" draggable="false">`}<div class="tmht"><b>${title}</b><span>${sub}</span></div>${land ? tabs : ""}
       <div class="tmclk"><span data-tmclk>${d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</span><small data-tmdate>${d.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}</small></div>${land ? "" : this._tm2Lock()}</header>
       ${land || !tabs ? "" : `<div class="tm2tr">${tabs}</div>`}
-      <div class="tmbody${fit ? " tm2fit" : ""}${mod ? ` tm2mod tm2-${v}` : ""}"${fit ? "" : ` style="zoom:${zoom}"`}>${mod ? this._tm2ModBody(v) : this._tmBody(v)}</div></div>${land ? "" : nav}</div>`;
+      <div class="tmbody${fit ? " tm2fit" : ""}${mod ? ` tm2mod tm2-${v}` : ""}"${fit ? "" : ` style="zoom:${zoom}"`}>${mod ? this._tm2ModBody(v) : `${v === "ev" && this._evWallFull ? `<button class="btn2 evwback" data-act="wbwall" data-k="">${ic("back", 18)}Zurück zur Tablet-Seite</button>` : ""}${this._tmBody(v)}`}</div></div>${land ? "" : nav}</div>`;
     const nb = sr.querySelector(".tmbody"); if (nb && keep && !fit) nb.scrollTop = keep;
     this._tm2Bind();
     if (mod) { this._tm2Charts(); if (this._modal && (this._modal.type === "tm2room" || this._modal.type === "tm2x")) this._renderModal(); }
@@ -14374,6 +14569,10 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "tm2x") { this._modal = { type: "tm2x", k, s: b.dataset.s || "", id: b.dataset.id || "" }; this._renderModal(); return true; }
     if (a === "tm2run") { if (this._modal && this._modal.type === "tm2x") { this._modal.run = +k; this._renderModal(); } return true; }
     if (a === "tm2rest") { this._tmSave({ rest: k }); return true; }
+    if (a === "tm2tfday") { this._tm2TfDay = k; this._tmHomed = false; this._render(); return true; }
+    if (a === "tm2spgs") { (this._tm2T = this._tm2T || {}).gs = "win"; this._tmView = "gs"; this._tmHomed = false; this._render(); return true; }
+    /* Modul 8: ganze Seite zum Bearbeiten (kommt über tm2g, also erst nach der PIN) */
+    if (a === "tm2evfull") { this._evWallFull = true; this._wbTab = k === "set" && this._evNew() ? "veh" : k; this._tmHomed = false; this._render(); return true; }
     if (a === "tm2prob") { this._modal = { type: "tm2prob" }; this._renderModal(); return true; }
     if (a === "tm2ww") { this._modal = { type: "tm2ww", kind: k }; this._renderModal(); return true; }
     /* Ändern erst nach der PIN: data-g ist die eigentliche Aktion */
@@ -14388,11 +14587,12 @@ class FensterHeizungPanel extends HTMLElement {
     return false;
   }
   /* ================= Tablet-Modus · Stufe 2: gemeinsames für Modulseiten ohne Scrollen =================
-     Reiter in der Kopfzeile, Inhalt füllt genau die Resthöhe. Modul 1 (hier), 2 (12d4), 3 (12d5), 4 (12d6) und 19 (12d7).
+     Reiter in der Kopfzeile, Inhalt füllt genau die Resthöhe. Modul 1 (hier), 2 (12d4), 3 (12d5), 4 (12d6), 19 (12d7), 8 (12d8) sowie 14 und 16 (12d9).
      Anzeigen geht immer. Einstellungen ändern fragt nach der PIN, wenn das Tablet eine hat (2 Minuten frei). */
   static TM2_TABS = { fh: [["rooms", "Räume"], ["stats", "Statistik"]], ww: [["now", "Jetzt"], ["times", "Zeiten"], ["hist", "Verlauf"]],
-    en: [["now", "Jetzt"], ["hist", "Verlauf"], ["cost", "Kosten"]], gs: [["dev", "Geräte"], ["win", "Startfenster"], ["stats", "Statistik"]], ef: [["now", "Jetzt"], ["strom", "Strom"]] };
-  _tm2Fit(v) { return v === "st" || (!!this.constructor.TM2_TABS[v] && this._mdList().some((m) => m.id === v)); }
+    en: [["now", "Jetzt"], ["hist", "Verlauf"], ["cost", "Kosten"]], gs: [["dev", "Geräte"], ["win", "Startfenster"], ["stats", "Statistik"]], ef: [["now", "Jetzt"], ["strom", "Strom"]],
+    ev: [["load", "Laden"], ["plan", "Planung"], ["stat", "Statistik"]], dt: [["price", "Preise"], ["dev", "Geräte"], ["check", "Tarif-Check"]], sp: [["now", "Prognose"], ["acc", "Treffsicherheit"], ["sites", "Anlagen"]] };
+  _tm2Fit(v) { if (v === "ev" && this._evWallFull) return false; return v === "st" || (!!this.constructor.TM2_TABS[v] && this._mdList().some((m) => m.id === v)); }
   _tm2Tab(v) { const T = this.constructor.TM2_TABS[v], cur = (this._tm2T || {})[v]; return T.some((t) => t[0] === cur) ? cur : T[0][0]; }
   _tm2Tabs(v) {
     if (!this._tm2Ready(v)) return "";
@@ -14405,9 +14605,12 @@ class FensterHeizungPanel extends HTMLElement {
     if (v === "ww") return this._wwConfigured();
     if (v === "en") return this._enConfigured();
     if (v === "gs") return !!this._gsState().devices.length;
+    if (v === "ev") return this._wbOn();
+    if (v === "dt") return this._tm2TfReady();
+    if (v === "sp") return this._tm2SpReady();
     return !!this._efxD && this._efxSp() && !!this._tm2EfNodes().length;
   }
-  _tm2ModBody(v) { return v === "fh" ? this._tm2Fh() : v === "ww" ? this._tm2Ww() : v === "en" ? this._tm2En() : v === "gs" ? this._tm2Gs() : this._tm2Ef(); }
+  _tm2ModBody(v) { return v === "fh" ? this._tm2Fh() : v === "ww" ? this._tm2Ww() : v === "en" ? this._tm2En() : v === "gs" ? this._tm2Gs() : v === "ev" ? this._tm2Ev() : v === "dt" ? this._tm2Dt() : v === "sp" ? this._tm2Sp() : this._tm2Ef(); }
   _tm2ModStatus(v) {
     if (v === "ww") return this._wwConfigured() ? this._wwStatus()[1] : "Noch nicht eingerichtet";
     if (v === "en") {
@@ -14420,6 +14623,17 @@ class FensterHeizungPanel extends HTMLElement {
       if (!this._gsState().devices.length) return "Noch keine Geräte";
       const l = this._tm2GsDevs(), run = l.filter((d) => d.running).length, done = l.filter((d) => this._gsMode(d) === "done").length;
       return !this._gsD ? "Wird geladen" : [run ? `${run} ${run === 1 ? "Gerät läuft" : "Geräte laufen"}` : "Kein Gerät läuft", done ? `${done} fertig` : ""].filter(Boolean).join(" · ");
+    }
+    if (v === "ev") { const d = this._evData(); return d.any ? esc(this._tm2EvLine(d, this._evNow(d))) : "Noch nicht eingerichtet"; }
+    if (v === "dt") {
+      const S = this._tf(); if (!this._tfD) return "Wird geladen";
+      if (S.error) return "Nicht geladen";
+      return !S.src ? "Noch keine Preise" : S.src === "fix" ? "Festpreis" : S.now.lv ? `Gerade ${this._tfName(S.now.lv).toLowerCase()}` : esc(S.src_name || "");
+    }
+    if (v === "sp") {
+      if (!this._spD) return "Wird geladen";
+      if (!this._tm2SpReady()) return "Noch keine Prognose";
+      const C = this._spCalc(); return C.night ? `Morgen ${this._spF(C.tmr)} kWh erwartet` : `Heute ${this._spF(C.base)} kWh erwartet`;
     }
     if (v === "ef") {
       if (!this._tm2Ready("ef")) return "Für Sponsoren";
@@ -14442,6 +14656,13 @@ class FensterHeizungPanel extends HTMLElement {
       } else if (kind === "en") this._tm2EnChart(box, w, h);
       else if (kind === "gs") this._tm2GsChart(box, w, h);
       else if (kind === "gsfc") box.innerHTML = this._tm2GsForecast(box.dataset.id, w, h);
+      else if (kind === "evsc") this._tm2EvDraw(box, w, h);
+      else if (kind === "evplan") this._tm2EvPlanChart(box, w, h);
+      else if (kind === "evst") this._tm2EvStatChart(box, w, h);
+      else if (kind === "dt") this._tm2DtChart(box, w, h);
+      else if (kind === "dtck") this._tm2DtCkChart(box, w, h);
+      else if (kind === "sp") this._tm2SpChart(box, w, h);
+      else if (kind === "spacc") this._tm2SpAccChart(box, w, h);
       else {
         const rooms = (kind === "fhroom" ? this._collect().filter((r) => r.id === box.dataset.id) : [...this._collect()].sort((a, b) => a.ci - b.ci));
         box.innerHTML = this._chart(rooms, { w, h });
@@ -14490,7 +14711,7 @@ class FensterHeizungPanel extends HTMLElement {
   _tm2RoomTile(r) {
     const s = this._rkState(r), g = this._tm2Tgt(r), off = r.mode === "regelung_aus", id = esc(r.id);
     const facts = [s.cur != null ? `Ist ${num(s.cur, 1)} °C` : "", s.hum != null ? `${num(s.hum)} % Feuchte` : ""].filter(Boolean).join(" · ") || "Kein Messwert";
-    const badge = `${s.htr && s.htr.status === "pv" ? `<i class="b" title="Elektroheizer läuft">${ic("bolt", 14)}</i>` : ""}${s.lfs.length ? `<i class="b" title="Entfeuchter steht hier">${ic("fan", 14)}</i>` : ""}`;
+    const badge = `${htrOn(s.htr) ? `<i class="b" title="Elektroheizer läuft">${ic("bolt", 14)}</i>` : ""}${s.lfs.length ? `<i class="b" title="Entfeuchter steht hier">${ic("fan", 14)}</i>` : ""}`;
     return `<div class="tm2room k-${s.k}" style="--c:${s.col}"><button class="tm2ri" data-act="tm2room" data-id="${id}" aria-label="${esc(r.name)} öffnen">
       <span class="tm2rn"><span class="hti">${ic(s.anyOpen ? "windowOpen" : this._icon(r), 24)}</span><span><b>${esc(r.name)}</b><small>${esc(s.lab)}</small></span>${badge}</span>
       <span class="tm2rv">${g.t != null && !off ? num(g.t, 1) : "–"}<small>°C</small></span><span class="tm2rf">${facts}</span></button>${this._tm2PM(r, g)}</div>`;
@@ -14514,7 +14735,7 @@ class FensterHeizungPanel extends HTMLElement {
     const H = window.innerHeight, per = this._tm2Land() ? (H >= 1000 ? 9 : H >= 760 ? 6 : H >= 640 ? 5 : 3) : H >= 1150 ? 5 : H >= 880 ? 3 : 2;
     const list = [...rooms].sort((a, b) => (b.sc.day?.min || 0) - (a.sc.day?.min || 0)), p = this._tm2Page("fhstat", list.length, per);
     const hs = this._htrRooms(), kwh = hs.reduce((a, r) => a + (Number(r.htr.heute_kwh) || 0), 0), pvk = hs.reduce((a, r) => a + (Number(r.htr.heute_pv_kwh) || 0), 0);
-    const htr = hs.length ? `<div class="tm2htr">${ic("bolt", 22)}<span><b>PV-Heizer heute: ${num(kwh, 1)} kWh</b><small>${kwh > 0 ? Math.round((pvk / kwh) * 100) : 0} % aus Überschuss · jetzt ${wfmt(this._htrTotal())}</small></span></div>` : "";
+    const htr = hs.length ? `<div class="tm2htr">${ic("bolt", 22)}<span><b>${hs.some((r) => htrFrost(r.htr)) ? "Elektroheizer" : "PV-Heizer"} heute: ${num(kwh, 1)} kWh</b><small>${hs.every((r) => r.htr.modus === "frost") ? `Netzstrom ${num(hs.reduce((a, r) => a + (Number(r.htr.heute_kosten) || 0), 0), 2)} €` : `${kwh > 0 ? Math.round((pvk / kwh) * 100) : 0} % aus Überschuss`} · jetzt ${wfmt(this._htrTotal())}</small></span></div>` : "";
     const row = (r) => `<button class="tm2sr" data-act="rep" data-id="${esc(r.id)}" aria-label="Bericht ${esc(r.name)}"><i style="background:${r.color}"></i><span><b>${esc(r.name)}</b><small>${num(r.sc.day?.min || 0)} Min. · ${r.pauses || 0}× · ${num(r.sc.day?.gas || 0, 2)} ${unitOf(FUELS[r.fuel || "erdgas"])}</small></span>${ic("chev", 18)}</button>`;
     return `${this._tm2Sums(rooms)}<div class="tm2stat"><div class="card tm2cc"><h2>${ic("clock", 18)}Pausenzeit pro Tag · 14 Tage</h2><div class="tm2ch" data-tm2ch="fh"></div></div>
       <section class="card tm2sl" data-sw="fhstat" style="--n:${per}"><h2>${ic("chart", 18)}Heute je Raum</h2><div class="tm2srs">${list.slice(p.from, p.to).map(row).join("")}</div>${this._tm2Pager("fhstat", p, "")}${htr}</section></div>`;
@@ -14953,6 +15174,410 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="tm2rwn hub"><svg viewBox="-60 -60 120 120" aria-hidden="true">${this._efxRingSvg(mix, 52, 8)}${this._gx("house", 60, { on: true }).replace("<svg ", '<svg x="-30" y="-32" ')}</svg><small>${esc(c.hub.name || "Haus")}</small><b>${this._efxFmtW(hubW)}</b><em>${esc(this._efxMixTxt(mix))}</em></div>
       ${tile("bat", "battery", { lvl: soc == null ? 60 : soc }, `Akku${soc != null ? ` ${Math.round(soc)} %` : ""}`, bat, bat && bat.w > 5 ? "lädt" : bat && bat.w < -5 ? "entlädt" : "ruht", "#a78bfa")}
       ${tile("net", "grid", {}, "Netz", net, net && net.w > 5 ? "Einspeisung" : net && net.w < -5 ? "Bezug" : "ruht", net && net.w > 5 ? "#34d399" : "#f87171")}</div>`;
+  }
+  /* ================= Tablet-Modus · Stufe 4: Modul 8 E-Auto ohne Scrollen =================
+     Reiter Laden (Carport, Überschuss, Modus, Schnellstart), Planung (Plan für 24 Stunden und vier Werte) und Statistik.
+     Laden und Schnellstart gehen wie bisher ohne PIN. Fahrzeuge, Wallbox und Ladungen öffnen nach der PIN die ganze Seite. */
+  _tm2Shows(id) { return !!(this._tmOn && this._tmOn() && this._tm2On() && !this._tmSleep && this._tmV() === id); }
+  /* Ganze Modulseite (mit Scrollen) wieder schließen, sobald man das Modul verlässt – danach gilt wieder die PIN */
+  _tm2FullOff() { if (this._tm2On()) this._evWallFull = false; }
+  _tm2EvLine(d, N) {
+    if (!N.wbOn) return d.charging ? `Lädt${d.power != null ? ` mit ${num(d.power / 1000, 1)} kW` : ""}` : d.plugged ? "Angesteckt" : d.range != null ? `Reichweite ${num(d.range, 0)} km` : "Nicht angesteckt";
+    if (!N.sn.ok) return this._wbD ? "Wallbox nicht erreichbar" : "Wird geladen";
+    if (d.charging) return `Lädt${N.sun != null ? (N.sun >= 50 ? " mit Sonne" : " mit Netzstrom") : ""}${d.power != null ? ` · ${num(d.power / 1000, 1)} kW` : ""}${N.doneT ? ` · fertig ca. ${N.doneT}` : ""}`;
+    if (d.plugged) return N.soc != null && N.soc >= N.goal ? "Angesteckt · Ziel erreicht" : `Angesteckt · ${!N.c.enabled ? "Regelung aus" : N.w.state === "wartet" ? "wartet auf Sonne" : N.w.state === "plan_wartet" ? "wartet auf das Ladefenster" : "lädt gerade nicht"}`;
+    const away = this._evAway(d.veh);
+    return away && !away.home ? `Unterwegs mit ${away.name}${away.zone ? ` · ${away.zone}` : ""}` : "Nicht angesteckt";
+  }
+  _tm2Ev() {
+    const d = this._evData();
+    if (!d.any) return this._tm2None("car", "Noch kein Fahrzeug eingerichtet.", "Fahrzeug und Wallbox richtest du in der normalen Ansicht ein.");
+    if (!this._wbOn()) return this._tm2EvPlain(d);
+    this._wbLoad();
+    const t = this._tm2Tab("ev");
+    return t === "plan" ? this._tm2EvPlan(d) : t === "stat" ? this._tm2EvStat() : this._tm2EvCharge(d);
+  }
+  /* Carport mit Ladestand unten links. Die Zeichnung entsteht erst, wenn die Größe ihres Platzes feststeht (_tm2Charts) */
+  _tm2EvScene(d, N, over = "") {
+    const soc = N.soc != null ? `${d.est ? "≈ " : ""}${num(N.soc, 0)} %` : "";
+    const name = d.veh ? d.veh.name : this._evTitle(d.veh);
+    const sub = !N.wbOn || d.charging ? this._tm2EvLine(d, N) : [d.plugged ? "Angesteckt" : this._tm2EvLine(d, N), N.c.enabled ? `Modus ${N.modeN}` : "Regelung aus"].join(" · ");
+    return `<div class="tm2evsc${N.night ? " nt" : ""}"><div class="tm2ch tm2evpic" data-tm2ch="evsc"></div>
+      <div class="tm2evbadge"><b>${soc || esc(name)}</b><small>${esc(sub)}</small>${soc ? `<small class="d">${esc(name)}${d.range != null ? ` · ${num(d.range, 0)} km` : ""}</small>` : ""}</div>${over}</div>`;
+  }
+  _tm2EvDraw(box, w, h) {
+    const d = this._evData(), N = this._evNow(d);
+    let W = Math.round(290 * w / h), H = 290, s = 0.94;
+    if (W < 760) { W = 760; H = Math.round(760 * h / w); s = 1; }
+    if (H === 290) s = Math.min(s, (W - 150) / 710);   /* Wandkasten bleibt rechts neben dem Ladestand, das Auto ganz im Bild */
+    const sx = H > 290 ? 25 : Math.min(Math.round(W - 710 * s - 5), Math.max(250, Math.round((W - 710 * s) / 2)));
+    box.innerHTML = this._evCarport(d, N, W, H, { sfx: "t2", sx, s }).replace('class="evsc"', 'class="evsc tm2evsvg"');
+  }
+  _tm2EvWarn(d, N) {
+    const sn = N.sn, H = this._wbHints ? this._wbHints() : [];
+    if (!sn.ok) return this._wbD ? "Wallbox nicht erreichbar. Prüfe Strom und WLAN der Wallbox." : "";
+    if (sn.dimmed) return `§ 14a: Der Netzbetreiber dimmt gerade auf ${num((N.c.dim || {}).kw || 4.2, 1)} kW.`;
+    if (sn.stale) return "Der Netz-Sensor meldet seit Minuten keinen neuen Wert.";
+    return H.length ? String(H[0][0]).replace(/<[^>]*>/g, "") : "";
+  }
+  _tm2EvSur(d, N) {
+    const sn = N.sn, w = sn.want || {}, e = sn.eff || sn.cfg || {}, adm = this._admin(), c = N.c;
+    if (!c.enabled) return `<div class="card tm2sur"><div class="tm2sh"><span>${ic("sun", 18)}PV-Überschuss</span>${adm ? `<button class="tm2mini" data-act="tm2g" data-g="wbsw" data-k="wbon">${ic("lock", 16)}Laderegelung einschalten</button>` : ""}</div><small class="mut">Die Laderegelung ist aus. Die Wallbox lädt nach ihren eigenen Einstellungen.</small></div>`;
+    if (w.surplus_w == null) return `<div class="card tm2sur"><div class="tm2sh"><span>${ic("sun", 18)}PV-Überschuss</span></div><small class="mut">Kein Wert. Dafür braucht es den Netz-Sensor (Modul 3).</small></div>`;
+    const minA = e.minA || 6, maxA = e.maxA || 16, ph = String(e.ph || "auto"), V = 230, startW = e.startW || 1400;
+    const start = ph !== "3" ? Math.max(startW, minA * V) : Math.max(startW, minA * V * 3), full = maxA * V * (ph !== "1" ? 3 : 1);
+    const sp = Math.max(0, w.surplus_w), ch = d.charging && d.power != null ? Math.max(0, d.power) : 0, grid = Math.max(0, ch - sp);
+    const top = Math.min(full, Math.max(start * 2, sp * 1.15, ch * 1.1)), pc = (x) => Math.max(0, Math.min(100, x / top * 100)), kw = (x) => num(x / 1000, x % 1000 === 0 ? 1 : 2);
+    const t = w.timer, mm = (s) => (s >= 60 ? `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")} Min.` : `${s} s`);
+    const txt = t && t.left > 0 ? (t.k === "start" ? `startet in ca. ${mm(t.left)}` : `stoppt in ca. ${mm(t.left)}`)
+      : ch > 0 ? `lädt mit ${kw(ch)} kW${grid > 50 ? ` · davon ${kw(grid)} kW aus dem Netz` : ""}` : sp < start ? `es fehlen ${kw(start - sp)} kW` : "reicht für den Start";
+    return `<div class="card tm2sur"><div class="tm2sh"><span>${ic("sun", 18)}PV-Überschuss</span><em>jetzt ${kw(sp)} kW – ${txt}</em></div>
+      <div class="tm2surb" role="img" aria-label="Überschuss ${kw(sp)} kW, Start ab ${kw(start)} kW"><i class="s" style="width:${pc(Math.min(sp, top))}%"></i>${grid > 50 ? `<i class="g" style="left:${pc(sp)}%;width:${Math.max(0, pc(ch) - pc(sp))}%"></i>` : ""}<span style="left:${pc(start)}%"></span></div>
+      <div class="tm2surx"><span>0</span><span style="left:${pc(start)}%" class="m">Start ab ${kw(start)} kW</span><span>${kw(top)} kW</span></div></div>`;
+  }
+  _tm2EvCharge(d) {
+    const N = this._evNow(d), c = N.c, sn = N.sn, adm = this._admin(), q = sn.quick && sn.quick.k;
+    const M = [["off", "Aus", "plug"], ["pv", "Sonne", "sun"], ["minpv", "Sonne + Netz", "grid"], ["now", "Voll", "bolt"]];
+    const Q = [["h1", "1 Stunde voll", "bolt"], ["goal", "Bis zum Ziel", "battery"], ["sun", "Heute nur Sonne", "sun"]];
+    const can = adm && c.enabled && !c.planOn, vs = c.vehicles || [], warn = this._tm2EvWarn(d, N), price = this._evPriceChip();
+    const who = vs.length > 1 || sn.who_set ? `<button class="tm2mini" data-act="tm2x" data-k="ev" data-id="who">${ic("car", 16)}${esc(sn.who_set === "guest" ? "Gastfahrzeug" : sn.who && sn.who.kind === "guest" ? "Gast lädt" : d.veh ? d.veh.name : "Wer lädt?")}</button>` : "";
+    const over = `${warn ? `<div class="tm2evw">${ic("alert", 18)}<span>${esc(warn)}</span></div>` : ""}<div class="tm2evtr">${price}${who}${adm ? `<button class="tm2mini" data-act="tm2g" data-g="tm2evfull" data-k="set" aria-label="Fahrzeuge und Wallbox">${ic("lock", 16)}Fahrzeuge &amp; Wallbox</button>` : ""}</div>`;
+    const modes = `<div class="tm2evm">${M.map(([k, t, g]) => `<button class="${N.mode === k ? "sel" : ""}" data-act="wbmode" data-k="${k}" aria-pressed="${N.mode === k}" ${can ? "" : "disabled"}>${this._gx(g, 40, { on: N.mode === k ? 1 : 0 })}<b>${t}</b></button>`).join("")}</div>`;
+    const min = sn.quick && sn.quick.until ? Math.max(1, Math.ceil((sn.quick.until * 1000 - Date.now()) / 6e4)) : 0;
+    const quick = q ? `<div class="tm2evq on">${this._gx("bolt", 30, { on: 1 })}<span><b>Schnellstart läuft: ${esc((Q.find((x) => x[0] === q) || ["", ""])[1])}</b><small>${q === "h1" ? `noch ${min} Minuten` : q === "goal" ? "bis zum Ladelimit oder zum Abstecken" : "bis Mitternacht, nur mit Überschuss"}</small></span><button class="stop" data-act="wbxq" data-k="" ${adm ? "" : "disabled"}>Stopp</button></div>`
+      : `<div class="tm2evq">${Q.map(([k, t, g]) => `<button data-act="wbxq" data-k="${k}" ${adm && c.enabled ? "" : "disabled"}>${this._gx(g, 28)}<b>${t}</b></button>`).join("")}</div>`;
+    const why = c.planOn ? "Die Planung steuert gerade die Wallbox" : "";
+    return `${this._tm2EvScene(d, N, over)}${this._tm2EvSur(d, N)}
+      <div class="tm2lbl">Wie soll geladen werden?${why ? `<em>${why}</em>` : ""}</div>${modes}
+      <div class="tm2lbl">Schnellstart</div>${quick}`;
+  }
+  /* Ohne Wallbox: Carport und vier Werte des Fahrzeugs */
+  _tm2EvPlain(d) {
+    const N = this._evNow(d);
+    const tiles = [
+      this._tm2Tile4("Ladestand", N.soc != null ? num(N.soc, 0) : "–", N.soc != null ? "%" : "", N.soc != null ? (d.est ? "geschätzt" : "laut Fahrzeug") : "kein Sensor", "#34d399"),
+      this._tm2Tile4("Reichweite", d.range != null ? num(d.range, 0) : "–", d.range != null ? "km" : "", d.range != null ? "laut Fahrzeug" : "kein Sensor", "#60a5fa"),
+      this._tm2Tile4("Kilometerstand", d.odo != null ? num(d.odo, 0) : "–", d.odo != null ? "km" : "", d.odo != null ? "gesamt" : "kein Sensor", "#a78bfa"),
+      this._tm2Tile4("Ladeleistung", d.power != null ? num(d.power / 1000, 1) : "–", d.power != null ? "kW" : "", esc(this._tm2EvLine(d, N)), "#fbbf24")].join("");
+    return `${this._tm2EvScene(d, N)}<div class="tm2sums">${tiles}</div>`;
+  }
+  /* ---------- Planung ---------- */
+  _tm2EvHours() {
+    const F = (this._wbFcD && this._wbFcD.data) || {}, H = F.hours || [], PL = F.plan || {}, SL = (F.slot_min || 60) / 60, sel = PL.sel || {};
+    const h0 = new Date(); h0.setMinutes(0, 0, 0);
+    const bins = Array.from({ length: 24 }, (_, i) => ({ t: new Date(h0.getTime() + i * 36e5), sun: 0, net: 0 }));
+    H.forEach((x, i) => {
+      const e = Number(sel[i]) || 0; if (!e) return;
+      const k = Math.floor((new Date(x.t).getTime() - h0.getTime()) / 36e5); if (k < 0 || k > 23) return;
+      const kw = e / SL, share = kw > 0 ? Math.max(0, Math.min(1, (x.pv || 0) / kw)) : 0;
+      bins[k].sun += e * share; bins[k].net += e * (1 - share);
+    });
+    return bins;
+  }
+  _tm2EvPlanChart(box, w, h) {
+    const bins = this._tm2EvHours(), PL = ((this._wbFcD && this._wbFcD.data) || {}).plan || {};
+    const mx = Math.max(1, ...bins.map((b) => b.sun + b.net)) * 1.15, step = enStep(mx), top = Math.ceil(mx / step) * step;
+    const x0 = 40, x1 = w - 6, y0 = 22, y1 = h - 22, bw = (x1 - x0) / 24, bar = Math.max(4, Math.min(30, bw * 0.66)), Y = (v) => y1 - v / top * (y1 - y0);
+    let g = `<text x="${x0 - 8}" y="12" class="tm2ax" text-anchor="end">kWh</text>`;
+    for (let v = 0; v <= top + 1e-9; v += step) g += `<line x1="${x0}" x2="${x1}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" class="tm2gl"/><text x="${x0 - 8}" y="${(Y(v) + 4).toFixed(1)}" class="tm2ax" text-anchor="end">${num(v, step < 1 ? 1 : 0)}</text>`;
+    const every = bw < 24 ? 6 : 3;
+    const bars = bins.map((b, i) => {
+      const x = x0 + i * bw + (bw - bar) / 2, tot = b.sun + b.net, hr = b.t.getHours();
+      const r = (from, to, col) => (to - from > 0.01 ? `<rect x="${x.toFixed(1)}" y="${Y(to).toFixed(1)}" width="${bar.toFixed(1)}" height="${Math.max(2, Y(from) - Y(to)).toFixed(1)}" rx="4" fill="${col}"><title>${hr} Uhr · ${num(tot, 1)} kWh</title></rect>` : "");
+      return r(0, b.sun, "#fbbf24") + r(b.sun, tot, "#2dd4bf") + (hr % every === 0 ? `<text x="${(x0 + i * bw + bw / 2).toFixed(1)}" y="${h - 5}" class="tm2ax" text-anchor="middle">${String(hr).padStart(2, "0")}</text>` : "");
+    }).join("");
+    const dl = PL.deadline ? new Date(PL.deadline) : null, k = dl ? (dl.getTime() - bins[0].t.getTime()) / 36e5 : -1, dx = k > 0 && k < 24 ? x0 + k * bw : null;
+    const dep = dx != null ? `<line x1="${dx.toFixed(1)}" x2="${dx.toFixed(1)}" y1="${y0 - 6}" y2="${y1}" class="tm2dl"/><text x="${(dx + (dx > w - 120 ? -6 : 6)).toFixed(1)}" y="${y0 + 6}" class="tm2ax b" text-anchor="${dx > w - 120 ? "end" : "start"}">Abfahrt ${dl.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</text>` : "";
+    box.innerHTML = `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="Geplante Ladung je Stunde, Sonne und günstiges Netz">${g}${bars}${dep}</svg>`;
+  }
+  _tm2EvPlan(d) {
+    this._wbFcLoad();
+    const F = this._wbFcD && this._wbFcD.data, c = this._wb(), adm = this._admin();
+    if (!F) return this._tm2None("clock", "Vorhersage wird geladen …");
+    const PL = F.plan || { ok: false }, H = F.hours || [];
+    if (F.error || !H.length) return this._tm2None("sun", "Keine Vorhersage verfügbar.", "Für den Plan braucht es Stundenpreise und eine PV-Prognose.");
+    const edit = adm ? `<button class="tm2mini" data-act="tm2g" data-g="tm2evfull" data-k="plan">${ic("lock", 16)}Planung ändern</button>` : "";
+    const strat = { mix: "Sonne zuerst, dann günstig", sun: "nur Sonne", price: "günstigste Stunden" }[PL.strat || c.planStrat || "mix"] || "";
+    if (!PL.ok) return `<div class="card tm2cc tm2evpl"><div class="tm2sh"><span>${ic("plan", 18)}Ladeplan</span>${edit}</div><div class="tm2none">${ic("car", 40)}<div>${PL.why === "soc" ? `Für einen Plan fehlt der Ladestand${PL.veh ? ` von ${esc(PL.veh)}` : ""}.` : "Der Plan wird berechnet …"}</div></div></div>`;
+    const sh = PL.plan.kwh > 0 ? PL.plan.pv / PL.plan.kwh * 100 : 0, none = PL.need <= 0.05;
+    const note = PL.day_ok === false ? "An diesem Tag gilt keine Abfahrt" : c.planOn ? "Planung steuert die Wallbox" : PL.cal ? "Planung steuert für den Termin" : "Plan wird nur angezeigt";
+    const tiles = [
+      this._tm2Tile4("Bis zum Ziel", num(PL.plan.kwh, 1), "kWh", none ? "Ziel schon erreicht" : PL.left > 0.05 ? `${num(PL.left, 1)} kWh fehlen im Plan` : `von ${num(PL.soc, 0)} auf ${PL.target} %`, "#34d399"),
+      this._tm2Tile4("Abfahrt", esc(PL.until || c.planTime || "–"), "", PL.cal ? "aus dem Kalender" : PL.own ? `${esc(PL.veh)}` : "eingestellt", "#60a5fa"),
+      this._tm2Tile4("Davon Sonne", num(PL.plan.pv, 1), "kWh", `${num(sh, 0)} %`, "#fbbf24"),
+      this._tm2Tile4("Kosten", `ca. ${num(PL.plan.cost, 2)} €`, "", strat, "#f87171")].join("");
+    return `<div class="card tm2cc tm2evpl"><div class="tm2sh"><span>${ic("plan", 18)}Plan für die nächsten 24 Stunden</span><span class="tm2shr"><span class="tm2legend"><i style="background:#fbbf24"></i>Sonne <i style="background:#2dd4bf"></i>günstiges Netz</span>${edit}</span></div>
+      <small class="tm2note">${esc(note)}${PL.veh ? ` · ${esc(PL.veh)}` : ""}</small><div class="tm2ch" data-tm2ch="evplan"></div></div><div class="tm2sums">${tiles}</div>`;
+  }
+  /* ---------- Statistik ---------- */
+  _tm2EvSlots(D, S, R) {
+    const days = D.days || [], MON = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"], out = [];
+    if (S.per === "y") for (let m = 0; m < 12; m++) { const a = new Date(R.d0.getFullYear(), m, 1), x = this._evAgg(days, a, new Date(R.d0.getFullYear(), m + 1, 1)); out.push({ l: MON[m], pv: x.pv, grid: x.grid, go: a, per: "m" }); }
+    else if (S.per === "d") (D.sessions || []).filter((x) => { const t = new Date(x.start); return t >= R.d0 && t < R.d1; }).reverse().forEach((x) => out.push({ l: new Date(x.start).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }), pv: x.pv, grid: x.kwh - x.pv }));
+    else for (let t = new Date(R.d0); t < R.d1; t = new Date(t.getFullYear(), t.getMonth(), t.getDate() + 1)) { const x = this._evAgg(days, t, new Date(t.getFullYear(), t.getMonth(), t.getDate() + 1)); out.push({ l: S.per === "w" ? ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"][t.getDay()] : String(t.getDate()), pv: x.pv, grid: x.grid, go: new Date(t), per: "d" }); }
+    return out;
+  }
+  _tm2EvStatChart(box, w, h) {
+    const D = (this._wbStD && this._wbStD.data) || {}, S = this._evSt(), R = this._evRange(S.per, S.at), slots = this._tm2EvSlots(D, S, R);
+    if (!slots.some((s) => s.pv + s.grid > 0.05)) { box.innerHTML = `<div class="tm2none">${ic("car", 40)}<div>In diesem Zeitraum wurde nicht geladen.</div></div>`; return; }
+    const mx = Math.max(1, ...slots.map((s) => s.pv + s.grid)) * 1.1, step = enStep(mx), top = Math.ceil(mx / step) * step;
+    const x0 = 40, x1 = w - 6, y0 = 18, y1 = h - 22, bw = (x1 - x0) / slots.length, bar = Math.max(4, Math.min(46, bw * 0.66)), Y = (v) => y1 - v / top * (y1 - y0);
+    let g = `<text x="${x0 - 8}" y="11" class="tm2ax" text-anchor="end">kWh</text>`;
+    for (let v = 0; v <= top + 1e-9; v += step) g += `<line x1="${x0}" x2="${x1}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" class="tm2gl"/><text x="${x0 - 8}" y="${(Y(v) + 4).toFixed(1)}" class="tm2ax" text-anchor="end">${num(v, step < 1 ? 1 : 0)}</text>`;
+    const every = Math.max(1, Math.ceil(26 / bw));
+    const bars = slots.map((s, i) => {
+      const x = x0 + i * bw + (bw - bar) / 2, tot = s.pv + s.grid;
+      const r = (from, to, col) => (to - from > 0.01 ? `<rect x="${x.toFixed(1)}" y="${Y(to).toFixed(1)}" width="${bar.toFixed(1)}" height="${Math.max(2, Y(from) - Y(to)).toFixed(1)}" rx="4" fill="${col}"/>` : "");
+      return `<g ${s.go ? `data-act="wbvgo" data-k="${s.go.getTime()}" data-p="${s.per}" style="cursor:pointer"` : ""}><title>${esc(s.l)}: ${num(tot, 1)} kWh</title><rect x="${(x0 + i * bw).toFixed(1)}" y="${y0}" width="${bw.toFixed(1)}" height="${y1 - y0}" fill="transparent"/>${r(0, s.pv, "#2dd4bf")}${r(s.pv, tot, "#f59e0b")}${i % every === 0 ? `<text x="${(x + bar / 2).toFixed(1)}" y="${h - 5}" class="tm2ax" text-anchor="middle">${esc(s.l)}</text>` : ""}</g>`;
+    }).join("");
+    box.innerHTML = `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="Geladene Energie, Sonne und Netz">${g}${bars}</svg>`;
+  }
+  _tm2EvStat() {
+    this._wbStatLoad();
+    const D = this._wbStD && this._wbStD.data, adm = this._admin();
+    if (!D || D.error) return this._tm2None("chart", D ? "Die Statistik konnte gerade nicht geladen werden." : "Statistik wird geladen …");
+    const S = this._evSt(), R = this._evRange(S.per, S.at), days = D.days || [], T = this._evAgg(days, R.d0, R.d1), run = R.d1 > new Date();
+    const MONL = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"], fd = (t) => t.toLocaleDateString("de-DE", { day: "numeric", month: "short" });
+    const title = S.per === "d" ? R.d0.toLocaleDateString("de-DE", { weekday: "short", day: "numeric", month: "long" }) : S.per === "w" ? `${fd(R.d0)} – ${fd(new Date(R.d1 - 864e5))}` : S.per === "m" ? `${MONL[R.d0.getMonth()]} ${R.d0.getFullYear()}` : String(R.d0.getFullYear());
+    const ses = (D.sessions || []).filter((x) => { const t = new Date(x.start); return t >= R.d0 && t < R.d1; });
+    const sh = T.kwh > 0 ? T.pv / T.kwh * 100 : 0, d100 = T.km > 0 ? T.cost / T.km * 100 : null;
+    const tiles = [
+      this._tm2Tile4("Geladen", num(T.kwh, 1), "kWh", `${ses.length} ${ses.length === 1 ? "Ladung" : "Ladungen"} · ${num(sh, 0)} % Sonne`, "#2dd4bf"),
+      this._tm2Tile4("Kosten", `${num(T.cost, 2)} €`, "", "nur Netzstrom", "#f87171"),
+      this._tm2Tile4("Kilometer", T.km > 0 ? num(T.km, 0) : "–", T.km > 0 ? "km" : "", d100 != null ? `${num(d100, 2)} € je 100 km` : "braucht den Kilometerstand", "#60a5fa"),
+      this._tm2Tile4("Gespart", `${num(Math.max(0, T.full - T.cost), 2)} €`, "", "gegenüber nur Netzstrom", "#34d399")].join("");
+    const seg = [["d", "Tag"], ["w", "Woche"], ["m", "Monat"], ["y", "Jahr"]].map(([k, l]) => `<button class="${S.per === k ? "sel" : ""}" data-act="wbvper" data-k="${k}" aria-pressed="${S.per === k}">${l}</button>`).join("");
+    const per = this._tm2Land() ? (window.innerHeight < 700 ? 3 : window.innerHeight < 760 ? 5 : 8) : window.innerHeight < 1100 ? 2 : 4, p = this._tm2Page("evses", ses.length, per);
+    const rows = ses.slice(p.from, p.to).map((x) => { const t = new Date(x.start), s2 = x.kwh > 0 ? x.pv / x.kwh * 100 : 0;
+      return `<div class="tm2ses"><span><b>${t.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" })}</b><small>${t.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}${x.running ? " · läuft" : ""}</small></span><span class="n"><b>${esc(x.veh || "Unbekannt")}</b><small>${num(s2, 0)} % Sonne</small></span><span class="v"><b>${num(x.kwh, 1)} kWh</b><small>${x.cost != null ? `${num(x.cost, 2)} €` : "&nbsp;"}</small></span></div>`; }).join("");
+    return `<div class="tm2bar"><div class="tm2seg">${seg}</div><div class="tm2per"><button data-act="wbvnav" data-k="-1" aria-label="Zurück">${ic("back", 20)}</button><b>${esc(title)}</b><button class="nx" data-act="wbvnav" data-k="1" aria-label="Weiter" ${run ? "disabled" : ""}>${ic("back", 20)}</button></div></div>
+      <div class="tm2sums">${tiles}</div>
+      <div class="tm2stat"><div class="card tm2cc"><div class="tm2sh"><span>${ic("chart", 18)}${S.per === "d" ? "Ladungen an diesem Tag" : S.per === "y" ? "Geladen je Monat" : "Geladen je Tag"}</span><span class="tm2legend"><i style="background:#2dd4bf"></i>Sonne <i style="background:#f59e0b"></i>Netz</span></div><div class="tm2ch" data-tm2ch="evst"></div></div>
+        <div class="card tm2cc tm2sesc" data-sw="evses"><div class="tm2sh"><span>${ic("list", 18)}Ladungen</span>${adm ? `<button class="tm2mini" data-act="tm2g" data-g="tm2evfull" data-k="stat">${ic("lock", 16)}Bearbeiten</button>` : ""}</div>
+          ${rows ? `<div class="tm2sesl">${rows}</div>${this._tm2Pager("evses", p, "")}` : `<div class="mut tm2nox">Keine Ladungen in diesem Zeitraum.</div>`}</div></div>`;
+  }
+  /* „Wer lädt gerade?“ als Fenster */
+  _tm2EvModal() {
+    const d = this._evData(), N = this._evNow(d), row = this._evWhoRow(N);
+    return `<div class="ov" data-act="close"></div><div class="sheet tm2rm" role="dialog" aria-modal="true"><div class="sh"><div><b>Wer lädt gerade?</b><small>${esc(this._wbName())}</small></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>${row || `<div class="mut">Kein Fahrzeug eingerichtet.</div>`}</div>`;
+  }
+  /* ================= Tablet-Modus · Stufe 4: Modul 14 Stromtarif ohne Scrollen =================
+     Reiter Preise (vier Werte, Preisband, Tief/Hoch/Schnitt), Geräte (bestes Fenster) und Tarif-Check.
+     „Erinnern“ braucht keine PIN, Quelle, Geräte, Preisalarm und Vergleichspreis schon. */
+  _tm2TfReady() { const S = this._tf(); return !!(this._tfD && !S.error && S.src && S.src !== "fix"); }
+  _tm2Dt() {
+    this._tfLoad();
+    const S = this._tf(), adm = this._admin(), set = (k, l) => (adm ? `<button class="btn2" data-act="tm2g" data-g="tfxopen" data-k="${k}">${ic("lock", 16)}${l}</button>` : "");
+    if (!this._tfD) return this._tm2None("chart", "Preise werden geladen …");
+    if (S.error || !S.src) return `<div class="card empty tm2none">${ic("chart", 44)}<div>Noch keine Strompreise.</div><small>Verbinde Tibber oder wähle einen Preis-Sensor mit Preisliste.</small>${set("q", "Quelle wählen")}</div>`;
+    if (S.src === "fix") return `<div class="card empty tm2none">${ic("bolt", 44)}<div>Festpreis: ${this._tfCt(S.now.ct)} ct/kWh</div><small>Mit einem Festpreis gibt es keine günstigen Zeiten.</small>${set("q", "Quelle wählen")}</div>`;
+    const t = this._tm2Tab("dt");
+    return t === "dev" ? this._tm2DtDevs(S) : t === "check" ? this._tm2DtCheck(S) : this._tm2DtPrices(S);
+  }
+  _tm2DtDay(S) { return this._tm2TfDay === "tm" && S.tomorrow ? "tm" : "td"; }
+  /* Zeit des tiefsten und höchsten Preises eines Tages */
+  _tm2DtRange(S, day) {
+    const d0 = new Date(); d0.setHours(0, 0, 0, 0); if (day === "tm") d0.setDate(d0.getDate() + 1);
+    const d1 = new Date(d0); d1.setDate(d1.getDate() + 1);
+    return { from: d0.getTime() / 1000, to: d1.getTime() / 1000 };
+  }
+  _tm2DtPrices(S) {
+    const C = S.cfg, N = S.now, T = S.today || {}, M = S.tomorrow, best = this._tfBest(S), adm = this._admin(), day = this._tm2DtDay(S), D = day === "tm" ? M || {} : T, R = this._tm2DtRange(S, day);
+    const up = N.next_h != null && N.ct != null ? N.next_h - N.ct : null;
+    const tiles = [
+      this._tm2Tile4("Jetzt", this._tfCt(N.ct), "ct", `${this._tfName(N.lv).toLowerCase()}${N.until ? ` bis ${this._tfWhen(N.until)}` : ""}`, this._tfCol(N.lv)),
+      this._tm2Tile4("Nächste Stunde", this._tfCt(N.next_h), "ct", up == null ? "–" : Math.abs(up) < 0.3 ? "etwa gleich" : up > 0 ? "wird teurer" : "wird günstiger", this._tfCol(this._tfLv(N.next_h, T.avg, C))),
+      this._tm2Tile4("Bestes Fenster", best ? this._tfHm(best.s) : "–", "", best ? `${this._tfIsTomorrow(best.s) ? "morgen" : "heute"} · ${C.win_h} Std. · Ø ${this._tfCt(best.avg)} ct` : "zu wenig Preise", "#22c55e"),
+      this._tm2Tile4("Morgen", M ? this._tfCt(M.avg) : "–", M ? "ct" : "", M ? (T.avg != null ? `Ø · ${this._tfCt(Math.abs(M.avg - T.avg))} ct ${M.avg <= T.avg ? "unter" : "über"} heute` : "Ø") : "ab ca. 13 Uhr", "#60a5fa")].join("");
+    const ser = (S.series || []).filter((x) => x.ct != null && x.s >= R.from && x.s < R.to);
+    const at = (v) => { const x = ser.find((y) => Math.abs(y.ct - v) < 0.005); return x ? `${this._tfHm(x.s)} Uhr` : "&nbsp;"; };
+    const lo = ser.length ? Math.min(...ser.map((x) => x.ct)) : null, hi = ser.length ? Math.max(...ser.map((x) => x.ct)) : null;
+    const foot = [
+      this._tm2Tile4("Tagestief", this._tfCt(lo), "ct", lo == null ? "" : at(lo), "#22c55e"),
+      this._tm2Tile4("Tageshoch", this._tfCt(hi), "ct", hi == null ? "" : at(hi), "#ef4444"),
+      this._tm2Tile4(day === "tm" ? "Ø morgen" : "Ø heute", this._tfCt(D.avg), "ct", D.hours != null ? `${num(D.hours, 0)} Stunden` : "", "#2dd4bf")].join("");
+    const leg = [["cheap", "günstig"], ["normal", "normal"], ["dear", "teuer"], ...(S.neg ? [["neg", "negativ"]] : [])].map(([k, l]) => `<i style="background:${this._tfCol(k)}"></i>${l}`).join(" ");
+    const seg = M ? `<div class="tm2seg tm2dseg">${[["td", "Heute"], ["tm", "Morgen"]].map(([k, l]) => `<button class="${day === k ? "sel" : ""}" data-act="tm2tfday" data-k="${k}" aria-pressed="${day === k}">${l}</button>`).join("")}</div>` : "";
+    return `<div class="tm2sums">${tiles}</div>
+      <div class="card tm2cc tm2dtb"><div class="tm2sh"><span>${ic("chart", 18)}${seg ? "" : "Heute · "}Cent je kWh</span><span class="tm2shr">${this._frost().price_on && this._htrRooms().some((r) => htrFrost(r.htr)) ? `<span class="tm2legend" title="Preisgrenze der Frost-Heizer">❄ Heizer bis ${num(this._frost().price, 1)} ct</span>` : ""}<span class="tm2legend">${leg}</span>${seg}${adm ? `<button class="tm2mini" data-act="tm2g" data-g="tfxopen" data-k="q" aria-label="Preisquelle einstellen">${ic("lock", 16)}Quelle</button>` : ""}</span></div><div class="tm2ch" data-tm2ch="dt"></div></div>
+      <div class="tm2sums three">${foot}</div>`;
+  }
+  _tm2DtChart(box, w, h) {
+    const S = this._tf(), day = this._tm2DtDay(S), R = this._tm2DtRange(S, day);
+    const res = !this._tm2Land() || (S.cfg.res || "q") === "h" ? "h" : "q";
+    box.innerHTML = this._tfBand(S, { from: R.from, to: R.to, res, best: day === "tm" ? S.best_tomorrow : S.best, h: Math.max(60, h - 22), cls: "tm2band" }) || `<div class="tm2none">${ic("chart", 40)}<div>Für diesen Tag gibt es noch keine Preise.</div></div>`;
+  }
+  _tm2DtDevs(S) {
+    const adm = this._admin(), on = (S.devs || []).filter((x) => x.on), gs = this._mdState().on.gs;
+    const land = this._tm2Land(), per = land ? (window.innerHeight < 760 ? 5 : 6) : 5, p = this._tm2Page("dtdev", on.length, per);
+    const rows = on.slice(p.from, p.to).map((d) => {
+      const T = GS_TYP[d.typ] || {}, w = d.w, lv = w ? this._tfLv(w.avg, (S.today || {}).avg, S.cfg) || "cheap" : "";
+      const sub = w ? `${this._tfDur(d.dur)}${w.sun >= 10 ? ` · ${w.sun} % Sonne` : ""}${d.by != null ? ` · fertig bis ${d.by} Uhr` : ""}` : d.running ? "läuft gerade" : d.n < 2 ? `lernt die Laufzeit (${d.n} von 2 Läufen)` : "kein passendes Fenster";
+      const when = w ? (w.now ? "jetzt" : `${this._tfIsTomorrow(w.s) ? "morgen " : ""}${this._tfHm(w.s)}`) : "–";
+      const det = w ? `Ø ${this._tfCt(w.avg)} ct${w.save >= 0.01 ? ` · −${num(w.save, 2)} €` : ""}` : "&nbsp;";
+      const btn = !w || !adm ? `<span class="tm2dtn"></span>` : w.now ? `<span class="tm2dtn go">${ic("check", 18)}Jetzt starten</span>` : `<button class="tm2dtn btn${d.rem ? " on" : ""}" data-act="tfxrem" data-k="${esc(d.id)}" aria-pressed="${!!d.rem}">${ic(d.rem ? "check" : "bell", 18)}${d.rem ? `Erinnert ${this._tfHm(d.rem)}` : "Erinnern"}</button>`;
+      return `<div class="tm2dtd" style="--lc:${w ? this._tfCol(lv) : "var(--line)"}"><span class="i">${ic(T.i || "plug", 26)}</span><span class="n"><b>${esc(d.name)}</b><small>${esc(sub)}</small></span><span class="w"><b>${when}</b><small>${det}</small></span>${btn}</div>`;
+    }).join("");
+    const T = S.today || {}, slots = (S.slots || []).slice(0, land && window.innerHeight >= 760 ? 6 : 4);
+    const list = slots.map((x, i) => `<div class="tm2dts"><i>${i + 1}</i><b>${this._tfIsTomorrow(x.s) ? "morgen " : ""}${this._tfHm(x.s)}–${this._tfHm(x.e)}</b><span style="color:${this._tfCol(this._tfLv(x.avg, T.avg, S.cfg) || "cheap")}">${this._tfCt(x.avg)} ct</span></div>`).join("");
+    const empty = !gs ? "Dafür braucht es Modul 4 Gerätestrom mit Geräten, die ihre Leistung messen." : !(S.devs || []).length ? "Lege in Modul 4 Geräte mit Leistungsmessung an. Nach zwei Läufen steht hier die beste Startzeit." : "Für kein Gerät ist ein Fenster eingeschaltet.";
+    return `<div class="tm2stat tm2dtg"><div class="card tm2cc" data-sw="dtdev"><div class="tm2sh"><span>${ic("clock", 18)}Bestes Fenster je Gerät</span>${adm ? `<button class="tm2mini" data-act="tm2g" data-g="tfxopen" data-k="w">${ic("lock", 16)}Geräte &amp; Preisalarm</button>` : ""}</div>
+        ${rows ? `<div class="tm2dtl">${rows}</div>${this._tm2Pager("dtdev", p, "Geräte")}` : `<div class="tm2none">${ic("laundry", 40)}<div>${empty}</div></div>`}</div>
+      <div class="card tm2cc"><div class="tm2sh"><span>${ic("chart", 18)}Günstigste Stunden</span></div>${list ? `<div class="tm2dtsl">${list}</div>` : `<div class="mut tm2nox">Zu wenig Preise.</div>`}</div></div>`;
+  }
+  _tm2DtCheck(S) {
+    const K = this._tfCk, adm = this._admin();
+    if (!K || (!K.d && !K.busy) || (K.d && Date.now() - (K.ts || 0) > 600000 && !K.busy)) { if (!K || !K.busy) this._tfCkLoad(K ? K.per : "m", K ? K.ref : ""); }
+    const R = (this._tfCk && this._tfCk.d) || null, per = (this._tfCk && this._tfCk.per) || "m";
+    const seg = [["m", "Monat"], ["y", "Jahr"]].map(([k, l]) => `<button class="${per === k ? "sel" : ""}" data-act="tfxck" data-k="${k}" aria-pressed="${per === k}">${l}</button>`).join("");
+    const bar = `<div class="tm2bar"><div class="tm2seg tm2ckseg">${seg}</div>${R && !R.error ? `<div class="tm2per"><button data-act="tfxckp" data-k="-1" aria-label="Zurück">${ic("back", 20)}</button><b>${esc(R.title)}</b><button class="nx" data-act="tfxckp" data-k="1" aria-label="Weiter">${ic("back", 20)}</button></div>` : ""}</div>`;
+    if (!R) return `${bar}${this._tm2None("chart", "Wird gerechnet …")}`;
+    if (R.error) return `${bar}${this._tm2None("chart", "Der Tarif-Check ist gerade nicht verfügbar.")}`;
+    if (!R.n) {
+      const why = !R.eb ? "Dafür braucht es das Haus-Energiebuch mit einem Netz-Sensor." : !R.first ? "Die Preis-Historie füllt sich ab heute jeden Tag." : `Preise sind gespeichert seit ${new Date(R.first).toLocaleDateString("de-DE")}.`;
+      return `${bar}${this._tm2None("chart", "Für diesen Zeitraum gibt es noch nichts zu rechnen.", why)}`;
+    }
+    const sv = R.save;
+    const tiles = [
+      this._tm2Tile4(`Bezahlt (${esc(S.src_name || "dynamisch")})`, `${num(R.paid, 2)} €`, "", `Ø ${this._tfCt(R.ct)} ct · ${num(R.kwh, 0)} kWh`, "#2dd4bf"),
+      this._tm2Tile4("Mit Festpreis", `${num(R.fix, 2)} €`, "", `${this._tfCt(R.cmp_ct)} ct je kWh${R.base ? " · mit Grundgebühr" : ""}`, "#60a5fa"),
+      this._tm2Tile4(sv >= 0 ? "Gespart" : "Mehrkosten", `${num(Math.abs(sv), 2)} €`, "", R.fix > 0 ? `${num(Math.abs(sv) / R.fix * 100, 0)} % ${sv >= 0 ? "günstiger" : "teurer"}` : "", sv >= 0 ? "#22c55e" : "#ef4444")].join("");
+    const leg = per === "y" ? `<i style="background:${this._tfCol("cheap")}"></i>günstiger als Festpreis <i style="background:${this._tfCol("dear")}"></i>teurer` : `<i style="background:${this._tfCol("cheap")}"></i>günstig <i style="background:${this._tfCol("normal")}"></i>normal <i style="background:${this._tfCol("dear")}"></i>teuer`;
+    return `${bar}<div class="tm2sums three">${tiles}</div>
+      <div class="card tm2cc tm2ckc"><div class="tm2sh"><span>${ic("chart", 18)}Dein Preis je ${per === "y" ? "Monat" : "Tag"} (ct)</span><span class="tm2shr"><span class="tm2legend">${leg}</span>${adm ? `<button class="tm2mini" data-act="tm2g" data-g="tfxopen" data-k="p">${ic("lock", 16)}Vergleichspreis</button>` : ""}</span></div>
+        ${R.est ? `<small class="tm2note">${R.est} ${R.est === 1 ? "Tag" : "Tage"} aus Tageswerten geschätzt (blass)</small>` : ""}<div class="tm2ch" data-tm2ch="dtck"></div></div>`;
+  }
+  _tm2DtCkChart(box, w, h) {
+    const R = this._tfCk && this._tfCk.d; if (!R || !R.n) return;
+    const per = this._tfCk.per, MON = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
+    const rows = per === "y" ? (R.months || []).map((m) => ({ l: MON[Number(m.m.slice(5, 7)) - 1], ct: m.ct, est: m.est >= m.n, lv: m.save >= 0 ? "cheap" : "dear" }))
+      : (R.days || []).map((d) => ({ l: `${Number(d.d.slice(8, 10))}.`, ct: d.ct, est: d.est, lv: d.lv }));
+    const n = per === "y" ? 12 : Math.max(28, rows.length), mx = Math.max(R.cmp_ct || 0, ...rows.map((r) => r.ct || 0), 1) * 1.15, step = enStep(mx), top = Math.ceil(mx / step) * step;
+    const x0 = 34, x1 = w - 6, y0 = 10, y1 = h - 22, bw = (x1 - x0) / n, bar = Math.max(4, Math.min(44, bw * 0.64)), Y = (v) => y1 - Math.max(0, v) / top * (y1 - y0);
+    let g = "";
+    for (let v = 0; v <= top + 1e-9; v += step) g += `<line x1="${x0}" x2="${x1}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" class="tm2gl"/><text x="${x0 - 8}" y="${(Y(v) + 4).toFixed(1)}" class="tm2ax" text-anchor="end">${num(v, 0)}</text>`;
+    const every = per === "y" ? 1 : bw < 22 ? 7 : 4;
+    const bars = rows.map((r, i) => { const x = x0 + i * bw + (bw - bar) / 2;
+      return `<rect x="${x.toFixed(1)}" y="${Y(r.ct || 0).toFixed(1)}" width="${bar.toFixed(1)}" height="${Math.max(2, y1 - Y(r.ct || 0)).toFixed(1)}" rx="4" fill="${this._tfCol(r.lv || "normal")}"${r.est ? ' opacity=".45"' : ""}><title>${r.l} · Ø ${this._tfCt(r.ct)} ct</title></rect>${i % every === 0 ? `<text x="${(x + bar / 2).toFixed(1)}" y="${h - 5}" class="tm2ax" text-anchor="middle">${r.l}</text>` : ""}`; }).join("");
+    const fy = R.cmp_ct ? `<line x1="${x0}" x2="${x1}" y1="${Y(R.cmp_ct).toFixed(1)}" y2="${Y(R.cmp_ct).toFixed(1)}" class="tm2dl"/><text x="${x1}" y="${(Y(R.cmp_ct) - 6).toFixed(1)}" class="tm2ax b" text-anchor="end">Festpreis ${this._tfCt(R.cmp_ct)} ct</text>` : "";
+    box.innerHTML = `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="Eigener Strompreis im Vergleich zum Festpreis">${g}${bars}${fy}</svg>`;
+  }
+  /* ================= Tablet-Modus · Stufe 4: Modul 16 Solar-Prognose ohne Scrollen =================
+     Reiter Prognose (große Zahlen, Kurve, beste Zeit), Treffsicherheit (14 Tage und Treffer-Kalender) und Anlagen.
+     Quellen und Sensoren öffnen sich erst nach der PIN. */
+  _tm2SpReady() { const S = this._sp(); return !!(this._spD && !S.error && S.found); }
+  _tm2Sp() {
+    this._spLoad();
+    const S = this._sp(), adm = this._admin(), set = adm ? `<button class="btn2" data-act="tm2g" data-g="spxopen">${ic("lock", 16)}Quelle wählen</button>` : "";
+    if (!this._spD) return this._tm2None("sun", "Prognose wird geladen …");
+    if (S.error) return this._tm2None("alert", "Die Prognose konnte nicht geladen werden.");
+    if (!S.found) return `<div class="card empty tm2none">${ic("sun", 44)}<div>Noch keine Prognose da.</div><small>Wähle die Quelle, am einfachsten die Integration Forecast.Solar.</small>${set}</div>`;
+    const C = this._spCalc(), t = this._tm2Tab("sp");
+    return t === "acc" ? this._tm2SpAcc(C) : t === "sites" ? this._tm2SpSites(C) : this._tm2SpNow(C);
+  }
+  _tm2SpDay(C) { return this._spDay === "tomorrow" || (this._spDay == null && C.night) ? "tomorrow" : "today"; }
+  _tm2SpWarn(C) {
+    const S = C.S, adm = this._admin(), f1 = (v) => this._spF(v);
+    if (S.dup && S.sel_mode !== "manual") return `<div class="tm2warn">${ic("alert", 18)}<span>Prognose vermutlich doppelt gezählt: mehrere Dienste werden addiert.</span>${adm ? `<button class="tm2mini" data-act="tm2g" data-g="spxopen">${ic("lock", 16)}Anlagen wählen</button>` : ""}</div>`;
+    const L = S.low; if (!L || C.night) return "";
+    return `<div class="tm2warn">${ic("alert", 18)}<span>Anlage liefert deutlich weniger als erwartet: ${L.from}–${L.to} Uhr ${f1(L.a)} statt ${f1(L.f * C.cf)} kWh.</span></div>`;
+  }
+  _tm2SpBig(l, v, u, s, c) { return `<div class="tm2big4" style="--a:${c}"><span>${l}</span><b>${v}${u ? `<small>${u}</small>` : ""}</b><em>${s || "&nbsp;"}</em></div>`; }
+  _tm2SpNow(C) {
+    const S = C.S, f1 = (v) => this._spF(v), day = this._tm2SpDay(C), dp = S.today > 0 ? Math.round((S.tomorrow - S.today) / S.today * 100) : null;
+    const cmp = dp == null ? "" : dp === 0 ? "wie heute" : `${Math.abs(dp)} % ${dp < 0 ? "weniger" : "mehr"} als heute`;
+    const acc = C.acc != null ? `${C.acc}` : "–";
+    const nums = C.night
+      ? [this._tm2SpBig("Morgen erwartet", f1(C.tmr), "kWh", cmp, "#60a5fa"), this._tm2SpBig(S.got != null ? "Heute erzeugt" : "Heute erwartet", f1(S.got != null ? S.got : C.base), "kWh", C.base > 0 && S.got != null ? `${Math.round(S.got / C.base * 100)} % der Prognose` : "", "#facc15"),
+        this._tm2SpBig("Prognose heute früh", f1(C.base), "kWh", C.cf !== 1 ? `korrigiert × ${num(C.cf, 2)}` : "", "#f59e0b"), this._tm2SpBig("Treffsicherheit", acc, C.acc != null ? "%" : "", C.nAcc ? `${C.nAcc} ${C.nAcc === 1 ? "Tag" : "Tage"}` : "braucht Ertragssensor", "#34d399")]
+      : [this._tm2SpBig("Heute erwartet", f1(C.base), "kWh", C.cf !== 1 ? `korrigiert × ${num(C.cf, 2)}` : "Prognose von heute früh", "#f59e0b"),
+        this._tm2SpBig("Bisher", f1(S.got), S.got != null ? "kWh" : "", C.vor == null ? "kein Ertragssensor" : Math.abs(C.vor) < 0.1 ? "genau im Plan" : C.vor > 0 ? `${f1(C.vor)} kWh vor Plan` : `${f1(-C.vor)} kWh hinter Plan`, "#facc15"),
+        this._tm2SpBig("Noch zu erwarten", f1(C.rest), "kWh", `bis etwa ${C.H1} Uhr`, "#fde047"), this._tm2SpBig("Morgen", f1(C.tmr), "kWh", cmp, "#60a5fa")];
+    const seg = `<div class="tm2seg tm2dseg">${[["today", "Heute"], ["tomorrow", "Morgen"]].map(([k, l]) => `<button class="${day === k ? "sel" : ""}" data-act="spxday" data-k="${k}" aria-pressed="${day === k}">${l}</button>`).join("")}</div>`;
+    const A = day === "today" ? this._spActH() : null, rows = day === "today" ? C.rows : C.tm, fc = Object.fromEntries(rows), h = this._spH;
+    const det = h != null && fc[h] != null ? `<em class="on">${h}–${h + 1} Uhr · Prognose ${num(fc[h], 2)} kWh${A && A[h] != null && h <= Math.floor(C.nh) ? ` · Ertrag ${num(A[h], 2)} kWh` : ""}</em>` : "";
+    const B = S.best, devs = this._spDevs(), gs = this._m3Has("gs") && this._mdList().some((m) => m.id === "gs");
+    const best = B ? `<div class="card tm2spb">${this._gx(devs[0] ? devs[0].g : "sun", 40, { on: true })}<span><b>Beste Zeit ${S.best_day === "today" ? "" : "morgen "}${B.from}–${B.to} Uhr</b><small>rund ${f1(B.kwh * C.cf)} kWh${devs.length ? ` · ${devs.map((d) => esc(d.n)).slice(0, 3).join(", ")}` : ""}</small></span>${gs ? `<button class="tm2mini" data-act="tm2spgs">${ic("clock", 16)}Startfenster</button>` : ""}</div>`
+      : `<div class="card tm2spb">${this._gx("sun", 40)}<span><b>Keine beste Zeit</b><small>Dafür reicht die Prognose gerade nicht.</small></span></div>`;
+    return `${this._tm2SpWarn(C)}<div class="tm2sums tm2spn">${nums.join("")}</div>
+      <div class="card tm2cc tm2spc"><div class="tm2sh"><span>${ic("chart", 18)}kWh je Stunde</span><span class="tm2shr">${det}<span class="tm2legend"><i style="background:#f59e0b"></i>Prognose${day === "today" ? ` <i style="background:#34d399"></i>Ertrag` : ""}${B && S.best_day === day ? ` <i style="background:rgba(52,211,153,.35)"></i>beste Zeit` : ""}</span>${seg}</span></div><div class="tm2ch" data-tm2ch="sp"></div></div>
+      <div class="tm2spf">${best}<button class="card tm2spa" data-act="tm2tab" data-v="sp" data-k="acc">${this._gx("forecast", 40)}<span><b>Treffsicherheit ${acc}${C.acc != null ? " %" : ""}</b><small>${C.nAcc ? `letzte ${C.nAcc} ${C.nAcc === 1 ? "Tag" : "Tage"}` : "braucht Ertragssensor und einige Tage"}</small></span>${ic("chev", 20)}</button></div>`;
+  }
+  _tm2SpChart(box, w, h) {
+    if (!this._tm2SpReady()) return;
+    const C = this._spCalc(), S = C.S, day = this._tm2SpDay(C), rows = day === "today" ? C.rows : C.tm;
+    if (!rows.length) { box.innerHTML = `<div class="tm2none">${ic("sun", 40)}<div>Für diesen Tag gibt es keine Stundenwerte.</div></div>`; return; }
+    const P = rows.filter((x) => x[1] > 0.01), h0 = Math.max(0, (P.length ? P[0][0] : 6) - 1), h1 = Math.min(24, (P.length ? P[P.length - 1][0] + 1 : 19) + 1);
+    const A = day === "today" ? this._spActH() : null, fc = Object.fromEntries(rows), mx = Math.max(0.5, ...rows.map((x) => x[1]), ...(A ? Object.values(A) : [0])) * 1.12;
+    const step = mx > 8 ? enStep(mx) : mx > 3 ? 1 : mx > 1.5 ? 0.5 : 0.25, x0 = 38, x1 = w - 6, y0 = 10, y1 = h - 22, X = (v) => x0 + (v - h0) / (h1 - h0) * (x1 - x0), Y = (v) => y1 - v / mx * (y1 - y0);
+    let g = "";
+    for (let v = 0; v <= mx; v += step) g += `<line x1="${x0}" x2="${x1}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" class="tm2gl"/><text x="${x0 - 8}" y="${(Y(v) + 4).toFixed(1)}" class="tm2ax" text-anchor="end">${num(v, step < 1 ? (step < 0.5 ? 2 : 1) : 0)}</text>`;
+    const every = (x1 - x0) / (h1 - h0) < 34 ? 3 : 2;
+    for (let t = h0; t <= h1; t++) if ((t - h0) % every === 0) g += `<text x="${Math.min(w - 10, X(t)).toFixed(1)}" y="${h - 5}" class="tm2ax" text-anchor="middle">${t}</text>`;
+    const line = (p) => p.map(([a, b], i) => `${i ? "L" : "M"}${a.toFixed(1)} ${b.toFixed(1)}`).join(" "), area = (p) => `${line(p)} L${p[p.length - 1][0].toFixed(1)} ${y1} L${p[0][0].toFixed(1)} ${y1} Z`;
+    const fp = []; for (let t = h0; t < h1; t++) fp.push([X(t + 0.5), Y(fc[t] || 0)]);
+    const ap = []; if (A) for (let t = h0; t <= Math.min(Math.floor(C.nh), h1 - 1); t++) ap.push([X(t + 0.5), Y(A[t] || 0)]);
+    const bd = S.best && S.best_day === day ? S.best : null;
+    const best = bd ? `<rect x="${X(bd.from).toFixed(1)}" y="${y0}" width="${(X(bd.to) - X(bd.from)).toFixed(1)}" height="${y1 - y0}" fill="rgba(52,211,153,.14)"/>` : "";
+    const now = day === "today" && C.nh > h0 && C.nh < h1 ? `<line x1="${X(C.nh).toFixed(1)}" x2="${X(C.nh).toFixed(1)}" y1="${y0}" y2="${y1}" class="tm2dl"/><text x="${(X(C.nh) + 6).toFixed(1)}" y="${y0 + 12}" class="tm2ax b">jetzt</text>` : "";
+    const sel = this._spH != null && fc[this._spH] != null ? `<rect x="${X(this._spH).toFixed(1)}" y="${y0}" width="${(X(this._spH + 1) - X(this._spH)).toFixed(1)}" height="${y1 - y0}" fill="rgba(127,127,127,.14)"/>` : "";
+    const hit = rows.filter(([t]) => t >= h0 && t < h1).map(([t]) => `<rect x="${X(t).toFixed(1)}" y="${y0}" width="${(X(t + 1) - X(t)).toFixed(1)}" height="${y1 - y0}" fill="transparent" data-act="spxh" data-k="${t}" style="cursor:pointer"/>`).join("");
+    box.innerHTML = `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="Prognose und Ertrag je Stunde">${g}${best}${sel}<path d="${area(fp)}" fill="rgba(245,158,11,.18)"/><path d="${line(fp)}" fill="none" stroke="#f59e0b" stroke-width="3" stroke-linejoin="round"/>${ap.length > 1 ? `<path d="${line(ap)}" fill="none" stroke="#34d399" stroke-width="3.5" stroke-linejoin="round"/><circle cx="${ap[ap.length - 1][0].toFixed(1)}" cy="${ap[ap.length - 1][1].toFixed(1)}" r="5" fill="#34d399"/>` : ""}${now}${hit}</svg>`;
+  }
+  /* Treffsicherheit eines Tages in Prozent (wie die Kennzahl: 100 minus Abweichung) */
+  _tm2SpHit(x) { return x && x.a != null && x.f > 0 ? Math.round(100 - Math.min(100, Math.abs(x.a - x.f) / x.f * 100)) : null; }
+  _tm2SpDays(S) { return S.hist30 && S.hist30.length ? S.hist30 : S.hist || []; }
+  _tm2SpAcc(C) {
+    const S = C.S, f1 = (v) => this._spF(v), all = this._tm2SpDays(S), y = new Date(); y.setDate(y.getDate() - 1);
+    const key = (t) => `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`;
+    const last = all.find((x) => x.d === key(y)), dv = last && last.a != null && last.f > 0 ? Math.round((last.a - last.f) / last.f * 100) : null;
+    const tiles = [
+      this._tm2Tile4("Treffsicherheit", C.acc != null ? C.acc : "–", C.acc != null ? "%" : "", C.nAcc ? `letzte ${C.nAcc} ${C.nAcc === 1 ? "Tag" : "Tage"}` : "braucht Ertragssensor", "#34d399"),
+      this._tm2Tile4("Gelernte Korrektur", S.corr != null && S.corr > 0 ? `× ${num(S.corr, 2)}` : "–", "", S.corr != null && S.corr > 0 ? `aus ${S.corr_n} Tagen` : S.cfg.corr === false ? "ausgeschaltet" : S.corr_n != null && S.corr_n < 7 ? `lernt (${S.corr_n} von 7 Tagen)` : "noch keine", "#2dd4bf"),
+      this._tm2Tile4("Gestern", dv != null ? `${dv > 0 ? "+" : dv < 0 ? "−" : ""}${Math.abs(dv)} %` : "–", "", last && last.a != null ? `${f1(last.a)} statt ${f1(last.f)} kWh` : "kein Wert", "#f59e0b")].join("");
+    const byd = Object.fromEntries(all.map((x) => [x.d, x])), today = new Date(); today.setHours(12, 0, 0, 0);
+    const st = new Date(today); st.setDate(st.getDate() - ((st.getDay() + 6) % 7) - 21);
+    let cells = "";
+    for (let i = 0; i < 28; i++) {
+      const t = new Date(st.getTime()); t.setDate(st.getDate() + i);
+      const k = key(t), x = byd[k], p = this._tm2SpHit(x), cl = p == null ? "n" : p >= 90 ? "g" : p >= 80 ? "y" : "r";
+      cells += x ? `<button class="${cl}" data-act="tm2x" data-k="sp" data-id="${k}" aria-label="${t.toLocaleDateString("de-DE")}: ${p == null ? "ohne Ertrag" : `${p} Prozent`}"><small>${t.getDate()}</small><b>${p == null ? "–" : p}</b></button>` : `<span class="${t > today ? "f" : "n"}"><small>${t.getDate()}</small></span>`;
+    }
+    return `<div class="tm2sums three">${tiles}</div>
+      <div class="tm2stat tm2spac"><div class="card tm2cc"><div class="tm2sh"><span>${ic("chart", 18)}Prognose und Ertrag je Tag (kWh)</span><span class="tm2legend"><i style="background:#f59e0b"></i>Prognose <i style="background:#34d399"></i>Ertrag</span></div><div class="tm2ch" data-tm2ch="spacc"></div></div>
+        <div class="card tm2cc tm2cal"><div class="tm2sh"><span>${ic("today", 18)}Treffer-Kalender</span></div><div class="tm2calh">${["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"].map((d) => `<i>${d}</i>`).join("")}</div><div class="tm2calg">${cells}</div></div></div>`;
+  }
+  _tm2SpAccChart(box, w, h) {
+    if (!this._tm2SpReady()) return;
+    const H = this._tm2SpDays(this._sp()).filter((x) => x.f != null).slice(-14);
+    if (H.length < 2) { box.innerHTML = `<div class="tm2none">${ic("chart", 40)}<div>Noch zu wenig abgeschlossene Tage.</div></div>`; return; }
+    const mx = Math.max(1, ...H.map((x) => Math.max(x.f || 0, x.a || 0))) * 1.1, step = enStep(mx), top = Math.ceil(mx / step) * step;
+    const x0 = 38, x1 = w - 16, y0 = 10, y1 = h - 22, X = (i) => x0 + 12 + i / (H.length - 1) * (x1 - x0 - 24), Y = (v) => y1 - v / top * (y1 - y0);
+    let g = "";
+    for (let v = 0; v <= top + 1e-9; v += step) g += `<line x1="${x0}" x2="${x1}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" class="tm2gl"/><text x="${x0 - 8}" y="${(Y(v) + 4).toFixed(1)}" class="tm2ax" text-anchor="end">${num(v, step < 1 ? 1 : 0)}</text>`;
+    const every = Math.max(1, Math.ceil(52 / ((x1 - x0) / H.length)));
+    H.forEach((x, i) => { if ((H.length - 1 - i) % every === 0) g += `<text x="${X(i).toFixed(1)}" y="${h - 5}" class="tm2ax" text-anchor="middle">${new Date(`${x.d}T12:00:00`).toLocaleDateString("de-DE", { day: "numeric", month: "numeric" })}</text>`; });
+    const path = (k) => { let s = "", pen = false; H.forEach((x, i) => { if (x[k] == null) { pen = false; return; } s += `${pen ? "L" : "M"}${X(i).toFixed(1)} ${Y(x[k]).toFixed(1)} `; pen = true; }); return s; };
+    const dots = H.map((x, i) => (x.a != null ? `<circle cx="${X(i).toFixed(1)}" cy="${Y(x.a).toFixed(1)}" r="4" fill="#34d399"/>` : "")).join("");
+    box.innerHTML = `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="Prognose und Ertrag der letzten Tage">${g}<path d="${path("f")}" fill="none" stroke="#f59e0b" stroke-width="3" stroke-linejoin="round"/><path d="${path("a")}" fill="none" stroke="#34d399" stroke-width="3" stroke-linejoin="round"/>${dots}</svg>`;
+  }
+  _tm2SpSites(C) {
+    const S = C.S, adm = this._admin(), f1 = (v) => this._spF(v), L = (S.site_sums || []).filter((x) => x && x.n), cols = ["#f59e0b", "#38bdf8", "#4ade80", "#c084fc", "#f472b6", "#facc15"];
+    const one = !L.length, list = one ? [{ n: (S.sites || [])[0] || S.src || "Deine Anlage", t: S.today, m: S.tomorrow, h: S.hours }] : L;
+    const tot = list.reduce((a, x) => a + (x.t || 0), 0) || 1, land = this._tm2Land(), per = land ? 6 : 4, p = this._tm2Page("spsite", list.length, per);
+    const spark = (h, c) => { if (!h || h.length < 2) return `<span class="sl"></span>`; const mx = Math.max(0.1, ...h.map((x) => x[1])), h0 = h[0][0], sp = Math.max(1, h[h.length - 1][0] - h0);
+      const pt = h.map(([t, v]) => `${((t - h0) / sp * 96 + 2).toFixed(1)},${(38 - v / mx * 34).toFixed(1)}`).join(" ");
+      return `<svg class="sl" viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true"><polyline points="2,38 ${pt} 98,38" fill="${c}" fill-opacity=".18" stroke="none"/><polyline points="${pt}" fill="none" stroke="${c}" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>`; };
+    const cards = list.slice(p.from, p.to).map((x, i) => { const c = cols[(p.from + i) % cols.length], pc = Math.round((x.t || 0) / tot * 100);
+      return `<div class="card tm2site" style="--a:${c}"><div class="h"><b>${esc(x.n)}</b>${list.length > 1 ? `<em>${pc} %</em>` : ""}</div><div class="v"><b>${f1((x.t || 0) * C.cf)}<small>kWh heute</small></b><span>morgen ${f1((x.m || 0) * C.cf)} kWh</span></div>${spark(x.h, c)}</div>`; }).join("");
+    const cnt = Math.max(1, p.to - p.from), c = land ? Math.min(3, cnt) : cnt > 2 ? 2 : 1, r = Math.max(1, Math.ceil(cnt / c));
+    return `<div class="tm2gsh"><span>Alle Anlagen heute <b>${f1(tot * C.cf)} kWh</b></span><small>morgen ${f1(list.reduce((a, x) => a + (x.m || 0), 0) * C.cf)} kWh${C.cf !== 1 ? ` · korrigiert × ${num(C.cf, 2)}` : ""}${list.length < 2 ? " · einzeln ab zwei Anlagen" : ""}</small>${adm ? `<button class="tm2mini end" data-act="tm2g" data-g="spxopen">${ic("lock", 16)}Quellen &amp; Sensoren</button>` : ""}</div>
+      <div class="tm2swb" data-sw="spsite"><div class="tm2sites" style="--c:${c};--r:${r}">${cards}</div>${this._tm2Pager("spsite", p, "Anlagen")}</div>`;
+  }
+  /* Ein Tag aus dem Treffer-Kalender als Fenster */
+  _tm2SpModal(m) {
+    const x = this._tm2SpDays(this._sp()).find((y) => y.d === m.id);
+    return `<div class="ov" data-act="close"></div><div class="sheet wide tm2rm spx" role="dialog" aria-modal="true"><div class="sh"><div><b>Treffsicherheit${x && this._tm2SpHit(x) != null ? ` ${this._tm2SpHit(x)} %` : ""}</b><small>Solar-Prognose</small></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>${x ? this._spDay1(x) : `<div class="mut">Für diesen Tag gibt es keine Werte.</div>`}</div>`;
   }
   /* ================= Sponsor-Bereich (3.0.2.13) =================
      Die Integration bleibt kostenlos. Mit einem Sponsor-Schlüssel gibt es Schönes obendrauf: Abzeichen, Farbverläufe,
@@ -15579,7 +16204,8 @@ class FensterHeizungPanel extends HTMLElement {
     this._errQ.push(t);
     try { this._hass.callWS({ type: "fenster_heizung/err_report", dev: this._errDev(), ...p }).catch(() => { /* älteres Backend */ }); } catch (_) { /* egal */ }
   }
-  /* Fehlgeschlagener Befehl: nur echte Programmfehler – „nicht bereit“, „nicht gefunden“ usw. sind erwartete Antworten */
+  /* Fehlgeschlagener Befehl: nur echte Programmfehler – „nicht bereit“, „nicht gefunden“ und Hinweise zur Eingabe
+     („invalid_input“, z. B. „mindestens eine Entität wählen“) sind erwartete Antworten */
   _errCmd(msg, e) {
     const type = String((msg && msg.type) || "");
     if (!type.startsWith("fenster_heizung/") || type === "fenster_heizung/err_report" || type === "fenster_heizung/err_list") return;
@@ -21988,7 +22614,7 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
   }
   _tfRedraw() {
     if (this._modal && this._modal.type === "tfset") this._renderModal();
-    if ((this._mdActive && this._mdActive() === "dt" && !this._stOpen) || this._tfWantR) { this._tfWantR = false; this._render(); }
+    if ((this._mdActive && this._mdActive() === "dt" && !this._stOpen) || (this._tm2Shows && this._tm2Shows("dt")) || this._tfWantR) { this._tfWantR = false; this._render(); }
   }
   _tf() { const d = (this._tfD && this._tfD.d) || {}; return { series: [], found: [], ...d, cfg: { src: "auto", sensor: "", boerse: "auto", add: 18.6, vat: 19, down: 3, up: 4, res: "q", win_h: 3, ...(d.cfg || {}), nne: { on: false, ht_from: 17, ht_to: 20, ht_ct: 6.1, nt_from: 0, nt_to: 6, nt_ct: -4.2, ...((d.cfg || {}).nne || {}) }, devs: { ...((d.cfg || {}).devs || {}) }, alarm: this._tfAlarmCfg((d.cfg || {}).alarm) }, now: d.now || {}, devs: d.devs || [], alarm: d.alarm || {}, alog: d.alog || [] }; }
   _tfAlarmCfg(a = {}) { const x = a || {}; return { to: x.to || [], below: { on: false, ct: 20, ...(x.below || {}) }, above: { on: false, ct: 40, ...(x.above || {}) }, neg: { on: true, ...(x.neg || {}) }, tomorrow: { on: false, ...(x.tomorrow || {}) }, lead: x.lead || 0, quiet: { on: true, from: 22, to: 7, ...(x.quiet || {}) } }; }
@@ -22124,7 +22750,7 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
       <div class="card"><h2>${ic("bolt", 18)}Festpreis</h2><div class="wxtiles tftiles"><div class="wxtl" style="--tc:#2dd4bf"><div class="wxtn">Arbeitspreis</div><div class="wxtv">${this._tfCt(S.now.ct)}<small>ct/kWh</small></div><div class="wxts">aus den Haus-Werten</div></div></div>
       ${adm ? `<button class="btn2" style="margin-top:12px" data-act="tfxopen">${ic("sliders", 16)} Quelle wählen</button>` : ""}</div>${this._tfSrcCard(S)}`;
     return `${this._tfBanner(S)}${this._tfTiles(S)}${this._betaBox("Neu in v0.9: „Lohnt sich dein Tarif?“, Wochenansicht und „Daten prüfen“ in den Einstellungen.")}
-      ${this._tfDevCard(S)}${this._tfDays(S)}${this._tfCheckCard(S)}<div class="wxcols">${this._tfSlots(S)}${this._tfAlarmCard(S)}</div>${this._tfSrcCard(S)}`;
+      ${this._ehTarifCard(S)}${this._tfDevCard(S)}${this._tfDays(S)}${this._tfCheckCard(S)}<div class="wxcols">${this._tfSlots(S)}${this._tfAlarmCard(S)}</div>${this._tfSrcCard(S)}`;
   }
   /* Startseite: Preis, Stufe, Mini-Band der nächsten 12 Stunden */
   _tfStartK(K) {

@@ -2,6 +2,30 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.5b10] - 2026-11-26
+
+Neu: Zusatzheizung bei Frost und die vierte Stufe des Tablet-Modus (E-Auto, Stromtarif, Solar-Prognose). Dazu dieselbe Korrektur wie in der stabilen Version 2026.11.4.10.
+
+### Neu
+- **Modul 1 (v1.9 Build 12) · Zusatzheizung bei Frost:** Je Elektroheizer wählbar: „PV-Überschuss“ (wie bisher), „Frost“ oder „Beides“. Bei Frost heizt er mit Netzstrom zu, wenn es draußen unter der Frostgrenze ist (Vorgabe 0 °C) und der Raum nach der Wartezeit (20 Min.) noch zu kalt ist (Zuheizen bis 21 °C), Vorgabe 06:00–22:00 Uhr. Alles je Heizer änderbar. Die Heizkörper bleiben dabei an.
+- **Schutz:** Ein Raumtemperatur-Sensor ist Pflicht (seit 2 Stunden ohne Werte: aus). Vor dem ersten Einschalten kommt eine Sicherheitsabfrage. Höchstens 60 Min. am Stück, dann 15 Min. Pause, höchstens 8 Stunden am Tag. Aus bei offenem Fenster, Abwesenheit, Urlaub, Sommermodus oder ausgeschalteter Heizung und beim Beenden von Home Assistant. Meldung, wenn der Raum nicht wärmer wird, der Heizer nicht erreichbar ist oder der Sensor ausfällt.
+- **Regeln für alle Frost-Heizer:** höchste Netzleistung zusammen (Vorgabe 2000 W, die Priorität entscheidet) und auf Wunsch eine **Preisgrenze** mit dynamischem Tarif aus Modul 14. Ohne Preise wird trotzdem geheizt.
+- Heizerkarte, Raumkarte, Heizer-Bericht, Tablet und Modul 14 zeigen den Frostbetrieb, Netzstrom und heutige Kosten.
+- **Tablet-Modus · Modul 8 (v1.0.2 Build 2):** passt auf eine Seite, mit den Reitern „Laden“, „Planung“ und „Statistik“. Lademodus und Schnellstart ohne PIN, Fahrzeuge, Wallbox und Ladungen nach der PIN.
+- **Tablet-Modus · Modul 14 (v0.9 Build 2):** mit den Reitern „Preise“, „Geräte“ und „Tarif-Check“. „Erinnern“ ohne PIN.
+- **Tablet-Modus · Modul 16 (v1.0 Build 3):** mit den Reitern „Prognose“, „Treffsicherheit“ und „Anlagen“.
+
+### Behoben
+- **Raum-Dialog:** Fehlt ein Fenstersensor oder ein Thermostat, steht das jetzt direkt am Feld, und der Dialog springt dorthin. Vorher kam nur eine Meldung beim Speichern.
+- **Fehlerprotokoll:** Hinweise zu Eingaben (z. B. fehlendes Gerät, ungültige Uhrzeit, Raum hat schon einen Elektroheizer) zählen nicht mehr als Programmfehler.
+- **Elektroheizer-Statistik:** Fehlt der Wert des Netz-Sensors, zählt Heizstrom nicht mehr als PV-Strom.
+- **Tablet-Modus:** Die Reiterleiste auf der ganzen Seite von Modul 8 wird nicht mehr zusammengedrückt.
+
+### Noch offen
+- Der Reiter „Haus“ mit Grundriss und die übrigen Modulseiten kommen in den nächsten Stufen.
+- Echte Heizkosten werden nur für heute gespeichert, der Bericht schätzt frühere Tage.
+- Getestet im Browser mit Beispieldaten und mit simuliertem Home Assistant, noch nicht mit einem echten Heizer oder auf einem echten Tablet.
+
 ## [2026.11.5b9] - 2026-11-26
 
 Korrektur der Akku-Hinweise auf der Startseite – dieselbe wie in der stabilen Version 2026.11.4.9.

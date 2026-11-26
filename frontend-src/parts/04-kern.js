@@ -123,6 +123,7 @@ class FensterHeizungPanel extends HTMLElement {
       this._gen.summer = { mode: "auto", temp: 18, days: 3, ...(this._gen.summer || {}) };
       this._gen.wxadj = { on: false, mild: 12, down: 1, frost: 0, up: 1, ...(this._gen.wxadj || {}) };
       this._gen.pv = { ...PVDEF, ...(this._gen.pv || {}) };
+      this._gen.frost = { ...FRDEF, ...(this._gen.frost || {}) };
       this._mdApply(r);
       this._cfgOk = true; this._cfgTry = 0;
     } catch (e) {
