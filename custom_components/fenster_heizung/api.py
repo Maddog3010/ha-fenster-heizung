@@ -17,6 +17,7 @@ from homeassistant.helpers.dispatcher import async_dispatcher_connect
 
 from .verlauf import WHO
 from .backup import SafeStore
+from .eingabe import EingabeFehler
 from .const import (
     BLOCK_IDS,
     CONF_BLOCK_FROM,
@@ -483,7 +484,7 @@ async def ws_restore(hass: HomeAssistant, connection, msg: dict) -> None:
     data = msg["data"]
     rooms = data.get("rooms")
     if data.get("app") != DOMAIN or data.get("format") != BACKUP_FORMAT or not isinstance(rooms, dict):
-        connection.send_error(msg["id"], "invalid_format", "Das ist keine gültige Sicherung")
+        connection.send_error(msg["id"], "invalid_input", "Das ist keine gültige Sicherung")
         return
     entries = hass.config_entries.async_entries(DOMAIN)
     mapping = match_rooms(rooms, [(e.entry_id, e.title) for e in entries])
@@ -698,7 +699,7 @@ async def ws_set_plan(hass: HomeAssistant, connection, msg: dict) -> None:
     try:
         await ctrl.async_set_plan(msg["enabled"], msg["entries"], msg.get("mode"))
     except (ValueError, TypeError) as err:
-        connection.send_error(msg["id"], "invalid_format", str(err))
+        connection.send_error(msg["id"], _eingabe_code(err), str(err))
         return
     connection.send_result(msg["id"], ctrl.plan_dict())
 
@@ -714,6 +715,11 @@ async def ws_set_presence(hass: HomeAssistant, connection, msg: dict) -> None:
         connection.send_error(msg["id"], "not_ready", "Anwesenheit ist noch nicht bereit")
         return
     connection.send_result(msg["id"], await mgr.async_set(msg["presence"]))
+
+
+def _eingabe_code(err: Exception) -> str:
+    """Hinweis zu einer Eingabe → "invalid_input" (kein Programmfehler). Alles Unerwartete bleibt "invalid_format"."""
+    return "invalid_input" if isinstance(err, EingabeFehler) else "invalid_format"
 
 
 def _current_options(entry) -> dict[str, Any]:
@@ -768,7 +774,7 @@ async def ws_set_options(hass: HomeAssistant, connection, msg: dict) -> None:
     try:
         cleaned = clean_options(msg["options"])
     except ValueError as err:
-        connection.send_error(msg["id"], "invalid_format", str(err))
+        connection.send_error(msg["id"], _eingabe_code(err), str(err))
         return
     heater = cleaned.get("htr_entity")
     if heater and cleaned.get("htr_on") == "on":
@@ -776,7 +782,7 @@ async def ws_set_options(hass: HomeAssistant, connection, msg: dict) -> None:
             used = {**other.data, **other.options}.get("thermostats") or []
             if other.entry_id != entry.entry_id and heater in used:
                 connection.send_error(
-                    msg["id"], "invalid_format",
+                    msg["id"], "invalid_input",
                     f"Elektroheizer: {heater} ist Heizungsthermostat in „{other.title}“",
                 )
                 return
@@ -809,7 +815,7 @@ async def _heizer_do(hass: HomeAssistant, connection, msg: dict, fn) -> None:
     try:
         res = await fn(mgr)
     except ValueError as err:
-        connection.send_error(msg["id"], "invalid_format", f"Elektroheizer: {err}")
+        connection.send_error(msg["id"], _eingabe_code(err), f"Elektroheizer: {err}")
         return
     pv = hass.data.get(DOMAIN, {}).get("pv")
     if pv is not None:

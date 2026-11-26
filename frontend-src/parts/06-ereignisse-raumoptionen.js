@@ -324,6 +324,12 @@
     else if (a === "ohost" || a === "odel") { this._modal = null; this._renderModal(); this._nav(HA_PAGE); return; }
     else if (a === "osave") {
       if (m.busy) return;
+      const miss = [!d.window_sensors.length && "einen Fenstersensor", !d.thermostats.length && "ein Thermostat"].filter(Boolean);
+      if (miss.length) {   /* ohne beides lehnt das Backend ab: gleich hier zeigen, wo etwas fehlt */
+        m.miss = true; m.open.add("dev"); this._renderModal();
+        const x = this.shadowRoot.querySelector("#modal .omiss"); if (x) x.scrollIntoView({ block: "center" });
+        this._toast(`Bitte noch ${miss.join(" und ")} wählen`); return;
+      }
       m.busy = true; this._renderModal();
       try {
         await this._hass.callWS({ type: "fenster_heizung/set_options", entry_id: m.id, options: d });
@@ -344,14 +350,16 @@
     const txt = (k, o = {}) => row(o.l, o.h, `<input class="otxt" data-f="oval" data-k="${k}" value="${esc(d[k])}">`);
     const time = (k, o) => row(o.l, o.h, `<span class="onum"><span class="tin">${this._tIn(d[k] || "", false, `Uhrzeit`)}<input type="hidden" data-f="oval" data-k="${k}" value="${d[k] || ""}"></span>${d[k] ? `<button class="oclr" data-act="oclr" data-k="${k}" aria-label="Zurücksetzen">${ic("close", 14)}</button>` : ""}</span>`);
     const seg = (k, opts) => `<div class="seg oseg">${opts.map(([v, l]) => `<button class="${d[k] === v ? "sel" : ""}" data-act="oset" data-k="${k}" data-v="${v}">${l}</button>`).join("")}</div>`;
-    const multi = (k, cand, l, h) => row(l, h, `<div class="ochips">${d[k].map((e) => `<span class="och">${fn(e)}<button data-act="orm" data-k="${k}" data-e="${esc(e)}" aria-label="Entfernen">${ic("close", 12)}</button></span>`).join("")}${this._wzSel(cand.filter((e) => !d[k].includes(e)), "", "oadd", `data-k="${k}"`, "＋ hinzufügen")}</div>`);
+    const need = (k, text) => (d[k].length ? "" : `<div class="omiss${m.miss ? " err" : ""}" role="alert">${ic("alert", 15)}<span>${text}</span></div>`);
+    const multi = (k, cand, l, h, warn = "") => row(l, h, `<div class="ochips">${d[k].map((e) => `<span class="och">${fn(e)}<button data-act="orm" data-k="${k}" data-e="${esc(e)}" aria-label="Entfernen">${ic("close", 12)}</button></span>`).join("")}${this._wzSel(cand.filter((e) => !d[k].includes(e)), "", "oadd", `data-k="${k}"`, "＋ hinzufügen")}</div>${warn}`);
     const one = (k, cand, l, h) => { const c = d[k] && !cand.includes(d[k]) ? [d[k], ...cand] : cand; return row(l, h, this._wzSel(c, d[k], "oval", `data-k="${k}"`, "– keine –")); };
     const FU = { erdgas: ["Erdgas", "m³", 10], heizoel: ["Heizöl", "l", 10], fluessiggas: ["Flüssiggas", "l", 6.6], pellets: ["Pellets", "kg", 4.8], strom: ["Wärmepumpe / Strom", "kWh", 1] }, fu = FU[d.fuel] || FU.erdgas;
     const sec = (id, ic2, title, sum, body) => `<section class="osec ${m.open.has(id) ? "open" : ""}"><button class="oh" data-act="osec" data-k="${id}" aria-expanded="${m.open.has(id)}"><span class="oi">${ic(ic2, 18)}</span><div><b>${title}</b><span>${sum}</span></div>${ic("chev", 18)}</button>${m.open.has(id) ? `<div class="ob">${body}</div>` : ""}</section>`;
     const A = d.action === "setback" ? `Absenken auf ${num0(d.setback_temp)} °C` : "Thermostat aus";
     return [
-      sec("dev", "window", "Fenster &amp; Thermostate", `${d.window_sensors.length} Fenster · ${d.thermostats.length} Thermostat${d.thermostats.length === 1 ? "" : "e"}`,
-        multi("window_sensors", ent("binary_sensor"), "Fenstersensoren") + multi("thermostats", ent("climate"), "Heizungsthermostate") + this._hsRoomNote(d.thermostats)),
+      sec("dev", "window", "Fenster &amp; Thermostate", `${d.window_sensors.length ? `${d.window_sensors.length} Fenster` : `<i class="oneed">Fenstersensor fehlt</i>`} · ${d.thermostats.length ? `${d.thermostats.length} Thermostat${d.thermostats.length === 1 ? "" : "e"}` : `<i class="oneed">Thermostat fehlt</i>`}`,
+        multi("window_sensors", ent("binary_sensor"), "Fenstersensoren", "", need("window_sensors", "Mindestens einen Fenstersensor wählen, sonst lässt sich der Raum nicht speichern.")) +
+        multi("thermostats", ent("climate"), "Heizungsthermostate", "", need("thermostats", "Mindestens ein Thermostat wählen, sonst lässt sich der Raum nicht speichern.")) + this._hsRoomNote(d.thermostats)),
       sec("ctl", "radiator", "Regelung", `${d.open_delay} s auf · ${d.close_delay} s zu · ${A}`,
         num("open_delay", "s", { l: "Verzögerung nach Öffnen", h: "So lange muss das Fenster offen sein, bevor die Heizung pausiert.", min: 0, max: 3600, step: 5 }) +
         num("close_delay", "s", { l: "Verzögerung nach Schließen", min: 0, max: 3600, step: 5 }) +

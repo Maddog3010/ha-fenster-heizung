@@ -30,6 +30,8 @@ import re
 import time
 from typing import Any
 
+from .eingabe import EingabeFehler
+
 _LOGGER = logging.getLogger(__name__)
 
 VERSION = 1
@@ -401,15 +403,15 @@ class HeizerManager:
         room = str(inp.get("room") or "")
         entry = self._entry(room)
         if entry is None:
-            raise ValueError("Raum nicht gefunden")
+            raise EingabeFehler("Raum nicht gefunden")
         if by_room(self.st, room) is not None or is_on(self._opts(entry)):
-            raise ValueError(f"In „{entry.title}“ ist schon ein Elektroheizer eingerichtet")
+            raise EingabeFehler(f"In „{entry.title}“ ist schon ein Elektroheizer eingerichtet")
         if len(self.st["heaters"]) >= MAX_HEATERS:
-            raise ValueError("Zu viele Elektroheizer")
+            raise EingabeFehler("Zu viele Elektroheizer")
         entity = str(inp.get("entity") or "")
         err = check_entity(self.st, entity, room, self._thermostats())
         if err:
-            raise ValueError(err)
+            raise EingabeFehler(err)
         fields = {**EMPTY, **to_options(inp), "htr_on": "on", "htr_entity": entity}
         self._check(entry, fields)
         now = time.time()
@@ -429,23 +431,23 @@ class HeizerManager:
     async def async_update(self, hid: str, inp: dict[str, Any]) -> dict[str, Any]:
         h = by_id(self.st, hid)
         if h is None:
-            raise ValueError("Elektroheizer nicht gefunden")
+            raise EingabeFehler("Elektroheizer nicht gefunden")
         if "room" in inp and inp["room"] != h["room"]:
             return await self.async_move(hid, str(inp["room"]), inp.get("target"))
         entry = self._entry(h["room"])
         if entry is None:
-            raise ValueError("Raum nicht gefunden")
+            raise EingabeFehler("Raum nicht gefunden")
         fields = to_options(inp)
         if "htr_entity" in fields:
             err = check_entity(self.st, str(fields["htr_entity"] or ""), h["room"], self._thermostats(), skip_id=hid)
             if err:
-                raise ValueError(err)
+                raise EingabeFehler(err)
         if "name" in inp:
             h["name"] = clean_name(inp["name"], h["name"])
         if "paused" in inp:
             ctrl = self._ctrl(h["room"])
             if ctrl is None:
-                raise ValueError("Raum ist gerade nicht geladen")
+                raise EingabeFehler("Raum ist gerade nicht geladen")
             await ctrl.heater.async_set_manual(not bool(inp["paused"]))
         if fields:
             new = {**h["cfg"], **fields, "htr_on": "on"}
@@ -462,18 +464,18 @@ class HeizerManager:
         """Heizer in einen anderen Raum stellen; Statistik und Schalterstellung ziehen mit."""
         h = by_id(self.st, hid)
         if h is None:
-            raise ValueError("Elektroheizer nicht gefunden")
+            raise EingabeFehler("Elektroheizer nicht gefunden")
         if room == h["room"]:
-            raise ValueError("Der Heizer steht schon in diesem Raum")
+            raise EingabeFehler("Der Heizer steht schon in diesem Raum")
         new, old = self._entry(room), self._entry(h["room"])
         if new is None:
-            raise ValueError("Raum nicht gefunden")
+            raise EingabeFehler("Raum nicht gefunden")
         if by_room(self.st, room) is not None or is_on(self._opts(new)):
-            raise ValueError(f"In „{new.title}“ ist schon ein Elektroheizer eingerichtet")
+            raise EingabeFehler(f"In „{new.title}“ ist schon ein Elektroheizer eingerichtet")
         entity = h["cfg"].get("htr_entity") or ""
         err = check_entity(self.st, entity, room, self._thermostats(), skip_id=hid)
         if err:
-            raise ValueError(err)
+            raise EingabeFehler(err)
         fields = {**h["cfg"], "htr_on": "on"}
         if target is not None:
             fields["htr_target"] = target
@@ -503,7 +505,7 @@ class HeizerManager:
     async def async_remove(self, hid: str, keep_stats: bool = True) -> dict[str, Any]:
         h = by_id(self.st, hid)
         if h is None:
-            raise ValueError("Elektroheizer nicht gefunden")
+            raise EingabeFehler("Elektroheizer nicht gefunden")
         entry = self._entry(h["room"])
         ctrl = self._ctrl(h["room"])
         stats = None
@@ -525,17 +527,17 @@ class HeizerManager:
         """Heizer aus dem Papierkorb zurückholen (auch „Rückgängig“ direkt nach dem Entfernen)."""
         t = next((x for x in self.st["trash"] if x["id"] == tid), None)
         if t is None:
-            raise ValueError("Nicht mehr im Papierkorb")
+            raise EingabeFehler("Nicht mehr im Papierkorb")
         room = room or t["room"]
         entry = self._entry(room)
         if entry is None:
-            raise ValueError("Den Raum gibt es nicht mehr. Bitte einen anderen Raum wählen")
+            raise EingabeFehler("Den Raum gibt es nicht mehr. Bitte einen anderen Raum wählen")
         if by_room(self.st, room) is not None or is_on(self._opts(entry)):
-            raise ValueError(f"In „{entry.title}“ ist inzwischen ein anderer Elektroheizer. Bitte einen anderen Raum wählen")
+            raise EingabeFehler(f"In „{entry.title}“ ist inzwischen ein anderer Elektroheizer. Bitte einen anderen Raum wählen")
         entity = t["cfg"].get("htr_entity") or ""
         err = check_entity(self.st, entity, room, self._thermostats())
         if err:
-            raise ValueError(err)
+            raise EingabeFehler(err)
         fields = {**t["cfg"], "htr_on": "on"}
         self._check(entry, fields)
         h = {"id": t["id"], "name": t["name"], "room": room, "created": t.get("created", 0), "cfg": cfg_of(fields)}
@@ -554,7 +556,7 @@ class HeizerManager:
     async def async_purge(self, tid: str) -> dict[str, Any]:
         """Eintrag endgültig aus dem Papierkorb löschen."""
         if not any(x["id"] == tid for x in self.st["trash"]):
-            raise ValueError("Nicht mehr im Papierkorb")
+            raise EingabeFehler("Nicht mehr im Papierkorb")
         self.st["trash"] = [x for x in self.st["trash"] if x["id"] != tid]
         self._save()
         return {"purged": tid}
@@ -565,14 +567,14 @@ class HeizerManager:
 
         dom = entity.split(".")[0] if "." in entity else ""
         if dom not in ("switch", "climate"):
-            raise ValueError("Nur Schalter oder Klima-Geräte")
+            raise EingabeFehler("Nur Schalter oder Klima-Geräte")
         if any(h["cfg"].get("htr_entity") == entity for h in self.st["heaters"]):
-            raise ValueError("Das Gerät ist schon als Heizer eingerichtet. Ein Testlauf geht nur beim Einrichten")
+            raise EingabeFehler("Das Gerät ist schon als Heizer eingerichtet. Ein Testlauf geht nur beim Einrichten")
         if any(entity in ths for ths in self._thermostats().values()):
-            raise ValueError("Das Gerät ist Heizungsthermostat eines Raums")
+            raise EingabeFehler("Das Gerät ist Heizungsthermostat eines Raums")
         st = self.hass.states.get(entity)
         if st is None or st.state in ("unavailable", "unknown"):
-            raise ValueError("Das Gerät ist gerade nicht erreichbar")
+            raise EingabeFehler("Das Gerät ist gerade nicht erreichbar")
         seconds = max(5, min(TEST_MAX_S, int(seconds)))
         old = self._tests.pop(entity, None)
         if old is not None:
@@ -584,7 +586,7 @@ class HeizerManager:
             modes = st.attributes.get("hvac_modes") or []
             mode = next((m for m in ("heat", "auto", "heat_cool") if m in modes), None)
             if mode is None:
-                raise ValueError("Das Klima-Gerät kennt keinen Heizmodus")
+                raise EingabeFehler("Das Klima-Gerät kennt keinen Heizmodus")
             await self.hass.services.async_call("climate", "set_hvac_mode", {"entity_id": entity, "hvac_mode": mode}, blocking=True)
             back = ("climate", "set_hvac_mode", {"entity_id": entity, "hvac_mode": st.state}) if st.state in modes and st.state != mode else None
 

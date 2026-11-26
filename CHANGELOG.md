@@ -2,6 +2,14 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4.10] - 2026-11-26
+
+Korrektur: Fehlt beim Speichern eines Raums etwas, zeigt Strom & Wärme jetzt, wo.
+
+### Behoben
+- **Raum-Dialog:** Fehlt ein Fenstersensor oder ein Thermostat, steht das jetzt direkt am Feld, und der Dialog springt dorthin. Vorher kam nur eine Meldung beim Speichern.
+- **Fehlerprotokoll:** Hinweise zu Eingaben (z. B. fehlendes Gerät, ungültige Uhrzeit, Raum hat schon einen Elektroheizer) zählen nicht mehr als Programmfehler.
+
 ## [2026.11.4.9] - 2026-11-26
 
 Korrektur der Akku-Hinweise auf der Startseite.

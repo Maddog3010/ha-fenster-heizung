@@ -607,6 +607,9 @@ button.rico::after{content:"";position:absolute;right:-5px;bottom:-5px;width:18p
 .oclr{width:26px;height:26px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--mut);display:grid;place-items:center;cursor:pointer}
 .oseg{margin:0}.oseg button{padding:9px 8px}
 .ochips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.omiss{display:flex;gap:8px;align-items:flex-start;margin-top:8px;padding:8px 10px;border-radius:10px;font-size:.8rem;line-height:1.4;border:1px solid color-mix(in srgb,#f59e0b 45%,transparent);background:color-mix(in srgb,#f59e0b 12%,transparent)}
+.omiss .ic{color:#f59e0b;flex:none}.omiss.err{border-color:color-mix(in srgb,#ef4444 60%,transparent);background:color-mix(in srgb,#ef4444 13%,transparent)}.omiss.err .ic{color:#ef4444}
+.oh .oneed{font-style:normal;font-weight:700;color:#f59e0b}
 .och{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:5px 6px 5px 11px;font-size:.82rem;background:color-mix(in srgb,var(--teal) 10%,transparent);word-break:break-all}
 .och button{width:20px;height:20px;border-radius:50%;border:0;background:color-mix(in srgb,var(--primary-text-color) 12%,transparent);color:inherit;display:grid;place-items:center;cursor:pointer;padding:0;flex:none}
 .oadd{border-style:dashed;color:var(--teal);font-weight:600;padding:6px 10px;border-radius:999px;font-size:.82rem}
