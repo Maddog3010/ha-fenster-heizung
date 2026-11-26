@@ -366,7 +366,7 @@ Addons installierst du unter **Einstellungen → Addons** und kannst sie dort je
 
 - **Zuhause:** eine Ampel-Kachel je aktivem Modul, ein Tipp öffnet das Modul.
 - **Wetter**, **Personen** und **Alarm** (Schalten ist ab Werk aus und wird immer bestätigt).
-- **Hinweise:** Fenster zu lange offen, Warmwasser, schwache Batterien, Müllabfuhr, Alarm.
+- **Hinweise:** Fenster zu lange offen, Warmwasser, schwache Batterien, Müllabfuhr, Alarm. Ab 2026.11.4.9 und 2026.11.5b9 bleiben Speicher-Ladestände außen vor, und jeder Akku-Hinweis lässt sich mit „Nie melden“ abschalten (nur Admin; wieder einschalten unter Einstellungen › Darstellung › Startseite).
 - Mit **Anpassen** verschiebst du Karten oder blendest sie aus. Ein Direktlink wie `?modul=gs` öffnet gleich ein Modul. Die Startseite lässt sich unter **Einstellungen → Darstellung** ein- und ausschalten.
 </details>
 

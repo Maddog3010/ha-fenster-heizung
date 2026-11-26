@@ -100,6 +100,7 @@ def clean_layout(raw: Any) -> dict[str, Any]:
     return out
 
 
+BAT_ENT = re.compile(r"^(sensor|binary_sensor)\.[a-z0-9_]{1,200}$")
 MAX_MESS = 20
 _MS_ID = re.compile(r"^ms_[a-z0-9]{1,16}$")
 _MS_ENT = re.compile(r"^(sensor|binary_sensor)\.[a-z0-9_]{1,200}$")
@@ -317,6 +318,9 @@ def _clean_look(raw: dict[str, Any]) -> dict[str, Any]:
         al = start.get("alarm")
         if isinstance(al, str) and (al == "" or re.match(r"^alarm_control_panel\.[a-z0-9_]+$", al)):
             sc2["alarm"] = al
+        off = start.get("batoff")  # Akku-Hinweise, die abgeschaltet wurden
+        if isinstance(off, list):
+            sc2["batoff"] = list(dict.fromkeys(x for x in off if isinstance(x, str) and BAT_ENT.match(x)))[:200]
         bub = start.get("bub")
         if isinstance(bub, dict):
             bc: dict[str, Any] = {}

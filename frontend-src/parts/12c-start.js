@@ -4,7 +4,7 @@
   _hzCfg() {
     const l = (this._cfg && this._cfg.layout && this._cfg.layout.start) || {}, b = l.bub || {}, known = Object.keys(HZ_NAMES), o = (Array.isArray(l.order) ? l.order : []).filter((x) => known.includes(x));
     return {
-      look: l.look === "classic" ? "classic" : "new", amp: l.amp !== false, on: l.on !== false, open: l.open === "last" ? "last" : "start", greet: l.greet !== false, alarm: typeof l.alarm === "string" ? l.alarm : "", ctl: l.ctl === true,
+      look: l.look === "classic" ? "classic" : "new", amp: l.amp !== false, on: l.on !== false, batoff: (Array.isArray(l.batoff) ? l.batoff : []).filter((x) => typeof x === "string"), open: l.open === "last" ? "last" : "start", greet: l.greet !== false, alarm: typeof l.alarm === "string" ? l.alarm : "", ctl: l.ctl === true,
       order: [...o, ...known.filter((x) => !o.includes(x))], hidden: (Array.isArray(l.hidden) ? l.hidden : []).filter((x) => known.includes(x)),
       bub: { ids: (Array.isArray(b.ids) ? b.ids : HZ_BUB_DEF).filter((x) => HZ_BUBS.includes(x)).slice(0, 8), warn: b.warn !== false, tap: b.tap === "module" ? "module" : "block" },
     };
@@ -31,6 +31,16 @@
     return out;
   }
   _hzMu() { return this._muOn() ? (this._mu().bins || []) : []; }
+  /* Akku-Hinweise: Der Ladestand eines Speichers ist keine leere Gerätebatterie. Ausgenommen sind battery_sim, die in
+     Energiequellen und E-Auto eingetragenen Ladestände und alle Sensoren, die über „Nie melden“ abgeschaltet wurden. */
+  _hzBatSkip() {
+    const skip = new Set(this._hzCfg().batoff), add = (e) => { if (e) skip.add(e); };
+    add(this._pv().soc_sensor); add((this._haus || {}).soc);
+    if (this._mdState().on.ev && !this._wbD) this._wbLoad();
+    add((this._evState().ent || {}).soc); (this._wb().vehicles || []).forEach((v) => add((v.ent || {}).soc));
+    const E = this._hass.entities || {};
+    return (e) => skip.has(e) || (E[e] || {}).platform === "battery_sim";
+  }
   _hzHints() {
     const H = this._hass, st = H.states, out = [], o = this._out();
     this._hzWin().forEach((w) => { const m = Math.round((Date.now() - w.since) / 60000); if (m >= 15) out.push({ k: `win:${w.name}`, since: w.since, i: "windowOpen", t: `${esc(w.name)}: Fenster seit ${this._hzSince(new Date(w.since).toISOString())} offen`, s: o.t != null ? `Außen ${num(o.t, 0)} °C` : "", r: "jetzt", c: "wa", mod: "fh" }); });
@@ -42,17 +52,29 @@
     if (this._muOn()) { const M = this._mu(), B = M.cfg && M.cfg.bags; (M.notes || []).filter((n) => n.k === "pre" || n.k === "vac").slice(0, 2).forEach((n) => out.push({ k: `mu:${n.k}:${n.d || ""}`, i: n.k === "vac" ? "suitcase" : "today", t: n.k === "vac" ? `Abholung im ${esc(String(n.text).split(":")[0])}` : esc(String(n.text).split(/\. (?=[A-ZÄÖÜ])/)[0]), s: n.k === "vac" ? esc(String(n.text).split(": ").slice(1).join(": ").replace(/\. Vorher.*$/, "")) : "Müllabfuhr", r: "", c: "in", mod: "mu", nodone: true }));
       if (B && B.on && M.bags != null && M.bags <= B.warn) out.push({ k: "mu:bags", i: "trash", t: `Nur noch ${M.bags} Säcke`, s: "Müllabfuhr · Vorrat", r: "", c: "in", mod: "mu", nodone: true }); }
     const al = this._hzAlarmEnt(); if (al && st[al] && st[al].state === "triggered") out.push({ k: "alarm", nosn: true, since: new Date(st[al].last_changed || Date.now()).getTime(), i: "shield", t: "Alarm ausgelöst", s: esc(this._wzName(al)), r: "jetzt", c: "bad", blk: "alarm" });
-    let nb = 0;
+    let nb = 0; const skip = this._hzBatSkip(), later = this._hzNew() ? this._hzLaterMap() : {};
+    /* höchstens drei Akku-Hinweise; auf „Später“ gestellte zählen nicht mit, damit sie keinen anderen verdrängen */
+    const count = (e) => { if (!(later[`bat:${e}`] > Date.now())) nb++; };
     Object.keys(st).forEach((e) => {
       if (nb >= 3) return; const s = st[e], a = s.attributes || {};
-      if (e.startsWith("binary_sensor.") && a.device_class === "battery" && s.state === "on") { nb++; out.push({ k: `bat:${e}`, src: "Batterien", since: new Date(s.last_changed || Date.now()).getTime(), i: "alert", t: `Batterie schwach: ${esc(a.friendly_name || e)}`, s: "Batterie wechseln", r: "", c: "wa" }); }
-      else if (e.startsWith("sensor.") && a.device_class === "battery" && isFinite(parseFloat(s.state)) && parseFloat(s.state) <= 15) { nb++; out.push({ k: `bat:${e}`, src: "Batterien", since: new Date(s.last_changed || Date.now()).getTime(), i: "alert", t: `Batterie schwach: ${esc(a.friendly_name || e)}`, s: `${num(parseFloat(s.state), 0)} %`, r: "", c: "wa" }); }
+      if (a.device_class !== "battery" || skip(e)) return;
+      if (e.startsWith("binary_sensor.") && a.device_class === "battery" && s.state === "on") { count(e); out.push({ k: `bat:${e}`, bat: e, src: "Batterien", since: new Date(s.last_changed || Date.now()).getTime(), i: "alert", t: `Batterie schwach: ${esc(a.friendly_name || e)}`, s: "Batterie wechseln", r: "", c: "wa" }); }
+      else if (e.startsWith("sensor.") && a.device_class === "battery" && isFinite(parseFloat(s.state)) && parseFloat(s.state) <= 15) { count(e); out.push({ k: `bat:${e}`, bat: e, src: "Batterien", since: new Date(s.last_changed || Date.now()).getTime(), i: "alert", t: `Batterie schwach: ${esc(a.friendly_name || e)}`, s: `${num(parseFloat(s.state), 0)} %`, r: "", c: "wa" }); }
     });
     try { const sp = this._spnS(); if (this._admin() && sp.soon) out.push({ k: "spn", src: "Sponsor", i: "heart", t: sp.soon === 1 ? "Ein Sponsor-Schlüssel läuft bald ab" : `${sp.soon} Sponsor-Schlüssel laufen bald ab`, s: "Unter Einstellungen, Sponsor-Bereich verlängern", r: "bald", c: this._hzNew() ? "in" : "wa" }); } catch (_) { /* egal */ }
     this._adHints().forEach((h) => out.push(h));
     if (this._mdState().on.dt) { try { const h = this._tfHint(); if (h) out.push(h); } catch (_) { /* Modul 14 noch nicht geladen */ } }
     if (this._hzNew()) { this._hzWarnX().forEach((h) => out.push(h)); const ff = this._hzFrostFc(); if (ff) out.push({ k: "frostfc", i: "snow", t: "Frost heute Nacht", s: `ab ${ff.at.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })} · bis ${num(ff.min, 0)} °C`, r: "heute", c: "wa", blk: "wetter", src: "Wetter", hd: "weather", frost: true }); }
     const rank = { bad: 0, wa: 1 }; return out.sort((a, b) => (rank[a.c] ?? 2) - (rank[b.c] ?? 2));
+  }
+  _hzBatBtn(h) { return h.bat && this._admin() ? `<button class="hzzb q hzbno" data-act="hzbatoff" data-k="${esc(h.bat)}" aria-label="Diesen Akku nie melden">Nie melden</button>` : ""; }
+  /* Einstellungen der Startseite: abgeschaltete Akku-Hinweise wieder einschalten */
+  _hzBatRows(off, adm) {
+    const st = this._hass.states;
+    const rows = off.map((e) => `<div class="vrow"><span>${esc(st[e] ? this._wzName(e) : e)}<small class="mut" style="display:block;overflow-wrap:anywhere">${esc(e)}</small></span><button class="hzzb" data-act="hzbaton" data-k="${esc(e)}" ${adm ? "" : "disabled"}>Wieder melden</button></div>`).join("");
+    return `<div class="lsec" style="margin-top:12px">${ic("alert", 15)}Akku-Hinweise</div>
+      <div class="mut sm" style="margin:0 0 4px">Gemeldet werden Batterien ab 15 % abwärts. Speicher bleiben außen vor: battery_sim und die bei Energie und E-Auto eingetragenen Ladestände.</div>
+      ${rows || `<div class="mut sm">Kein Akku abgeschaltet. Das geht mit „Nie melden“ direkt am Hinweis.</div>`}`;
   }
   /* Kachel je aktives Modul */
   _hzTile(m) {
@@ -123,7 +145,7 @@
   }
   _hzHinweise(hints) {
     if (this._hzNew()) return this._hzZentrale(hints);
-    return `<div class="card"><h2>${ic("info", 18)}Hinweise<span class="hzrt">alle Module</span></h2>${hints.length ? `<div class="hzl">${hints.slice(0, 6).map((h) => `<${h.mod || h.blk ? `button data-act="hzgo" data-k="${h.mod || ""}" data-b="${h.blk || ""}"` : "div"} class="hzr ${h.c || ""}${this._hzNew() ? ` n z-${this._hzZ(h.c || "in")}` : ""}"><span class="hzri">${ic(h.i, 22)}</span><span class="hzrx"><b>${h.t}</b>${h.s ? `<small>${h.s}</small>` : ""}</span>${h.r ? `<span class="hzrr ${h.c || ""}">${h.r}</span>` : ""}</${h.mod || h.blk ? "button" : "div"}>`).join("")}</div>` : `<div class="mut sm">Keine Hinweise. Fenster, Batterien, Warmwasser und Termine sind in Ordnung.</div>`}</div>`;
+    return `<div class="card"><h2>${ic("info", 18)}Hinweise<span class="hzrt">alle Module</span></h2>${hints.length ? `<div class="hzl">${hints.slice(0, 6).map((h) => `<${h.mod || h.blk ? `button data-act="hzgo" data-k="${h.mod || ""}" data-b="${h.blk || ""}"` : "div"} class="hzr ${h.c || ""}${this._hzNew() ? ` n z-${this._hzZ(h.c || "in")}` : ""}"><span class="hzri">${ic(h.i, 22)}</span><span class="hzrx"><b>${h.t}</b>${h.s ? `<small>${h.s}</small>` : ""}</span>${h.r ? `<span class="hzrr ${h.c || ""}">${h.r}</span>` : ""}${this._hzBatBtn(h)}</${h.mod || h.blk ? "button" : "div"}>`).join("")}</div>` : `<div class="mut sm">Keine Hinweise. Fenster, Batterien, Warmwasser und Termine sind in Ordnung.</div>`}</div>`;
   }
   _hzEnergie() {
     if (!this._enOn()) return ""; const N = this._enNow(); if (!N) return "";
@@ -186,6 +208,13 @@
       else if (d.blk) this._hzScroll(d.blk);
       return;
     }
+    if (a === "hzbatoff" || a === "hzbaton") {
+      if (!this._admin() || !k) return;
+      const l = this._hzCfg().batoff.filter((x) => x !== k), off = a === "hzbatoff";
+      this._hzSave({ batoff: off ? [...l, k] : l });
+      if (this._cfgOk) this._toast(off ? "Wird nicht mehr gemeldet. Rückgängig unter Darstellung › Startseite" : "Wird wieder gemeldet");
+      return;
+    }
     if (a === "hzopen") { this._modal = { type: "hzset" }; this._renderModal(); return; }
     if (a === "hzbubopen") { this._modal = { type: "hzbub" }; this._renderModal(); return; }
     if (a === "hzback") { this._modal = { type: "hzset" }; this._renderModal(); return; }
@@ -244,6 +273,7 @@
       <div class="vrow"><span>Beim Öffnen zeigen<small class="mut" style="display:block">Gilt, wenn du das Dashboard in Home Assistant neu öffnest. Ein Direktlink mit <code>?modul=</code> öffnet sein Modul.</small></span><span class="gschs">${chip("hzopenm", "start", "Start", c.open === "start")}${chip("hzopenm", "last", "Letztes Modul", c.open === "last")}</span></div>
       <div class="vrow"><span>Begrüßung mit Namen<small class="mut" style="display:block">Vorname des angemeldeten Benutzers.</small></span>${sw("greet", c.greet, "Begrüßung mit Namen")}</div>
       ${this._hzLookRows(c, sw, chip)}
+      ${this._hzBatRows(c.batoff, adm)}
       <div class="lsec" style="margin-top:12px">${ic("shield", 15)}Alarm</div>
       ${alarms.length ? this._wzSel(alarms, c.alarm, "hzsel", "", "– automatisch –") : `<div class="mut sm">Keine Alarmanlage in Home Assistant gefunden. Der Block bleibt dann weg.</div>`}
       <div class="vrow"><span>Alarm schalten erlauben<small class="mut" style="display:block">Zeigt Knöpfe für Unscharf, Abwesend und Zu Hause. Jedes Schalten wird bestätigt. Das schaltet echte Geräte.</small></span>${sw("ctl", c.ctl, "Alarm schalten erlauben")}</div>

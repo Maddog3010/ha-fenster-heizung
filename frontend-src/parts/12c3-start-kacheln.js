@@ -153,7 +153,7 @@
       const go = h.mod || h.blk ? `<button class="hzzb" data-act="hzgo" data-k="${h.mod || ""}" data-b="${h.blk || ""}">Ansehen</button>` : "";
       const done = h.mod === "mu" && this._muxAct && !h.nodone ? `<button class="hzzb" data-act="${h.muin ? "hzmuin" : "hzmudone"}">${h.muin ? "Wieder drin" : "Erledigt"}</button>` : "";
       const later = h.nosn ? "" : `<button class="hzzb q" data-act="hzlater" data-k="${esc(k)}" aria-label="Später erinnern">Später</button>`;
-      return `<div class="hzz z-${z}"><span class="hzzi">${pic}</span><div class="hzzx"><b>${h.t}</b><small>${esc(this._hzSrc(h))}${h.s ? ` · ${h.s}` : ""}</small><em class="hzzp">${ZN[z] || "Info"}</em></div><div class="hzzbs">${done || go}${later}</div></div>`;
+      return `<div class="hzz z-${z}"><span class="hzzi">${pic}</span><div class="hzzx"><b>${h.t}</b><small>${esc(this._hzSrc(h))}${h.s ? ` · ${h.s}` : ""}</small><em class="hzzp">${ZN[z] || "Info"}</em></div><div class="hzzbs">${done || go}${later}${this._hzBatBtn(h)}</div></div>`;
     };
     const head = `<h2>${ic("info", 18)}Hinweise${vis.length ? `<span class="hzzc">${vis.length}</span>` : ""}${nw ? `<span class="hzzw z-warn">${nw} ${nw === 1 ? "Warnung" : "Warnungen"}</span>` : ""}<span class="hzrt">nach Dringlichkeit</span></h2>`;
     const body = vis.length ? `<div class="hzzl">${show.map(row).join("")}</div>${many ? `<button class="hzzmore" data-act="hzall">+${vis.length - 3} weitere</button>` : vis.length >= 4 ? `<button class="hzzmore" data-act="hzall">Weniger zeigen</button>` : ""}`
