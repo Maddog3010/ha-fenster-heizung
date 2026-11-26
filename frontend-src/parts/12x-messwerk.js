@@ -1,11 +1,13 @@
   /* ================= Messwerk (M1): alle Sensoren der Module 1–19 an einer Stelle, „genutzt in“ ================= */
   _mwLoad(force) {
     if (!this._hass || this._mwBusy) return;
-    if (!force && this._mwD && Date.now() - this._mwTs < 20000) return;
+    /* Auch nach „noch nicht bereit“ oder einem Fehler warten: Jedes Neuzeichnen ruft hierher, ohne Pause entstand eine Dauerabfrage. */
+    if (!force && this._mwTs && Date.now() - this._mwTs < (this._mwD ? 20000 : 10000)) return;
     this._mwBusy = true;
     this._hass.callWS({ type: "fenster_heizung/mw_get" }).then((r) => { this._mwD = r && r.ready ? r : null; this._mwTs = Date.now(); })
       .catch(() => { this._mwD = null; this._mwTs = Date.now(); })
-      .finally(() => { this._mwBusy = false; if (this._stOpen) this._render(); if (this._modal && this._modal.type === "mwdet") this._renderModal(); });
+      .finally(() => { this._mwBusy = false; if (this._stOpen) this._render(); if (this._modal && this._modal.type === "mwdet") this._renderModal();
+        clearTimeout(this._mwT); if (!this._mwD && this._stOpen) this._mwT = setTimeout(() => { if (this._stOpen) this._mwLoad(); }, 10100); });  /* solange die Einstellungen offen sind, in Ruhe erneut versuchen */
   }
   _mwMod(m) { return m === 0 ? "Allgemein" : `Modul ${m}`; }
   _mwModName(m) { const x = MODS.find((y) => y.n === m) || [MOD_MU, MOD_LI].find((y) => y && y.n === m); return m === 0 ? "Start, Tablet, Personen, Labs" : x ? x.name : ((this._mwD || {}).mods || {})[m] || ""; }

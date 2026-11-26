@@ -2,6 +2,13 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4.11] - 2026-11-26
+
+Korrektur: Die Einstellungen fragen bei fehlenden Messwerk-Daten nicht mehr ununterbrochen neu an.
+
+### Behoben
+- **Einstellungen / Messwerk:** Lieferte das Messwerk keine Daten (z. B. kurz nach dem Neustart), fragte die Einstellungsseite ununterbrochen neu an. Jetzt wartet sie 10 Sekunden bis zum nächsten Versuch.
+
 ## [2026.11.4.10] - 2026-11-26
 
 Korrektur: Fehlt beim Speichern eines Raums etwas, zeigt Strom & Wärme jetzt, wo.
