@@ -805,7 +805,7 @@ const MV = {
   pl: { v: "0.1", b: 2, d: "2026-11-22", p: "2026.11.4b48", log: [["0.1", 2, "2026.11.4b48", "Neues Banner: Pool mit Wellen und Saunahütte, Außentemperatur, PV-Überschuss und Strompreis"], ["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   bt: { v: "0.1", b: 2, d: "2026-11-22", p: "2026.11.4b48", log: [["0.1", 2, "2026.11.4b48", "Neues Banner: Akku mit Füllstand und PV-Dach, Fluss bei PV-Überschuss, Untergrenze aus Modul 1"], ["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   dt: { v: "0.9", b: 2, d: "2026-11-26", p: "2026.11.5b10", log: [["0.9", 2, "2026.11.5b10", "Tablet-Modus: passt ohne Scrollen auf eine Seite (Reiter Preise, Geräte, Tarif-Check), Preisgrenze der Frost-Heizer"], ["0.9", 1, "2026.11.4b38", "Vorabversion: „Lohnt sich dein Tarif?“ (Monat und Jahr gegen Festpreis), Kachel „Gespart im Monat“, Wochenansicht, Daten prüfen, Hinweis auf der Startseite bei negativen Preisen, Sensor Ersparnis Monat, Diagnose"], ["0.8", 1, "2026.11.4b1", "Bestes Fenster je Gerät, Preisalarm, Sensoren und Ereignis"], ["0.7", 1, "2026.11.4b1", "Neue Optik: Preisband-Banner, Kacheln 2.0, Heute und morgen mit Sonne"], ["0.6", 1, "2026.11.4b1", "Tarif-Dienst: Tibber direkt, Preis-Sensoren, Viertelstunden, morgen, Endpreis, Push"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
-  wa: { v: "0.2", b: 3, d: "2026-11-22", p: "2026.11.4b46", log: [["0.2", 3, "2026.11.4b46", "Neues Banner: Kalenderblatt mit dem nächsten Termin und Ampel-Ringen für die wichtigsten Termine"], ["0.2", 2, "2026.11.4b40", "Termine: eigener Speicher, anlegen, bearbeiten, löschen, Abstand in Tagen bis Jahren, Vorlagen, Erledigt mit Rückgängig, Ampel mit Vorwarnung, Kosten des Jahres, Diagnose"], ["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
+  wa: { v: "0.2", b: 4, d: "2026-11-27", p: "2026.11.5b14", log: [["0.2", 4, "2026.11.5b14", "Tablet-Modus: passt ohne Scrollen auf eine Seite (Reiter Termine, Jahr, Erledigt)"], ["0.2", 3, "2026.11.4b46", "Neues Banner: Kalenderblatt mit dem nächsten Termin und Ampel-Ringen für die wichtigsten Termine"], ["0.2", 2, "2026.11.4b40", "Termine: eigener Speicher, anlegen, bearbeiten, löschen, Abstand in Tagen bis Jahren, Vorlagen, Erledigt mit Rückgängig, Ampel mit Vorwarnung, Kosten des Jahres, Diagnose"], ["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   sp: { v: "1.0", b: 3, d: "2026-11-26", p: "2026.11.5b10", log: [["1.0", 3, "2026.11.5b10", "Tablet-Modus: passt ohne Scrollen auf eine Seite (Reiter Prognose, Treffsicherheit, Anlagen)"], ["1.0", 2, "2026.11.3b12", "Anlagen wählen: mehrere Prognose-Dienste (Forecast.Solar, Solcast, Open-Meteo) für dasselbe Dach werden nicht mehr ungefragt addiert – Auswahl je Anlage, „Nur …“-Knöpfe, Vorgabe aus dem Energie-Dashboard, Warnung auf der Seite; Korrektur lernt nach einer Änderung neu"], ["1.0", 1, "2026.11.3b8", "Stabil: Anlagen einzeln, fünf Sensoren für Automationen (heute, morgen, Rest heute, korrigiert, beste Zeit), Kachel mit Sonnenbogen auf der Startseite, Tablet-Wand, Ertragssensor aus dem Energie-Dashboard vorschlagen, Einrichtungs-Check, Lab „Lernfaktor“ fest eingebaut"], ["0.9", 5, "2026.11.3b8", "Treffsicherheit & Tipps: korrigierte Prognose (lernt aus 14 Tagen), Tage im Vergleich 7/14/30 und Treffer-Kalender mit Tag als Kurve, Empfehlungen mit Startzeit, Hinweis bei Schnee oder Störung"], ["0.9", 4, "2026.11.3b7", "Technik: Prognose über die Energie-Schnittstelle (Forecast.Solar, Solcast, Open-Meteo), Solcast-Sensoren, Ertrag je Stunde aus der Langzeitstatistik, Kurve von heute früh als Messlatte, Speicher mit Schema-Version (400 Tage), Abruf nur alle 30 Min. im Hintergrund"], ["0.9", 3, "2026.11.3b7", "Neue Optik Stufe 1: Sonnenbogen-Banner (nachts Mond und morgen), Kacheln mit HD-Bildern und Ring, Prognose und Ertrag je Stunde in einer Kurve, beste Zeit mit Geräten und Knopf ins Modul, Preisband, Verlauf mit Abweichung je Tag, Handy und Hell, Schalter „Wie bisher“"], ["0.9", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.9", 1, "3.0.6.5", "Start der Zählung"]] },
   ef: { v: "1.1", b: 3, d: "2026-11-25", p: "2026.11.5b8", log: [["1.1", 3, "2026.11.5b8", "Tablet-Modus: passt ohne Scrollen auf eine Seite (Reiter Jetzt, Strom), Ruhebild Hausfluss"], ["1.1", 2, "2026.11.3", "Bis zu vier Kacheln links und rechts und zwei unten, bis zu fünf Quellen am Handy, hellere Kacheln, Verbraucher mit Solar-Anteil genauer"], ["1.1", 1, "2026.11.3b19", "Strom-Reiter: „Woher kam der Strom?“ mit Anteil von Solar, Akku und Netz, Akku- und Netz-Bilanz und wohin der Solarstrom ging"], ["1.0", 1, "2026.11.3b6", "Stabil: Schnellstart aus den Haus-Werten, Einrichtungs-Prüfung, Kosten im Strom-Reiter und Vorteil heute auf dem Tablet, Fluss-Bild als Bild teilen, Tablet-Modus zeichnet nur alle 5 s neu, Feinschliff der Optik (Haus als freier Ring, ruhigere Kacheln, klarere Schrift)"], ["0.9", 1, "2026.11.3b5", "Vorabversion: Strom-Reiter mit Lichtsäulen und Verbrauchern mit Solar-Anteil (Tag/Woche/Monat/Jahr), Animationen „Voll“, Kacheln ziehen, Vorlagen, Gruppen-Kachel, Tageswerte-Leiste, Sponsor-Abzeichen im Banner"], ["0.8", 1, "2026.11.3b5", "Banner & Themen (Konzept Neue Optik A, F, H): Lichtband-Banner mit Herkunfts-Balken, Themen Nachtglas, Blaupause, Sternenhimmel, Haus im Garten, Kachelform Rund, Hell-Variante, Handy als Fluss-Spalte oder Kachel-Raster, Wand-Ansicht im Tablet-Modus mit Ruhebild"], ["0.7", 1, "2026.11.3b5", "Linien & Haus (Konzept Neue Optik C/D): Leuchtlinien mit Stärke nach Leistung und Verlauf als Option, Haus mit Herkunfts-Ring und wählbarem Haus-Bild, Bilder mit Zustand (Läuft ab, Ladestand-Ring), Status-Punkt, Kachel „keine Daten“"], ["0.6", 3, "2026.11.2b10", "Eigenes mdi-Symbol: „Mdi:…“ (iPhone) und „_“ werden richtig übernommen, sonst ein Hinweis"], ["0.6", 2, "2026.11.2b3", "Aktive Kacheln heben sich deutlicher von ruhenden ab"], ["0.6", 1, "2026.11.2b2", "24 HD-Bilder im Bildkatalog, alte Symbole einmalig umgestellt (Schalter „Alte Symbole behalten“), ruhige Kacheln ohne farbigen Rahmen"], ["0.5", 6, "3.0.7.6", "Fluss in den Linien richtet sich nach der Leistung: wenig Watt wenige langsame Punkte, viel Watt viele schnelle"], ["0.5", 5, "3.0.7.5", "Handy: die beiden oberen Kacheln stehen nebeneinander mittig über dem Haus"], ["0.5", 4, "3.0.7.4", "Fluss in den Linien läuft durchgängig (drei Punkte, bleibt beim Neuzeichnen im Takt, kein Punkt mehr oben links), Handy-Ansicht wie Tablet: Haus mittig, Linien wie im Vorbild"], ["0.5", 3, "3.0.7.3", "Jetzt-Ansicht flackerte bei neuen Werten: Kachelgröße und Linien stehen jetzt schon beim Neuzeichnen"], ["0.5", 2, "3.0.7.2", "Fluss-Bild passt sich Tablet und Desktop an (Kachelgröße nach der Höhe, Einstellung „Größe“), Banner bleibt oben, Umschalter „Jetzt | Strom“, Linien wie im Vorbild, Haus mittig"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
 };
@@ -815,7 +815,7 @@ const FH_CACHE = (window.__fhCache = window.__fhCache || {});
 /* Automatisch aus CHANGELOG.md erzeugt (frontend-src/build.py). Nicht von Hand ändern. */
 const REL = [{"v":"2026.11.4.5","d":"2026-11-24","t":["Behoben: Modul 1 · „Warum?“","Behoben: Kopieren auf iPad und iPhone","Behoben: Modul 11 · „Plan sichern“ und Modul 0 · „Datei herunterladen“"],"c":[]},{"v":"2026.11.4.4","d":"2026-11-24","t":["Wohnklima-Zeugnis (Sponsor Max)","Heizkosten je Raum (Sponsor Max)","Wand-Tablet-Extras (Sponsor Max)"],"c":[]},{"v":"2026.11.4.3","d":"2026-11-24","t":["Fehlerprotokoll","Modul 0 · Heizkörper wie in echt","Einstellungen › Module"],"c":[]},{"v":"2026.11.4.2","d":"2026-11-23","t":["Behoben: Modul 1 · Elektroheizer bearbeiten, pausieren, in anderen Raum stellen, entfernen, wiederherstellen und endgültig löschen","Behoben: Modul 0 · Sonne im Raum","Behoben: Modul 0 · Keine Sonne durch die Fenster"],"c":[]},{"v":"2026.11.4.1","d":"2026-11-23","t":["Behoben: Modul 0 · Raumnamen ragten in den Nachbarraum","Behoben: Modul 8 · Ein Tag mit viel zu vielen Kilometern","Behoben: Update-Hinweis"],"c":[]},{"v":"2026.11.4","d":"2026-11-23","t":["Modul 0 · Haus & Grundriss (neu, Beta v0.10)","Modul 18 · Licht & Lampen (Addon v0.9)","Weihnachts-Theme & Adventskalender"],"c":["Modul 14 · v0.9","Modul 15 · v0.2"]},{"v":"2026.11.3.1","d":"2026-11-17","t":["Kopf, Chat und E-Mail","Kopf, Store und Labs","Behoben: E-Mail-Knopf"],"c":[]},{"v":"2026.11.3","d":"2026-11-17","t":["Startseite, Neue Optik","Modul 8 Elektroauto & Wallbox (v0.9, Vorabversion)","Modul 9 (v0.9) Wetter & Warnungen"],"c":["Modul 1 · v1.8","Modul 3 · v1.6"]}];
 /* Version dieser Oberfläche (aus manifest.json). Weicht sie von der installierten ab, läuft im Browser noch die alte Seite. */
-const FE_VER = "2026.11.5b13";
+const FE_VER = "2026.11.5b14";
 const CSS_MAIN = `
 .room.hph,.crow.hph{background-size:cover;background-position:center}
 .room.hph{background-image:linear-gradient(180deg,color-mix(in srgb,var(--card) 50%,transparent) 0,color-mix(in srgb,var(--card) 84%,transparent) 34%,color-mix(in srgb,var(--card) 95%,transparent) 100%),var(--ph)}
@@ -4263,6 +4263,97 @@ button.tm2mub1{cursor:pointer}.tm2mub1 b{font-size:1.05rem}.tm2mub1 em{font-styl
 @media(max-width:700px){.tmxdisp,.tmxlooks{grid-template-columns:1fr}.tmxh{flex-direction:column;align-items:flex-start}.tmxnight{padding-left:0}}
 .tmrest.tmnight{filter:brightness(.45)}
 .sheet.tmx>*{flex-shrink:0}.tmx .btn2{display:inline-flex;align-items:center;justify-content:center;gap:8px}.tmxfoot .btn2{flex:none;width:auto}.tmxtabs button{flex:1 0 auto}
+
+/* Stufe 6: Licht (18), Wartung (15), Abrechnungen (20) */
+.tm2li{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px}
+.tm2listrip{flex:none;display:flex;align-items:center;gap:8px;overflow:hidden}
+.tm2lis{flex:none;min-height:52px;display:inline-flex;align-items:center;gap:8px;padding:0 18px;white-space:nowrap}
+.tm2lisum{margin-left:auto;color:var(--mut);font-weight:700;white-space:nowrap}
+.tm2lic{flex:1;min-height:0;padding:10px}
+.tm2lig{flex:1;min-height:0;display:grid;grid-template-columns:repeat(var(--c),minmax(0,1fr));grid-template-rows:repeat(var(--r),minmax(0,1fr));gap:10px}
+.tm2lir{min-width:0;min-height:0;display:flex;flex-direction:column;justify-content:space-between;gap:6px;padding:10px 12px;border-radius:18px;border:1px solid var(--line);background:var(--card);overflow:hidden}
+.tm2lir.on{border-color:color-mix(in srgb,var(--g) 55%,var(--line));background:radial-gradient(circle at 88% 0%,color-mix(in srgb,var(--g) 34%,transparent),transparent 72%),var(--card)}
+.tm2lir.long{box-shadow:inset 0 0 0 2px rgba(251,191,36,.45)}
+.tm2lih{all:unset;box-sizing:border-box;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;min-height:48px;min-width:0}
+.tm2lit{min-width:0;display:flex;flex-direction:column}.tm2lit b{font-size:1.08rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tm2lit small{color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tm2lip{flex:none;font-size:2rem;font-weight:800;line-height:1.1}.tm2lip small{font-size:.95rem;font-weight:600;color:var(--mut)}
+.tm2lia{display:flex;align-items:center;gap:12px}.tm2lia input[type=range]{flex:1;min-width:0;height:44px;margin:0}
+.tm2lib{flex:1;height:10px;border-radius:6px;background:rgba(127,127,127,.22);overflow:hidden}.tm2lib span{display:block;height:100%;background:var(--g)}
+.tm2lia .sw{flex:none;transform:scale(1.3);transform-origin:right center}
+.tm2lisg{flex:1;min-height:0;display:grid;grid-template-columns:repeat(var(--c),minmax(0,1fr));grid-template-rows:repeat(var(--r),minmax(0,1fr));gap:10px}
+.tm2lisc{min-width:0;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px;border-radius:18px;border:1px solid var(--line);background:var(--card);color:inherit;font:inherit;cursor:pointer;text-align:center}
+.tm2lisc:active{background:color-mix(in srgb,var(--teal) 22%,var(--card))}.tm2lisc b{font-size:1.15rem;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tm2lisc small{color:var(--mut)}.tm2lisc svg{color:var(--teal)}
+.tm2lipl{flex:1;min-height:0;display:flex;flex-direction:column}.tm2lipl .l3pc{flex:1;min-height:0;display:flex;flex-direction:column;margin:0;overflow:hidden}
+.tm2lipl .l4pv,.tm2lipl .grv{flex:1;min-height:0;position:relative}.tm2lipl svg.grzsvg{width:100%;height:100%}
+.tm2lipl .sfed,.tm2lipl .l3psum .u,.tm2lipl .l3poff,.tm2lipl .l3plg,.tm2lipl .grzbar{display:none}
+.tm2lim{max-width:560px}.tm2lils{display:flex;flex-direction:column;gap:8px;margin-top:10px}.tm2lirb{display:flex;align-items:center;gap:10px;margin-top:10px}.tm2lirb span{display:inline-flex;gap:6px;align-items:center;color:var(--mut)}.tm2lirb input{flex:1;height:44px}
+.tm2lil{display:flex;align-items:center;gap:12px;padding:6px 10px;border-radius:14px;border:1px solid var(--line)}.tm2lil i{flex:none;width:14px;height:14px;border-radius:50%;background:rgba(127,127,127,.4)}.tm2lil.on i{background:var(--c);box-shadow:0 0 10px var(--c)}
+.tm2lil .nm{all:unset;flex:1;min-width:0;cursor:pointer;min-height:44px;display:flex;flex-direction:column;justify-content:center}.tm2lil .nm small{color:var(--mut)}.tm2lil.un{opacity:.5}
+.tm2wac{flex:1;min-height:0;padding:10px 12px}
+.tm2wag{flex:1;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(var(--r),minmax(0,1fr));gap:8px}.tm2wag.one{grid-template-columns:minmax(0,1fr)}
+.tm2war{min-width:0;min-height:0;display:flex;align-items:center;gap:12px;padding:6px 10px;border-radius:14px;border:1px solid var(--line);background:rgba(127,127,127,.06);overflow:hidden}
+.tm2war.over,.tm2war.due{border-color:rgba(248,113,113,.7);background:rgba(248,113,113,.08)}.tm2war.soon{border-color:rgba(251,191,36,.6)}
+.tm2war .wtring{flex:none}
+.tm2wat{flex:1;min-width:0;display:flex;flex-direction:column}.tm2wat b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tm2wat small{color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tm2wat em{font-style:normal;font-size:.82rem}
+.tm2wax{flex:none;display:flex;align-items:center;gap:6px}.tm2wac2{font-style:normal;font-weight:700;color:var(--mut)}
+.tm2wab{min-height:48px;padding:0 16px;border-radius:12px;border:0;background:var(--teal);color:var(--on-acc,#04201d);font:inherit;font-weight:800;display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+.tm2wab.un{background:none;border:1px solid var(--line);color:inherit;font-weight:600}
+.tm2wae{width:44px;height:48px;border-radius:12px;border:1px solid var(--line);background:none;color:var(--mut);cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+.tm2wayc{flex:1;min-height:0;padding:10px 12px}
+.tm2way{flex:1;min-height:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));gap:8px}
+.tm2.port .tm2way{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(4,minmax(0,1fr))}
+.tm2wam{min-width:0;min-height:0;display:flex;flex-direction:column;gap:3px;padding:8px 10px;border-radius:14px;border:1px solid var(--line);background:rgba(127,127,127,.05);overflow:hidden}
+.tm2wam.now{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 10%,transparent)}.tm2wam>b{font-size:1rem}.tm2wam>b small{margin-left:6px;color:var(--mut);font-weight:500}
+.tm2wam span{display:flex;align-items:center;gap:5px;min-width:0;font-size:.88rem}.tm2wam span i{font-style:normal;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tm2wam span em{font-style:normal;color:var(--mut);flex:none}
+.tm2wam span.o{color:#f87171}.tm2wam span.w{color:#fbbf24}.tm2wam .mo,.tm2wam .no{color:var(--mut)}
+.tm2ab{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px}
+.tm2abg{flex:1;min-height:0;display:grid;grid-template-columns:repeat(var(--c),minmax(0,1fr));gap:10px}.tm2.port .tm2abg{grid-template-columns:repeat(2,minmax(0,1fr))}
+.tm2abc{min-width:0;min-height:0;display:flex;flex-direction:column;gap:6px;padding:12px 14px;border-radius:18px;border:1px solid var(--line);border-top:4px solid var(--a);background:var(--card);overflow:hidden}
+.tm2abc.bad{background:linear-gradient(rgba(248,113,113,.1),rgba(248,113,113,.1)),var(--card)}
+.tm2abh{display:flex;align-items:center;gap:10px;min-width:0}.tm2abh .i{flex:none;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--a) 22%,transparent);color:var(--a)}
+.tm2abh .t{min-width:0;display:flex;flex-direction:column}.tm2abh .t b{font-size:1.1rem}.tm2abh .t small{color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tm2abk{display:flex;flex-direction:column;margin-top:0}.tm2abk small{color:var(--mut)}.tm2abk b{font-size:2rem;line-height:1.15}.tm2abc.ok .tm2abk b{color:#34d399}.tm2abc.bad .tm2abk b{color:#f87171}
+.tm2abp{position:relative;height:12px;border-radius:7px;background:rgba(127,127,127,.22);overflow:visible}.tm2abp .k{position:absolute;left:0;top:0;bottom:0;border-radius:7px;background:var(--a)}.tm2abp .z{position:absolute;top:-4px;bottom:-4px;width:4px;margin-left:-2px;border-radius:2px;background:var(--text,#e6edf3)}
+.tm2abl{display:flex;justify-content:space-between;gap:6px;font-size:.82rem;color:var(--mut)}.tm2abc>em{font-style:normal;font-weight:700;display:flex;flex-wrap:wrap;gap:2px 6px;align-items:baseline}.tm2abc>em small{font-weight:500;color:var(--mut)}.tm2abc>em.rec{color:#fbbf24}.tm2abx{color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tm2abt{flex:none;padding:10px 12px}.tm2abtl{display:flex;gap:10px}.tm2abtl>div{flex:1;min-width:0;padding:8px 12px;border-radius:12px;border:1px solid var(--line);display:flex;flex-direction:column}.tm2abtl>div.w{border-color:rgba(251,191,36,.6);background:rgba(251,191,36,.08)}.tm2abtl b,.tm2abtl small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tm2abtl small{color:var(--mut)}
+.tm2abbar{display:flex;gap:8px;margin-left:auto}
+.tm2abr{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px}.tm2abms{flex:none;display:flex;gap:8px;overflow:hidden}
+.tm2abms button{flex:0 1 auto;min-width:0;min-height:52px;padding:6px 16px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:inherit;font:inherit;text-align:left;cursor:pointer;display:flex;flex-direction:column}.tm2abms button.sel{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 14%,var(--card))}.tm2abms small{color:var(--mut)}
+.tm2abrb{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:10px}.tm2abrb.port{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr)}
+.tm2abkv{margin-top:10px}.tm2abkv>div{display:flex;flex-direction:column}.tm2abkv small{color:var(--mut)}.tm2abkv b{font-size:1.7rem;line-height:1.2}.tm2abkv b small{font-size:.9rem;font-weight:500}.tm2abkv b.nr{font-size:1.1rem}
+.tm2abrb.port .tm2abkv{flex-direction:row;flex-wrap:wrap;gap:6px 24px}.tm2abrb.port .tm2abkv b{font-size:1.3rem}
+.tm2abpad{padding:12px;gap:8px}.tm2abd{flex:none;display:flex;align-items:baseline;justify-content:flex-end;gap:8px;padding:6px 14px;border-radius:14px;border:2px solid var(--line);background:rgba(127,127,127,.06);min-height:62px}.tm2abd b{font-size:2.3rem;line-height:1.2;font-variant-numeric:tabular-nums}.tm2abd span{color:var(--mut)}
+.tm2abd.ok{border-color:#34d399}.tm2abd.warn{border-color:#fbbf24}.tm2abd.bad{border-color:#f87171}
+.tm2abmsg{flex:none;min-height:40px;display:flex;align-items:center;gap:8px;font-size:.92rem;color:var(--mut)}.tm2abmsg.ok{color:#34d399}.tm2abmsg.warn{color:#fbbf24}.tm2abmsg.bad{color:#f87171}
+.tm2abkeys{flex:1;min-height:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(4,minmax(0,1fr));gap:8px}
+.tm2abkey{min-height:48px;border-radius:14px;border:1px solid var(--line);background:rgba(127,127,127,.1);color:inherit;font:inherit;font-size:1.7rem;font-weight:700;cursor:pointer;display:grid;place-items:center}.tm2abkey:active{background:color-mix(in srgb,var(--teal) 28%,transparent)}.tm2abkey:disabled{opacity:.3}
+.tm2abgo{flex:none;display:flex;gap:8px}.tm2abgo .btn2{flex:1;min-height:54px;display:inline-flex;align-items:center;justify-content:center;gap:8px}.tm2abgo .btn2.pri{flex:2}
+.tm2abpy{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:10px}.tm2abpy.port{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr)}
+.tm2abrs{display:flex;flex-direction:column;gap:8px;min-height:0}.tm2abpy.port .tm2abrs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.tm2abrw{flex:1;min-height:0;display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"i t v" "r r r";align-items:center;gap:2px 10px;padding:8px 12px;border-radius:16px;border:1px solid var(--line);border-left:4px solid var(--a);background:var(--card);color:inherit;font:inherit;text-align:left;cursor:pointer}
+.tm2abrw.sel{border-color:var(--a);background:color-mix(in srgb,var(--a) 12%,var(--card))}.tm2abrw .i{grid-area:i;color:var(--a)}.tm2abrw .t{grid-area:t;display:flex;flex-direction:column;min-width:0}.tm2abrw .t small{color:var(--mut)}.tm2abrw .v{grid-area:v;text-align:right;display:flex;flex-direction:column}.tm2abrw .v b{font-size:1.3rem}.tm2abrw .v small{color:var(--mut)}
+.tm2abrw em{grid-area:r;font-style:normal;font-size:.88rem;font-weight:700;display:flex;gap:6px;align-items:center}.tm2abrw em.rec{color:#fbbf24}.tm2abrw em.ok{color:#34d399}.tm2abrw em small{font-weight:500;color:var(--mut)}
+.tm2abch{min-height:0;padding:10px 12px}.tm2abcb{flex:1;min-height:0}.tm2abcb svg{display:block}
+.tm2abgl{stroke:var(--line);stroke-width:1}.tm2abax{fill:var(--mut);font-size:12px}.tm2abnow{stroke:var(--mut);stroke-width:1.5;stroke-dasharray:4 4}
+.tm2abback{margin-bottom:10px;display:inline-flex;align-items:center;gap:8px;min-height:48px}
+.tm2wted{max-width:720px}
+.tm2lipl .l3psum{display:flex;flex-wrap:wrap;gap:6px 22px;padding:4px 2px 8px;color:var(--mut)}.tm2lipl .l3psum span{display:inline-flex;gap:6px;align-items:center}
+.tm2abs{flex:0 0 auto;height:clamp(80px,25vh,200px);margin:auto 0 10px;border-radius:12px;background:rgba(127,127,127,.07);overflow:hidden}.tm2abs svg{display:block;width:100%;height:100%}
+.tm2abkv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 24px;align-content:start}.tm2abkv b.nr{font-size:1.2rem}
+.tm2abch .tm2note{margin-top:6px}
+.tm2lir{gap:8px;padding:12px 14px;border-radius:22px}
+.tm2lih{align-items:center;gap:10px}.tm2lik{flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:rgba(127,127,127,.16);color:var(--mut)}
+.tm2lir.on .tm2lik{color:#1b1300;background:var(--g);box-shadow:0 0 0 5px color-mix(in srgb,var(--g) 28%,transparent),0 0 26px color-mix(in srgb,var(--g) 70%,transparent)}
+.tm2lih .tm2lit{flex:1;min-width:0}.tm2lir.on .tm2lip{color:#fff;text-shadow:0 0 18px color-mix(in srgb,var(--g) 80%,transparent)}
+input.tm2lisl{-webkit-appearance:none;appearance:none;background:transparent;height:44px}
+input.tm2lisl::-webkit-slider-runnable-track{height:14px;border-radius:8px;background:linear-gradient(90deg,var(--g,#fbbf24) var(--p),rgba(127,127,127,.25) var(--p))}
+input.tm2lisl::-moz-range-track{height:14px;border-radius:8px;background:rgba(127,127,127,.25)}input.tm2lisl::-moz-range-progress{height:14px;border-radius:8px;background:var(--g,#fbbf24)}
+input.tm2lisl::-webkit-slider-thumb{-webkit-appearance:none;width:30px;height:30px;margin-top:-8px;border-radius:50%;background:#fff;border:0;box-shadow:0 2px 8px rgba(0,0,0,.5)}
+input.tm2lisl::-moz-range-thumb{width:30px;height:30px;border-radius:50%;background:#fff;border:0;box-shadow:0 2px 8px rgba(0,0,0,.5)}
+.tm2lir{position:relative;isolation:isolate}.tm2lipic{position:absolute!important;inset:0;width:auto!important;height:auto!important;z-index:-2;opacity:.9}
+.tm2lir::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(13,19,26,.82) 0,rgba(13,19,26,.35) 42%,rgba(13,19,26,.72) 100%);pointer-events:none}
+.tm2lir.on{background:var(--card)}.tm2lir .tm2lih small{color:rgba(230,237,243,.78)}
+.tm2lipic svg{width:100%;height:100%}.tm2lipic.ph{background-size:cover;background-position:center}
 `;
 /* Umfragen: Popup, Karte auf der Startseite, Punkt am Einstellungen-Knopf */
 const CSS_UMF = `
@@ -4406,7 +4497,7 @@ class FensterHeizungPanel extends HTMLElement {
     this._hass = this._errWrap(h);   /* Fehler-Statistik: fehlgeschlagene eigene Befehle ins Fehlerprotokoll (eigene Kopie) */
     if (first) this._load();
     this._render();
-    if (this._modal && ["why", "rkhtr", "ehlist"].includes(this._modal.type)) this._renderModal();  // Gründe bleiben aktuell
+    if (this._modal && ["why", "rkhtr", "ehlist", "tm2s6li"].includes(this._modal.type)) this._renderModal();  // Gründe bleiben aktuell
   }
   set narrow(v) { this._narrow = v; this._render(); }
   set panel(_) {}
@@ -9240,6 +9331,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (m.type === "advent") { box.innerHTML = this._advModal(); return; }
     if (m.type === "tm2room") { box.innerHTML = this._tm2RoomModal(m); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; this._tm2Charts(); return; }
     if (m.type === "tm2x") { box.innerHTML = m.k === "gs" ? this._tm2GsModal(m) : m.k === "ev" ? this._tm2EvModal() : m.k === "sp" ? this._tm2SpModal(m) : this._tm2EnModal(m); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (String(m.type).startsWith("tm2s6")) { box.innerHTML = this._tm2S6Modal(m); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "tm2ww" || m.type === "tm2prob") { box.innerHTML = this._tm2WwModal(m); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "sai") { box.innerHTML = this._saiModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "lfset") { box.innerHTML = this._lfSetModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -14329,7 +14421,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (this._tmSleep) { if (moved || newWarn) this._tmWake(); return; }
     if (newWarn && !this._modal) { this._tmView = "st"; this._tmLast = Date.now(); this._render(); return; }
     if (c.sleep && idle >= c.sleep * 60000) { this._tmSleep = true; this._modal = null; this._renderModal(); this._render(); return; }
-    if (c.idle_home && idle >= c.idle_home * 60000 && !this._tmHomed) { this._tmHomed = true; this._tm2Unl = 0; const full = this._tm2On() && !!this._evWallFull && !this._modal; if (full) this._tm2FullOff(); const paged = full || Object.values(this._tmPg || {}).some(Boolean) || Object.keys(this._tm2T || {}).length > 0; if (!this._modal) { this._tmPg = {}; this._tm2T = {}; } if ((this._tmV() !== this._tmHome() || paged) && !this._modal) { this._tmView = this._tmHome(); this._render(); } }
+    if (c.idle_home && idle >= c.idle_home * 60000 && !this._tmHomed) { this._tmHomed = true; this._tm2Unl = 0; const full = this._tm2On() && (!!this._evWallFull || !!this._tm2AbFull) && !this._modal; if (full) this._tm2FullOff(); const paged = full || Object.values(this._tmPg || {}).some(Boolean) || Object.keys(this._tm2T || {}).length > 0; if (!this._modal) { this._tmPg = {}; this._tm2T = {}; } if ((this._tmV() !== this._tmHome() || paged) && !this._modal) { this._tmView = this._tmHome(); this._render(); } }
   }
   _tmV() { return this._tmView || this._tmHome(); }
   _tmItems() {
@@ -14352,6 +14444,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (id === "mu" && this._muOn()) return this._muPage();
     if (id === "li" && this._liOn()) return this._liPage();
     if (id === "ev" && this._evWallOn()) return this._evWall();
+    if (id === "abrechnung" && this._tm2AbFull) return `<button class="btn2 tm2abback" data-act="tm2abfull" data-k="off">${ic("back", 18)}Zur Übersicht</button>${this._adPage(m)}`;
     if (m.addon) return this._adPage(m);
     if (m.beta) return this._betaPage(id);
     if (id === "en") return this._enPage();
@@ -14582,7 +14675,7 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="tmbody${fit ? " tm2fit" : ""}${mod ? ` tm2mod tm2-${v}` : ""}"${fit ? "" : ` style="zoom:${zoom}"`}>${mod ? this._tm2ModBody(v) : `${v === "ev" && this._evWallFull ? `<button class="btn2 evwback" data-act="wbwall" data-k="">${ic("back", 18)}Zurück zur Tablet-Seite</button>` : ""}${this._tmBody(v)}`}</div></div>${land ? "" : nav}</div>`;
     const nb = sr.querySelector(".tmbody"); if (nb && keep && !fit) nb.scrollTop = keep;
     this._tm2Bind();
-    if (mod) { this._tm2Charts(); if (this._modal && (this._modal.type === "tm2room" || this._modal.type === "tm2x")) this._renderModal(); }
+    if (mod) { this._tm2Charts(); if (this._modal && (this._modal.type === "tm2room" || this._modal.type === "tm2x" || String(this._modal.type).startsWith("tm2s6"))) this._renderModal(); }
   }
   /* Wie viel auf eine Seite passt: Kacheln (Spalten × Zeilen) und Hinweise */
   _tm2Cap() {
@@ -14705,6 +14798,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _tm2Act(a, b) {
     const k = b.dataset.k;
+    if (/^tm2(li|wt|ab)/.test(a) && this._tm6Act && this._tm6Act(a, b)) return true;   /* Stufe 6: Licht, Wartung, Abrechnungen */
     if (a === "tm2pg") { this._tm2Turn(k, +b.dataset.d); return true; }
     if (a === "tm2tab") { (this._tm2T = this._tm2T || {})[b.dataset.v] = k; this._tmHomed = false; this._render(); return true; }
     if (a === "tm2room") { this._modal = { type: "tm2room", id: b.dataset.id, tab: "ctl" }; this._renderModal(); return true; }
@@ -14736,13 +14830,15 @@ class FensterHeizungPanel extends HTMLElement {
   static TM2_TABS = { fh: [["rooms", "Räume"], ["stats", "Statistik"]], ww: [["now", "Jetzt"], ["times", "Zeiten"], ["hist", "Verlauf"]],
     en: [["now", "Jetzt"], ["hist", "Verlauf"], ["cost", "Kosten"]], gs: [["dev", "Geräte"], ["win", "Startfenster"], ["stats", "Statistik"]], ef: [["now", "Jetzt"], ["strom", "Strom"]],
     ev: [["load", "Laden"], ["plan", "Planung"], ["stat", "Statistik"]], dt: [["price", "Preise"], ["dev", "Geräte"], ["check", "Tarif-Check"]], sp: [["now", "Prognose"], ["acc", "Treffsicherheit"], ["sites", "Anlagen"]],
-    wx: [["now", "Jetzt"], ["h48", "48 Stunden"], ["map", "Karte"]], sf: [["ov", "Übersicht"], ["me", "Melder"], ["pl", "Grundriss"]], mu: [["now", "Abholung"], ["cal", "Kalender"], ["home", "Haushalt"]] };
-  _tm2Fit(v) { if (v === "ev" && this._evWallFull) return false; return v === "st" || (!!this.constructor.TM2_TABS[v] && this._mdList().some((m) => m.id === v)); }
+    wx: [["now", "Jetzt"], ["h48", "48 Stunden"], ["map", "Karte"]], sf: [["ov", "Übersicht"], ["me", "Melder"], ["pl", "Grundriss"]], mu: [["now", "Abholung"], ["cal", "Kalender"], ["home", "Haushalt"]],
+    li: [["rooms", "Räume"], ["map", "Lichtkarte"], ["scn", "Szenen"]], wa: [["dates", "Termine"], ["year", "Jahr"], ["done", "Erledigt"]], abrechnung: [["sp", "Sparten"], ["rd", "Zähler"], ["pay", "Abschläge"]] };
+  _tm2Fit(v) { if (v === "ev" && this._evWallFull) return false; if (v === "abrechnung" && this._tm2AbFull) return false; return v === "st" || (!!this.constructor.TM2_TABS[v] && this._mdList().some((m) => m.id === v)); }
   /* Stufe 5: „Grundriss“ nur mit gezeichnetem Plan, „Karte“ nur, wenn die Wetterkarte an ist */
   _tm2TabList(v) {
     const T = this.constructor.TM2_TABS[v];
     if (v === "sf" && !this._tm2SfPlanOn()) return T.filter((t) => t[0] !== "pl");
     if (v === "wx" && !this._tm2WxMapOn()) return T.filter((t) => t[0] !== "map");
+    if (v === "li" && !this._tm2LiPlanOn()) return T.filter((t) => t[0] !== "map");
     return T;
   }
   _tm2Tab(v) { const T = this._tm2TabList(v), cur = (this._tm2T || {})[v]; return T.some((t) => t[0] === cur) ? cur : T[0][0]; }
@@ -14763,9 +14859,12 @@ class FensterHeizungPanel extends HTMLElement {
     if (v === "wx") return this._tm2WxReady();
     if (v === "sf") return this._tm2SfReady() && !!this._sfList().length;
     if (v === "mu") return this._tm2MuReady();
+    if (v === "li") return this._tm2LiReady();
+    if (v === "wa") return this._tm2WaReady();
+    if (v === "abrechnung") return this._tm2AbReady();
     return !!this._efxD && this._efxSp() && !!this._tm2EfNodes().length;
   }
-  _tm2ModBody(v) { return v === "fh" ? this._tm2Fh() : v === "ww" ? this._tm2Ww() : v === "en" ? this._tm2En() : v === "gs" ? this._tm2Gs() : v === "ev" ? this._tm2Ev() : v === "dt" ? this._tm2Dt() : v === "sp" ? this._tm2Sp() : v === "wx" ? this._tm2Wx() : v === "sf" ? this._tm2Sf() : v === "mu" ? this._tm2Mu() : this._tm2Ef(); }
+  _tm2ModBody(v) { return v === "fh" ? this._tm2Fh() : v === "ww" ? this._tm2Ww() : v === "en" ? this._tm2En() : v === "gs" ? this._tm2Gs() : v === "ev" ? this._tm2Ev() : v === "dt" ? this._tm2Dt() : v === "sp" ? this._tm2Sp() : v === "wx" ? this._tm2Wx() : v === "sf" ? this._tm2Sf() : v === "mu" ? this._tm2Mu() : v === "li" ? this._tm2Li() : v === "wa" ? this._tm2Wa() : v === "abrechnung" ? this._tm2Ab() : this._tm2Ef(); }
   _tm2ModStatus(v) {
     if (v === "ww") return this._wwConfigured() ? this._wwStatus()[1] : "Noch nicht eingerichtet";
     if (v === "en") {
@@ -14793,6 +14892,9 @@ class FensterHeizungPanel extends HTMLElement {
     if (v === "wx") return this._tm2WxStatus();
     if (v === "sf") return this._tm2SfStatus();
     if (v === "mu") return this._tm2MuStatus();
+    if (v === "li") return this._tm2LiStatus();
+    if (v === "wa") return this._tm2WaStatus();
+    if (v === "abrechnung") return this._tm2AbStatus();
     if (v === "ef") {
       if (!this._tm2Ready("ef")) return "Für Sponsoren";
       const c = this._efxCfg(), list = this._tm2EfNodes(), nodes = list.map((p) => c.nodes[p]), calc = this._efxCalc(nodes);
@@ -14823,6 +14925,7 @@ class FensterHeizungPanel extends HTMLElement {
       else if (kind === "spacc") this._tm2SpAccChart(box, w, h);
       else if (kind === "wx48") this._tm2WxChart(box, w, h);
       else if (kind === "wxmap") this._tm2WxMapDraw(box, w, h);
+      else if (kind === "abpay") this._tm2AbChart(box, w, h);
       else {
         const rooms = (kind === "fhroom" ? this._collect().filter((r) => r.id === box.dataset.id) : [...this._collect()].sort((a, b) => a.ci - b.ci));
         box.innerHTML = this._chart(rooms, { w, h });
@@ -15342,7 +15445,7 @@ class FensterHeizungPanel extends HTMLElement {
      Laden und Schnellstart gehen wie bisher ohne PIN. Fahrzeuge, Wallbox und Ladungen öffnen nach der PIN die ganze Seite. */
   _tm2Shows(id) { return !!(this._tmOn && this._tmOn() && this._tm2On() && !this._tmSleep && this._tmV() === id); }
   /* Ganze Modulseite (mit Scrollen) wieder schließen, sobald man das Modul verlässt – danach gilt wieder die PIN */
-  _tm2FullOff() { if (this._tm2On()) this._evWallFull = false; }
+  _tm2FullOff() { if (this._tm2On()) { this._evWallFull = false; this._tm2AbExit(); } }
   _tm2EvLine(d, N) {
     if (!N.wbOn) return d.charging ? `Lädt${d.power != null ? ` mit ${num(d.power / 1000, 1)} kW` : ""}` : d.plugged ? "Angesteckt" : d.range != null ? `Reichweite ${num(d.range, 0)} km` : "Nicht angesteckt";
     if (!N.sn.ok) return this._wbD ? "Wallbox nicht erreichbar" : "Wird geladen";
@@ -16161,6 +16264,380 @@ class FensterHeizungPanel extends HTMLElement {
       return true;
     }
     return false;
+  }
+  /* ================= Tablet-Modus · Stufe 6: Licht & Lampen (Modul 18) ohne Scrollen (2026.11.5b14) =================
+     Reiter Räume (Szenen und „Alle aus“ oben, bis zu 8 Raumkacheln mit Helligkeit und Schalter), Lichtkarte (Grundriss, nur mit Plan)
+     und Szenen (große Felder, 6 je Seite). Eine einzelne Lampe öffnet das Detailfenster. Lampen schalten geht immer,
+     Lampen, Regeln und Szenen verknüpfen ändern nur am Handy oder Rechner. Die Seite nutzt die Daten und Aktionen des Licht-Addons. */
+  _tm2LiOn() { return !!(this._liOn && this._liOn()); }
+  _tm2LiPlanOn() { try { const P = this._gpPlan && this._gpPlan(); return !!(P && !P.error && (P.items || []).some((i) => i.t === "r")); } catch (_) { return false; } }
+  _tm2LiReady() { return this._tm2LiOn() && !!(this._liX && this._liX.d); }
+  /* Das Addon zeichnet nur neu, wenn seine eigene Seite offen ist: hier gleich nach dem Laden nachziehen */
+  _tm2LiWait() {
+    if (this._tm2LiT) return;
+    this._tm2LiT = setTimeout(() => { this._tm2LiT = 0; if (this._tm2Shows("li")) this._render(); }, 1500);
+  }
+  _tm2LiHex(c) { return Array.isArray(c) ? `#${c.map((v) => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, "0")).join("")}` : "#ffd2a1"; }
+  _tm2LiRooms() { return this._liRooms().filter((r) => !r.hid && r.lamps.length); }
+  _tm2LiStatus() {
+    if (!this._tm2LiOn()) return this._adOn("licht") ? "Wird geladen" : "Addon aus";
+    this._liD();
+    if (!this._tm2LiReady()) return "Wird geladen";
+    const rs = this._tm2LiRooms(), lamps = rs.flatMap((r) => r.lamps).filter((x) => !x.un), on = lamps.filter((x) => x.on);
+    if (!lamps.length) return "Keine Lampen";
+    const n = rs.filter((r) => r.on.length).length;
+    return on.length ? `${on.length} ${on.length === 1 ? "Lampe" : "Lampen"} an · ${n} ${n === 1 ? "Raum" : "Räume"}` : "Alles aus";
+  }
+  /* Szenen: zuerst die drei verknüpften Knöpfe des Moduls, dann alle Szenen aus Home Assistant */
+  _tm2LiScenes() {
+    const L = this._liLay(), st = this._hass.states, out = [], seen = new Set();
+    [["night", "Gute Nacht", "moon"], ["arrive", "Ankommen", "home"], ["cozy", "Gemütlich", "fireplace"]].forEach(([k, n, i]) => { const e = L.scenes[k]; if (e && st[e]) { out.push({ e, n, i }); seen.add(e); } });
+    Object.keys(st).filter((e) => e.startsWith("scene.") && !seen.has(e)).sort((a, b) => this._wzName(a).localeCompare(this._wzName(b), "de")).forEach((e) => out.push({ e, n: this._wzName(e), i: "palette" }));
+    return out;
+  }
+  _tm2Li() {
+    if (!this._tm2LiOn()) return this._tm2None("lamp", this._adOn("licht") ? "Das Licht-Addon wird geladen …" : "Das Licht-Addon ist aus.");
+    this._liD();
+    if (!this._tm2LiReady()) { this._tm2LiWait(); return this._tm2None("lamp", "Lampen werden geladen …"); }
+    const rs = this._tm2LiRooms();
+    if (!rs.length) return `<div class="card empty tm2none">${ic("lamp", 44)}<div>${this._liMine() ? "Noch keine Lampen hinzugefügt." : "Keine Lampen gefunden."}</div><small>${this._liMine() ? "Im Licht-Modul am Handy oder Rechner fügst du Lampen hinzu." : "Lampen richtest du in Home Assistant unter Geräte und Dienste ein."}</small></div>`;
+    const t = this._tm2Tab("li");
+    return t === "map" ? this._tm2LiMap(rs) : t === "scn" ? this._tm2LiScn() : this._tm2LiRooms2(rs);
+  }
+  _tm2LiBtn(act, k, label, ico, cls = "") { return `<button class="btn2 tm2lis ${cls}" data-act="${act}"${k ? ` data-k="${esc(k)}"` : ""}>${ic(ico, 20)}<span>${esc(label)}</span></button>`; }
+  _tm2LiStrip(rs) {
+    const on = rs.flatMap((r) => r.lamps).filter((x) => x.on && !x.un), sc = this._tm2LiScenes().slice(0, 3);
+    const lay = this._liLay(), keys = ["night", "arrive", "cozy"].filter((k) => lay.scenes[k] && this._hass.states[lay.scenes[k]]);
+    const btns = sc.map((s, i) => `<button class="btn2 tm2lis${i === 0 && keys[0] === "night" ? " pri" : ""}" data-act="tm2liscn" data-k="${esc(s.e)}">${ic(s.i, 20)}<span>${esc(s.n)}</span></button>`).join("");
+    return `<div class="tm2listrip">${btns}<button class="btn2 tm2lis" data-act="lixalloff" ${on.length ? "" : "disabled"}>${ic("lamp", 20)}<span>Alle aus</span></button><span class="tm2lisum">${on.length ? `${on.length} ${on.length === 1 ? "Lampe" : "Lampen"} an` : "Alles aus"}</span></div>`;
+  }
+  /* Raumbild wie in Modul 1: eigenes Foto, sonst die Zeichnung zum Raumtyp (aus Namen oder Einstellung erkannt) */
+  _tm2LiPic(r, on) {
+    try {
+      const ph = (this._cfg.layout.photos || {})[r.k], t = (this._cfg.layout.rtype || {})[r.k], C = this.constructor.RK_TYPES || [];
+      const type = C.some((x) => x[0] === t) ? t : this._rkTypeAuto({ id: r.k, name: r.name, nameOnly: true }) || "wohnen", col = on ? r.col || "#fbbf24" : "#64748b";
+      const night = this._hass.states["sun.sun"] ? this._hass.states["sun.sun"].state === "below_horizon" : false;
+      if (ph) return `<div class="rk2art ph${on ? "" : " gr"} tm2lipic" style="background-image:url('${esc(ph)}');--c:${col}"></div>`;
+      return `<div class="rk2art${on ? "" : " gr"}${night ? " nt" : ""} tm2lipic" style="--c:${col}">${this._rkArt(type, { k: on ? "ok" : "aus", col, open: [], tilt: [], anyOpen: 0, act: null, heating: false, t0: null, night, lfs: [] }, { ms: false })}</div>`;
+    } catch (e) { return ""; }
+  }
+  _tm2LiRoomTile(r) {
+    const n = r.on.length, bp = r.dim.filter((x) => x.on), long = this._liLong().find((x) => x.r.k === r.k);
+    const sub = n ? `${n} von ${r.lamps.length} an${long ? ` · seit ${this._liDur(long.ms)}` : ""}` : `aus · ${r.lamps.length} ${r.lamps.length === 1 ? "Lampe" : "Lampen"}`;
+    const slider = bp.length ? `<input type="range" class="tm2lisl" style="--p:${Math.round(bp.reduce((a, x) => a + x.br, 0) / bp.length)}%" min="1" max="100" value="${Math.round(bp.reduce((a, x) => a + x.br, 0) / bp.length)}" data-f="lixbr" data-k="${esc(r.k)}" aria-label="Helligkeit ${esc(r.name)}">` : `<div class="tm2lib"><span style="width:${n ? r.pct : 0}%"></span></div>`;
+    return `<div class="tm2lir${n ? " on" : ""}${long ? " long" : ""}" style="--g:${n ? r.col : "transparent"}">${this._tm2LiPic(r, !!n)}<button class="tm2lih" data-act="tm2lirm" data-k="${esc(r.k)}" aria-label="${esc(r.name)}: Lampen einzeln zeigen"><span class="tm2lik">${ic("lamp", 26)}</span><span class="tm2lit"><b>${esc(r.name)}</b><small>${esc(sub)}</small></span><span class="tm2lip">${n ? `${r.pct}<small> %</small>` : "aus"}</span></button>
+      <div class="tm2lia">${slider}<button class="sw ${n ? "on" : ""}" data-act="lixroom" data-k="${esc(r.k)}" aria-pressed="${!!n}" aria-label="${esc(r.name)}: ${n ? "alle ausschalten" : "alle einschalten"}"></button></div></div>`;
+  }
+  _tm2LiRooms2(rs) {
+    const land = this._tm2Land(), H = window.innerHeight, per = land ? (H < 700 ? 6 : 8) : (H < 1000 ? 6 : 8), p = this._tm2Page("lirooms", rs.length, per);
+    const gc = land ? (per === 6 ? 3 : 4) : 2, gr = Math.ceil(per / gc);
+    return `<div class="tm2li">${this._tm2LiStrip(rs)}<div class="card tm2cc tm2lic" data-sw="lirooms"><div class="tm2lig" style="--c:${gc};--r:${gr}">${rs.slice(p.from, p.to).map((r) => this._tm2LiRoomTile(r)).join("")}</div>${this._tm2Pager("lirooms", p, "Räume")}</div></div>`;
+  }
+  _tm2LiScn() {
+    const S = this._tm2LiScenes(), land = this._tm2Land(), per = land ? 6 : 6, p = this._tm2Page("liscn", S.length, per);
+    if (!S.length) return `<div class="card empty tm2none">${ic("palette", 44)}<div>Noch keine Szenen.</div><small>Szenen legst du in Home Assistant an. Die drei Knöpfe „Gute Nacht“, „Ankommen“ und „Gemütlich“ verknüpfst du im Licht-Modul am Handy oder Rechner.</small></div>`;
+    const on = this._tm2LiRooms().flatMap((r) => r.lamps).filter((x) => x.on && !x.un).length;
+    return `<div class="tm2li">${`<div class="tm2listrip"><button class="btn2 tm2lis" data-act="lixalloff" ${on ? "" : "disabled"}>${ic("lamp", 20)}<span>Alle aus</span></button><span class="tm2lisum">${S.length} ${S.length === 1 ? "Szene" : "Szenen"}</span></div>`}<div class="card tm2cc tm2lic" data-sw="liscn"><div class="tm2lisg" style="--c:${land ? 3 : 2};--r:2">${S.slice(p.from, p.to).map((s) => `<button class="tm2lisc" data-act="tm2liscn" data-k="${esc(s.e)}">${ic(s.i, 40)}<b>${esc(s.n)}</b><small>${esc(s.e.startsWith("scene.") ? "Szene" : "Skript")}</small></button>`).join("")}</div>${this._tm2Pager("liscn", p, "Szenen")}</div></div>`;
+  }
+  /* Lichtkarte: dieselbe Zeichnung wie im Modul, in den freien Platz gesetzt. Ändern des Plans gehört in Modul 0 (Handy, Rechner). */
+  _tm2LiMap(rs) {
+    const longK = Object.fromEntries(this._liLong().map((x) => [x.r.k, x.ms]));
+    let html = "";
+    try { html = this._liPlanView(this._liRooms(), longK); } catch (e) { html = `<div class="card empty tm2none">${ic("alert", 44)}<div>Die Lichtkarte ließ sich nicht zeichnen.</div></div>`; }
+    if (!this._tm2LiPlanOn()) { this._tm2LiWait(); return `<div class="tm2li"><div class="card empty tm2none">${ic("home", 44)}<div>Noch kein Grundriss.</div><small>Den Grundriss zeichnest du einmal in Modul 0 · Haus &amp; Grundriss.</small></div></div>`; }
+    return `<div class="tm2li"><div class="tm2lipl">${html}</div></div>`;
+  }
+  /* Raumfenster: alle Lampen des Raums, jede mit Schalter und Detail */
+  _tm2LiRoomModal(m) {
+    const r = this._liRooms().find((x) => x.k === m.k); if (!r) return "";
+    const n = r.on.length, hd = `<div class="sh"><div><b>${esc(r.name)}</b><span>${n ? `${n} von ${r.lamps.length} an · ${r.pct} %` : "alles aus"}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>`;
+    const rows = r.lamps.map((x) => `<div class="tm2lil${x.on ? " on" : ""}${x.un ? " un" : ""}" style="--c:${this._tm2LiHex(x.rgb)}"><i></i><button class="nm" data-act="lixdet" data-k="${esc(x.id)}" ${x.un ? "disabled" : ""}><b>${esc(x.name)}</b><small>${x.un ? "nicht erreichbar" : x.on ? `an${x.dim ? ` · ${x.br} %` : ""} · seit ${this._liDur(x.since)}` : "aus"}</small></button><button class="sw ${x.on ? "on" : ""}" data-act="lixsw" data-k="${esc(x.id)}" aria-pressed="${x.on}" ${x.un ? "disabled" : ""} aria-label="${esc(x.name)} ${x.on ? "ausschalten" : "einschalten"}"></button></div>`).join("");
+    const bp = r.dim.filter((x) => x.on), sl = bp.length ? `<div class="tm2lirb"><span>${ic("sun", 18)}Helligkeit im Raum</span><input type="range" min="1" max="100" value="${Math.round(bp.reduce((a, x) => a + x.br, 0) / bp.length)}" data-f="lixbr" data-k="${esc(r.k)}" aria-label="Helligkeit ${esc(r.name)}"></div>` : "";
+    return `<div class="ov" data-act="close"></div><div class="sheet tm2rm tm2lim" role="dialog" aria-modal="true">${hd}${sl}<div class="tm2lils">${rows}</div><div class="foot2" style="margin-top:12px"><button class="btn2" data-act="lixroom" data-k="${esc(r.k)}">${ic("lamp", 18)} ${n ? "Alle ausschalten" : "Alle einschalten"}</button><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
+  }
+  /* Aktionen und Fenster der Stufe 6 (Licht, Wartung, Abrechnungen) */
+  _tm6Act(a, b) {
+    const k = b.dataset.k;
+    if (a === "tm2lirm") { this._modal = { type: "tm2s6li", k }; this._renderModal(); return true; }
+    if (a === "tm2liscn") {
+      const st = this._hass.states[k]; if (!st) return true;
+      this._liCall(k.split(".")[0], "turn_on", { entity_id: k }); this._toast(`${this._wzName(k)} wird ausgeführt`); return true;
+    }
+    if (a.startsWith("tm2wt")) return this._tm2WtAct(a, b);
+    if (a.startsWith("tm2ab")) return this._tm2AbAct(a, b);
+    return false;
+  }
+  _tm2S6Modal(m) {
+    if (m.type === "tm2s6li") return this._tm2LiRoomModal(m);
+    if (m.type === "tm2s6wt") return this._wtEd ? `<div class="ov" data-act="waxtcancel"></div><div class="sheet wide tm2wted" role="dialog" aria-modal="true">${this._wtEditor()}</div>` : "";
+    return "";
+  }
+  /* ================= Tablet-Modus · Stufe 6: Wartung & Erinnerungen (Modul 15) ohne Scrollen (2026.11.5b14) =================
+     Reiter Termine (vier Zähler, bis zu 8 Termine mit „Erledigt“), Jahr (zwölf Monate auf einer Seite) und Erledigt (Verlauf, Kosten, Quote).
+     „Erledigt“ und „Rückgängig“ gehen immer. Anlegen, Ändern und Löschen fragen nach der PIN, wenn das Tablet eine hat. */
+  _tm2WaReady() { return !!this._wtD && !!(this._wt().tasks || []).length; }
+  _tm2WaStatus() {
+    if (!this._wtD) return "Wird geladen";
+    const D = this._wt(), S = D.sum || {}, T = D.tasks || [];
+    if (D.error && !D.tasks) return "Nicht geladen";
+    if (!T.length) return "Noch keine Termine";
+    const f = (S.over || 0) + (S.due || 0);
+    if (f) return `${f} ${f === 1 ? "Termin" : "Termine"} fällig`;
+    if (S.soon) return `${S.soon} bald fällig`;
+    return S.next ? esc(`Als Nächstes: ${S.next.name} ${this._wtWhen(S.next)}`) : "Alles im Plan";
+  }
+  _tm2Wa() {
+    this._wtLoad();
+    if (!this._wtD) return this._tm2None("tools", "Termine werden geladen …");
+    const D = this._wt(), T = D.tasks || [];
+    if (D.error && !D.tasks) return this._tm2None("alert", "Termine nicht geladen", "Modul 15 antwortet nicht. Nach einem Update bitte Home Assistant neu starten.");
+    if (!T.length) return `<div class="card empty tm2none">${ic("tools", 44)}<div>Noch keine Termine.</div><small>Lege Wartungen mit einem Abstand an, zum Beispiel „Heizungswartung jedes Jahr“. Ein Tipp auf „Erledigt“ setzt das Datum.</small>${this._tm2Set("tm2wtnew", "Neuer Termin")}</div>`;
+    const t = this._tm2Tab("wa");
+    return t === "year" ? this._tm2WaYear(D) : t === "done" ? this._tm2WaDone(D) : this._tm2WaDates(D);
+  }
+  _tm2WaCol(st) { return { ok: "#2dd4bf", soon: "#fbbf24", due: "#f87171", over: "#f87171", new: "#a78bfa", off: "#8e99ae" }[st] || "#2dd4bf"; }
+  _tm2WaRow(t, adm, today) {
+    const lbl = { ok: "im Plan", soon: "bald", due: "fällig", over: "überfällig", new: "offen", off: "pausiert" }, hi = t.hist || [], h = hi[hi.length - 1];
+    const undo = adm && h && h.d === today && "prev" in h, when = t.st !== "new" && t.st !== "off" ? this._wtWhen(t) : "";
+    const sub = [t.area, this._wtEvery(t), t.pro ? "Fachbetrieb" : ""].filter(Boolean).map(esc).join(" · ");
+    const btn = !adm ? "" : undo ? `<button class="tm2wab un" data-act="waxtundo" data-id="${esc(t.id)}">Rückgängig</button>` : t.st !== "off" ? `<button class="tm2wab" data-act="waxtdone" data-id="${esc(t.id)}" aria-label="${esc(t.name)} erledigt">${ic("check", 20)}<span>Erledigt</span></button>` : "";
+    const ed = adm ? `<button class="tm2wae" data-act="tm2g" data-g="tm2wted" data-id="${esc(t.id)}" aria-label="${esc(t.name)} bearbeiten">${ic(this._tmMe().has_pin ? "lock" : "pencil", 18)}</button>` : "";
+    return `<div class="tm2war ${t.st}"><div class="wtring" style="--p:${this._wtPct(t)};--c:${this._tm2WaCol(t.st)}"><span>${ic(t.icon || "tools", 18)}</span></div>
+      <span class="tm2wat"><b>${esc(t.name)}</b><small>${sub || "&nbsp;"}</small><em class="wtst ${t.st}">${lbl[t.st] || ""}${when ? ` · ${esc(when)}` : ""}</em></span><span class="tm2wax">${btn}${ed}</span></div>`;
+  }
+  _tm2WaDates(D) {
+    const S = D.sum || {}, T = D.tasks || [], adm = this._admin(), today = D.today || "", yr = today.slice(0, 4), land = this._tm2Land(), H = window.innerHeight;
+    const ord = { over: 0, due: 1, soon: 2, ok: 3, new: 4, off: 5 }, L = [...T].sort((a, b) => (ord[a.st] ?? 6) - (ord[b.st] ?? 6) || (a.days ?? 9e9) - (b.days ?? 9e9) || a.name.localeCompare(b.name, "de"));
+    const per = land ? (H < 700 ? 6 : 8) : (H < 1000 ? 6 : 8), p = this._tm2Page("wadates", L.length, per), rows = Math.ceil(per / 2);
+    const f = (S.over || 0) + (S.due || 0);
+    const tiles = [this._tm2Tile4("Fällig", String(f), "", f ? "jetzt erledigen" : "nichts offen", "#f87171"), this._tm2Tile4("Bald", String(S.soon || 0), "", "in den nächsten Tagen", "#fbbf24"),
+      this._tm2Tile4("Im Plan", String(S.ok || 0), "", "noch nicht dran", "#2dd4bf"), this._tm2Tile4(`Erledigt ${yr}`, String(S.done_year || 0), "", S.cost_year ? `${num(S.cost_year, 0)} € Kosten` : "bisher", "#a78bfa")].join("");
+    return `<div class="tm2sums">${tiles}</div><div class="card tm2cc tm2wac" data-sw="wadates"><div class="tm2sh"><span>${ic("tools", 18)}Termine</span><em>${T.length}</em>${adm && T.length < (D.max || 100) ? this._tm2Set("tm2wtnew", "Neuer Termin") : ""}</div>
+      <div class="tm2wag" style="--r:${rows}">${L.slice(p.from, p.to).map((t) => this._tm2WaRow(t, adm, today)).join("")}</div>${this._tm2Pager("wadates", p, "Termine")}</div>`;
+  }
+  _tm2WaAdd(d, n, unit) {
+    const x = new Date(d);
+    if (unit === "d") x.setDate(x.getDate() + n); else if (unit === "w") x.setDate(x.getDate() + 7 * n); else if (unit === "y") x.setFullYear(x.getFullYear() + n); else x.setMonth(x.getMonth() + n);
+    return x;
+  }
+  /* Jahresplan: die nächsten zwölf Monate. Wiederkehrende Termine stehen in jedem Monat, in dem sie dran sind; Überfälliges steht im laufenden Monat. */
+  _tm2WaMonths(D) {
+    const today = D.today || new Date().toISOString().slice(0, 10), ty = +today.slice(0, 4), tm = +today.slice(5, 7) - 1;
+    const M = Array.from({ length: 12 }, (_, i) => ({ y: ty + Math.floor((tm + i) / 12), m: (tm + i) % 12, it: [] })), end = new Date(ty, tm + 12, 1), td = new Date(`${today}T00:00:00`);
+    (D.tasks || []).filter((t) => t.st !== "off" && t.due).forEach((t) => {
+      let d = new Date(`${t.due}T12:00:00`), n = 0;
+      while (isFinite(d) && d < end && n++ < 500) {
+        const i = (d.getFullYear() - ty) * 12 + d.getMonth() - tm;
+        if (i >= 0) { if (!M[i].it.some((x) => x.t === t)) M[i].it.push({ t, d, over: n === 1 && d < td }); } else if (n === 1) M[0].it.push({ t, d, over: true });
+        d = this._tm2WaAdd(d, Math.max(1, +t.every || 1), t.unit);
+      }
+    });
+    M.forEach((x) => x.it.sort((a, b) => (a.over === b.over ? a.d - b.d : a.over ? -1 : 1)));
+    return M;
+  }
+  _tm2WaYear(D) {
+    const M = this._tm2WaMonths(D), land = this._tm2Land(), cap = land && window.innerHeight < 700 ? 2 : 3, MN = ["Jan.", "Feb.", "März", "Apr.", "Mai", "Juni", "Juli", "Aug.", "Sept.", "Okt.", "Nov.", "Dez."];
+    const cell = (x, i) => {
+      const show = x.it.slice(0, x.it.length > cap ? cap - 1 : cap), more = x.it.length - show.length;
+      return `<div class="tm2wam${i === 0 ? " now" : ""}"><b>${MN[x.m]}<small>${x.y}</small></b>${show.map((q) => `<span class="${q.over ? "o" : i === 0 && ["due", "soon"].includes(q.t.st) ? "w" : ""}">${ic(q.t.icon || "tools", 14)}<i>${esc(q.t.name)}</i>${q.over ? `<em>überfällig</em>` : `<em>${q.d.getDate()}.</em>`}</span>`).join("")}${more > 0 ? `<small class="mo">+${more} weitere</small>` : ""}${x.it.length ? "" : `<small class="no">nichts</small>`}</div>`;
+    };
+    return `<div class="card tm2cc tm2wayc"><div class="tm2sh"><span>${ic("plan", 18)}Nächste zwölf Monate</span>${this._tm2Set("tm2wtnew", "Neuer Termin")}</div><div class="tm2way">${M.map(cell).join("")}</div></div>`;
+  }
+  _tm2WaDone(D) {
+    const T = D.tasks || [], S = D.sum || {}, today = D.today || "", yr = today.slice(0, 4), adm = this._admin(), land = this._tm2Land(), H = window.innerHeight;
+    const A = T.flatMap((t) => (t.hist || []).map((h) => ({ t, h, last: h === (t.hist || [])[(t.hist || []).length - 1] }))).sort((a, b) => b.h.d.localeCompare(a.h.d));
+    const act = T.filter((t) => t.st !== "off").length, good = (S.ok || 0) + (S.soon || 0), q = act ? Math.round((100 * good) / act) : null;
+    const tiles = [this._tm2Tile4(`Erledigt ${yr}`, String(S.done_year || 0), "", "Termine abgehakt", "#a78bfa"), this._tm2Tile4(`Kosten ${yr}`, S.cost_year ? num(S.cost_year, 2) : "–", S.cost_year ? "€" : "", "aus den Einträgen", "#f59e0b"),
+      this._tm2Tile4("Im Plan", q == null ? "–" : String(q), q == null ? "" : "%", "der Termine nicht fällig", "#2dd4bf")].join("");
+    const per = land ? (H < 700 ? 6 : 8) : 6, p = this._tm2Page("wadone", A.length, per);
+    const row = ({ t, h, last }) => {
+      const undo = adm && last && h.d === today && "prev" in h;
+      return `<div class="tm2war done"><div class="wtring" style="--p:100;--c:#2dd4bf"><span>${ic(t.icon || "tools", 18)}</span></div><span class="tm2wat"><b>${esc(t.name)}</b><small>${this._wtDay(h.d)}${h.note ? ` · ${esc(h.note)}` : ""}</small></span>
+        <span class="tm2wax">${h.cost != null ? `<em class="tm2wac2">${num(h.cost, 2)} €</em>` : ""}${undo ? `<button class="tm2wab un" data-act="waxtundo" data-id="${esc(t.id)}">Rückgängig</button>` : ""}</span></div>`;
+    };
+    return `<div class="tm2sums three">${tiles}</div><div class="card tm2cc tm2wac" data-sw="wadone"><div class="tm2sh"><span>${ic("check", 18)}Zuletzt erledigt</span><em>${A.length}</em></div>${A.length ? `<div class="tm2wag${land ? "" : " one"}" style="--r:${land ? per / 2 : per}">${A.slice(p.from, p.to).map(row).join("")}</div>` : `<div class="tm2note" style="margin:auto;text-align:center">Noch nichts erledigt. Ein Tipp auf „Erledigt“ bei einem Termin trägt ihn hier ein.</div>`}${this._tm2Pager("wadone", p, "Einträge")}</div>`;
+  }
+  _tm2WtAct(a, b) {
+    if (a === "tm2wtnew") { this._wtAct("waxtnew", b); this._modal = { type: "tm2s6wt" }; this._renderModal(); return true; }
+    if (a === "tm2wted") { this._wtAct("waxtedit", b); if (this._wtEd) { this._modal = { type: "tm2s6wt" }; this._renderModal(); } return true; }
+    return false;
+  }
+  /* ================= Tablet-Modus · Stufe 6: Abrechnungen (Modul 20) ohne Scrollen (2026.11.5b14) =================
+     Reiter Sparten (je Vertrag eine Karte mit Hochrechnung, Abschlag und Fortschritt; unten, was zu tun ist), Zähler (großer Ziffernblock
+     mit sofortiger Prüfung) und Abschläge (Empfehlung je Sparte, Kosten gegen gezahlte Abschläge als Kurve).
+     Beträge stehen erst nach dem Antippen von „Beträge zeigen“ da (2 Minuten). Zählerstände eintragen geht ohne PIN,
+     Verträge, Rechnungen, Fahrtkosten und Vorräte öffnen nach der PIN die ganze Seite des Moduls. Die Daten holt die Seite selbst über das Addon. */
+  static TM2_AB_SP = { strom: ["Strom", "energy", "#fbbf24", "kWh"], gas: ["Gas", "flame", "#fb923c", "kWh"], wasser: ["Wasser", "drop", "#38bdf8", "m³"], einspeisung: ["Einspeisung", "sun", "#34d399", "kWh"] };
+  _tm2AbOn() { return this._adOn("abrechnung"); }
+  _tm2AbS() { return this._tm2AbSt || (this._tm2AbSt = { d: null, ts: 0, err: "" }); }
+  _tm2AbLoad(force) {
+    if (!this._hass || this._tm2AbBusy || !this._tm2AbOn()) return;
+    const S = this._tm2AbS();
+    if (!force && S.d && Date.now() - S.ts < 60000) return;
+    if (!force && !S.d && S.err && Date.now() - S.ts < 15000) return;
+    this._tm2AbBusy = true;
+    this._adApi().call("abrechnung", "get", {}).then((d) => { S.d = d; S.ts = Date.now(); S.err = ""; }).catch((e) => { S.err = (e && e.message) || "Keine Antwort"; S.ts = Date.now(); })
+      .finally(() => { this._tm2AbBusy = false; if (this._tm2Shows("abrechnung")) this._render(); });
+  }
+  _tm2AbReady() { return this._tm2AbOn() && !!this._tm2AbS().d; }
+  _tm2AbAmt() { return Date.now() < (this._tm2AbRev || 0); }
+  _tm2AbEur(v, dec = 0) { return v == null ? "–" : this._tm2AbAmt() ? `${num(v, dec)} €` : "••• €"; }
+  _tm2AbStatus() {
+    if (!this._tm2AbOn()) return "Addon aus";
+    this._tm2AbLoad();
+    const S = this._tm2AbS(); if (!S.d) return S.err ? "Nicht geladen" : "Wird geladen";
+    const C = S.d.cards || {}, ks = Object.keys(C).filter((k) => C[k]);
+    if (!ks.length) return "Noch keine Verträge";
+    const K = this.constructor.TM2_AB_SP, bad = ks.filter((k) => C[k].fc && C[k].fc.ergebnis != null && C[k].fc.ergebnis < 0).map((k) => (K[k] || [k])[0]);
+    return `${ks.length} ${ks.length === 1 ? "Vertrag" : "Verträge"} · ${bad.length ? `Nachzahlung droht: ${bad.join(", ")}` : "Hochrechnung im Plan"}`;
+  }
+  _tm2Ab() {
+    if (!this._tm2AbOn()) return this._tm2None("chart", "Das Abrechnungs-Addon ist aus.");
+    this._tm2AbLoad();
+    const S = this._tm2AbS();
+    if (!S.d) return this._tm2None(S.err ? "alert" : "chart", S.err ? "Abrechnungen konnten nicht geladen werden." : "Abrechnungen werden geladen …", S.err ? esc(S.err) : "");
+    const t = this._tm2Tab("abrechnung");
+    return t === "rd" ? this._tm2AbRd(S.d) : t === "pay" ? this._tm2AbPay(S.d) : this._tm2AbSp(S.d);
+  }
+  /* Was zu tun ist: Fristen, Preisänderungen, Abschläge und Zähler, die lange nicht abgelesen wurden */
+  _tm2AbTodo(d) {
+    const out = (d.events || []).map((e) => ({ t: e.t, s: `${e.s ? e.s + " · " : ""}${e.tage === 0 ? "heute" : e.tage === 1 ? "morgen" : `in ${e.tage} Tagen`}`, w: e.c === "wa", n: e.tage }));
+    (d.meters || []).filter((m) => !m.sensor && (m.used || []).length && m.last).forEach((m) => {
+      const days = Math.floor((Date.now() - new Date(m.last.t).getTime()) / 864e5);
+      if (isFinite(days) && days >= 40) out.push({ t: `${m.name} ablesen`, s: `zuletzt vor ${days} Tagen`, w: days >= 70, n: -days });
+    });
+    return out.sort((a, b) => (b.w - a.w) || (a.n - b.n));
+  }
+  _tm2AbBar(d, canShow) {
+    return `<div class="tm2abbar"><button class="tm2mini" data-act="tm2abrev">${ic(this._tm2AbAmt() ? "eyeOff" : "eye", 16)}${this._tm2AbAmt() ? "Beträge verbergen" : "Beträge zeigen"}</button>${canShow ? `<button class="tm2mini" data-act="tm2g" data-g="tm2abfull" data-k="on">${ic(this._tmMe().has_pin ? "lock" : "more", 16)}Mehr im Modul</button>` : ""}</div>`;
+  }
+  /* Kleine Kurve ohne Zahlen: Kosten (Farbe der Sparte) gegen gezahlte Abschläge (weiß) über das Abrechnungsjahr */
+  _tm2AbSpark(f, col) {
+    const M = f && f.monate; if (!M || M.length < 2) return `<div class="tm2abs"></div>`;
+    const top = Math.max(1, ...M.map((x) => Math.max(x.cum_k || 0, x.cum_z || 0))) * 1.15, X = (i) => (300 * i) / (M.length - 1), Y = (v) => 100 - (92 * v) / top;
+    const pts = (key) => M.map((x, i) => `${X(i).toFixed(1)},${Y(x[key] || 0).toFixed(1)}`).join(" "), id = `tm2g${String(col).replace(/\W/g, "")}`;
+    return `<div class="tm2abs" aria-hidden="true"><svg viewBox="0 0 300 100" preserveAspectRatio="none"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".38"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
+      <line x1="0" y1="99" x2="300" y2="99" stroke="rgba(127,127,127,.35)" stroke-width="1" vector-effect="non-scaling-stroke"/>
+      <polygon points="0,100 ${pts("cum_k")} 300,100" fill="url(#${id})"/>
+      <polyline points="${pts("cum_z")}" fill="none" stroke="rgba(230,237,243,.7)" stroke-width="2" stroke-dasharray="5 5" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+      <polyline points="${pts("cum_k")}" fill="none" stroke="${col}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg></div>`;
+  }
+  _tm2AbSp(d) {
+    const K = this.constructor.TM2_AB_SP, land = this._tm2Land(), C = d.cards || {}, list = Object.keys(K).filter((k) => C[k]);
+    if (!list.length) return `<div class="card empty tm2none">${ic("chart", 44)}<div>Noch keine Verträge.</div><small>Verträge und Zähler legst du im Modul am Handy oder Rechner an.</small>${this._tm2AbBar(d, this._admin())}</div>`;
+    const CT = Object.fromEntries((d.contracts || []).map((c) => [c.id, c]));
+    const card = (k) => {
+      const c = C[k], f = c.fc, [name, ico, col, unit] = K[k], ct = CT[c.id] || {}, sub = [ct.anbieter, ct.tarif].filter(Boolean).join(" · ");
+      let cap = "Noch keine Hochrechnung", big = "–", tone = "";
+      if (f) {
+        if (f.ergebnis != null) { const pos = f.ergebnis >= 0; cap = k === "einspeisung" ? (pos ? "Gutschrift erwartet" : "Rückzahlung droht") : pos ? "Guthaben erwartet" : "Nachzahlung droht"; big = this._tm2AbEur(Math.abs(f.ergebnis)); tone = pos ? "ok" : "bad"; }
+        else { cap = k === "einspeisung" ? "Vergütung bis Jahresende" : "Kosten bis Jahresende"; big = this._tm2AbEur(f.total); }
+      }
+      const pc = f && f.total > 0 ? Math.min(100, Math.round(((f.bisher || 0) / f.total) * 100)) : 0, pz = f && f.total > 0 ? Math.min(100, Math.round(((f.gezahlt || 0) / f.total) * 100)) : 0;
+      const E = f && f.empf, ab = E && E.show && E.neu ? `<em class="rec">${ic("up", 15)}Abschlag auf ${this._tm2AbEur(E.neu)} ändern<small>statt ${this._tm2AbEur(E.alt)}</small></em>` : E && E.alt ? `<em>Abschlag ${this._tm2AbEur(E.alt)}</em>` : f && f.zahl === "monat" ? `<em>monatlich abgerechnet</em>` : `<em>&nbsp;</em>`;
+      const px = c.u && c.u.ct != null && unit === "kWh" ? `${num(c.u.ct, 1)} ct/kWh` : "";
+      return `<div class="tm2abc ${tone}" style="--a:${col}"><div class="tm2abh"><span class="i">${ic(ico, 22)}</span><span class="t"><b>${name}</b><small>${esc(sub) || "&nbsp;"}</small></span></div>
+        ${this._tm2AbSpark(f, col)}<div class="tm2abk"><small>${cap}</small><b>${big}</b></div>
+        <div class="tm2abp" role="img" aria-label="Kosten bisher ${pc} Prozent, Abschläge gezahlt ${pz} Prozent"><i class="k" style="width:${pc}%"></i><i class="z" style="left:${pz}%"></i></div>
+        <div class="tm2abl"><span>bisher ${this._tm2AbEur(f ? f.bisher : null)}</span><span>${f ? `Abschläge ${this._tm2AbEur(f.gezahlt)}` : ""}</span></div>${ab}<small class="tm2abx">${esc([f ? `Jahr bis ${this._wtDay(f.ende)}` : "", px].filter(Boolean).join(" · "))}</small></div>`;
+    };
+    const todo = this._tm2AbTodo(d).slice(0, land ? 3 : 2);
+    const td = `<div class="card tm2cc tm2abt"><div class="tm2sh"><span>${ic("check", 18)}Was zu tun ist</span>${this._tm2AbBar(d, this._admin())}</div>${todo.length ? `<div class="tm2abtl">${todo.map((x) => `<div class="${x.w ? "w" : ""}"><b>${esc(x.t)}</b><small>${esc(x.s)}</small></div>`).join("")}</div>` : `<div class="tm2note" style="margin:6px 0 2px">Gerade ist nichts zu tun.</div>`}</div>`;
+    const cols = land ? list.length : 2;
+    return `<div class="tm2ab"><div class="tm2abg" style="--c:${Math.max(1, cols)}">${list.map(card).join("")}</div>${td}</div>`;
+  }
+  /* Zähler ablesen: großer Ziffernblock, Prüfung gegen den Verlauf noch vor dem Speichern */
+  _tm2AbNum(s) { if (!s || s === ",") return null; const n = parseFloat(String(s).replace(",", ".")); return isFinite(n) ? n : null; }
+  _tm2AbCheck() {
+    const K = this._tm2AbK; if (!K) return;
+    clearTimeout(K.t); const v = this._tm2AbNum(K.v), id = K.mid, val = K.v; if (v == null) { K.chk = null; return; }
+    K.t = setTimeout(() => this._adApi().call("abrechnung", "check", { id, v }).then((r) => { if (K.mid === id && K.v === val) { K.chk = r; if (this._tm2Shows("abrechnung")) this._render(); } }).catch(() => { /* ohne Prüfung bleibt Speichern gesperrt */ }), 350);
+  }
+  _tm2AbRd(d) {
+    const ms = d.meters || [], land = this._tm2Land();
+    if (!ms.length) return `<div class="card empty tm2none">${ic("gauge", 44)}<div>Noch keine Zähler.</div><small>Zähler legst du im Modul am Handy oder Rechner an.</small></div>`;
+    const K = this._tm2AbK || (this._tm2AbK = { mid: "", v: "", chk: null, busy: false });
+    if (!ms.some((m) => m.id === K.mid)) { K.mid = ms[0].id; K.v = ""; K.chk = null; }
+    const m = ms.find((x) => x.id === K.mid), dec = Math.max(0, m.dec | 0), f = (v) => (v == null ? "–" : num(v, dec));
+    const lt = m.last ? new Date(m.last.t) : null, when = lt && isFinite(lt) ? `${lt.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" })} ${lt.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })} Uhr` : "";
+    const chips = `<div class="tm2abms">${ms.map((x) => `<button class="${x.id === K.mid ? "sel" : ""}" data-act="tm2abm" data-k="${esc(x.id)}" aria-pressed="${x.id === K.mid}"><b>${esc(x.name)}</b><small>${x.last ? `${num(x.last.v, Math.max(0, x.dec | 0))} ${esc(x.unit)}` : "kein Stand"}</small></button>`).join("")}</div>`;
+    const info = `<div class="card tm2cc tm2abi"><div class="tm2sh"><span>${ic("gauge", 18)}${esc(m.name)}</span>${m.sensor ? `<em>automatisch</em>` : ""}</div>
+      <div class="tm2abkv"><div><small>Letzter Stand</small><b>${f(m.last && m.last.v)} <small>${esc(m.unit)}</small></b><small>${esc(when) || "noch nie abgelesen"}</small></div>
+      ${m.expect != null ? `<div><small>Erwartet jetzt</small><b>${f(m.expect)} <small>${esc(m.unit)}</small></b><small>nach deinem Verbrauch</small></div>` : ""}
+      ${m.rate != null ? `<div><small>Verbrauch je Tag</small><b>${num(m.rate, m.rate < 10 ? 1 : 0)} <small>${esc(m.unit)}</small></b><small>Durchschnitt der letzten Wochen</small></div>` : ""}
+      ${lt && isFinite(lt) ? `<div><small>Zuletzt abgelesen</small><b>vor ${Math.max(0, Math.floor((Date.now() - lt.getTime()) / 864e5))} <small>Tagen</small></b><small>${m.last && m.last.src === "sensor" ? "automatisch" : "von Hand"}</small></div>` : ""}
+      ${m.sensor && m.live != null ? `<div><small>Aktuell (Sensor)</small><b>${f(m.live)} <small>${esc(m.unit)}</small></b><small>wird automatisch gespeichert</small></div>` : ""}
+      ${m.nr ? `<div><small>Zählernummer</small><b class="nr">${esc(m.nr)}</b></div>` : ""}</div></div>`;
+    const v = this._tm2AbNum(K.v), chk = K.chk, lvl = chk ? chk.level : "";
+    const msg = v == null ? "Stand eintippen, die Prüfung läuft von selbst." : chk ? chk.msg : "Wird geprüft …";
+    const can = v != null && chk && lvl !== "bad" && !K.busy, key = (k, l, cls = "") => `<button class="tm2abkey ${cls}" data-act="tm2abk" data-k="${k}" ${k === "," && dec < 1 ? "disabled" : ""} aria-label="${k === "bk" ? "Zeichen löschen" : k === "clr" ? "Alles löschen" : l}">${l}</button>`;
+    const pad = `<div class="card tm2cc tm2abpad"><div class="tm2abd ${lvl}"><b>${esc(K.v || "–")}</b><span>${esc(m.unit)}</span></div><div class="tm2abmsg ${lvl}">${ic(lvl === "bad" ? "alert" : lvl === "warn" ? "info" : lvl === "ok" ? "check" : "clock", 18)}<span>${esc(msg)}</span></div>
+      <div class="tm2abkeys">${["7", "8", "9", "4", "5", "6", "1", "2", "3"].map((k) => key(k, k)).join("")}${key(",", ",")}${key("0", "0")}${key("bk", ic("back", 24), "fn")}</div>
+      <div class="tm2abgo"><button class="btn2" data-act="tm2abk" data-k="clr" ${K.v ? "" : "disabled"}>Leeren</button><button class="btn2 pri" data-act="tm2absave" ${can ? "" : "disabled"}>${ic("check", 20)}${lvl === "warn" ? "Trotzdem speichern" : K.busy ? "Speichert …" : "Speichern"}</button></div></div>`;
+    return `<div class="tm2abr">${chips}<div class="tm2abrb${land ? "" : " port"}">${info}${pad}</div></div>`;
+  }
+  /* Abschläge: Empfehlung je Sparte, rechts Kosten gegen gezahlte Abschläge */
+  _tm2AbPay(d) {
+    const K = this.constructor.TM2_AB_SP, C = d.cards || {}, list = Object.keys(K).filter((k) => C[k] && C[k].fc), land = this._tm2Land();
+    if (!list.length) return `<div class="card empty tm2none">${ic("chart", 44)}<div>Noch keine Hochrechnung.</div><small>Sobald ein Vertrag mit Zähler oder Jahresverbrauch da ist, zeigt diese Seite die Abschläge.</small></div>`;
+    const sel = list.includes(this._tm2AbSel) ? this._tm2AbSel : list[0];
+    const row = (k) => {
+      const [name, ico, col] = K[k], f = C[k].fc, E = f.empf, on = k === sel;
+      const rec = f.zahl === "monat" ? `<em>monatlich abgerechnet</em>` : E && E.show && E.neu ? `<em class="rec">Empfehlung ${this._tm2AbEur(E.neu)}${E.ab ? `<small>ab ${this._wtDay(E.ab)}</small>` : ""}</em>` : E && E.next ? `<em>fürs nächste Jahr ${this._tm2AbEur(E.next)}</em>` : `<em class="ok">${ic("check", 14)}passt</em>`;
+      return `<button class="tm2abrw${on ? " sel" : ""}" data-act="tm2absel" data-k="${k}" style="--a:${col}" aria-pressed="${on}"><span class="i">${ic(ico, 20)}</span><span class="t"><b>${name}</b><small>${f.deckung != null ? `${f.deckung} % gedeckt` : "ohne Abschlag"}</small></span><span class="v"><b>${E && E.alt ? this._tm2AbEur(E.alt) : "–"}</b><small>Abschlag</small></span>${rec}</button>`;
+    };
+    const [sn, , sc] = K[sel];
+    return `<div class="tm2abpy${land ? "" : " port"}"><div class="tm2abrs">${list.map(row).join("")}</div><div class="card tm2cc tm2abch"><div class="tm2sh"><span>${ic("chart", 18)}Kosten gegen Abschläge · ${sn}</span><span class="tm2legend"><i style="background:#f59e0b"></i>Kosten<i style="background:${sc === "#60a5fa" ? "#a78bfa" : "#60a5fa"}"></i>Abschläge</span></div>
+      <div class="tm2abcb" data-tm2ch="abpay" data-k="${sel}"></div><small class="tm2note">${this._tm2AbAmt() ? "Kosten hochgerechnet bis zum Ende des Abrechnungsjahrs" : "Beträge sind verborgen – oben links „Beträge zeigen“ im Reiter Sparten"}</small></div></div>`;
+  }
+  _tm2AbChart(box, w, h) {
+    const K = this.constructor.TM2_AB_SP, d = this._tm2AbS().d, sel = box.dataset.k, c = d && d.cards && d.cards[sel], M = c && c.fc && c.fc.monate;
+    if (!M || M.length < 2) { box.innerHTML = ""; return; }
+    const amt = this._tm2AbAmt(), padL = amt ? 58 : 14, padR = 14, padT = 14, padB = 26, pw = w - padL - padR, ph = h - padT - padB, n = M.length;
+    const top = Math.max(1, ...M.map((x) => Math.max(x.cum_k || 0, x.cum_z || 0))) * 1.08, X = (i) => padL + (pw * i) / (n - 1), Y = (v) => padT + ph - (ph * v) / top;
+    const line = (key, col, dash) => `<polyline points="${M.map((x, i) => `${X(i).toFixed(1)},${Y(x[key] || 0).toFixed(1)}`).join(" ")}" fill="none" stroke="${col}" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"${dash ? ` stroke-dasharray="${dash}"` : ""}/>`;
+    const todayM = (d.today || "").slice(0, 7), ti = M.findIndex((x) => x.m === todayM), ticks = [0, 0.5, 1].map((q) => { const v = top * q; return `<line x1="${padL}" x2="${w - padR}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" class="tm2abgl"/>${amt ? `<text x="${padL - 8}" y="${(Y(v) + 4).toFixed(1)}" text-anchor="end" class="tm2abax">${num(v, 0)} €</text>` : ""}`; }).join("");
+    const xs = M.map((x, i) => (n <= 13 || i % 2 === 0 ? `<text x="${X(i).toFixed(1)}" y="${h - 6}" text-anchor="middle" class="tm2abax">${esc(String(x.l || "").slice(0, 3))}</text>` : "")).join("");
+    const now = ti >= 0 ? `<line x1="${X(ti).toFixed(1)}" x2="${X(ti).toFixed(1)}" y1="${padT}" y2="${padT + ph}" class="tm2abnow"/><text x="${X(ti).toFixed(1)}" y="${padT - 3}" text-anchor="middle" class="tm2abax">heute</text>` : "";
+    box.innerHTML = `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="Kosten und Abschläge im Abrechnungsjahr">${ticks}${now}${line("cum_k", "#f59e0b")}${line("cum_z", (K[sel] || [])[2] === "#60a5fa" ? "#a78bfa" : "#60a5fa", "")}${xs}</svg>`;
+  }
+  _tm2AbAct(a, b) {
+    const k = b.dataset.k, S = this._tm2AbS();
+    if (a === "tm2abrev") { const on = this._tm2AbAmt(); this._tm2AbRev = on ? 0 : Date.now() + 120000; clearTimeout(this._tm2AbRt); if (!on) this._tm2AbRt = setTimeout(() => { if (this._tm2Shows("abrechnung")) this._render(); }, 120500); this._render(); return true; }
+    if (a === "tm2absel") { this._tm2AbSel = k; this._render(); return true; }
+    if (a === "tm2abm") { const K = this._tm2AbK || (this._tm2AbK = { mid: "", v: "", chk: null, busy: false }); K.mid = k; K.v = ""; K.chk = null; this._render(); return true; }
+    if (a === "tm2abk") {
+      const K = this._tm2AbK; if (!K || K.busy) return true;
+      const m = ((S.d && S.d.meters) || []).find((x) => x.id === K.mid); if (!m) return true;
+      let v = K.v; const dec = Math.max(0, m.dec | 0), dig = Math.max(3, m.digits | 0);
+      if (k === "bk") v = v.slice(0, -1); else if (k === "clr") v = "";
+      else if (k === ",") { if (dec > 0 && v && !v.includes(",")) v += ","; }
+      else if (v.includes(",")) { if (v.split(",")[1].length < dec) v += k; }
+      else if (v === "0") v = k; else if (v.length < dig) v += k;
+      K.v = v; K.chk = null; this._tm2AbCheck(); this._render(); return true;
+    }
+    if (a === "tm2absave") {
+      const K = this._tm2AbK, v = K && this._tm2AbNum(K.v); if (!K || v == null || K.busy) return true;
+      K.busy = true; this._render();
+      this._adApi().call("abrechnung", "read", { id: K.mid, v, src: "manuell", force: !!(K.chk && K.chk.level === "warn") }).then((r) => {
+        K.busy = false;
+        if (r && r.saved) { if (r.cards) { S.d = r; S.ts = Date.now(); } K.v = ""; K.chk = null; this._toast("Zählerstand gespeichert"); }
+        else { K.chk = (r && r.check) || K.chk; this._toast((K.chk && K.chk.msg) || "Nicht gespeichert"); }
+        this._render();
+      }).catch((e) => { K.busy = false; this._toast((e && e.message) || "Nicht gespeichert"); this._render(); });
+      return true;
+    }
+    /* Ganze Seite des Moduls (Verträge, Rechnungen, Fahrtkosten, Vorräte): kommt über tm2g, also erst nach der PIN */
+    if (a === "tm2abfull") {
+      const s = this._mdState();
+      if (k === "on") { this._tm2AbFull = true; this._tm2AbPrev = s.active; s.active = "abrechnung"; } else this._tm2AbExit();
+      this._tmHomed = false; this._render(); return true;
+    }
+    return false;
+  }
+  _tm2AbExit() {
+    if (!this._tm2AbFull) return;
+    this._tm2AbFull = false; const s = this._mdState(); if (s.active === "abrechnung") s.active = this._tm2AbPrev || "fh";
   }
   /* ================= Sponsor-Bereich (3.0.2.13) =================
      Die Integration bleibt kostenlos. Mit einem Sponsor-Schlüssel gibt es Schönes obendrauf: Abzeichen, Farbverläufe,
@@ -22946,7 +23423,7 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
     this._wtBusy = true;
     this._hass.callWS({ type: "fenster_heizung/wt_get" }).then((r) => { this._wtD = { d: r || {}, ts: Date.now() }; })
       .catch(() => { this._wtD = { d: { ...((this._wtD && this._wtD.d) || {}), error: true }, ts: Date.now() - 10000 }; })
-      .finally(() => { this._wtBusy = false; if (this._mdActive && this._mdActive() === "wa") this._render(); });
+      .finally(() => { this._wtBusy = false; if ((this._mdActive && this._mdActive() === "wa") || (this._tm2Shows && this._tm2Shows("wa"))) this._render(); });
   }
   _wt() { return (this._wtD && this._wtD.d) || {}; }
   _wtDay(iso) { if (!iso) return "–"; const [y, m, d] = String(iso).split("-"); return `${d}.${m}.${y}`; }

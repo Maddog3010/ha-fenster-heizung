@@ -2,6 +2,19 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.5b14] - 2026-11-27
+
+Tablet-Modus, sechste Stufe: Licht, Abrechnungen und Wartung ohne Scrollen.
+
+### Neu
+- **Tablet-Modus · Modul 18 (Licht & Lampen):** Reiter „Räume“ (Lichtkachel je Raum mit Regler und Schalter, Antippen öffnet das Raum-Fenster), „Lichtkarte“ (Grundriss, nur mit gezeichnetem Plan) und „Szenen“. Oben Szenen-Knöpfe und „Alle aus“.
+- **Tablet-Modus · Modul 20 (Abrechnungen):** Reiter „Sparten“ (Strom, Gas, Wasser, Einspeisung mit Kurve, Prognose, Fortschritt und Empfehlung, dazu „Was zu tun ist“), „Zähler“ (Stand mit Zahlenfeld eintippen, Prüfung läuft von selbst) und „Abschläge“ (Kosten gegen Abschläge als Kurve). Beträge sind zuerst verborgen und erscheinen nach „Beträge zeigen“ für zwei Minuten.
+- **Tablet-Modus · Modul 15 (Wartung & Erinnerungen, v0.2 Build 4):** Reiter „Termine“ (vier Kennzahlen, Termine mit „Erledigt“), „Jahr“ (zwölf Monate) und „Erledigt“ (Verlauf mit „Rückgängig“ und Kosten). Neu anlegen und Bearbeiten fragen nach der PIN.
+- „Mehr im Modul“ öffnet die volle Seite des Moduls (nur mit PIN).
+
+### Noch offen
+- Getestet im Browser mit Beispieldaten, noch nicht auf einem echten Tablet.
+
 ## [2026.11.5b13] - 2026-11-27
 
 Tablet-Modus, fünfte Stufe: Wetter, Melder und Müll ohne Scrollen. Dazu neue Tablet-Einstellungen und ein reparierter Knopf.

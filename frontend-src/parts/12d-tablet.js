@@ -54,7 +54,7 @@
     if (this._tmSleep) { if (moved || newWarn) this._tmWake(); return; }
     if (newWarn && !this._modal) { this._tmView = "st"; this._tmLast = Date.now(); this._render(); return; }
     if (c.sleep && idle >= c.sleep * 60000) { this._tmSleep = true; this._modal = null; this._renderModal(); this._render(); return; }
-    if (c.idle_home && idle >= c.idle_home * 60000 && !this._tmHomed) { this._tmHomed = true; this._tm2Unl = 0; const full = this._tm2On() && !!this._evWallFull && !this._modal; if (full) this._tm2FullOff(); const paged = full || Object.values(this._tmPg || {}).some(Boolean) || Object.keys(this._tm2T || {}).length > 0; if (!this._modal) { this._tmPg = {}; this._tm2T = {}; } if ((this._tmV() !== this._tmHome() || paged) && !this._modal) { this._tmView = this._tmHome(); this._render(); } }
+    if (c.idle_home && idle >= c.idle_home * 60000 && !this._tmHomed) { this._tmHomed = true; this._tm2Unl = 0; const full = this._tm2On() && (!!this._evWallFull || !!this._tm2AbFull) && !this._modal; if (full) this._tm2FullOff(); const paged = full || Object.values(this._tmPg || {}).some(Boolean) || Object.keys(this._tm2T || {}).length > 0; if (!this._modal) { this._tmPg = {}; this._tm2T = {}; } if ((this._tmV() !== this._tmHome() || paged) && !this._modal) { this._tmView = this._tmHome(); this._render(); } }
   }
   _tmV() { return this._tmView || this._tmHome(); }
   _tmItems() {
@@ -77,6 +77,7 @@
     if (id === "mu" && this._muOn()) return this._muPage();
     if (id === "li" && this._liOn()) return this._liPage();
     if (id === "ev" && this._evWallOn()) return this._evWall();
+    if (id === "abrechnung" && this._tm2AbFull) return `<button class="btn2 tm2abback" data-act="tm2abfull" data-k="off">${ic("back", 18)}Zur Übersicht</button>${this._adPage(m)}`;
     if (m.addon) return this._adPage(m);
     if (m.beta) return this._betaPage(id);
     if (id === "en") return this._enPage();

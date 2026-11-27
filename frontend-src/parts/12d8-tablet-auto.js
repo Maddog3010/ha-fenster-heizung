@@ -3,7 +3,7 @@
      Laden und Schnellstart gehen wie bisher ohne PIN. Fahrzeuge, Wallbox und Ladungen öffnen nach der PIN die ganze Seite. */
   _tm2Shows(id) { return !!(this._tmOn && this._tmOn() && this._tm2On() && !this._tmSleep && this._tmV() === id); }
   /* Ganze Modulseite (mit Scrollen) wieder schließen, sobald man das Modul verlässt – danach gilt wieder die PIN */
-  _tm2FullOff() { if (this._tm2On()) this._evWallFull = false; }
+  _tm2FullOff() { if (this._tm2On()) { this._evWallFull = false; this._tm2AbExit(); } }
   _tm2EvLine(d, N) {
     if (!N.wbOn) return d.charging ? `Lädt${d.power != null ? ` mit ${num(d.power / 1000, 1)} kW` : ""}` : d.plugged ? "Angesteckt" : d.range != null ? `Reichweite ${num(d.range, 0)} km` : "Nicht angesteckt";
     if (!N.sn.ok) return this._wbD ? "Wallbox nicht erreichbar" : "Wird geladen";

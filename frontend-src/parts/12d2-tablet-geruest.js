@@ -56,7 +56,7 @@
       <div class="tmbody${fit ? " tm2fit" : ""}${mod ? ` tm2mod tm2-${v}` : ""}"${fit ? "" : ` style="zoom:${zoom}"`}>${mod ? this._tm2ModBody(v) : `${v === "ev" && this._evWallFull ? `<button class="btn2 evwback" data-act="wbwall" data-k="">${ic("back", 18)}Zurück zur Tablet-Seite</button>` : ""}${this._tmBody(v)}`}</div></div>${land ? "" : nav}</div>`;
     const nb = sr.querySelector(".tmbody"); if (nb && keep && !fit) nb.scrollTop = keep;
     this._tm2Bind();
-    if (mod) { this._tm2Charts(); if (this._modal && (this._modal.type === "tm2room" || this._modal.type === "tm2x")) this._renderModal(); }
+    if (mod) { this._tm2Charts(); if (this._modal && (this._modal.type === "tm2room" || this._modal.type === "tm2x" || String(this._modal.type).startsWith("tm2s6"))) this._renderModal(); }
   }
   /* Wie viel auf eine Seite passt: Kacheln (Spalten × Zeilen) und Hinweise */
   _tm2Cap() {
@@ -179,6 +179,7 @@
   }
   _tm2Act(a, b) {
     const k = b.dataset.k;
+    if (/^tm2(li|wt|ab)/.test(a) && this._tm6Act && this._tm6Act(a, b)) return true;   /* Stufe 6: Licht, Wartung, Abrechnungen */
     if (a === "tm2pg") { this._tm2Turn(k, +b.dataset.d); return true; }
     if (a === "tm2tab") { (this._tm2T = this._tm2T || {})[b.dataset.v] = k; this._tmHomed = false; this._render(); return true; }
     if (a === "tm2room") { this._modal = { type: "tm2room", id: b.dataset.id, tab: "ctl" }; this._renderModal(); return true; }

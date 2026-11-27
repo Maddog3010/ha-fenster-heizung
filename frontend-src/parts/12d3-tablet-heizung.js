@@ -4,13 +4,15 @@
   static TM2_TABS = { fh: [["rooms", "Räume"], ["stats", "Statistik"]], ww: [["now", "Jetzt"], ["times", "Zeiten"], ["hist", "Verlauf"]],
     en: [["now", "Jetzt"], ["hist", "Verlauf"], ["cost", "Kosten"]], gs: [["dev", "Geräte"], ["win", "Startfenster"], ["stats", "Statistik"]], ef: [["now", "Jetzt"], ["strom", "Strom"]],
     ev: [["load", "Laden"], ["plan", "Planung"], ["stat", "Statistik"]], dt: [["price", "Preise"], ["dev", "Geräte"], ["check", "Tarif-Check"]], sp: [["now", "Prognose"], ["acc", "Treffsicherheit"], ["sites", "Anlagen"]],
-    wx: [["now", "Jetzt"], ["h48", "48 Stunden"], ["map", "Karte"]], sf: [["ov", "Übersicht"], ["me", "Melder"], ["pl", "Grundriss"]], mu: [["now", "Abholung"], ["cal", "Kalender"], ["home", "Haushalt"]] };
-  _tm2Fit(v) { if (v === "ev" && this._evWallFull) return false; return v === "st" || (!!this.constructor.TM2_TABS[v] && this._mdList().some((m) => m.id === v)); }
+    wx: [["now", "Jetzt"], ["h48", "48 Stunden"], ["map", "Karte"]], sf: [["ov", "Übersicht"], ["me", "Melder"], ["pl", "Grundriss"]], mu: [["now", "Abholung"], ["cal", "Kalender"], ["home", "Haushalt"]],
+    li: [["rooms", "Räume"], ["map", "Lichtkarte"], ["scn", "Szenen"]], wa: [["dates", "Termine"], ["year", "Jahr"], ["done", "Erledigt"]], abrechnung: [["sp", "Sparten"], ["rd", "Zähler"], ["pay", "Abschläge"]] };
+  _tm2Fit(v) { if (v === "ev" && this._evWallFull) return false; if (v === "abrechnung" && this._tm2AbFull) return false; return v === "st" || (!!this.constructor.TM2_TABS[v] && this._mdList().some((m) => m.id === v)); }
   /* Stufe 5: „Grundriss“ nur mit gezeichnetem Plan, „Karte“ nur, wenn die Wetterkarte an ist */
   _tm2TabList(v) {
     const T = this.constructor.TM2_TABS[v];
     if (v === "sf" && !this._tm2SfPlanOn()) return T.filter((t) => t[0] !== "pl");
     if (v === "wx" && !this._tm2WxMapOn()) return T.filter((t) => t[0] !== "map");
+    if (v === "li" && !this._tm2LiPlanOn()) return T.filter((t) => t[0] !== "map");
     return T;
   }
   _tm2Tab(v) { const T = this._tm2TabList(v), cur = (this._tm2T || {})[v]; return T.some((t) => t[0] === cur) ? cur : T[0][0]; }
@@ -31,9 +33,12 @@
     if (v === "wx") return this._tm2WxReady();
     if (v === "sf") return this._tm2SfReady() && !!this._sfList().length;
     if (v === "mu") return this._tm2MuReady();
+    if (v === "li") return this._tm2LiReady();
+    if (v === "wa") return this._tm2WaReady();
+    if (v === "abrechnung") return this._tm2AbReady();
     return !!this._efxD && this._efxSp() && !!this._tm2EfNodes().length;
   }
-  _tm2ModBody(v) { return v === "fh" ? this._tm2Fh() : v === "ww" ? this._tm2Ww() : v === "en" ? this._tm2En() : v === "gs" ? this._tm2Gs() : v === "ev" ? this._tm2Ev() : v === "dt" ? this._tm2Dt() : v === "sp" ? this._tm2Sp() : v === "wx" ? this._tm2Wx() : v === "sf" ? this._tm2Sf() : v === "mu" ? this._tm2Mu() : this._tm2Ef(); }
+  _tm2ModBody(v) { return v === "fh" ? this._tm2Fh() : v === "ww" ? this._tm2Ww() : v === "en" ? this._tm2En() : v === "gs" ? this._tm2Gs() : v === "ev" ? this._tm2Ev() : v === "dt" ? this._tm2Dt() : v === "sp" ? this._tm2Sp() : v === "wx" ? this._tm2Wx() : v === "sf" ? this._tm2Sf() : v === "mu" ? this._tm2Mu() : v === "li" ? this._tm2Li() : v === "wa" ? this._tm2Wa() : v === "abrechnung" ? this._tm2Ab() : this._tm2Ef(); }
   _tm2ModStatus(v) {
     if (v === "ww") return this._wwConfigured() ? this._wwStatus()[1] : "Noch nicht eingerichtet";
     if (v === "en") {
@@ -61,6 +66,9 @@
     if (v === "wx") return this._tm2WxStatus();
     if (v === "sf") return this._tm2SfStatus();
     if (v === "mu") return this._tm2MuStatus();
+    if (v === "li") return this._tm2LiStatus();
+    if (v === "wa") return this._tm2WaStatus();
+    if (v === "abrechnung") return this._tm2AbStatus();
     if (v === "ef") {
       if (!this._tm2Ready("ef")) return "Für Sponsoren";
       const c = this._efxCfg(), list = this._tm2EfNodes(), nodes = list.map((p) => c.nodes[p]), calc = this._efxCalc(nodes);
@@ -91,6 +99,7 @@
       else if (kind === "spacc") this._tm2SpAccChart(box, w, h);
       else if (kind === "wx48") this._tm2WxChart(box, w, h);
       else if (kind === "wxmap") this._tm2WxMapDraw(box, w, h);
+      else if (kind === "abpay") this._tm2AbChart(box, w, h);
       else {
         const rooms = (kind === "fhroom" ? this._collect().filter((r) => r.id === box.dataset.id) : [...this._collect()].sort((a, b) => a.ci - b.ci));
         box.innerHTML = this._chart(rooms, { w, h });

@@ -108,7 +108,7 @@ class FensterHeizungPanel extends HTMLElement {
     this._hass = this._errWrap(h);   /* Fehler-Statistik: fehlgeschlagene eigene Befehle ins Fehlerprotokoll (eigene Kopie) */
     if (first) this._load();
     this._render();
-    if (this._modal && ["why", "rkhtr", "ehlist"].includes(this._modal.type)) this._renderModal();  // Gründe bleiben aktuell
+    if (this._modal && ["why", "rkhtr", "ehlist", "tm2s6li"].includes(this._modal.type)) this._renderModal();  // Gründe bleiben aktuell
   }
   set narrow(v) { this._narrow = v; this._render(); }
   set panel(_) {}

@@ -35,7 +35,7 @@
     this._wtBusy = true;
     this._hass.callWS({ type: "fenster_heizung/wt_get" }).then((r) => { this._wtD = { d: r || {}, ts: Date.now() }; })
       .catch(() => { this._wtD = { d: { ...((this._wtD && this._wtD.d) || {}), error: true }, ts: Date.now() - 10000 }; })
-      .finally(() => { this._wtBusy = false; if (this._mdActive && this._mdActive() === "wa") this._render(); });
+      .finally(() => { this._wtBusy = false; if ((this._mdActive && this._mdActive() === "wa") || (this._tm2Shows && this._tm2Shows("wa"))) this._render(); });
   }
   _wt() { return (this._wtD && this._wtD.d) || {}; }
   _wtDay(iso) { if (!iso) return "–"; const [y, m, d] = String(iso).split("-"); return `${d}.${m}.${y}`; }
