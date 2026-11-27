@@ -5,7 +5,8 @@
     en: [["now", "Jetzt"], ["hist", "Verlauf"], ["cost", "Kosten"]], gs: [["dev", "Geräte"], ["win", "Startfenster"], ["stats", "Statistik"]], ef: [["now", "Jetzt"], ["strom", "Strom"]],
     ev: [["load", "Laden"], ["plan", "Planung"], ["stat", "Statistik"]], dt: [["price", "Preise"], ["dev", "Geräte"], ["check", "Tarif-Check"]], sp: [["now", "Prognose"], ["acc", "Treffsicherheit"], ["sites", "Anlagen"]],
     wx: [["now", "Jetzt"], ["h48", "48 Stunden"], ["map", "Karte"]], sf: [["ov", "Übersicht"], ["me", "Melder"], ["pl", "Grundriss"]], mu: [["now", "Abholung"], ["cal", "Kalender"], ["home", "Haushalt"]],
-    li: [["rooms", "Räume"], ["map", "Lichtkarte"], ["scn", "Szenen"]], wa: [["dates", "Termine"], ["year", "Jahr"], ["done", "Erledigt"]], abrechnung: [["sp", "Sparten"], ["rd", "Zähler"], ["pay", "Abschläge"]] };
+    li: [["rooms", "Räume"], ["map", "Lichtkarte"], ["scn", "Szenen"]], wa: [["dates", "Termine"], ["year", "Jahr"], ["done", "Erledigt"]], abrechnung: [["sp", "Sparten"], ["rd", "Zähler"], ["pay", "Abschläge"]],
+    lu: [["now", "Jetzt"], ["pre", "Vorschau"], ["plan", "Fahrplan"]], rb: [["now", "Jetzt"], ["pre", "Vorschau"], ["plan", "Fahrplan"]], wp: [["now", "Jetzt"], ["pre", "Vorschau"], ["plan", "Fahrplan"]], pl: [["now", "Jetzt"], ["pre", "Vorschau"], ["plan", "Fahrplan"]], bt: [["now", "Jetzt"], ["pre", "Vorschau"], ["plan", "Fahrplan"]], ga: [["pre", "Vorschau"], ["plan", "Fahrplan"]], gr: [["map", "Wärmekarte"]] };
   _tm2Fit(v) { if (v === "ev" && this._evWallFull) return false; if (v === "abrechnung" && this._tm2AbFull) return false; return v === "st" || (!!this.constructor.TM2_TABS[v] && this._mdList().some((m) => m.id === v)); }
   /* Stufe 5: „Grundriss“ nur mit gezeichnetem Plan, „Karte“ nur, wenn die Wetterkarte an ist */
   _tm2TabList(v) {
@@ -17,7 +18,7 @@
   }
   _tm2Tab(v) { const T = this._tm2TabList(v), cur = (this._tm2T || {})[v]; return T.some((t) => t[0] === cur) ? cur : T[0][0]; }
   _tm2Tabs(v) {
-    if (!this._tm2Ready(v)) return "";
+    if (!this._tm2Ready(v) || this._tm2TabList(v).length < 2) return "";
     const cur = this._tm2Tab(v);
     return `<div class="tm2tabs" role="tablist">${this._tm2TabList(v).map(([k, l]) => `<button role="tab" class="${cur === k ? "sel" : ""}" aria-selected="${cur === k}" data-act="tm2tab" data-v="${v}" data-k="${k}">${l}</button>`).join("")}</div>`;
   }
@@ -36,9 +37,10 @@
     if (v === "li") return this._tm2LiReady();
     if (v === "wa") return this._tm2WaReady();
     if (v === "abrechnung") return this._tm2AbReady();
+    if (v === "gr" || this._tm2CsOn(v)) return true;
     return !!this._efxD && this._efxSp() && !!this._tm2EfNodes().length;
   }
-  _tm2ModBody(v) { return v === "fh" ? this._tm2Fh() : v === "ww" ? this._tm2Ww() : v === "en" ? this._tm2En() : v === "gs" ? this._tm2Gs() : v === "ev" ? this._tm2Ev() : v === "dt" ? this._tm2Dt() : v === "sp" ? this._tm2Sp() : v === "wx" ? this._tm2Wx() : v === "sf" ? this._tm2Sf() : v === "mu" ? this._tm2Mu() : v === "li" ? this._tm2Li() : v === "wa" ? this._tm2Wa() : v === "abrechnung" ? this._tm2Ab() : this._tm2Ef(); }
+  _tm2ModBody(v) { return v === "fh" ? this._tm2Fh() : v === "ww" ? this._tm2Ww() : v === "en" ? this._tm2En() : v === "gs" ? this._tm2Gs() : v === "ev" ? this._tm2Ev() : v === "dt" ? this._tm2Dt() : v === "sp" ? this._tm2Sp() : v === "wx" ? this._tm2Wx() : v === "sf" ? this._tm2Sf() : v === "mu" ? this._tm2Mu() : v === "li" ? this._tm2Li() : v === "wa" ? this._tm2Wa() : v === "abrechnung" ? this._tm2Ab() : v === "gr" ? this._tm2Gr() : this._tm2CsOn(v) ? this._tm2Cs(v) : this._tm2Ef(); }
   _tm2ModStatus(v) {
     if (v === "ww") return this._wwConfigured() ? this._wwStatus()[1] : "Noch nicht eingerichtet";
     if (v === "en") {
@@ -69,6 +71,8 @@
     if (v === "li") return this._tm2LiStatus();
     if (v === "wa") return this._tm2WaStatus();
     if (v === "abrechnung") return this._tm2AbStatus();
+    if (v === "gr") { const P = this._gpPlan(), n = P && P.items ? P.items.filter((i) => i.t === "r").length : 0; return n ? `${n} ${n === 1 ? "Raum" : "Räume"} im Plan` : "Wärmekarte"; }
+    if (this._tm2CsOn(v)) return this._tm2CsStatus(v);
     if (v === "ef") {
       if (!this._tm2Ready("ef")) return "Für Sponsoren";
       const c = this._efxCfg(), list = this._tm2EfNodes(), nodes = list.map((p) => c.nodes[p]), calc = this._efxCalc(nodes);
@@ -100,6 +104,7 @@
       else if (kind === "wx48") this._tm2WxChart(box, w, h);
       else if (kind === "wxmap") this._tm2WxMapDraw(box, w, h);
       else if (kind === "abpay") this._tm2AbChart(box, w, h);
+      else if (kind === "csimg") this._tm2CsImg(box, w, h);
       else {
         const rooms = (kind === "fhroom" ? this._collect().filter((r) => r.id === box.dataset.id) : [...this._collect()].sort((a, b) => a.ci - b.ci));
         box.innerHTML = this._chart(rooms, { w, h });

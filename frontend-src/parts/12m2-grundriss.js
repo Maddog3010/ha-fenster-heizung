@@ -51,7 +51,8 @@
   _grBigOn() { if (this._grBig == null) { try { this._grBig = localStorage.getItem("fh_gr_big") === "1"; } catch (_) { this._grBig = false; } } return this._grBig; }
   _grLy() { return (this._grLys = this._grLys || { sf: true, licht: true, gt: true, ht: true, mo: true, sun: false }); }
   _grPage() {
-    const S = this._grS0(), P = this._grPlan(), adm = this._admin(), sfOn = this._mdList().some((m) => m.id === "sf");
+    const tv = !!this._grTv;   /* Tablet-Modus: nur Anzeige, ohne Kopf, Reiter, Bearbeiten und Antippen */
+    const S = this._grS0(), P = this._grPlan(), adm = this._admin() && !tv, sfOn = this._mdList().some((m) => m.id === "sf");
     const css = `<style>.grh{position:relative;overflow:hidden;display:flex;align-items:center;gap:18px;padding:16px 18px;border-radius:18px;margin-bottom:14px;color:#e2e8f0;background:radial-gradient(120% 140% at 90% 0%,#0e7490 0%,transparent 55%),linear-gradient(135deg,#0f3d3a,#0b1a2c 70%)}
       .grh svg.grhs{width:min(40%,220px);flex:none;height:auto}.grh .k{font-size:.68rem;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:#5eead4}.grh .b{font-size:1.5rem;font-weight:750;color:#fff;margin:2px 0}.grh .s{color:#a5b8cc;font-size:.86rem}
       .grh .v{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}.grh .v button{border:1px solid #ffffff2e;background:#ffffff0f;color:inherit;border-radius:999px;padding:6px 13px;font:inherit;font-size:.8rem;font-weight:650;cursor:pointer}.grh .v button.pri{background:var(--teal);border-color:var(--teal);color:var(--on-acc,#042f2e)}
@@ -99,14 +100,14 @@
     const edit = adm ? `<button data-act="grxedit">${ic("pencil", 14)} Bearbeiten</button>` : "";
     const hero = `<div class="grh">${this._grHouse(P)}<div style="flex:1;min-width:0"><div class="k">Modul 0 · Haus &amp; Grundriss</div><div class="b">${st.rooms ? `${fls.filter((f) => !f.ga).length} ${fls.filter((f) => !f.ga).length === 1 ? "Etage" : "Etagen"}${fls.some((f) => f.ga) ? " + Grundstück" : ""} · ${st.rooms} ${st.rooms === 1 ? "Raum" : "Räume"}` : "Noch kein Grundriss"}</div>
       <div class="s">${st.rooms ? `${st.layers ? `${st.layers.sf || 0} Melder · ${st.layers.licht || 0} Lampen im Plan · ` : ""}genutzt von ${esc(uTxt)}` : "Einmal zeichnen, in allen Modulen nutzen"}</div><div class="v"><button class="pri" data-act="grxtab" data-k="plan">Plan ansehen</button>${edit}</div></div></div>`;
-    const tab = ["plan", "raeume", "ebenen", "io", "einst"].includes(this._grTab) ? this._grTab : "plan", rq = this._grRoomStats(P);
+    const tab = tv ? "plan" : ["plan", "raeume", "ebenen", "io", "einst"].includes(this._grTab) ? this._grTab : "plan", rq = this._grRoomStats(P);
     const tb = (k, t) => `<button class="${tab === k ? "on" : ""}" data-act="grxtab" data-k="${k}" aria-pressed="${tab === k}">${t}</button>`;
     const narrow = this._narrow || (this.clientWidth || 999) < 600;
     let tabs = `<div class="grt">${tb("plan", "Plan")}${tb("raeume", `Räume (${rq.n})${rq.open ? ` <b class="grtb">${rq.open}</b>` : ""}`)}${tb("ebenen", "Ebenen")}${adm ? tb("io", "Sichern &amp; Einlesen") : ""}${adm ? tb("einst", "Einstellungen") : ""}</div>`;
     if (narrow) tabs = this._grNav(tab, rq, adm, P, fls);   /* Build 3: Handy – eine Zeile statt fünf */
     if (tab === "einst" && adm) return css + hero + tabs + this._grSetView(D);
     if (tab === "io" && adm) return css + hero + tabs + this._grIoView(P, D);
-    if (!items.some((i) => i.t === "r")) return css + hero + tabs + `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch kein Grundriss</div>Zeichne Räume, Wände, Türen und Fenster einmal – Modul 1 (Wärmekarte), Modul 11 (Melder) und Modul 18 (Lichtkarte) nutzen ihn dann mit.<div style="margin-top:12px">${adm ? `<button class="btn2 pri" data-act="grxedit">${ic("pencil", 16)} Grundriss zeichnen</button>` : ""}</div></div>`;
+    if (!items.some((i) => i.t === "r")) return css + (tv ? "" : hero + tabs) + `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch kein Grundriss</div>Zeichne Räume, Wände, Türen und Fenster einmal – Modul 1 (Wärmekarte), Modul 11 (Melder) und Modul 18 (Lichtkarte) nutzen ihn dann mit.<div style="margin-top:12px">${adm ? `<button class="btn2 pri" data-act="grxedit">${ic("pencil", 16)} Grundriss zeichnen</button>` : ""}</div></div>`;
     if (tab === "raeume") return css + hero + tabs + this._grRoomsView(P);
     if (tab === "ebenen") return css + hero + tabs + this._grLayersView(P);
     const fl = fls.some((f) => f.id === this._grFl) ? this._grFl : fls[0].id, ly = this._grLy(), here = items.filter((i) => i.fl === fl);
@@ -114,7 +115,7 @@
     if (!rs.length) Object.assign(B, { x0: 0, y0: 0, x1: 800, y1: 480 });
     const sty = this._grStyle(), dims = this._grDimsOn(), cw = this._grFull ? (window.innerWidth || 390) : (this.clientWidth || 390);
     const big = narrow && this._grBigOn();   /* 2026.11.4.4b3: Handy zeigt den Plan wie im Bearbeiten – große Schrift + Symbolleiste nur auf Wunsch (Ansicht ▾) */
-    const G = this._grDraw(P, fl, { style: sty, dims, narrow: big, click: true, strip: big ? { pw: Math.max(240, cw - 56), ph: (window.innerHeight || 800) * (this._grFull ? 0.86 : 0.66) } : null, now: ly.now !== false, layers: { licht: ly.licht && !!(this._liOn && this._liOn()), sf: ly.sf, gt: ly.gt !== false, ht: ly.ht !== false, mo: ly.mo !== false, sun: !!ly.sun } });
+    const G = this._grDraw(P, fl, { style: sty, dims, narrow: big, click: !tv, strip: big ? { pw: Math.max(240, cw - 56), ph: (window.innerHeight || 800) * (this._grFull ? 0.86 : 0.66) } : null, now: ly.now !== false, layers: { licht: ly.licht && !!(this._liOn && this._liOn()), sf: ly.sf, gt: ly.gt !== false, ht: ly.ht !== false, mo: ly.mo !== false, sun: !!ly.sun } });
     const nL = items.filter((i) => i.t === "l").length, nM = items.filter((i) => i.t === "m").length, liOn = !!(this._liOn && this._liOn());
     const bar = fls.length > 1 ? `<span class="sffl">${fls.map((f) => `<button class="${f.id === fl ? "on" : ""}" data-act="grxfl" data-k="${esc(f.id)}">${esc(f.n)}</button>`).join("")}</span>` : "";
     const lyr = `<div class="grl">${liOn || nL ? `<button class="${ly.licht && liOn ? "on" : ""}" data-act="grxly" data-k="licht" ${liOn ? "" : "disabled title=\"Addon „licht“ ist aus\""}><i style="background:#ffb36b"></i>Lampen · Modul 18 (${nL})</button>` : ""}<button class="${ly.sf ? "on" : ""}" data-act="grxly" data-k="sf"><i style="background:#f87171"></i>Melder · Modul 11 (${nM})</button>${items.some((i) => i.t === "h") ? `<button class="${ly.ht !== false ? "on" : ""}" data-act="grxly" data-k="ht"><i style="background:#eab308"></i>Technik (${items.filter((i) => i.t === "h").length})</button>` : ""}${items.some((i) => i.t === "g") ? `<button class="${ly.gt !== false ? "on" : ""}" data-act="grxly" data-k="gt"><i style="background:#f97316"></i>Geräte (${items.filter((i) => i.t === "g").length})</button>` : ""}${items.some((i) => i.t === "o") ? `<button class="${ly.mo !== false ? "on" : ""}" data-act="grxly" data-k="mo"><i style="background:#94a3b8"></i>Möbel (${items.filter((i) => i.t === "o").length})</button>` : ""}<button class="${ly.sun ? "on" : ""}" data-act="grxly" data-k="sun" title="Sonnenlicht durch die Fenster"><i style="background:#fbbf24"></i>Sonne</button><button class="${ly.now !== false ? "on" : ""}" data-act="grxnow" title="Temperatur aus Modul 1 und Bewegung"><i style="background:#2dd4bf"></i>Jetzt</button><span class="grsty">${[["modern", "Modern"], ["bauplan", "Bauplan"], ["hell", "Hell"]].map(([k, t]) => `<button class="${sty === k ? "on" : ""}" data-act="grxsty" data-k="${k}" aria-pressed="${sty === k}"><i class="sw-${k}"></i>${t}</button>`).join("")}<button class="${dims ? "on" : ""}" data-act="grxdims" aria-pressed="${dims}">📐 Maße</button></span></div>`;
@@ -127,7 +128,7 @@
       <div class="card"><b>${ic("users", 15)} Genutzt von</b><small>${esc(uTxt)}. Einmal gezeichnet, überall derselbe Plan.</small></div>
       <div class="card"><b>${ic("shield", 15)} Umzug aus Modul 11</b><small>${since ? `Am ${since} übernommen${meta.src === "sf" ? " aus Modul 11" : ""}. Die Kopie vom alten Stand wird bis ${until} aufgehoben.` : "Der Plan liegt jetzt im Kern von Strom &amp; Wärme."}</small></div>
       <div class="card"><b>${ic("pencil", 15)} Bearbeiten</b><small>Im Baukasten hier in Modul 0 – auch „Bearbeiten“ in Modul 1, 11 und 18 führt hierher und danach zurück. Alle Module sehen die Änderung sofort.</small></div></div>`;
-    return css + hero + tabs + card + info;
+    return tv ? css + card : css + hero + tabs + card + info;
   }
   /* Build 3 (2026.11.4.1): Werkzeugleiste auf dem Handy – Etage, Ansicht, Bearbeiten und „⋯“ in einer Zeile.
      „Ansicht“ klappt Stil und Maße auf, „⋯“ die Reiter (Räume, Ebenen, Sichern, Einstellungen) und den Plan-Check. */

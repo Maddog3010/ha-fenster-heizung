@@ -2,6 +2,21 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.5b15] - 2026-11-27
+
+Tablet-Modus, siebte Stufe: Die restlichen Module passen jetzt auch ohne Scrollen auf eine Seite.
+
+### Neu
+- **Tablet-Modus · Module in Entwicklung (5 Lüftung & Raumluft, 6 Rollläden & Beschattung, 7 Wärmepumpe, 12 Pool & Sauna, 13 Batteriespeicher-Planung):** Reiter „Jetzt“ (echte Werte aus Home Assistant als große Kacheln, bei Lüftung je Raum mit Luftfeuchte, Taupunkt und Schimmelrisiko), „Vorschau“ (das Konzeptbild mit Zahlen zum Antippen, rechts die Erklärung) und „Fahrplan“ (Stufen, Ideen, offene Fragen).
+- **Tablet-Modus · Modul 10 Garten & Bewässerung:** Reiter „Vorschau“ und „Fahrplan“.
+- **Tablet-Modus · Modul 0 Haus & Grundriss:** die Wärmekarte füllt die Seite, Etagen wählst du oben.
+
+### Hinweis
+- Die Module 5, 6, 7, 10, 12 und 13 sind noch in Entwicklung. Sie zeigen Beispielwerte im Konzept und steuern nichts.
+
+### Noch offen
+- Getestet im Browser mit Beispieldaten, noch nicht auf einem echten Tablet.
+
 ## [2026.11.5b14] - 2026-11-27
 
 Tablet-Modus, sechste Stufe: Licht, Abrechnungen und Wartung ohne Scrollen.

@@ -179,6 +179,7 @@
   }
   _tm2Act(a, b) {
     const k = b.dataset.k;
+    if (/^tm2cs/.test(a) && this._tm7Act && this._tm7Act(a, b)) return true;   /* Stufe 7: Module in Entwicklung */
     if (/^tm2(li|wt|ab)/.test(a) && this._tm6Act && this._tm6Act(a, b)) return true;   /* Stufe 6: Licht, Wartung, Abrechnungen */
     if (a === "tm2pg") { this._tm2Turn(k, +b.dataset.d); return true; }
     if (a === "tm2tab") { (this._tm2T = this._tm2T || {})[b.dataset.v] = k; this._tmHomed = false; this._render(); return true; }
