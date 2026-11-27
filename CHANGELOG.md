@@ -2,6 +2,30 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.5b16] - 2026-11-27
+
+Modul 0 Haus & Grundriss: Version 0.13 „Technik“ (Unterbau) und erster Teil von Version 0.14 „Neue Optik Plan“.
+
+### Neu
+- **Plan-Prüfung vor dem Speichern:** Ein kaputter Plan (kein gültiges Format, zu viele Elemente oder Etagen, nichts Gültiges darin) wird abgelehnt und mit einer Meldung erklärt, statt Teile still zu verlieren. Der gespeicherte Plan bleibt dabei unverändert.
+- **Feste Raum-Kennungen:** Elemente mit doppelter oder ungültiger Kennung bekommen eine neue, statt zu verschwinden. Das erste behält seine Kennung, Raumliste und Zuordnungen bleiben gültig. Nach dem Speichern steht, wie viele betroffen waren.
+- **Bearbeitungs-Sperre:** Wer den Baukasten öffnet, sperrt ihn für andere Administratoren. Ein zweiter Administrator sieht „wird gerade von … bearbeitet“ und kann die Sperre bewusst übernehmen. Sie endet beim Speichern oder Abbrechen und nach 15 Minuten ohne Aktion. Speichern, Einlesen und Wiederherstellen von einem anderen Gerät werden während der Sperre abgelehnt.
+- **Schema 2:** Beim ersten Start wird der gespeicherte Grundriss umgestellt. Der alte Stand liegt vorher im Verlauf („Stand wiederherstellen“).
+
+**Neue Optik (v0.14, erster Teil):**
+- **Haus-Szene als Banner:** das Haus mit Tageszeit (Sonne oder Mond), den Räumen in ihrer Temperaturfarbe, offenen Fenstern in Gelb und – wenn Modul 16 an ist – PV auf dem Dach.
+- **Kennzahlen als Chips:** Räume, Fläche, offene Fenster, Lampen an, Plan-Check und „genutzt von“. Jeder Chip springt weiter, „1 Fenster offen“ öffnet den Plan mit der Ebene „Melder“.
+- **Eine Kopfleiste:** Etagen, Ansicht ▾, Bearbeiten und ⋯ stehen in jeder Breite in einer Zeile wie auf dem Handy. Räume, Ebenen, Sichern & Einlesen und Einstellungen liegen im ⋯-Menü, der Plan beginnt weiter oben.
+- **Ebenen zum Wischen:** die Ebenen über dem Plan stehen in einer Zeile, die sich seitlich wischen lässt.
+- **Schalter „Wie bisher“:** Einstellungen → Optik. Gilt nur für diesen Browser, Plan und Daten bleiben unberührt.
+
+### Hinweis
+- Die Speicherdatei bleibt in der Version 1, ein Zurückgehen auf eine ältere Version ist möglich. Felder, die nur Schema 2 kennt, gibt es dann nicht.
+
+### Noch offen
+- Raum-Blatt 2.0, Ebenen für Geräte, Rollläden und Bewässerung, Hintergrundbilder als Dateien, Zeichner mit Zwischenspeicher und die Kachel „Haus“ auf der Startseite folgen in v0.14 Build 2.
+- Baukasten mit Gegenständen (v0.15) folgt.
+
 ## [2026.11.5b15] - 2026-11-27
 
 Tablet-Modus, siebte Stufe: Die restlichen Module passen jetzt auch ohne Scrollen auf eine Seite.

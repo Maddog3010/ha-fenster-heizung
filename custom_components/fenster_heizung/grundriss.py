@@ -12,12 +12,16 @@ Umzugs-Kopie an, die 90 Tage aufgehoben wird.
 
 Build 3: Der Baukasten zieht nach Modul 0 und speichert über gr_set (plan). Modul 11 hört über listen() mit und zieht seine Kopie nach.
 
+v0.13 (Stufe 1 Technik): Schema 2 mit Umstellung beim Start (B1), Plan-Prüfung vor dem Speichern (B2: kaputte Pläne werden abgelehnt, doppelte
+oder ungültige Element-IDs bekommen neue IDs statt still zu verschwinden = feste Raum-IDs, B3) und eine Bearbeitungs-Sperre für den Baukasten (B4).
+
 Build 4: Sichern & Einlesen. Verlauf der letzten Stände (HIST_MAX, ohne Hintergrundbilder, eigener Speicher
 fenster_heizung_grundriss_verlauf), Wiederherstellen eines Stands oder der Umzugs-Kopie (gr_hist, gr_restore). Sichern als Datei und
 Einlesen laufen im Browser; eingelesen wird über gr_set mit src „import“, damit der Verlauf die Herkunft kennt.
 """
 from __future__ import annotations
 
+import json
 import logging
 import re
 import secrets
@@ -29,11 +33,15 @@ from homeassistant.util import dt as dt_util
 
 from .backup import SafeStore
 from .const import DOMAIN
-from .sicherheit import clean_plan
+from .sicherheit import MAX_FLOORS, MAX_ITEMS, clean_plan
 
 _LOGGER = logging.getLogger(__name__)
-SCHEMA = 1
+SCHEMA = 2        # Schema der gespeicherten Daten (Schlüssel "v"); 2 = v0.13
+STORE_V = 1       # Version der Speicherdatei selbst bleibt 1 – die Umstellung läuft über "v" (wie bei den Haus-Werten)
 KEEP_COPY_DAYS = 90
+LOCK_MIN = 15     # B4: Bearbeitungs-Sperre läuft nach so vielen Minuten ohne Aktion ab
+MAX_PLAN_JSON = 1_000_000  # B2: Plan ohne Hintergrundbilder, höchstens so viele Zeichen
+_ITEM_ID = re.compile(r"^[a-z0-9_]{1,24}$")  # wie in sicherheit.py (clean_plan)
 LAYERS = {"m": "sf", "l": "licht"}  # Element-Typ → Ebene (Modul 11 Melder, Modul 18 Lampen)
 _ID = re.compile(r"^[A-Za-z0-9_.:-]{1,64}$")
 ROOMS_MAX = 300
@@ -54,6 +62,67 @@ def clean_rooms(raw: Any) -> dict[str, str]:
     return out
 
 
+class PlanError(ValueError):
+    """Der Plan ist so kaputt, dass er nicht gespeichert wird (Text ist für die Oberfläche gedacht)."""
+
+
+class LockedError(RuntimeError):
+    """Ein anderer Administrator bearbeitet den Plan gerade (B4)."""
+
+    def __init__(self, lock: dict[str, Any]) -> None:
+        super().__init__(lock.get("by") or "")
+        self.lock = lock
+
+
+def check_plan(raw: Any) -> tuple[dict[str, Any], dict[str, Any]]:
+    """B2 + B3: Plan prüfen und aufräumen. Gibt (sauberer Plan, Bericht) zurück oder wirft PlanError.
+
+    Abgelehnt wird, was nicht sinnvoll gespeichert werden kann: kein Objekt, Etagen/Elemente keine Liste, zu viele Elemente oder Etagen,
+    zu groß, oder kein einziges Element ist gültig. Alles andere wird repariert und im Bericht gezählt:
+      ids      Elemente mit doppelter oder ungültiger ID bekamen eine neue (das erste behält seine ID – Raumliste und Zuordnungen bleiben gültig)
+      dropped  Elemente, die nicht zu retten waren (unbekannte Art, Etage gibt es nicht)
+    """
+    if not isinstance(raw, dict):
+        raise PlanError("Der Plan hat kein gültiges Format.")
+    fl, it = raw.get("floors"), raw.get("items")
+    if (fl is not None and not isinstance(fl, list)) or (it is not None and not isinstance(it, list)):
+        raise PlanError("Etagen oder Elemente des Plans sind beschädigt.")
+    fl, it = fl or [], it or []
+    if len(fl) > MAX_FLOORS:
+        raise PlanError(f"Zu viele Etagen: {len(fl)} (höchstens {MAX_FLOORS}).")
+    if len(it) > MAX_ITEMS:
+        raise PlanError(f"Zu viele Elemente: {len(it)} (höchstens {MAX_ITEMS}). Bitte einige löschen.")
+    try:
+        size = len(json.dumps({k: v for k, v in raw.items() if k != "bg"}, ensure_ascii=False))
+    except (TypeError, ValueError) as err:
+        raise PlanError("Der Plan enthält Werte, die nicht gespeichert werden können.") from err
+    if size > MAX_PLAN_JSON:
+        raise PlanError("Der Plan ist zu groß.")
+    taken = {str(i.get("id")) for i in it if isinstance(i, dict) and _ITEM_ID.match(str(i.get("id") or ""))}
+    seen: set[str] = set()
+    fixed, items = 0, []
+    for i in it:
+        if not isinstance(i, dict):
+            items.append(i)
+            continue
+        iid = str(i.get("id") or "")
+        if not _ITEM_ID.match(iid) or iid in seen:
+            while True:
+                new = "i" + secrets.token_hex(4)
+                if new not in taken and new not in seen:
+                    break
+            i = {**i, "id": new}
+            iid = new
+            fixed += 1
+        seen.add(iid)
+        items.append(i)
+    p = clean_plan({**raw, "items": items})
+    dropped = len(it) - len(p["items"])
+    if it and not p["items"]:
+        raise PlanError("Kein einziges Element des Plans ist gültig – der Plan wird nicht gespeichert.")
+    return p, {"ids": fixed, "dropped": max(0, dropped)}
+
+
 def plan_stats(plan: dict[str, Any]) -> dict[str, Any]:
     """Zahlen für Banner und Ebenen: Etagen, Räume (mit Namen), Bauplan-Elemente, Elemente je Ebene."""
     items = plan.get("items") or []
@@ -70,7 +139,7 @@ def plan_stats(plan: dict[str, Any]) -> dict[str, Any]:
 class GrundrissManager:
     def __init__(self, hass: HomeAssistant) -> None:
         self.hass = hass
-        self._store = SafeStore(hass, SCHEMA, f"{DOMAIN}_grundriss")
+        self._store = SafeStore(hass, STORE_V, f"{DOMAIN}_grundriss")
         self._copy = SafeStore(hass, 1, f"{DOMAIN}_grundriss_umzug")  # Stand des Plans aus Modul 11 beim Umzug
         self.plan: dict[str, Any] = clean_plan(None)
         self.has = False                  # gibt es schon einen eigenen Plan in Modul 0?
@@ -79,6 +148,8 @@ class GrundrissManager:
         self._listeners: list[Callable[[], None]] = []
         self._hstore = SafeStore(hass, 1, f"{DOMAIN}_grundriss_verlauf")  # Build 4: frühere Stände ohne Hintergrundbilder
         self.hist: list[dict[str, Any]] = []
+        self.lock: dict[str, str] | None = None   # B4: { sid, by, since, ts } – nur im Speicher, nach einem Neustart gibt es keine Sperre
+        self.check: dict[str, Any] = {}            # B2: Bericht der letzten Prüfung (ids, dropped, at)
 
     async def async_start(self) -> None:
         d = await self._store.async_load()
@@ -91,6 +162,11 @@ class GrundrissManager:
         h = await self._hstore.async_load()
         if isinstance(h, dict) and isinstance(h.get("hist"), list):
             self.hist = [x for x in h["hist"] if isinstance(x, dict) and isinstance(x.get("plan"), dict) and isinstance(x.get("id"), str)][:HIST_MAX]
+        ver = d.get("v") if isinstance(d, dict) and isinstance(d.get("v"), int) else 1
+        if self.has and ver < SCHEMA:
+            self._upgrade(ver)
+        elif ver > SCHEMA:
+            _LOGGER.warning("Modul 0: Grundriss wurde mit einer neueren Version gespeichert (Schema %s, hier %s) – Felder, die diese Version nicht kennt, gehen beim nächsten Speichern verloren", ver, SCHEMA)
         until = self.meta.get("copy_until")
         if until:
             u = dt_util.parse_datetime(until)
@@ -98,6 +174,22 @@ class GrundrissManager:
                 self._copy.async_delay_save(lambda: {"t": "", "src": "", "plan": None}, 1)  # Inhalt leeren, Datei bleibt
                 self.meta.pop("copy_until", None)
                 self._save(1)
+
+    def _upgrade(self, ver: int) -> None:
+        """B1: gespeicherten Stand auf das aktuelle Schema bringen. Vorher kommt der alte Stand in den Verlauf („schema“), damit man zurück kann.
+        1 → 2: Plan durch die Prüfung schicken (IDs), Schema-Nummer und Zeitpunkt in meta vermerken."""
+        self._push_hist("schema")
+        try:
+            self.plan, self.check = check_plan(self.plan)
+        except PlanError:
+            _LOGGER.warning("Modul 0: gespeicherter Plan besteht die Prüfung nicht – er bleibt, wie er ist", exc_info=True)
+            self.check = {"ids": 0, "dropped": 0}
+        self.check["at"] = dt_util.now().isoformat()
+        self.meta["schema"] = str(SCHEMA)
+        self.meta["schema_from"] = str(ver)
+        self.meta["schema_at"] = self.check["at"]
+        self._save(1)
+        _LOGGER.info("Modul 0: Grundriss von Schema %s auf %s umgestellt (%s Element-IDs erneuert)", ver, SCHEMA, self.check.get("ids", 0))
 
     def _save(self, delay: float = 5) -> None:
         self._store.async_delay_save(lambda: {"v": SCHEMA, "plan": self.plan, "meta": self.meta, "rooms": self.rooms}, delay)
@@ -135,7 +227,8 @@ class GrundrissManager:
 
     def set_plan(self, plan: dict[str, Any], src: str = "") -> bool:
         """Plan schreiben (src „gr“ = Baukasten in Modul 0, „sf“ = ältere Oberfläche über Modul 11). True, wenn sich etwas geändert hat."""
-        p = clean_plan(plan)
+        p, self.check = check_plan(plan)   # B2: wirft PlanError bei kaputten Plänen, bevor irgendetwas geändert wird
+        self.check["at"] = dt_util.now().isoformat()
         if self.has and p == self.plan:
             return False
         self._push_hist(src)
@@ -158,6 +251,48 @@ class GrundrissManager:
         else:
             self.meta.pop(key, None)
         self._save(1)
+
+    # ---- Bearbeitungs-Sperre (B4)
+    def _lock_now(self) -> dict[str, str] | None:
+        """Aktive Sperre oder None (abgelaufene wird verworfen)."""
+        lk = self.lock
+        if lk:
+            ts = dt_util.parse_datetime(lk.get("ts", ""))
+            if ts is None or dt_util.now() - ts > timedelta(minutes=LOCK_MIN):
+                self.lock = lk = None
+        return lk
+
+    def lock_public(self) -> dict[str, str] | None:
+        lk = self._lock_now()
+        return {k: lk[k] for k in ("sid", "by", "since")} if lk else None
+
+    def lock_take(self, sid: str, by: str, force: bool = False) -> bool:
+        """Sperre holen. False, wenn ein anderes Gerät sie hält (außer mit force: dann wird sie übernommen)."""
+        lk = self._lock_now()
+        if lk and lk["sid"] != sid and not force:
+            return False
+        now = dt_util.now().isoformat()
+        self.lock = {"sid": sid, "by": by, "since": lk["since"] if lk and lk["sid"] == sid else now, "ts": now}
+        return True
+
+    def lock_keep(self, sid: str) -> bool:
+        """Sperre verlängern (jede Aktion des Besitzers). False, wenn sie jemand anderem gehört oder abgelaufen ist."""
+        lk = self._lock_now()
+        if not lk or lk["sid"] != sid:
+            return False
+        lk["ts"] = dt_util.now().isoformat()
+        return True
+
+    def lock_release(self, sid: str) -> None:
+        lk = self._lock_now()
+        if lk and lk["sid"] == sid:
+            self.lock = None
+
+    def lock_check(self, sid: str | None) -> None:
+        """Wirft LockedError, wenn ein anderes Gerät den Baukasten gerade hält. Ohne Sperre darf jeder schreiben."""
+        lk = self._lock_now()
+        if lk and lk["sid"] != sid:
+            raise LockedError({k: lk[k] for k in ("sid", "by", "since")})
 
     # ---- Verlauf und Wiederherstellen (Build 4)
     async def hist_list(self) -> dict[str, Any]:
@@ -228,4 +363,4 @@ class GrundrissManager:
         return out
 
     def snapshot(self) -> dict[str, Any]:
-        return {"v": SCHEMA, "plan": self.plan, "rooms": dict(self.rooms), "has": self.has, "meta": dict(self.meta), "stats": plan_stats(self.plan), "users": self.users()}
+        return {"v": SCHEMA, "plan": self.plan, "rooms": dict(self.rooms), "has": self.has, "meta": dict(self.meta), "stats": plan_stats(self.plan), "users": self.users(), "lock": self.lock_public(), "check": dict(self.check)}

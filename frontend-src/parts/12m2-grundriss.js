@@ -53,7 +53,7 @@
   _grPage() {
     const tv = !!this._grTv;   /* Tablet-Modus: nur Anzeige, ohne Kopf, Reiter, Bearbeiten und Antippen */
     const S = this._grS0(), P = this._grPlan(), adm = this._admin() && !tv, sfOn = this._mdList().some((m) => m.id === "sf");
-    const css = `<style>.grh{position:relative;overflow:hidden;display:flex;align-items:center;gap:18px;padding:16px 18px;border-radius:18px;margin-bottom:14px;color:#e2e8f0;background:radial-gradient(120% 140% at 90% 0%,#0e7490 0%,transparent 55%),linear-gradient(135deg,#0f3d3a,#0b1a2c 70%)}
+    const css = `<style>${this._grLookNew() ? this._grLookCss() : ""}.grh{position:relative;overflow:hidden;display:flex;align-items:center;gap:18px;padding:16px 18px;border-radius:18px;margin-bottom:14px;color:#e2e8f0;background:radial-gradient(120% 140% at 90% 0%,#0e7490 0%,transparent 55%),linear-gradient(135deg,#0f3d3a,#0b1a2c 70%)}
       .grh svg.grhs{width:min(40%,220px);flex:none;height:auto}.grh .k{font-size:.68rem;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:#5eead4}.grh .b{font-size:1.5rem;font-weight:750;color:#fff;margin:2px 0}.grh .s{color:#a5b8cc;font-size:.86rem}
       .grh .v{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}.grh .v button{border:1px solid #ffffff2e;background:#ffffff0f;color:inherit;border-radius:999px;padding:6px 13px;font:inherit;font-size:.8rem;font-weight:650;cursor:pointer}.grh .v button.pri{background:var(--teal);border-color:var(--teal);color:var(--on-acc,#042f2e)}
       .grt{display:flex;gap:8px;margin:0 0 12px;flex-wrap:wrap}.grt button{border:1px solid color-mix(in srgb,var(--primary-text-color) 14%,transparent);background:var(--card);color:var(--primary-text-color);border-radius:999px;padding:8px 16px;font:inherit;font-weight:650}.grt button.on{border-color:var(--teal);color:var(--teal);box-shadow:inset 0 0 0 1px var(--teal)}.grt button:disabled{opacity:.45}.grt small{font-weight:500;opacity:.8}
@@ -98,13 +98,13 @@
     if (this._sfEd && this._sfEd.host === "gr" && adm) return css + this._grEditHead(this._sfEd) + this._sfPlan(this._grT());
     const UN = { fh: "Modul 1", sf: "Modul 11", li: "Modul 18" }, uTxt = users.map((u) => UN[u] || u).join(", ").replace(/, ([^,]*)$/, " und $1");
     const edit = adm ? `<button data-act="grxedit">${ic("pencil", 14)} Bearbeiten</button>` : "";
-    const hero = `<div class="grh">${this._grHouse(P)}<div style="flex:1;min-width:0"><div class="k">Modul 0 · Haus &amp; Grundriss</div><div class="b">${st.rooms ? `${fls.filter((f) => !f.ga).length} ${fls.filter((f) => !f.ga).length === 1 ? "Etage" : "Etagen"}${fls.some((f) => f.ga) ? " + Grundstück" : ""} · ${st.rooms} ${st.rooms === 1 ? "Raum" : "Räume"}` : "Noch kein Grundriss"}</div>
-      <div class="s">${st.rooms ? `${st.layers ? `${st.layers.sf || 0} Melder · ${st.layers.licht || 0} Lampen im Plan · ` : ""}genutzt von ${esc(uTxt)}` : "Einmal zeichnen, in allen Modulen nutzen"}</div><div class="v"><button class="pri" data-act="grxtab" data-k="plan">Plan ansehen</button>${edit}</div></div></div>`;
+    const LN = this._grLookNew(), hero = LN ? this._grHeroNew(P, D, st, fls, uTxt, edit) : `<div class="grh">${this._grHouse(P)}<div style="flex:1;min-width:0"><div class="k">Modul 0 · Haus &amp; Grundriss</div><div class="b">${st.rooms ? `${fls.filter((f) => !f.ga).length} ${fls.filter((f) => !f.ga).length === 1 ? "Etage" : "Etagen"}${fls.some((f) => f.ga) ? " + Grundstück" : ""} · ${st.rooms} ${st.rooms === 1 ? "Raum" : "Räume"}` : "Noch kein Grundriss"}</div>
+      <div class="s">${st.rooms ? `${st.layers ? `${st.layers.sf || 0} Melder · ${st.layers.licht || 0} Lampen im Plan · ` : ""}genutzt von ${esc(uTxt)}` : "Einmal zeichnen, in allen Modulen nutzen"}</div>${D.lock && D.lock.sid !== this._grSid() ? `<div class="s" style="color:var(--warning-color,#f59e0b)">${ic("pencil", 13)} Wird gerade von ${esc(D.lock.by)} bearbeitet</div>` : ""}<div class="v"><button class="pri" data-act="grxtab" data-k="plan">Plan ansehen</button>${edit}</div></div></div>`;
     const tab = tv ? "plan" : ["plan", "raeume", "ebenen", "io", "einst"].includes(this._grTab) ? this._grTab : "plan", rq = this._grRoomStats(P);
     const tb = (k, t) => `<button class="${tab === k ? "on" : ""}" data-act="grxtab" data-k="${k}" aria-pressed="${tab === k}">${t}</button>`;
     const narrow = this._narrow || (this.clientWidth || 999) < 600;
     let tabs = `<div class="grt">${tb("plan", "Plan")}${tb("raeume", `Räume (${rq.n})${rq.open ? ` <b class="grtb">${rq.open}</b>` : ""}`)}${tb("ebenen", "Ebenen")}${adm ? tb("io", "Sichern &amp; Einlesen") : ""}${adm ? tb("einst", "Einstellungen") : ""}</div>`;
-    if (narrow) tabs = this._grNav(tab, rq, adm, P, fls);   /* Build 3: Handy – eine Zeile statt fünf */
+    if (narrow || LN) tabs = this._grNav(tab, rq, adm, P, fls);   /* Build 3: Handy – eine Zeile statt fünf */
     if (tab === "einst" && adm) return css + hero + tabs + this._grSetView(D);
     if (tab === "io" && adm) return css + hero + tabs + this._grIoView(P, D);
     if (!items.some((i) => i.t === "r")) return css + (tv ? "" : hero + tabs) + `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch kein Grundriss</div>Zeichne Räume, Wände, Türen und Fenster einmal – Modul 1 (Wärmekarte), Modul 11 (Melder) und Modul 18 (Lichtkarte) nutzen ihn dann mit.<div style="margin-top:12px">${adm ? `<button class="btn2 pri" data-act="grxedit">${ic("pencil", 16)} Grundriss zeichnen</button>` : ""}</div></div>`;
@@ -121,14 +121,14 @@
     const lyr = `<div class="grl">${liOn || nL ? `<button class="${ly.licht && liOn ? "on" : ""}" data-act="grxly" data-k="licht" ${liOn ? "" : "disabled title=\"Addon „licht“ ist aus\""}><i style="background:#ffb36b"></i>Lampen · Modul 18 (${nL})</button>` : ""}<button class="${ly.sf ? "on" : ""}" data-act="grxly" data-k="sf"><i style="background:#f87171"></i>Melder · Modul 11 (${nM})</button>${items.some((i) => i.t === "h") ? `<button class="${ly.ht !== false ? "on" : ""}" data-act="grxly" data-k="ht"><i style="background:#eab308"></i>Technik (${items.filter((i) => i.t === "h").length})</button>` : ""}${items.some((i) => i.t === "g") ? `<button class="${ly.gt !== false ? "on" : ""}" data-act="grxly" data-k="gt"><i style="background:#f97316"></i>Geräte (${items.filter((i) => i.t === "g").length})</button>` : ""}${items.some((i) => i.t === "o") ? `<button class="${ly.mo !== false ? "on" : ""}" data-act="grxly" data-k="mo"><i style="background:#94a3b8"></i>Möbel (${items.filter((i) => i.t === "o").length})</button>` : ""}<button class="${ly.sun ? "on" : ""}" data-act="grxly" data-k="sun" title="Sonnenlicht durch die Fenster"><i style="background:#fbbf24"></i>Sonne</button><button class="${ly.now !== false ? "on" : ""}" data-act="grxnow" title="Temperatur aus Modul 1 und Bewegung"><i style="background:#2dd4bf"></i>Jetzt</button><span class="grsty">${[["modern", "Modern"], ["bauplan", "Bauplan"], ["hell", "Hell"]].map(([k, t]) => `<button class="${sty === k ? "on" : ""}" data-act="grxsty" data-k="${k}" aria-pressed="${sty === k}"><i class="sw-${k}"></i>${t}</button>`).join("")}<button class="${dims ? "on" : ""}" data-act="grxdims" aria-pressed="${dims}">📐 Maße</button></span></div>`;
     const lyrN = `<div class="grl rail"><button class="${ly.now !== false ? "on" : ""}" data-act="grxnow"><i style="background:#2dd4bf"></i>Jetzt</button><button class="${ly.sf ? "on" : ""}" data-act="grxly" data-k="sf"><i style="background:#f87171"></i>Melder ${nM}</button>${liOn || nL ? `<button class="${ly.licht && liOn ? "on" : ""}" data-act="grxly" data-k="licht" ${liOn ? "" : "disabled"}><i style="background:#ffb36b"></i>Lampen ${nL}</button>` : ""}${items.some((i) => i.t === "g") ? `<button class="${ly.gt !== false ? "on" : ""}" data-act="grxly" data-k="gt"><i style="background:#f97316"></i>Geräte ${items.filter((i) => i.t === "g").length}</button>` : ""}${items.some((i) => i.t === "h") ? `<button class="${ly.ht !== false ? "on" : ""}" data-act="grxly" data-k="ht"><i style="background:#eab308"></i>Technik ${items.filter((i) => i.t === "h").length}</button>` : ""}${items.some((i) => i.t === "o") ? `<button class="${ly.mo !== false ? "on" : ""}" data-act="grxly" data-k="mo"><i style="background:#94a3b8"></i>Möbel ${items.filter((i) => i.t === "o").length}</button>` : ""}<button class="${ly.sun ? "on" : ""}" data-act="grxly" data-k="sun"><i style="background:#fbbf24"></i>Sonne</button></div>`;
     const VB = this._grVB ? this._grVB(G.vb, fl) : G.vb;
-    const card = `<div class="card${this._grFull ? " grfull" : ""}${narrow ? " grpc" : ""}">${narrow ? (this._grFull ? this._grNav("plan", rq, adm, P, fls) : "") + lyrN : `<h2>${ic("home", 18)}Grundriss<span class="sfhr">${this._grChkChip ? this._grChkChip(P) : ""}${bar}${edit ? edit.replace("<button", '<button class="sfed"') : ""}</span></h2>${lyr}`}
+    const card = `<div class="card${this._grFull ? " grfull" : ""}${narrow ? " grpc" : ""}">${narrow ? (this._grFull ? this._grNav("plan", rq, adm, P, fls) : "") + lyrN : LN ? this._grLayerBar(lyr) : `<h2>${ic("home", 18)}Grundriss<span class="sfhr">${this._grChkChip ? this._grChkChip(P) : ""}${bar}${edit ? edit.replace("<button", '<button class="sfed"') : ""}</span></h2>${lyr}`}
       ${ly.sun && this._grSunBar ? this._grSunBar(P, fl) : ""}<div class="grv grv-${sty}">${this._grZoomBar ? this._grZoomBar(fl) : ""}<svg class="grzsvg${VB !== G.vb ? " zm" : ""}" data-fl="${esc(fl)}" data-vb="${G.vb.x} ${G.vb.y} ${G.vb.w} ${G.vb.h}" viewBox="${VB.x} ${VB.y} ${VB.w} ${VB.h}" role="img" aria-label="Grundriss ${esc((fls.find((f) => f.id === fl) || {}).n || "")}">${G.svg}</svg></div></div>`;
     const since = meta.since ? new Date(meta.since).toLocaleDateString("de-DE") : "", until = meta.copy_until ? new Date(meta.copy_until).toLocaleDateString("de-DE") : "";
     const info = `<div class="grinfo">
       <div class="card"><b>${ic("users", 15)} Genutzt von</b><small>${esc(uTxt)}. Einmal gezeichnet, überall derselbe Plan.</small></div>
       <div class="card"><b>${ic("shield", 15)} Umzug aus Modul 11</b><small>${since ? `Am ${since} übernommen${meta.src === "sf" ? " aus Modul 11" : ""}. Die Kopie vom alten Stand wird bis ${until} aufgehoben.` : "Der Plan liegt jetzt im Kern von Strom &amp; Wärme."}</small></div>
       <div class="card"><b>${ic("pencil", 15)} Bearbeiten</b><small>Im Baukasten hier in Modul 0 – auch „Bearbeiten“ in Modul 1, 11 und 18 führt hierher und danach zurück. Alle Module sehen die Änderung sofort.</small></div></div>`;
-    return tv ? css + card : css + hero + tabs + card + info;
+    return tv ? css + card : css + hero + tabs + card + (LN ? "" : info);
   }
   /* Build 3 (2026.11.4.1): Werkzeugleiste auf dem Handy – Etage, Ansicht, Bearbeiten und „⋯“ in einer Zeile.
      „Ansicht“ klappt Stil und Maße auf, „⋯“ die Reiter (Räume, Ebenen, Sichern, Einstellungen) und den Plan-Check. */
@@ -146,16 +146,39 @@
   /* ---- Baukasten in Modul 0 (Build 3) */
   _grT() { return this._mdList().some((m) => m.id === "sf") && this._sfStat ? this._sfStat() : { l: [], al: [] }; }
   _grModName(id) { return { fh: "Modul 1 · Wärmekarte", sf: "Modul 11 · Sicherheit", li: "Modul 18 · Licht", gr: "Modul 0" }[id] || "Modul 0"; }
-  _grEdit(from, tool) {
+  /* v0.13 (B4): Bearbeitungs-Sperre – pro Browser-Tab eine Kennung; das Backend hält die Sperre 15 Minuten ohne Aktion */
+  _grSid() { if (!this._grSidV) this._grSidV = "t" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); return this._grSidV; }
+  _grLockCall(action, force) { return this._hass.callWS({ type: "fenster_heizung/gr_lock", action, sid: this._grSid(), ...(force ? { force: true } : {}) }); }
+  _grLockMine() { return !!(this._sfEd && this._sfEd.host === "gr"); }
+  _grLockTick() {
+    clearInterval(this._grLkT); this._grLkT = null;
+    if (!this._grLockMine()) return;
+    this._grLkT = setInterval(() => {
+      if (!this._grLockMine()) { clearInterval(this._grLkT); this._grLkT = null; return; }
+      this._grLockCall("keep").then((r) => { if (!r.ok && this._grLockMine()) this._grLockCall("take").then((r2) => { if (!r2.ok) this._toast("Die Bearbeitungs-Sperre gehört jetzt jemand anderem – Speichern kann abgelehnt werden"); }).catch(() => {}); }).catch(() => {});
+    }, 4 * 60 * 1000);
+  }
+  _grLockErr(e, fallback) {
+    const c = e && e.code, m = e && e.message;
+    if (c === "locked" || c === "invalid_plan") return m || fallback;
+    return fallback;
+  }
+  _grEdit(from, tool, force) {
     if (!this._admin()) return;
     if (this._mdState().on.gr === false) { this._modal = { type: "grxeditoff", from: from || "gr", tool: tool || "" }; this._renderModal(); return; }
+    if (!this._grRaw()) { this._grPend = [from, tool]; this._grLoad(true); return; }   /* noch nicht geladen (z. B. aus Modul 11): nach dem Laden weiter */
+    this._grLockCall("take", !!force).then((r) => {
+      if (r.ok) { this._grEdit2(from, tool); return; }
+      this._modal = { type: "grxlocked", from: from || "gr", tool: tool || "", by: (r.lock && r.lock.by) || "jemand anderem", since: r.lock && r.lock.since }; this._renderModal();
+    }).catch(() => this._grEdit2(from, tool));   /* älteres Backend ohne Sperre: wie bisher */
+  }
+  _grEdit2(from, tool) {
     const P = this._grRaw();
-    if (!P) { this._grPend = [from, tool]; this._grLoad(true); return; }   /* noch nicht geladen (z. B. aus Modul 11): nach dem Laden weiter */
     const plan = JSON.parse(JSON.stringify({ ...P, floors: P.floors && P.floors.length ? P.floors : [{ id: "eg", n: "EG" }], items: P.items || [], bg: P.bg || {} }));
     this._sfEd = { plan, sel: "", tool: tool || "select", host: "gr", from: from || "gr" };
     if (plan.floors.some((f) => f.id === this._grFl)) this._sfFlId = this._grFl;
     if (this._mdList().some((m) => m.id === "sf") && this._sfxLoad) this._sfxLoad();   /* Melder für die Werkzeuge */
-    this._modal = null; this._renderModal(); this._grTab = "plan"; this._mdActiveSet("gr"); this._render();
+    this._modal = null; this._renderModal(); this._grTab = "plan"; this._mdActiveSet("gr"); this._render(); this._grLockTick();
     try { this.shadowRoot.querySelector(".gred").scrollIntoView({ block: "start" }); } catch (_) { /* egal */ }
   }
   _grEditHead(ed) {
@@ -166,11 +189,13 @@
     const S = this._grS0();
     if (S.d) S.d = { ...S.d, plan: p };   /* sofort zeigen */
     if (this._sfxD && this._sfxD.d && this._sfxD.d.cfg) this._sfxD.d = { ...this._sfxD.d, cfg: { ...this._sfxD.d.cfg, plan: p } };
-    this._hass.callWS({ type: "fenster_heizung/gr_set", plan: p })
-      .then((r) => { S.d = r; S.ts = Date.now(); if (this._mdList().some((m) => m.id === "sf") && this._sfxLoad) this._sfxLoad(true); this._render(); })
-      .catch(() => { this._toast("Der Grundriss konnte nicht gespeichert werden – bitte nochmal versuchen"); this._grDirty(); });
+    this._hass.callWS({ type: "fenster_heizung/gr_set", plan: p, sid: this._grSid() })
+      .then((r) => { S.d = r; S.ts = Date.now(); if (this._mdList().some((m) => m.id === "sf") && this._sfxLoad) this._sfxLoad(true); this._render(); const n = r.check && r.check.ids; if (n) this._toast(`${n} ${n === 1 ? "Element hatte" : "Elemente hatten"} eine doppelte Kennung und ${n === 1 ? "bekam" : "bekamen"} eine neue – nichts ging verloren`); })
+      .catch((e) => { this._toast(this._grLockErr(e, "Der Grundriss konnte nicht gespeichert werden – bitte nochmal versuchen")); this._grDirty(); });
   }
   _grEditDone(ed, saved) {
+    clearInterval(this._grLkT); this._grLkT = null;
+    this._grLockCall("release").then((r) => { const S = this._grS0(); if (S.d) { S.d = { ...S.d, lock: r.lock || null }; this._render(); } }).catch(() => {});
     const to = ed && ed.from && ed.from !== "gr" && this._mdList().some((m) => m.id === ed.from) ? ed.from : "";
     if (to) { if (to === "sf") this._sfT = "pl"; this._mdActiveSet(to); }
     this._render();
@@ -300,7 +325,9 @@
   _grSetView(D) {
     const meta = D.meta || {}, users = (D.users || []).filter((u) => u !== "gr"), on = this._mdState().on.gr !== false, UN = { fh: "Modul 1 (Wärmekarte)", sf: "Modul 11 (Melder)", li: "Modul 18 (Lichtkarte)" };
     const dt = (x) => (x ? new Date(x).toLocaleDateString("de-DE") : "");
+    const lk = this._grLook();
     return `<div class="card"><h2>${ic("sliders", 18)}Einstellungen</h2>
+      <div class="vrow"><span>Optik<small class="mut" style="display:block">Neu: Haus-Szene mit Kennzahlen, eine Kopfleiste, Ebenen zum Wischen. „Wie bisher“ zeigt die Reiter und den alten Banner. Gilt nur für diesen Browser.</small></span><span class="gschips"><button class="gsch ${lk === "new" ? "sel" : ""}" data-act="grxlook" data-k="new">Neue Optik</button><button class="gsch ${lk === "classic" ? "sel" : ""}" data-act="grxlook" data-k="classic">Wie bisher</button></span></div>
       <div class="vrow"><span>Modul 0 eingeschaltet<small class="mut" style="display:block">Wird von ${esc(users.map((u) => UN[u] || u).join(", "))} genutzt. Ausschalten blendet nur diese Seite aus – der Plan bleibt gespeichert und in den anderen Modulen sichtbar.</small></span><button class="sw ${on ? "on" : ""}" data-act="grxoff" aria-pressed="${on}" aria-label="Modul 0 ein- oder ausschalten"></button></div>
       <div class="vrow"><span>Umzug aus Modul 11<small class="mut" style="display:block">${meta.since ? `Am ${dt(meta.since)} übernommen.${meta.copy_until ? ` Die Kopie vom alten Stand wird bis ${dt(meta.copy_until)} aufgehoben.` : ""}` : "Kein Umzug nötig – der Plan wurde direkt hier angelegt."}${meta.pmap ? ` Zuordnungen aus Modul 18 am ${dt(meta.pmap)} übernommen.` : ""}</small></span></div>
       <div class="vrow"><span>Zuletzt geändert<small class="mut" style="display:block">${meta.changed ? `${new Date(meta.changed).toLocaleString("de-DE", { dateStyle: "short", timeStyle: "short" })}${meta.by === "gr" ? " im Baukasten von Modul 0" : meta.by === "sf" ? " über Modul 11" : ""}` : "–"}</small></span></div>
@@ -324,6 +351,10 @@
     if (m.type === "grxrest") { const H = this._grH && this._grH.d, h = m.k === "umzug" ? H && H.copy : H && (H.hist || []).find((x) => x.id === m.k); return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Stand wiederherstellen?</b><span>${m.k === "umzug" ? "Umzugs-Kopie aus Modul 11" : h ? esc(new Date(h.t).toLocaleString("de-DE", { dateStyle: "short", timeStyle: "short" })) : ""}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
         <div class="mut sm">${h ? `Danach: <b style="color:var(--primary-text-color)">${esc(this._grStTxt(h.stats || {}))}</b>. ` : ""}Der jetzige Stand landet im Verlauf, du kannst also wieder zurück. Hintergrundbilder bleiben, wie sie jetzt sind. Modul 1, 11 und 18 sehen den Stand sofort.</div>
         <div class="foot2" style="margin-top:14px"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="grxrestgo" data-k="${esc(m.k)}">Wiederherstellen</button></div></div>`; }
+    if (m.type === "grxlocked") { const t = m.since ? new Date(m.since).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }) : "";
+      return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Grundriss wird bearbeitet</b><span>Modul 0 · Haus &amp; Grundriss</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+        <div class="mut sm"><b style="color:var(--primary-text-color)">${esc(m.by)}</b> bearbeitet den Grundriss gerade${t ? ` (seit ${t} Uhr)` : ""}. Damit nichts überschrieben wird, ist der Baukasten für dich gesperrt. Die Sperre endet, sobald die Bearbeitung beendet ist oder 15 Minuten lang nichts passiert.</div>
+        <div class="foot2" style="margin-top:14px"><button class="btn2 pri" data-act="close">Okay</button><button class="btn2" data-act="grxlockgo" data-from="${esc(m.from)}" data-tool="${esc(m.tool)}">Trotzdem übernehmen</button></div></div>`; }
     if (m.type === "grxeditoff") return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Modul 0 einschalten?</b><span>Haus &amp; Grundriss</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
         <div class="mut sm">Der Baukasten liegt jetzt in <b style="color:var(--primary-text-color)">Modul 0 · Haus &amp; Grundriss</b>. Zum Bearbeiten wird Modul 0 eingeschaltet. ${m.from && m.from !== "gr" ? `Nach dem Speichern geht es zurück zu ${esc(this._grModName(m.from))}.` : ""}</div>
         <div class="foot2" style="margin-top:14px"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="grxeditgo">Einschalten und bearbeiten</button></div></div>`;
@@ -364,23 +395,31 @@
     if (a === "grximpr") { const m = this._modal; if (m && m.type === "grximp") { m.rooms = !m.rooms; this._renderModal(); } return true; }
     if (a === "grximpgo") {
       const m = this._modal; if (!m || m.type !== "grximp") return true;
-      const p = this._grImpPlan(m), msg = { type: "fenster_heizung/gr_set", plan: p, src: "import" }, S = this._grS0();
+      const p = this._grImpPlan(m), msg = { type: "fenster_heizung/gr_set", plan: p, src: "import", sid: this._grSid() }, S = this._grS0();
       if (m.mode === "replace" && m.rooms && m.o.rooms) msg.rooms = m.o.rooms;
       this._modal = null; this._renderModal();
       this._hass.callWS(msg).then((r) => { S.d = r; S.ts = Date.now(); this._grHLoad(true); if (this._mdList().some((x) => x.id === "sf") && this._sfxLoad) this._sfxLoad(true); this._render(); const s2 = this._grSt(r.plan); this._toast(`Eingelesen: ${s2.fl} Etagen, ${s2.r} Räume – der vorherige Stand liegt im Verlauf`); })
-        .catch(() => this._toast("Einlesen hat nicht geklappt – die Datei passt nicht"));
+        .catch((e) => this._toast(this._grLockErr(e, "Einlesen hat nicht geklappt – die Datei passt nicht")));
       return true;
     }
     if (a === "grxrest") { this._grHLoad(); this._modal = { type: "grxrest", k }; this._renderModal(); return true; }
     if (a === "grxrestgo") {
       const S = this._grS0(); this._modal = null; this._renderModal();
-      this._hass.callWS({ type: "fenster_heizung/gr_restore", bid: k }).then((r) => { const { h, ...d } = r; S.d = d; S.ts = Date.now(); if (this._grH) { this._grH.d = h; this._grH.ts = Date.now(); } if (this._mdList().some((x) => x.id === "sf") && this._sfxLoad) this._sfxLoad(true); this._render(); this._toast("Stand wiederhergestellt"); })
-        .catch(() => this._toast("Dieser Stand ist nicht mehr da"));
+      this._hass.callWS({ type: "fenster_heizung/gr_restore", bid: k, sid: this._grSid() }).then((r) => { const { h, ...d } = r; S.d = d; S.ts = Date.now(); if (this._grH) { this._grH.d = h; this._grH.ts = Date.now(); } if (this._mdList().some((x) => x.id === "sf") && this._sfxLoad) this._sfxLoad(true); this._render(); this._toast("Stand wiederhergestellt"); })
+        .catch((e) => this._toast(this._grLockErr(e, "Dieser Stand ist nicht mehr da")));
       return true;
     }
+    if (a === "grxchip") {   /* v0.14: Kennzahl-Chips der Haus-Szene springen in den Plan */
+      const ly = this._grLy(); this._grTab = k === "rooms" ? "raeume" : "plan";
+      if (k === "win") { ly.sf = true; ly.now = true; } else if (k === "lamp") { ly.licht = true; }
+      if (k === "chk") { this._modal = { type: "grxchk" }; this._renderModal(); return true; }
+      this._grMenu = ""; this._render(); return true;
+    }
+    if (a === "grxlook") { this._grLookV = k === "classic" ? "classic" : "new"; try { localStorage.setItem("fh_gr_look", this._grLookV); } catch (_) { /* privater Modus */ } this._render(); return true; }
     if (a === "grxsty") { this._grSty = ["modern", "bauplan", "hell"].includes(k) ? k : "modern"; try { localStorage.setItem("fh_gr_style", this._grSty); } catch (_) { /* privater Modus */ } this._render(); return true; }
     if (a === "grxdims") { this._grDim = !this._grDimsOn(); try { localStorage.setItem("fh_gr_dims", this._grDim ? "1" : "0"); } catch (_) { /* privater Modus */ } this._render(); return true; }
     if (a === "grxedit") { this._grEdit((b && b.dataset && b.dataset.k) || "gr", (b && b.dataset && b.dataset.t) || ""); return true; }
+    if (a === "grxlockgo") { const m = this._modal || {}; this._modal = null; this._renderModal(); this._grEdit(m.from, m.tool, true); return true; }
     if (a === "grxeditgo") { const m = this._modal || {}, s = this._mdState(); s.on.gr = true; this._mdSave(); this._modal = null; this._grEdit(m.from, m.tool); return true; }
     if (a === "grxgo") { if (this._mdList().some((x) => x.id === k)) { this._mdActiveSet(k); this._render(); } return true; }
     if (a === "grxsfon") { this._toast("Der Baukasten liegt bis Build 3 noch in Modul 11. Schalte Modul 11 unter Einstellungen → Module ein."); return true; }

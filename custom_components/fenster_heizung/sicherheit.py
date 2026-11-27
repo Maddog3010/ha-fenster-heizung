@@ -1212,7 +1212,10 @@ class SicherheitManager:
         self.cfg = clean_cfg({**self.cfg, **raw} if isinstance(raw, dict) else raw)  # fehlende Felder (alter Browser) behalten ihren Stand
         hs = self.hass.data.get(DOMAIN, {}).get("grundriss")
         if hs is not None and isinstance(raw, dict) and "plan" in raw:
-            hs.set_plan(self.cfg["plan"], "sf")  # Baukasten von Modul 11 schreibt in Modul 0
+            try:
+                hs.set_plan(self.cfg["plan"], "sf")  # Baukasten von Modul 11 schreibt in Modul 0
+            except ValueError as err:  # PlanError (v0.13): Prüfung von Modul 0 lehnt den Plan ab – Einstellungen von Modul 11 gelten trotzdem
+                _LOGGER.warning("Modul 11: Plan wurde von Modul 0 abgelehnt: %s", err)
         self._save()
         await self.async_config_changed()
         return await self.snapshot()

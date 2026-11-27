@@ -212,6 +212,122 @@ def test_verlauf_hat_ein_ende_und_umzugs_kopie():
     m.async_stop()
 
 
+# ---- v0.13 (Stufe 1 Technik): Schema 2, Prüfung, feste Raum-IDs, Bearbeitungs-Sperre
+def _item(i, t="r", fl="eg", **kw):
+    return {"id": i, "fl": fl, "t": t, "x": 0, "y": 0, "w": 50, "h": 50, "n": "R", **kw}
+
+
+def test_schema_2_umstellung_beim_start():
+    m, gm, h, st = _setup(PLAN, gr_data={"v": 1, "plan": PLAN, "meta": {"since": "2026-11-20T10:00:00+00:00", "src": "sf"}})
+    assert G.SCHEMA == 2 and gm.meta["schema"] == "2" and gm.meta["schema_from"] == "1" and gm.meta["schema_at"]
+    assert gm.hist and gm.hist[0]["next"] == "schema" and len(gm.hist[0]["plan"]["items"]) == 5   # alter Stand liegt im Verlauf
+    assert st["fenster_heizung_grundriss"].saved["v"] == 2                                       # Datei trägt Schema 2
+    m.async_stop()
+
+
+def test_schema_2_wird_nicht_zweimal_umgestellt():
+    m, gm, h, st = _setup(PLAN, gr_data={"v": 2, "plan": PLAN, "meta": {"since": "2026-11-20T10:00:00+00:00", "src": "sf"}})
+    assert "schema_from" not in gm.meta and gm.hist == []
+    m.async_stop()
+
+
+def test_pruefung_lehnt_kaputte_plaene_ab():
+    for bad, txt in ((None, "Format"), ({"items": "x"}, "beschädigt"), ({"floors": {}, "items": []}, "beschädigt"),
+                     ({"items": [_item(f"r{n}") for n in range(G.MAX_ITEMS + 1)]}, "Zu viele Elemente"),
+                     ({"floors": [{"id": f"f{n}", "n": "x"} for n in range(G.MAX_FLOORS + 1)], "items": []}, "Zu viele Etagen"),
+                     ({"items": [{"id": "a", "t": "?", "fl": "eg"}, "kein Objekt"]}, "Kein einziges Element")):
+        try:
+            G.check_plan(bad)
+        except G.PlanError as e:
+            assert txt in str(e), (bad, e)
+        else:
+            raise AssertionError(f"nicht abgelehnt: {bad!r}")
+
+
+def test_abgelehnter_plan_aendert_nichts():
+    m, gm, h, st = _setup(PLAN)
+    before, hist = dict(gm.plan), len(gm.hist)
+    try:
+        gm.set_plan({"items": [{"id": "a", "t": "?", "fl": "eg"}]}, "gr")
+    except G.PlanError:
+        pass
+    else:
+        raise AssertionError("kaputter Plan wurde gespeichert")
+    assert gm.plan == before and len(gm.hist) == hist
+    m.async_stop()
+
+
+def test_doppelte_ids_bekommen_neue_ids():
+    r1, r2, r3 = _item("r1"), _item("r1", n="Doppelt"), _item("Ungültig!", n="Kaputte ID")
+    p, info = G.check_plan({"floors": [{"id": "eg", "n": "EG"}], "items": [r1, r2, r3, _item("w1", "w")]})
+    ids = [i["id"] for i in p["items"]]
+    assert len(ids) == 4 and len(set(ids)) == 4 and info == {"ids": 2, "dropped": 0}   # nichts verschwindet
+    assert p["items"][0]["id"] == "r1" and p["items"][0]["n"] == "R"                   # das erste behält seine ID (Raumliste bleibt gültig)
+    assert {i["n"] for i in p["items"] if i["t"] == "r"} == {"R", "Doppelt", "Kaputte ID"}
+    assert all(G._ITEM_ID.match(i) for i in ids)
+
+
+def test_pruefung_zaehlt_verworfene_elemente():
+    p, info = G.check_plan({"floors": [{"id": "eg", "n": "EG"}], "items": [_item("r1"), _item("r2", fl="gibtsnicht"), {"id": "x", "t": "?", "fl": "eg"}]})
+    assert [i["id"] for i in p["items"]] == ["r1"] and info["dropped"] == 2 and info["ids"] == 0
+
+
+def test_set_plan_merkt_pruefbericht_und_snapshot():
+    m, gm, h, st = _setup(PLAN)
+    gm.set_plan({**PLAN, "items": PLAN["items"] + [dict(PLAN["items"][0], n="Kopie")]}, "gr")   # Kopie mit gleicher ID
+    s = gm.snapshot()
+    assert s["check"]["ids"] == 1 and s["check"]["at"] and s["v"] == 2 and len({i["id"] for i in gm.plan["items"]}) == 6
+    m.async_stop()
+
+
+def test_sperre_holen_halten_freigeben():
+    m, gm, h, st = _setup(PLAN)
+    assert gm.lock_public() is None and gm.snapshot()["lock"] is None
+    assert gm.lock_take("a", "Anna") is True
+    lk = gm.snapshot()["lock"]
+    assert lk["by"] == "Anna" and lk["sid"] == "a" and "ts" not in lk
+    assert gm.lock_take("b", "Ben") is False and gm.lock_public()["by"] == "Anna"        # belegt
+    assert gm.lock_take("a", "Anna") is True and gm.lock_public()["since"] == lk["since"]  # erneut holen behält „seit“
+    assert gm.lock_keep("a") is True and gm.lock_keep("b") is False
+    gm.lock_release("b")                                                                   # fremde Freigabe wirkt nicht
+    assert gm.lock_public()["by"] == "Anna"
+    gm.lock_release("a")
+    assert gm.lock_public() is None
+    m.async_stop()
+
+
+def test_sperre_laeuft_ab_und_kann_uebernommen_werden():
+    m, gm, h, st = _setup(PLAN)
+    t0 = NOW[0]
+    try:
+        gm.lock_take("a", "Anna")
+        NOW[0] = t0 + timedelta(minutes=G.LOCK_MIN - 1)
+        assert gm.lock_keep("a") is True and gm.lock_take("b", "Ben") is False             # Aktion verlängert
+        NOW[0] = t0 + timedelta(minutes=2 * G.LOCK_MIN)
+        assert gm.lock_public() is None and gm.lock_keep("a") is False                    # abgelaufen
+        assert gm.lock_take("b", "Ben") is True
+        assert gm.lock_take("a", "Anna") is False and gm.lock_take("a", "Anna", force=True) is True   # übernehmen
+        assert gm.lock_public()["by"] == "Anna"
+    finally:
+        NOW[0] = t0
+    m.async_stop()
+
+
+def test_sperre_blockiert_schreiben_anderer_geraete():
+    m, gm, h, st = _setup(PLAN)
+    gm.lock_check(None)                                   # ohne Sperre darf jeder schreiben
+    gm.lock_take("a", "Anna")
+    gm.lock_check("a")                                    # Besitzer darf
+    for sid in ("b", None):
+        try:
+            gm.lock_check(sid)
+        except G.LockedError as e:
+            assert e.lock["by"] == "Anna" and "ts" not in e.lock
+        else:
+            raise AssertionError("fremdes Gerät durfte schreiben")
+    m.async_stop()
+
+
 if __name__ == "__main__":
     n = 0
     for k, f in list(globals().items()):
