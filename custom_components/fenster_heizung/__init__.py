@@ -1268,7 +1268,7 @@ async def _async_register_panel(hass: HomeAssistant) -> None:
             frontend_url_path=PANEL_URL,
             module_url=f"{STATIC_URL}/panel.js?v={version}",
             sidebar_title="Strom & Wärme",
-            sidebar_icon="mdi:window-open-variant",
+            sidebar_icon="mdi:home-lightning-bolt",
             require_admin=False,
             config={},
             embed_iframe=False,

@@ -1,41 +1,86 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/banner.png" alt="Strom &amp; Wärme: Heizung, Strom und Haus in Home Assistant">
+  <img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/banner.png" width="100%" alt="Strom &amp; Wärme: Heizung, Strom und Haus auf einer Seite">
 </p>
 
 <h1 align="center">Strom & Wärme</h1>
 
+<!-- ha-marketplace:exclude-start -->
 <p align="center">
   <a href="https://my.home-assistant.io/redirect/marketplace_repository/?owner=Maddog3010&repository=ha-fenster-heizung&category=integration"><img alt="Marketplace" src="https://img.shields.io/badge/Marketplace-Home%20Assistant-41BDF5?logo=homeassistant&logoColor=white"></a>
   <a href="https://github.com/Maddog3010/ha-fenster-heizung/releases"><img alt="Stabil" src="https://img.shields.io/github/v/release/Maddog3010/ha-fenster-heizung?label=Stabil&color=2dd4bf"></a>
   <a href="https://github.com/Maddog3010/ha-fenster-heizung/releases"><img alt="Beta" src="https://img.shields.io/github/v/release/Maddog3010/ha-fenster-heizung?include_prereleases&label=Beta&color=f59e0b"></a>
   <img alt="Home Assistant" src="https://img.shields.io/badge/Home%20Assistant-2024.11%2B-18bcf2">
+  <a href="https://youtube.com/@strom_und_waerme"><img alt="YouTube" src="https://img.shields.io/badge/YouTube-@strom__und__waerme-FF0000?logo=youtube&logoColor=white"></a>
   <a href="https://github.com/sponsors/Maddog3010"><img alt="Sponsor" src="https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white"></a>
 </p>
+<!-- ha-marketplace:exclude-end -->
+
+<p align="center"><b>Heizung, Strom und Haus auf einer Seite.</b><br>
+Strom &amp; Wärme bündelt Heizung, Solarstrom, Elektroauto, Wetter und Sicherheit in einem Dashboard für Home Assistant.<br>
+Du schaltest nur die Module ein, die du brauchst.</p>
+
+<p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_startseite_handy.png" width="20%" alt="Startseite am Handy"> <img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul19_4x4.png" width="39%" alt="Modul 19: Energiefluss im Haus"> <img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul0_grundriss.png" width="39%" alt="Modul 0: Grundriss mit Räumen und Werten"></p>
 
 <p align="center">
-  <a href="https://youtube.com/@strom_und_waerme"><img alt="YouTube-Kanal @strom_und_waerme" src="https://img.shields.io/badge/YouTube-Jetzt%20abonnieren-FF0000?style=for-the-badge&logo=youtube&logoColor=white"></a>
-  <a href="https://github.com/sponsors/Maddog3010"><img alt="Sponsor werden" src="https://img.shields.io/badge/Sponsor-werden-ea4aaa?style=for-the-badge&logo=githubsponsors&logoColor=white"></a>
-</p>
-
-<p align="center"><b>Heizung, Strom und Haus auf einer Seite in Home Assistant.</b><br>
-Heizkörper pausieren bei offenem Fenster, Solarstrom landet im Heizer, im Warmwasser und im Auto,<br>und du siehst, woher der Strom deiner Geräte kommt. Du schaltest nur die Module ein, die du brauchst.</p>
-
-<p align="center"><a href="https://youtube.com/@strom_und_waerme"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/youtube_banner.png" width="66%" alt="YouTube-Kanal Strom &amp; Wärme: Erklärvideos, Neuheiten und Shorts – @strom_und_waerme"></a> <a href="https://github.com/sponsors/Maddog3010"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/sponsor_kachel.png" width="32%" alt="Sponsor werden über GitHub Sponsors – github.com/sponsors/Maddog3010"></a></p>
-
-<p align="center">
-  <a href="#neu-in-2026114">Neu</a> ·
   <a href="#installation">Installation</a> ·
+  <a href="#neu-in-2026114">Neu</a> ·
   <a href="#module">Module</a> ·
   <a href="#bedienung">Bedienung</a> ·
   <a href="#labs">Labs</a> ·
   <a href="#versionen-und-updates">Versionen</a> ·
-  <a href="#sponsor-werden">Sponsor</a> ·
-  <a href="https://youtube.com/@strom_und_waerme"><b>▶️ YouTube</b></a> ·
   <a href="#häufige-fragen">Fragen</a> ·
-  <a href="https://github.com/Maddog3010/ha-fenster-heizung/blob/main/CHANGELOG.md">Änderungen</a>
+  <a href="https://github.com/Maddog3010/ha-fenster-heizung/blob/main/CHANGELOG.md">Änderungen</a> ·
+  <a href="#sponsor-werden">Sponsor</a> ·
+  <a href="https://youtube.com/@strom_und_waerme">YouTube</a>
 </p>
 
 > 💗 **Kostenlos, offen und ohne Werbung, und das bleibt so.** Wenn dir die Integration hilft, freue ich mich über dein [Sponsoring](#sponsor-werden).
+
+---
+
+## Das steckt drin
+
+| | Bereich | Was du bekommst |
+|---|---|---|
+| 🪟 | **Fenster & Heizung** | Pause bei offenem Fenster, Heizpläne, Anwesenheit und Urlaub, Raumsensor, Messräume, Luftentfeuchter mit Nachtmodus, Berichte, Elektroheizer mit PV-Überschuss |
+| 🚿 | **Warmwasser** | Speicher, Zeitplan, Zirkulation, Legionellenschutz, Heizstab bei Überschuss |
+| ⚡ | **Energie und Gerätestrom** | Solar, Netz, Batterie, Kosten und Autarkie. Pro Gerät: woher kam der Strom, was hat der Lauf gekostet, wann startest du am besten |
+| 🚗 | **Elektroauto** | go-e Charger lokal oder jede Wallbox über Home Assistant regeln, nach Sonne, Strompreis und Abfahrtszeit laden, Ladestatistik |
+| 🌦️ | **Wetter und Sicherheit** | Eigene und amtliche Warnungen, Rauch-, Gas- und Wassermelder mit Grundriss und Wartung |
+| 🏠 | **Startseite** | Ampel, Wetter, Personen, Alarm und Hinweise auf einen Blick |
+| 📱 | **Tablet-Modus** | Große Knöpfe, Ruhemodus, PIN und Display per Bewegungsmelder, Geräte-Wand |
+| 🏷️ | **Tags & Karten** | RFID-Karten und NFC-Sticker lösen feste Aktionen aus |
+| 🧪 | **Labs** | Neue Funktionen zum Ausprobieren, ab Werk aus |
+| 🧩 | **Addons** | Module zum Installieren: Müllabfuhr, Licht & Lampen, Abrechnungen, Saugroboter |
+| ⚙️ | **Einstellungen** | Alles an einem Ort: Haus-Werte, Messwerk, Suche, Verlauf mit Rückgängig |
+| 💾 | **Sicherung** | Als Datei oder automatisch auf deinen Homeserver |
+| 💗 | **Sponsor-Lounge** | Extras für Sponsoren, Sponsor Max mit Haus-Autopilot |
+
+---
+
+## Installation
+
+Ab **Home Assistant 2026.11** ist der frühere Community Store HACS als **Marketplace** fest eingebaut (**Einstellungen → Marketplace**). Es muss nichts mehr extra installiert werden.
+
+<p><a href="https://my.home-assistant.io/redirect/marketplace_repository/?owner=Maddog3010&repository=ha-fenster-heizung&category=integration"><img src="https://my.home-assistant.io/badges/marketplace_repository.svg" alt="Strom &amp; Wärme im Marketplace von Home Assistant öffnen"></a></p>
+
+1. Auf den Knopf oben tippen – oder **Einstellungen → Marketplace → Über Link hinzufügen** und `https://github.com/Maddog3010/ha-fenster-heizung` eintragen. Für eigene Repositories verbindet sich der Marketplace einmal mit GitHub.
+2. **Strom & Wärme** installieren und Home Assistant **neu starten**.
+3. **Einstellungen → Geräte & Dienste → Integration hinzufügen → Strom & Wärme**. Pro Raum ein Eintrag mit Fenstersensoren und Thermostaten.
+4. In der Seitenleiste **Strom & Wärme** öffnen. Der **Einrichtungsassistent** führt in acht Schritten durch Räume, Fenstermeldung, Heizung, Luftfeuchte, PV und Meldungen. Jeden Schritt außer dem ersten kannst du überspringen.
+
+<details>
+<summary>Home Assistant 2026.10 oder älter (mit HACS)</summary>
+<br>
+
+1. **HACS** öffnen, oben rechts die drei Punkte, **Benutzerdefinierte Repositories**.
+2. `https://github.com/Maddog3010/ha-fenster-heizung` eintragen, Kategorie **Integration**.
+3. **Strom & Wärme** installieren, Home Assistant neu starten und weiter mit Schritt 3 oben.
+
+Beim Update auf Home Assistant 2026.11 zieht HACS mit allen Downloads automatisch in den Marketplace um.
+</details>
+
+Die Module 2 bis 4 sind ab Werk an, alle weiteren aus. Einschalten und einrichten kannst du sie unter **Einstellungen → Module**.
 
 ---
 
@@ -89,52 +134,6 @@ Heizkörper pausieren bei offenem Fenster, Solarstrom landet im Heizer, im Warmw
 ▶️ [**Video zu 2026.11.3 auf YouTube**](https://youtube.com/@strom_und_waerme) · 📖 [**Bedienungsanleitung (PDF)**](https://github.com/Maddog3010/ha-fenster-heizung/blob/main/docs/Bedienungsanleitung.pdf), angepasst an 2026.11.4 · 📲 [**Tags & Karten mit dem iPhone anlernen**](https://github.com/Maddog3010/ha-fenster-heizung/blob/main/docs/Anleitung_Tags_iPhone.pdf) · [Alle Änderungen](https://github.com/Maddog3010/ha-fenster-heizung/blob/main/CHANGELOG.md)
 
 </details>
-
----
-
-## Das steckt drin
-
-| | Bereich | Was du bekommst |
-|---|---|---|
-| 🪟 | **Fenster & Heizung** | Pause bei offenem Fenster, Heizpläne, Anwesenheit und Urlaub, Raumsensor, Messräume, Luftentfeuchter mit Nachtmodus, Berichte, Elektroheizer mit PV-Überschuss |
-| 🚿 | **Warmwasser** | Speicher, Zeitplan, Zirkulation, Legionellenschutz, Heizstab bei Überschuss |
-| ⚡ | **Energie und Gerätestrom** | Solar, Netz, Batterie, Kosten und Autarkie. Pro Gerät: woher kam der Strom, was hat der Lauf gekostet, wann startest du am besten |
-| 🚗 | **Elektroauto** | go-e Charger lokal oder jede Wallbox über Home Assistant regeln, nach Sonne, Strompreis und Abfahrtszeit laden, Ladestatistik |
-| 🌦️ | **Wetter und Sicherheit** | Eigene und amtliche Warnungen, Rauch-, Gas- und Wassermelder mit Grundriss und Wartung |
-| 🏠 | **Startseite** | Ampel, Wetter, Personen, Alarm und Hinweise auf einen Blick |
-| 📱 | **Tablet-Modus** | Große Knöpfe, Ruhemodus, PIN und Display per Bewegungsmelder, Geräte-Wand |
-| 🏷️ | **Tags & Karten** | RFID-Karten und NFC-Sticker lösen feste Aktionen aus |
-| 🧪 | **Labs** | Neue Funktionen zum Ausprobieren, ab Werk aus |
-| 🧩 | **Addons** | Module zum Installieren: Müllabfuhr, Licht & Lampen, Abrechnungen, Saugroboter |
-| ⚙️ | **Einstellungen** | Alles an einem Ort: Haus-Werte, Messwerk, Suche, Verlauf mit Rückgängig |
-| 💾 | **Sicherung** | Als Datei oder automatisch auf deinen Homeserver |
-| 💗 | **Sponsor-Lounge** | Extras für Sponsoren, Sponsor Max mit Haus-Autopilot |
-
----
-
-## Installation
-
-Ab **Home Assistant 2026.11** ist der frühere Community Store HACS als **Marketplace** fest eingebaut (**Einstellungen → Marketplace**). Es muss nichts mehr extra installiert werden.
-
-<p><a href="https://my.home-assistant.io/redirect/marketplace_repository/?owner=Maddog3010&repository=ha-fenster-heizung&category=integration"><img src="https://my.home-assistant.io/badges/marketplace_repository.svg" alt="Strom &amp; Wärme im Marketplace von Home Assistant öffnen"></a></p>
-
-1. Auf den Knopf oben tippen – oder **Einstellungen → Marketplace → Über Link hinzufügen** und `https://github.com/Maddog3010/ha-fenster-heizung` eintragen. Für eigene Repositories verbindet sich der Marketplace einmal mit GitHub.
-2. **Strom & Wärme** installieren und Home Assistant **neu starten**.
-3. **Einstellungen → Geräte & Dienste → Integration hinzufügen → Strom & Wärme**. Pro Raum ein Eintrag mit Fenstersensoren und Thermostaten.
-4. In der Seitenleiste **Strom & Wärme** öffnen. Der **Einrichtungsassistent** führt in acht Schritten durch Räume, Fenstermeldung, Heizung, Luftfeuchte, PV und Meldungen. Jeden Schritt außer dem ersten kannst du überspringen.
-
-<details>
-<summary>Home Assistant 2026.10 oder älter (mit HACS)</summary>
-<br>
-
-1. **HACS** öffnen, oben rechts die drei Punkte, **Benutzerdefinierte Repositories**.
-2. `https://github.com/Maddog3010/ha-fenster-heizung` eintragen, Kategorie **Integration**.
-3. **Strom & Wärme** installieren, Home Assistant neu starten und weiter mit Schritt 3 oben.
-
-Beim Update auf Home Assistant 2026.11 zieht HACS mit allen Downloads automatisch in den Marketplace um.
-</details>
-
-Die Module 2 bis 4 sind ab Werk an, alle weiteren aus. Einschalten und einrichten kannst du sie unter **Einstellungen → Module**.
 
 ---
 
@@ -236,7 +235,7 @@ Die Aufteilung ist eine Näherung aus Messwerten im 20-Sekunden-Takt. Die Startz
 </details>
 
 <details>
-<summary><b>8 · Elektroauto & Wallbox</b> (Vorabversion)</summary>
+<summary><b>8 · Elektroauto & Wallbox</b> (Stabil 1.0)</summary>
 <br>
 
 go-e Charger lokal im Netzwerk **oder jede Wallbox mit Home-Assistant-Integration** – „Andere Wallbox“ im Store sucht die Integration und schlägt die Entitäten vor. Betriebsarten Aus, Sonne, Sonne + Netz, Voll und Ladeplan mit Abfahrtszeit, Ziel-Ladestand, Strompreis und PV-Prognose (Modul 16). Dazu RFID-Karten je Fahrzeug, Hausanschluss-Schutz und Ladestatistik.
@@ -265,7 +264,7 @@ go-e Charger lokal im Netzwerk **oder jede Wallbox mit Home-Assistant-Integratio
 </details>
 
 <details>
-<summary><b>11 · Rauch- & Sicherheitsmelder</b> (Vorabversion)</summary>
+<summary><b>11 · Rauch- & Sicherheitsmelder</b> (Stabil 1.0)</summary>
 <br>
 
 - **Grundriss-Baukasten:** Räume, Wände, Türen, Fenster und Treppen zeichnen, Melder platzieren, mehrere Etagen. Bei Alarm leuchtet der Raum.
@@ -506,6 +505,51 @@ Seit `2026.11.4` fragt die Integration einmalig, ob sie **anonym mitteilen darf,
 
 Der Dienst ist offen: `statistik-worker/` (Cloudflare Worker, Anleitung in `docs/Anleitung_Statistik-Cloudflare-Worker.pdf`) und alternativ `statistik-server/` (eigener Container, z. B. Proxmox).
 
+## Wichtige Hinweise
+
+- Die Integration schaltet **Thermostate, Elektroheizer, Heizstäbe, Pumpen, Luftentfeuchter und auf Wunsch die Wallbox**. Prüfe nach der Einrichtung, ob alles wie gewünscht reagiert. Die Nutzung erfolgt auf eigene Verantwortung.
+- Die Warmwasser-Regelung ersetzt keinen Verbrühschutz und keine Sicherheitseinrichtung deiner Anlage.
+- Module in den Stufen In Entwicklung, Beta und Vorabversion, Labs und Testversionen können sich ändern.
+- Energie- und Kostenwerte, Ersparnis, Prognosen und Rechner sind **Schätzungen**.
+- Der Bericht, der Energie-Coach und der Rechner brauchen Verlaufsdaten im Recorder bzw. die Langzeitstatistik.
+
+## Häufige Fragen
+
+**Wie erreiche ich Hilfe?**
+Oben im Kopf jeder Seite stehen die kleinen Knöpfe **💬 Chat** und **✉️ E-Mail**. Der Chat läuft direkt im Dashboard, Sponsor Max wird bevorzugt beantwortet. Die E-Mail-Adresse ist [support@stromwaerme.dev](mailto:support@stromwaerme.dev). Für Fehler hilft auch ein Issue auf GitHub.
+
+**Kostet „Strom & Wärme“ etwas?**
+Nein. Ein Sponsoring ist freiwillig. Was frei ist, bleibt frei.
+
+**Mir gefällt die neue Optik nicht. Kann ich zurück?**
+Ja. **Einstellungen → Modul 4 → Darstellung → Karten wie bisher**, die Geräte-Szene lässt sich dort ebenfalls abschalten. In Modul 19 holt **Alte Symbole behalten** die bisherigen Symbole zurück.
+
+**Warum steht bei einem Gerät „lernt die Laufzeit“?**
+Modul 4 braucht drei Läufe, um die Restzeit zu schätzen. Danach erscheint „noch ~ Min.“.
+
+**Brauche ich die Beta-Versionen?**
+Nein. Für den Alltag reicht die stabile Version, und die ist für alle frei.
+
+**Ich habe eine Testversion installiert und sehe nur „Testversionen sind für Sponsoren“.**
+Testversionen sind mit Sponsor Max sofort und als Sponsor 3 Tage nach Erscheinen frei. Über **Zurück zu …** kommst du im Marketplace (bis Home Assistant 2026.10: HACS) zur letzten stabilen Version. Deine Einstellungen bleiben, die Regelung läuft weiter.
+
+**Gehen meine Einstellungen bei einem Update verloren?**
+Nein. Sie bleiben erhalten, dazu gibt es interne Kopien und auf Wunsch eine Sicherung auf deinem Homeserver.
+
+**Meine Messräume sind weg. Was tun?**
+Modul 1 zeigt einen Hinweis mit **Zurückholen**, solange die Messräume noch in der automatischen Sicherung stehen.
+
+**Wo stelle ich Strompreis, Netz-Sensor oder Außentemperatur ein?**
+An einer Stelle für alle Module: **Einstellungen → Haus** (Energiequellen, Preise & Tarif, Wetterquelle).
+
+**Werden Daten an einen Server geschickt?**
+Nur an die Dienste, die du selbst einrichtest (Wetter, Strompreis, Tibber). Für den Update-Hinweis, die Abstimmung und die Sponsor-Sperrliste fragt die Integration GitHub. Ist eine Testversion installiert und GitHub nicht erreichbar, holt sie die Uhrzeit vom Versionsdienst von Home Assistant (version.home-assistant.io).
+
+**Wo melde ich Fehler und Wünsche?**
+Als [Issue auf GitHub](https://github.com/Maddog3010/ha-fenster-heizung/issues), am besten mit Version und dem Ausschnitt aus der Gerätediagnose („Kopieren“).
+
+---
+
 ## Sponsor werden
 
 „Strom & Wärme“ entsteht in meiner Freizeit und bleibt **kostenlos und offen**. Als Dank für ein Sponsoring gibt es Extras – freigeschaltet direkt im Panel mit deinem GitHub-Konto. **Es wird nichts gesperrt, was ohne Sponsoring schon da war.**
@@ -573,48 +617,11 @@ Lieber ohne GitHub-Anmeldung? Dann gibt es weiter einen **Sponsor-Schlüssel**: 
 
 ---
 
-## Wichtige Hinweise
+## Videos auf YouTube
 
-- Die Integration schaltet **Thermostate, Elektroheizer, Heizstäbe, Pumpen, Luftentfeuchter und auf Wunsch die Wallbox**. Prüfe nach der Einrichtung, ob alles wie gewünscht reagiert. Die Nutzung erfolgt auf eigene Verantwortung.
-- Die Warmwasser-Regelung ersetzt keinen Verbrühschutz und keine Sicherheitseinrichtung deiner Anlage.
-- Module in den Stufen In Entwicklung, Beta und Vorabversion, Labs und Testversionen können sich ändern.
-- Energie- und Kostenwerte, Ersparnis, Prognosen und Rechner sind **Schätzungen**.
-- Der Bericht, der Energie-Coach und der Rechner brauchen Verlaufsdaten im Recorder bzw. die Langzeitstatistik.
+<p align="center"><a href="https://youtube.com/@strom_und_waerme"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/youtube_banner.png" width="66%" alt="YouTube-Kanal Strom &amp; Wärme: Erklärvideos, Neuheiten und Shorts – @strom_und_waerme"></a> <a href="https://github.com/sponsors/Maddog3010"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/sponsor_kachel.png" width="32%" alt="Sponsor werden über GitHub Sponsors – github.com/sponsors/Maddog3010"></a></p>
 
-## Häufige Fragen
-
-**Wie erreiche ich Hilfe?**
-Oben im Kopf jeder Seite stehen die kleinen Knöpfe **💬 Chat** und **✉️ E-Mail**. Der Chat läuft direkt im Dashboard, Sponsor Max wird bevorzugt beantwortet. Die E-Mail-Adresse ist [support@stromwaerme.dev](mailto:support@stromwaerme.dev). Für Fehler hilft auch ein Issue auf GitHub.
-
-**Kostet „Strom & Wärme“ etwas?**
-Nein. Ein Sponsoring ist freiwillig. Was frei ist, bleibt frei.
-
-**Mir gefällt die neue Optik nicht. Kann ich zurück?**
-Ja. **Einstellungen → Modul 4 → Darstellung → Karten wie bisher**, die Geräte-Szene lässt sich dort ebenfalls abschalten. In Modul 19 holt **Alte Symbole behalten** die bisherigen Symbole zurück.
-
-**Warum steht bei einem Gerät „lernt die Laufzeit“?**
-Modul 4 braucht drei Läufe, um die Restzeit zu schätzen. Danach erscheint „noch ~ Min.“.
-
-**Brauche ich die Beta-Versionen?**
-Nein. Für den Alltag reicht die stabile Version, und die ist für alle frei.
-
-**Ich habe eine Testversion installiert und sehe nur „Testversionen sind für Sponsoren“.**
-Testversionen sind mit Sponsor Max sofort und als Sponsor 3 Tage nach Erscheinen frei. Über **Zurück zu …** kommst du im Marketplace (bis Home Assistant 2026.10: HACS) zur letzten stabilen Version. Deine Einstellungen bleiben, die Regelung läuft weiter.
-
-**Gehen meine Einstellungen bei einem Update verloren?**
-Nein. Sie bleiben erhalten, dazu gibt es interne Kopien und auf Wunsch eine Sicherung auf deinem Homeserver.
-
-**Meine Messräume sind weg. Was tun?**
-Modul 1 zeigt einen Hinweis mit **Zurückholen**, solange die Messräume noch in der automatischen Sicherung stehen.
-
-**Wo stelle ich Strompreis, Netz-Sensor oder Außentemperatur ein?**
-An einer Stelle für alle Module: **Einstellungen → Haus** (Energiequellen, Preise & Tarif, Wetterquelle).
-
-**Werden Daten an einen Server geschickt?**
-Nur an die Dienste, die du selbst einrichtest (Wetter, Strompreis, Tibber). Für den Update-Hinweis, die Abstimmung und die Sponsor-Sperrliste fragt die Integration GitHub. Ist eine Testversion installiert und GitHub nicht erreichbar, holt sie die Uhrzeit vom Versionsdienst von Home Assistant (version.home-assistant.io).
-
-**Wo melde ich Fehler und Wünsche?**
-Als [Issue auf GitHub](https://github.com/Maddog3010/ha-fenster-heizung/issues), am besten mit Version und dem Ausschnitt aus der Gerätediagnose („Kopieren“).
+---
 
 ## Für Entwickler
 
