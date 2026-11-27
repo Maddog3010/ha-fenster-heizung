@@ -92,6 +92,7 @@ class FensterHeizungPanel extends HTMLElement {
      Die angezeigten Werte bleiben stehen, bis die neuen da sind – nichts springt auf 0. */
   _resume() {
     if (!this._hass || !this.isConnected) return;
+    this._feCheck();   /* nach einem Neustart: wurde inzwischen eine andere Version installiert? */
     const m = this._mdActive && this._mdActive();
     if (m === "ev") { this._wbLoad(true); this._wbStatLoad(true); this._wbFcLoad(true); }
     if (m === "gs") this._gsLoad(true);
@@ -117,7 +118,7 @@ class FensterHeizungPanel extends HTMLElement {
     try {
       const r = await this._hass.callWS({ type: "fenster_heizung/get_state" });
       this._cfg = { layout: { blocks: [], rooms: [], icons: {}, groups: [], ...(r.layout || {}) }, plans: r.plans || {}, presence: r.presence || { mode: "home" } };
-      this._ver = r.version || ""; this._haus = r.haus || null;
+      this._ver = r.version || ""; this._haus = r.haus || null; this._feChk(this._ver);
       this._st = r.status || null;
       this._gen = { updates: true, summer: { mode: "auto", temp: 18, days: 3 }, wxadj: { on: false, mild: 12, down: 1, frost: 0, up: 1 }, ...(r.general || {}) };
       this._gen.summer = { mode: "auto", temp: 18, days: 3, ...(this._gen.summer || {}) };

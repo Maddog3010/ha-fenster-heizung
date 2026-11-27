@@ -808,7 +808,9 @@ const MV = {
    Seite nach dem Zurückwechseln teils neu auf – dann wird sofort der letzte Stand gezeigt und im Hintergrund aktualisiert. */
 const FH_CACHE = (window.__fhCache = window.__fhCache || {});
 /* Automatisch aus CHANGELOG.md erzeugt (frontend-src/build.py). Nicht von Hand ändern. */
-const REL = [{"v":"2026.11.4.11","d":"2026-11-26","t":["Behoben: Einstellungen / Messwerk"],"c":[]},{"v":"2026.11.4.10","d":"2026-11-26","t":["Behoben: Raum-Dialog","Behoben: Fehlerprotokoll"],"c":[]},{"v":"2026.11.4.9","d":"2026-11-26","t":["Behoben: Speicher werden nicht mehr als schwache Batterie gemeldet","Behoben: Auf „Später“ gestellte Akkus verdrängen keinen anderen mehr","„Nie melden“ am Akku-Hinweis"],"c":[]},{"v":"2026.11.4.8","d":"2026-11-25","t":["Behoben: Modul 1: Lehnt ein Thermostat einen Befehl ab","Behoben: „RangeError: Maximum call stack size exceeded“","Behoben: Fehlerprotokoll"],"c":[]},{"v":"2026.11.4.7","d":"2026-11-25","t":["Fenster: Breite und Höhe","Rollladen bei jedem Fenster","Behoben: „RangeError: Maximum call stack size exceeded“ nach längerer Laufzeit (vor allem in der App auf iPhone und iPad)"],"c":[]},{"v":"2026.11.4.6","d":"2026-11-25","t":["Behoben: Modul 8: „Wallbox reagiert nicht – der Befehl „16 A“ kam nach 3 Versuchen nicht an“ mehrmals in der Nacht","Behoben: Modul 8: „Wallbox von Hand umgestellt“ direkt nach „Befehl jetzt übernommen“","Behoben: Modul 0: Der Zaun verschob sich immer wieder"],"c":[]},{"v":"2026.11.4.5","d":"2026-11-24","t":["Behoben: Modul 1 · „Warum?“","Behoben: Kopieren auf iPad und iPhone","Behoben: Modul 11 · „Plan sichern“ und Modul 0 · „Datei herunterladen“"],"c":[]},{"v":"2026.11.4.4","d":"2026-11-24","t":["Wohnklima-Zeugnis (Sponsor Max)","Heizkosten je Raum (Sponsor Max)","Wand-Tablet-Extras (Sponsor Max)"],"c":[]}];
+const REL = [{"v":"2026.11.4.12","d":"2026-11-27","t":["Behoben: Fehlerprotokoll","Hinweis „Update installiert“","Seiten mit älterem Code (bis 2026.11.4.11) zeigen den Hinweis noch nicht"],"c":[]},{"v":"2026.11.4.11","d":"2026-11-26","t":["Behoben: Einstellungen / Messwerk"],"c":[]},{"v":"2026.11.4.10","d":"2026-11-26","t":["Behoben: Raum-Dialog","Behoben: Fehlerprotokoll"],"c":[]},{"v":"2026.11.4.9","d":"2026-11-26","t":["Behoben: Speicher werden nicht mehr als schwache Batterie gemeldet","Behoben: Auf „Später“ gestellte Akkus verdrängen keinen anderen mehr","„Nie melden“ am Akku-Hinweis"],"c":[]},{"v":"2026.11.4.8","d":"2026-11-25","t":["Behoben: Modul 1: Lehnt ein Thermostat einen Befehl ab","Behoben: „RangeError: Maximum call stack size exceeded“","Behoben: Fehlerprotokoll"],"c":[]},{"v":"2026.11.4.7","d":"2026-11-25","t":["Fenster: Breite und Höhe","Rollladen bei jedem Fenster","Behoben: „RangeError: Maximum call stack size exceeded“ nach längerer Laufzeit (vor allem in der App auf iPhone und iPad)"],"c":[]},{"v":"2026.11.4.6","d":"2026-11-25","t":["Behoben: Modul 8: „Wallbox reagiert nicht – der Befehl „16 A“ kam nach 3 Versuchen nicht an“ mehrmals in der Nacht","Behoben: Modul 8: „Wallbox von Hand umgestellt“ direkt nach „Befehl jetzt übernommen“","Behoben: Modul 0: Der Zaun verschob sich immer wieder"],"c":[]},{"v":"2026.11.4.5","d":"2026-11-24","t":["Behoben: Modul 1 · „Warum?“","Behoben: Kopieren auf iPad und iPhone","Behoben: Modul 11 · „Plan sichern“ und Modul 0 · „Datei herunterladen“"],"c":[]}];
+/* Version dieser Oberfläche (aus manifest.json). Weicht sie von der installierten ab, läuft im Browser noch die alte Seite. */
+const FE_VER = "2026.11.4.12";
 const CSS_MAIN = `
 .room.hph,.crow.hph{background-size:cover;background-position:center}
 .room.hph{background-image:linear-gradient(180deg,color-mix(in srgb,var(--card) 50%,transparent) 0,color-mix(in srgb,var(--card) 84%,transparent) 34%,color-mix(in srgb,var(--card) 95%,transparent) 100%),var(--ph)}
@@ -972,6 +974,7 @@ button.rico::after{content:"";position:absolute;right:-5px;bottom:-5px;width:18p
 .ic2{display:block}
 .igrid button.sel{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 20%,transparent);box-shadow:0 0 0 1.5px var(--teal) inset}
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;background:#111827;color:#fff;border:1px solid #334155;padding:10px 16px;border-radius:999px;font-size:.86rem;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.festale{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:59;display:flex;align-items:center;gap:10px;width:max-content;max-width:calc(100vw - 24px);box-sizing:border-box;background:#0f2f2c;color:#e6fffb;border:1px solid #14b8a6;border-radius:18px;padding:8px 8px 8px 14px;box-shadow:0 10px 30px rgba(0,0,0,.45)}.festale>svg{flex:none;color:#5eead4}.festale span{display:flex;flex-direction:column;min-width:0;line-height:1.25}.festale small{color:#99f6e4;font-size:.78rem}.festale .btn2{white-space:nowrap}.festale .ibtn{color:#99f6e4}
 .pres h2{margin-bottom:12px}
 .seg3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
 .seg3 button{display:grid;justify-items:center;gap:5px;padding:11px 4px;border-radius:14px;border:1px solid var(--line);background:transparent;font-weight:600;font-size:.8rem;color:var(--mut);cursor:pointer}
@@ -3832,6 +3835,7 @@ class FensterHeizungPanel extends HTMLElement {
      Die angezeigten Werte bleiben stehen, bis die neuen da sind – nichts springt auf 0. */
   _resume() {
     if (!this._hass || !this.isConnected) return;
+    this._feCheck();   /* nach einem Neustart: wurde inzwischen eine andere Version installiert? */
     const m = this._mdActive && this._mdActive();
     if (m === "ev") { this._wbLoad(true); this._wbStatLoad(true); this._wbFcLoad(true); }
     if (m === "gs") this._gsLoad(true);
@@ -3857,7 +3861,7 @@ class FensterHeizungPanel extends HTMLElement {
     try {
       const r = await this._hass.callWS({ type: "fenster_heizung/get_state" });
       this._cfg = { layout: { blocks: [], rooms: [], icons: {}, groups: [], ...(r.layout || {}) }, plans: r.plans || {}, presence: r.presence || { mode: "home" } };
-      this._ver = r.version || ""; this._haus = r.haus || null;
+      this._ver = r.version || ""; this._haus = r.haus || null; this._feChk(this._ver);
       this._st = r.status || null;
       this._gen = { updates: true, summer: { mode: "auto", temp: 18, days: 3 }, wxadj: { on: false, mild: 12, down: 1, frost: 0, up: 1 }, ...(r.general || {}) };
       this._gen.summer = { mode: "auto", temp: 18, days: 3, ...(this._gen.summer || {}) };
@@ -4843,6 +4847,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (!this._hass || this._dragging) return;
     const sr = this.shadowRoot;
     if (!this._built) { this._build(); }
+    if (this._feNew) this._feShow();   /* Hinweis „Update installiert“ liegt außerhalb von #main und bleibt beim Neuaufbau stehen */
     const bg = getComputedStyle(this).backgroundColor.match(/\d+/g) || [15, 20, 25];
     this.style.colorScheme = (0.299 * bg[0] + 0.587 * bg[1] + 0.114 * bg[2]) < 140 ? "dark" : "light";
     this._applyLook();
@@ -14476,7 +14481,7 @@ class FensterHeizungPanel extends HTMLElement {
     const t = Date.now(); this._errQ = (this._errQ || []).filter((x) => t - x < 60000);
     if (this._errQ.length >= 10 || !this._hass) return;   /* höchstens 10 Meldungen pro Minute */
     this._errQ.push(t);
-    try { this._hass.callWS({ type: "fenster_heizung/err_report", dev: this._errDev(), ...p }).catch(() => { /* älteres Backend */ }); } catch (_) { /* egal */ }
+    try { this._hass.callWS({ type: "fenster_heizung/err_report", dev: this._errDev(), fe: FE_VER, ...p }).catch(() => { /* älteres Backend */ }); } catch (_) { /* egal */ }
   }
   /* Fehlgeschlagener Befehl: nur echte Programmfehler – „nicht bereit“, „nicht gefunden“ und Hinweise zur Eingabe
      („invalid_input“, z. B. „mindestens eine Entität wählen“) sind erwartete Antworten */
@@ -14574,6 +14579,42 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "errxsend") { m.busy = true; this._renderModal(); cfg("send").then((r) => { m.busy = false; re(); const S = r.send || {}; this._toast(S.sent ? `${S.n} ${S.n === 1 ? "Fehler" : "Fehler"} gesendet` : S.why === "nichts" ? "Nichts Neues zu senden" : S.why === "noch nicht" ? "Server nimmt Fehlerberichte noch nicht an" : S.why === "zu oft" ? "Gerade erst gesendet – in einer Stunde wieder möglich" : "Server nicht erreichbar – später erneut"); }).catch(() => { m.busy = false; re(); fail(); }); }
     else if (a === "errxdel") { m.mode = "del"; this._renderModal(); }
     else if (a === "errxdelok") cfg("forget").then((r) => { m.mode = "main"; re(); this._toast(r.forgotten ? "Gelöscht, Senden aus" : "Hier gelöscht, Server nicht erreichbar"); }).catch(fail);
+  }
+  /* ================= Version der Oberfläche (2026.11.4.12) =================
+     Nach einem Update läuft eine offene Seite (Wandtablet, App, Browser-Tab) mit dem alten panel.js weiter, bis sie neu geladen
+     wird – Home Assistant verbindet sich nach dem Neustart einfach wieder. Alte Fehler tauchen dann unter der neuen Version auf.
+     Die Seite vergleicht deshalb ihre eigene Version (FE_VER) mit der installierten und bittet ums Neuladen. */
+  _feCheck() {
+    if (!this._hass) return;
+    this._hass.callWS({ type: "fenster_heizung/ver" }).then((r) => this._feChk(r && r.version)).catch(() => { /* älteres Backend */ });
+  }
+  _feChk(v) {
+    if (!v || typeof FE_VER === "undefined" || !FE_VER || v === FE_VER) return;
+    this._feNew = v;
+    this._feShow();
+    if (this._tmOn && this._tmOn()) this._feAuto(0);
+  }
+  /* Tablet-Modus: von allein neu laden – einmal je Version, nie mitten in einer Eingabe oder in einem offenen Fenster */
+  _feAuto(n) {
+    let done = ""; try { done = sessionStorage.getItem("fh_fe_reload") || ""; } catch (_) { /* gesperrt */ }
+    if (done === this._feNew || n > 30) return;
+    const ae = this.shadowRoot && this.shadowRoot.activeElement, busy = this._modal || this._edit || (ae && /INPUT|TEXTAREA|SELECT/.test(ae.tagName));
+    if (busy || document.visibilityState === "hidden") { setTimeout(() => this._feAuto(n + 1), 60000); return; }
+    try { sessionStorage.setItem("fh_fe_reload", this._feNew); } catch (_) { return; }   /* ohne Merker keine Schleife riskieren */
+    setTimeout(() => location.reload(), 3000);
+  }
+  _feShow() {
+    const sr = this.shadowRoot;
+    if (!this._feNew || !sr || !this._built) return;
+    let el = sr.getElementById("festale");
+    if (this._feHide === this._feNew) { if (el) el.remove(); return; }
+    if (el) return;
+    el = document.createElement("div"); el.id = "festale"; el.className = "festale"; el.setAttribute("role", "status");
+    el.innerHTML = `${ic("refresh", 20)}<span><b>Update installiert</b><small>Neu laden für ${esc(this._feNew)}</small></span><button class="btn2 pri">Neu laden</button><button class="ibtn" aria-label="Ausblenden">${ic("close", 16)}</button>`;
+    const [go, x] = el.querySelectorAll("button");
+    go.addEventListener("click", () => location.reload());
+    x.addEventListener("click", () => { this._feHide = this._feNew; el.remove(); });
+    sr.appendChild(el);
   }
   /* ================= Sponsor-Lounge (Konzept Sponsor-Bereich 2.0, Stufen S1 + S2) und Sponsor Max 1 =================
      Eigene Seite statt Dialog, erreichbar über das Herz/den Stern im Kopf, die Startseite und die Einstellungen.

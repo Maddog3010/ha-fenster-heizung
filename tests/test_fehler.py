@@ -207,3 +207,13 @@ def test_manager_send_forget_and_404():
         s = await m.async_forget()
         assert calls[-1] == ("/v1/errors/forget", {"schema": 1, "id": idv}) and s["forgotten"] and not s["cfg"]["on"] and s["cfg"]["id"] == ""
     asyncio.run(run())
+
+
+def test_stale_frontend_is_not_recorded():
+    """2026.11.4.12: Meldungen einer alten, nicht neu geladenen Oberfläche (ohne oder mit anderer Version) zählen nicht."""
+    F = _stub_ha()
+    me = types.SimpleNamespace(_version="2026.11.5b12")
+    assert F.FehlerSammler.stale(me, "2026.11.5b12") is False
+    assert F.FehlerSammler.stale(me, "") is True
+    assert F.FehlerSammler.stale(me, "2026.11.5b11") is True
+    assert F.FehlerSammler.stale(types.SimpleNamespace(_version=""), "") is False   # Version noch unbekannt: nichts verwerfen

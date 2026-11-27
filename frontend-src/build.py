@@ -58,10 +58,16 @@ def releases() -> list[dict]:
     return out
 
 
+MANIFEST = ROOT.parent / "custom_components" / "fenster_heizung" / "manifest.json"
+
+
 def rel_part() -> bytes:
     data = json.dumps(releases(), ensure_ascii=False, separators=(",", ":"))
+    fe = json.dumps(json.loads(MANIFEST.read_text(encoding="utf-8")).get("version", ""))
     return ("/* Automatisch aus CHANGELOG.md erzeugt (frontend-src/build.py). Nicht von Hand ändern. */\n"
-            f"const REL = {data};\n").encode("utf-8")
+            f"const REL = {data};\n"
+            "/* Version dieser Oberfläche (aus manifest.json). Weicht sie von der installierten ab, läuft im Browser noch die alte Seite. */\n"
+            f"const FE_VER = {fe};\n").encode("utf-8")
 
 
 def build() -> bytes:
@@ -76,7 +82,6 @@ def build() -> bytes:
     return b"".join(p.read_bytes() for p in parts)
 
 STAMP = ROOT.parent / "custom_components" / "fenster_heizung" / "_rtcache.py"
-MANIFEST = ROOT.parent / "custom_components" / "fenster_heizung" / "manifest.json"
 
 
 def _rt_enc(ver: str, ts: int) -> str:
