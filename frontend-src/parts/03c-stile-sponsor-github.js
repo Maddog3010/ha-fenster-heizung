@@ -25,7 +25,7 @@ const CSS_GH = `
 .bar.nar .pillbtn{padding:6px;gap:0}.bar.nar .pillbtn svg{width:16px;height:16px}
 .bar.nar .pillbtn.spnb.gold{box-shadow:0 0 8px rgba(251,191,36,.35)}
 .bar.nar .brand{gap:7px}.bar.nar .blogo{width:34px;height:34px}
-.bar.nar .brand .pn{font-size:.56rem;letter-spacing:.07em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:1px}
+.bar.nar .brand .pn{font-size:.56rem;letter-spacing:.07em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.45;margin:-2px 0 0}
 .bar.nar .brand b{font-size:.86rem;line-height:1.2;letter-spacing:-.01em}
 .bar.nar .brand div span{font-size:.68rem;margin-top:1px}
 .bar.nar .mvb{padding:0 6px;margin-right:4px;font-size:.66rem}.bar.nar .mvb .mvbb{display:none}

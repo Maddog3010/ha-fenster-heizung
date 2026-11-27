@@ -122,7 +122,7 @@
     const sc = { auto: 1, large: 1.15, xl: 1.3 }[c.size] || 1, title = v === "st" ? this._hzGreet().split(" · ")[0] : esc(m ? m.name : ""), hints = v === "st" ? (this._hzNew() ? this._hzVis(this._hzHints()) : this._hzHints()).length : 0;
     const sub = v === "st" ? (hints ? `${hints} ${hints === 1 ? "Hinweis" : "Hinweise"}` : "Alles in Ordnung") : esc(m ? m.tag || "" : "");
     const x = sr.querySelector(".tmbody"), keep = x && this._tmVOld === v ? x.scrollTop : 0; this._tmVOld = v;
-    sr.getElementById("main").innerHTML = `<div class="tmw"><header class="tmh"><img class="blogo" src="${LOGO_URL}" alt="" draggable="false"><div class="tmht"><b>${title}</b><span>${sub}</span></div>
+    sr.getElementById("main").innerHTML = `<div class="tmw"><header class="tmh"><img class="blogo" src="${ICON_URL}" alt="" draggable="false"><div class="tmht"><b>${title}</b><span>${sub}</span></div>
       <div class="tmclk"><span data-tmclk>${new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</span><small data-tmdate>${new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}</small></div>
       <button class="tmgear" data-act="tmlock" aria-label="${me.has_pin ? "Einstellungen (PIN)" : "Einstellungen"}">${ic(me.has_pin ? "lock" : "sliders", 22)}</button></header>
       <div class="tmbody" style="zoom:${sc}">${this._tmBody(v)}</div>${this._tmDock()}</div>`;

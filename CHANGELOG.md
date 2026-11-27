@@ -2,6 +2,22 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.5b17] - 2026-11-27
+
+Neuer Auftritt: neues Icon, neues Banner und ein neu sortiertes README.
+
+### Geändert
+- **Neues Icon „Flammen-Blitz“:** im Marketplace, unter Geräte & Dienste, bei Updates und im Kopf jeder Seite, auch im Tablet-Modus. Mit eigenen Dateien für das dunkle Design und neuem Logo.
+- **Neues Symbol in der Seitenleiste:** Haus mit Blitz.
+- **README und Banner:** Überblick und Installation stehen jetzt oben, Sponsor und YouTube am Ende.
+- Unter **Versionen & Updates** steht unten „Strom & Wärme · von MADDOG3010“.
+
+### Behoben
+- **Handy:** Die Punkte über dem Ä in „STROM & WÄRME“ im Seitenkopf sind nicht mehr abgeschnitten.
+
+### Hinweis
+- Nach dem Update Home Assistant neu starten und die Seite neu laden (in der App die App ganz schließen). Das Icon im Marketplace kann eine Weile brauchen, bis es sich ändert.
+
 ## [2026.11.5b16] - 2026-11-27
 
 Modul 0 Haus & Grundriss: Version 0.13 „Technik“ (Unterbau) und erster Teil von Version 0.14 „Neue Optik Plan“.

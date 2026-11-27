@@ -37,7 +37,7 @@
     const chips = s.active ? `<span class="lgchips">${dev ? `<em class="lgchip pk">Entwickler-Zugang</em>` : `<em class="lgchip ${mx ? "gd" : "pk"}">${mx ? "★ Sponsor Max" : "♥ Sponsor"}${s.since ? " seit " + esc(this._spnDate(s.since)) : ""}</em>${s.source === "github" ? `<em class="lgchip gh">${ic("link", 12)} GitHub @${esc((s.gh || {}).login || "")} · ${this._ghValid((s.gh || {}).eval)}</em>` : `<em class="lgchip">Schlüssel gültig bis ${esc(this._spnDate(s.bis))}</em>`}`}</span>`
       : adm && !this._ghS().ready ? `<button class="lgchip btn" data-act="spnkeydlg">Ich habe schon einen Schlüssel</button>` : "";
     const bar = `<div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
-        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>${s.active ? "Sponsor-Lounge" : "Sponsor-Bereich"}</b><span>${this._verTag()}</span></div></div>
+        <div class="brand"><img class="blogo" src="${ICON_URL}" alt="" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>${s.active ? "Sponsor-Lounge" : "Sponsor-Bereich"}</b><span>${this._verTag()}</span></div></div>
         ${this._narrow ? "" : chips}<button class="pillbtn pri" data-act="lgxback">${ic("check", 16)}<span class="bl">Fertig</span></button></div>`;
     mainEl.innerHTML = `${bar}<div class="wrap"><div class="sxw stow lgw${this._narrow ? " lgn" : ""}">${this._narrow && chips ? `<div class="lgchipsn">${chips}</div>` : ""}${s.active ? this._lgIn(s, sw) : this._lgOut(s)}${foot}</div></div>`;
     if (s.active) { try { localStorage.setItem("fh_lg_seen", String(Date.now())); } catch (_) { /* egal */ } }

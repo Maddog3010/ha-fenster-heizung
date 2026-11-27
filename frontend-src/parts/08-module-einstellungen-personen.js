@@ -174,7 +174,7 @@
     const ae = sr.activeElement, foc = ae && ae.dataset && ae.dataset.f === "stq" ? [ae.selectionStart, ae.selectionEnd] : null;
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
-        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Einstellungen</b><span><em class="tag">Alle Bereiche an einem Ort</em>${this._verTag()}</span></div></div>
+        <div class="brand"><img class="blogo" src="${ICON_URL}" alt="" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Einstellungen</b><span><em class="tag">Alle Bereiche an einem Ort</em>${this._verTag()}</span></div></div>
         <button class="pillbtn pri" data-act="mdstx">${ic("check", 16)}<span class="bl">Fertig</span></button></div>
       <div class="wrap"><div class="sxw stw">${body}</div></div>`;
     if (foc) { const i = sr.querySelector('[data-f="stq"]'); if (i) { i.focus(); try { i.setSelectionRange(foc[0], foc[1]); } catch (_) { /* Suchfeld */ } } }
@@ -372,7 +372,7 @@
     }).join("");
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
-        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Personen &amp; Standort</b><span><em class="tag">Wer ist zu Hause und wo ist das Zuhause</em>${this._verTag()}</span></div></div>
+        <div class="brand"><img class="blogo" src="${ICON_URL}" alt="" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Personen &amp; Standort</b><span><em class="tag">Wer ist zu Hause und wo ist das Zuhause</em>${this._verTag()}</span></div></div>
         <button class="pillbtn pri" data-act="ortback">${ic("check", 16)}<span class="bl">Fertig</span></button></div>
       <div class="wrap"><div class="sxw">
         <div class="card ocard"><h2>${ic("pin", 18)}Standort-Quelle</h2>

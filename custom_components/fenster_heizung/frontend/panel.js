@@ -249,7 +249,7 @@ const MODE = {
 const SPN_MAIL = "support@stromwaerme.dev";
 const SUPPORT_MAIL = "support@stromwaerme.dev";
 const BL_SPONSOR_DAYS = 3;  // Testversionen: Sponsor Max sofort, Sponsoren so viele Tage nach Erscheinen
-const LOGO_URL = "/fenster_heizung_static/logo.png", PRODUCT = "Strom & Wärme";
+const LOGO_URL = "/fenster_heizung_static/logo.png", ICON_URL = "/fenster_heizung_static/icon.png", PRODUCT = "Strom & Wärme";
 const FUELS = {
   erdgas: { short: "Gas", label: "m³ Gas", noun: "Gasersparnis" },
   heizoel: { short: "Heizöl", label: "l Heizöl", noun: "Heizölersparnis" },
@@ -815,7 +815,7 @@ const FH_CACHE = (window.__fhCache = window.__fhCache || {});
 /* Automatisch aus CHANGELOG.md erzeugt (frontend-src/build.py). Nicht von Hand ändern. */
 const REL = [{"v":"2026.11.4.5","d":"2026-11-24","t":["Behoben: Modul 1 · „Warum?“","Behoben: Kopieren auf iPad und iPhone","Behoben: Modul 11 · „Plan sichern“ und Modul 0 · „Datei herunterladen“"],"c":[]},{"v":"2026.11.4.4","d":"2026-11-24","t":["Wohnklima-Zeugnis (Sponsor Max)","Heizkosten je Raum (Sponsor Max)","Wand-Tablet-Extras (Sponsor Max)"],"c":[]},{"v":"2026.11.4.3","d":"2026-11-24","t":["Fehlerprotokoll","Modul 0 · Heizkörper wie in echt","Einstellungen › Module"],"c":[]},{"v":"2026.11.4.2","d":"2026-11-23","t":["Behoben: Modul 1 · Elektroheizer bearbeiten, pausieren, in anderen Raum stellen, entfernen, wiederherstellen und endgültig löschen","Behoben: Modul 0 · Sonne im Raum","Behoben: Modul 0 · Keine Sonne durch die Fenster"],"c":[]},{"v":"2026.11.4.1","d":"2026-11-23","t":["Behoben: Modul 0 · Raumnamen ragten in den Nachbarraum","Behoben: Modul 8 · Ein Tag mit viel zu vielen Kilometern","Behoben: Update-Hinweis"],"c":[]},{"v":"2026.11.4","d":"2026-11-23","t":["Modul 0 · Haus & Grundriss (neu, Beta v0.10)","Modul 18 · Licht & Lampen (Addon v0.9)","Weihnachts-Theme & Adventskalender"],"c":["Modul 14 · v0.9","Modul 15 · v0.2"]},{"v":"2026.11.3.1","d":"2026-11-17","t":["Kopf, Chat und E-Mail","Kopf, Store und Labs","Behoben: E-Mail-Knopf"],"c":[]},{"v":"2026.11.3","d":"2026-11-17","t":["Startseite, Neue Optik","Modul 8 Elektroauto & Wallbox (v0.9, Vorabversion)","Modul 9 (v0.9) Wetter & Warnungen"],"c":["Modul 1 · v1.8","Modul 3 · v1.6"]}];
 /* Version dieser Oberfläche (aus manifest.json). Weicht sie von der installierten ab, läuft im Browser noch die alte Seite. */
-const FE_VER = "2026.11.5b16";
+const FE_VER = "2026.11.5b17";
 const CSS_MAIN = `
 .room.hph,.crow.hph{background-size:cover;background-position:center}
 .room.hph{background-image:linear-gradient(180deg,color-mix(in srgb,var(--card) 50%,transparent) 0,color-mix(in srgb,var(--card) 84%,transparent) 34%,color-mix(in srgb,var(--card) 95%,transparent) 100%),var(--ph)}
@@ -859,7 +859,7 @@ button{font:inherit;color:inherit}
 .brand{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
 .logo{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;color:#fff;flex:none;
   background:linear-gradient(135deg,#14b8a6,#0e6a82);box-shadow:0 4px 12px rgba(20,184,166,.35)}
-.blogo{width:40px;height:40px;border-radius:50%;object-fit:cover;flex:none;background:#000;box-shadow:0 3px 12px rgba(0,0,0,.4),0 0 0 2px rgba(255,255,255,.14)}.bar:not(.nar) .blogo{width:52px;height:52px}.brand .pn{display:block;font-style:normal;font-size:.66rem;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--teal,#2dd4bf);line-height:1.1;margin-bottom:2px}.brand b .mn{font-style:normal}.brand>div{min-width:0}.brand b{display:block;font-size:1.12rem;font-weight:700;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.blogo{width:40px;height:40px;border-radius:22%;object-fit:cover;flex:none;box-shadow:0 3px 12px rgba(0,0,0,.35),0 0 0 1px rgba(94,234,212,.35)}.bar:not(.nar) .blogo{width:52px;height:52px}.brand .pn{display:block;font-style:normal;font-size:.66rem;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--teal,#2dd4bf);line-height:1.1;margin-bottom:2px}.brand b .mn{font-style:normal}.brand>div{min-width:0}.brand b{display:block;font-size:1.12rem;font-weight:700;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .brand div span em{font-style:normal}.brand .ver:not(:first-child)::before{content:" · "}
 .brand div span{display:block;font-size:.72rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bar:not(.nar){position:static;background:none;border:0;max-width:1180px;margin:0 auto;padding:18px 14px 0;gap:14px}
@@ -2235,6 +2235,7 @@ button.hzr{cursor:pointer}
 .tmw{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;background:var(--primary-background-color,#0f1419);color:var(--primary-text-color,#e6edf3)}
 .tmh{display:flex;align-items:center;gap:16px;padding:calc(12px + env(safe-area-inset-top,0px)) 20px 6px}
 .tmh .blogo{width:48px;height:48px;flex:none}
+.rlby{display:flex;align-items:center;justify-content:center;gap:8px;margin:14px 0 2px;font-size:.78rem;color:var(--mut)}.rlby img{width:28px;height:28px;border-radius:50%;background:#000}
 .tmht{flex:1;min-width:0}.tmht b{display:block;font-size:1.3rem;line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tmht span{display:block;font-size:.85rem;color:var(--mut)}
 .tmclk{text-align:right;line-height:1}.tmclk span{display:block;font-size:2.6rem;font-weight:300;letter-spacing:-1px}.tmclk small{display:block;font-size:.85rem;color:var(--mut);margin-top:3px}
 .tmgear{width:50px;height:50px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--mut);display:grid;place-items:center;cursor:pointer;flex:none}
@@ -3316,7 +3317,7 @@ const CSS_GH = `
 .bar.nar .pillbtn{padding:6px;gap:0}.bar.nar .pillbtn svg{width:16px;height:16px}
 .bar.nar .pillbtn.spnb.gold{box-shadow:0 0 8px rgba(251,191,36,.35)}
 .bar.nar .brand{gap:7px}.bar.nar .blogo{width:34px;height:34px}
-.bar.nar .brand .pn{font-size:.56rem;letter-spacing:.07em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:1px}
+.bar.nar .brand .pn{font-size:.56rem;letter-spacing:.07em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.45;margin:-2px 0 0}
 .bar.nar .brand b{font-size:.86rem;line-height:1.2;letter-spacing:-.01em}
 .bar.nar .brand div span{font-size:.68rem;margin-top:1px}
 .bar.nar .mvb{padding:0 6px;margin-right:4px;font-size:.66rem}.bar.nar .mvb .mvbb{display:none}
@@ -5568,7 +5569,7 @@ class FensterHeizungPanel extends HTMLElement {
       : `<div class="card empty">${this._rkOn() ? `<div class="rk2empty">${this._rkArt("wohnen", { k: "ok", col: "#2dd4bf", open: [], tilt: [], anyOpen: 0, act: null, heating: false, t0: null, night: false, lfs: [] })}</div>` : ""}${this._msList().length ? "Noch keine Räume mit Heizung eingerichtet." : "Noch keine Räume eingerichtet."}<br>${adm ? `<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px"><button class="btn2 pri" data-act="wz" style="flex:none;padding:12px 22px">${ic("tools", 16)} Einrichtungsassistent starten</button><button class="btn2" data-act="msxadd" style="flex:none;padding:12px 22px">${ic("plus", 16)} Raum hinzufügen</button></div>` : "Ein Administrator kann die Einrichtung starten."}</div>${this._lfLocCard()}${this._msSection()}`;
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
-        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b><i class="mn">Modul 1 – </i>Fenster &amp; Heizung</b><span>${this._mvChip("fh")}<em class="tag">Smarte Fenster- und Heizungssteuerung</em>${this._verTag()}</span></div></div>
+        <div class="brand"><img class="blogo" src="${ICON_URL}" alt="" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b><i class="mn">Modul 1 – </i>Fenster &amp; Heizung</b><span>${this._mvChip("fh")}<em class="tag">Smarte Fenster- und Heizungssteuerung</em>${this._verTag()}</span></div></div>
         ${this._tmBtn()}${this._spnBtn()}${this._labBtn()}${this._stoBtn()}${adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""}${adm ? (edit ? `<button class="pillbtn pri" data-act="done">${ic("check", 16)}<span class="bl">Fertig</span></button>` : `<button class="pillbtn" data-act="edit">${ic("pencil", 16)}<span class="bl">Anpassen</span></button>`) : ""}</div>
       ${this._mdBar()}<div class="wrap">${edit ? "" : this._mvPop("fh")}${edit ? `<div class="banner">${ic("grip", 18)}<div>Ziehe Karten und Bereiche an den Griffen, um sie zu verschieben. Tippe auf ein Raumbild oder Raumsymbol, um Raumtyp, Symbol, Farbe und Foto zu ändern. Unter „Darstellung“ stellst du Akzentfarbe und Wetter ein.</div></div>` : ""}
         ${!edit ? this._updBanner() : ""}${!edit ? this._tmHint() : ""}${!edit ? this._labCards("fh") : ""}${blocks}${rooms.length ? `<div class="note">${mixed ? "Bei gemischten Brennstoffen wird die Ersparnis als Heizenergie in kWh gezeigt. Sie ist eine grobe Schätzung." : "Die " + F.noun + " ist eine grobe Schätzung. Die echte Ersparnis liegt etwas darunter."}</div>` : ""}</div>`;
@@ -9833,7 +9834,7 @@ class FensterHeizungPanel extends HTMLElement {
     const ae = sr.activeElement, foc = ae && ae.dataset && ae.dataset.f === "stq" ? [ae.selectionStart, ae.selectionEnd] : null;
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
-        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Einstellungen</b><span><em class="tag">Alle Bereiche an einem Ort</em>${this._verTag()}</span></div></div>
+        <div class="brand"><img class="blogo" src="${ICON_URL}" alt="" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Einstellungen</b><span><em class="tag">Alle Bereiche an einem Ort</em>${this._verTag()}</span></div></div>
         <button class="pillbtn pri" data-act="mdstx">${ic("check", 16)}<span class="bl">Fertig</span></button></div>
       <div class="wrap"><div class="sxw stw">${body}</div></div>`;
     if (foc) { const i = sr.querySelector('[data-f="stq"]'); if (i) { i.focus(); try { i.setSelectionRange(foc[0], foc[1]); } catch (_) { /* Suchfeld */ } } }
@@ -10031,7 +10032,7 @@ class FensterHeizungPanel extends HTMLElement {
     }).join("");
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
-        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Personen &amp; Standort</b><span><em class="tag">Wer ist zu Hause und wo ist das Zuhause</em>${this._verTag()}</span></div></div>
+        <div class="brand"><img class="blogo" src="${ICON_URL}" alt="" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Personen &amp; Standort</b><span><em class="tag">Wer ist zu Hause und wo ist das Zuhause</em>${this._verTag()}</span></div></div>
         <button class="pillbtn pri" data-act="ortback">${ic("check", 16)}<span class="bl">Fertig</span></button></div>
       <div class="wrap"><div class="sxw">
         <div class="card ocard"><h2>${ic("pin", 18)}Standort-Quelle</h2>
@@ -10274,7 +10275,7 @@ class FensterHeizungPanel extends HTMLElement {
     const keep = mainEl.querySelector(".wrap") ? mainEl.scrollTop : 0;
     mainEl.innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
-        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Store</b><span><em class="tag">Integrationen und Dienste</em>${this._verTag()}</span></div></div>
+        <div class="brand"><img class="blogo" src="${ICON_URL}" alt="" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Store</b><span><em class="tag">Integrationen und Dienste</em>${this._verTag()}</span></div></div>
         <button class="pillbtn" data-act="stoset" aria-label="Store anzeigen">${ic("sliders", 16)}<span class="bl">Anzeige</span></button>
         <button class="pillbtn pri" data-act="igback">${ic("check", 16)}<span class="bl">Fertig</span></button></div>
       <div class="wrap"><div class="sxw stow">
@@ -13429,7 +13430,7 @@ class FensterHeizungPanel extends HTMLElement {
     const vis = cat.filter((x) => st.c === "all" || (st.c === "on" ? this._labOn(x.id) : st.c === "s" || st.c === "g" ? x.k === st.c : x.mid === st.c));
     mainEl.innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
-        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Labs</b><span><em class="tag">Experimentelle Funktionen</em>${this._verTag()}</span></div></div>
+        <div class="brand"><img class="blogo" src="${ICON_URL}" alt="" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Labs</b><span><em class="tag">Experimentelle Funktionen</em>${this._verTag()}</span></div></div>
         <button class="pillbtn" data-act="labset" aria-label="Labs anzeigen">${ic("sliders", 16)}<span class="bl">Anzeige</span></button>
         <button class="pillbtn" data-act="laboff" ${n ? "" : "disabled"}>${ic("close", 16)}<span class="bl">Alle Labs aus</span></button>
         <button class="pillbtn pri" data-act="labback">${ic("check", 16)}<span class="bl">Fertig</span></button></div>
@@ -14509,7 +14510,7 @@ class FensterHeizungPanel extends HTMLElement {
     const sc = { auto: 1, large: 1.15, xl: 1.3 }[c.size] || 1, title = v === "st" ? this._hzGreet().split(" · ")[0] : esc(m ? m.name : ""), hints = v === "st" ? (this._hzNew() ? this._hzVis(this._hzHints()) : this._hzHints()).length : 0;
     const sub = v === "st" ? (hints ? `${hints} ${hints === 1 ? "Hinweis" : "Hinweise"}` : "Alles in Ordnung") : esc(m ? m.tag || "" : "");
     const x = sr.querySelector(".tmbody"), keep = x && this._tmVOld === v ? x.scrollTop : 0; this._tmVOld = v;
-    sr.getElementById("main").innerHTML = `<div class="tmw"><header class="tmh"><img class="blogo" src="${LOGO_URL}" alt="" draggable="false"><div class="tmht"><b>${title}</b><span>${sub}</span></div>
+    sr.getElementById("main").innerHTML = `<div class="tmw"><header class="tmh"><img class="blogo" src="${ICON_URL}" alt="" draggable="false"><div class="tmht"><b>${title}</b><span>${sub}</span></div>
       <div class="tmclk"><span data-tmclk>${new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</span><small data-tmdate>${new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}</small></div>
       <button class="tmgear" data-act="tmlock" aria-label="${me.has_pin ? "Einstellungen (PIN)" : "Einstellungen"}">${ic(me.has_pin ? "lock" : "sliders", 22)}</button></header>
       <div class="tmbody" style="zoom:${sc}">${this._tmBody(v)}</div>${this._tmDock()}</div>`;
@@ -14663,7 +14664,7 @@ class FensterHeizungPanel extends HTMLElement {
     const bad = this._wwProblems && this._mdState().on.ww && this._wwProblems().some((p) => p[0] === "bad" || p[0] === "warn");
     const btn = (x) => `<button class="tmdk ${v === x.id ? "sel" : ""}" data-act="tmgo" data-k="${x.id}" aria-pressed="${v === x.id}">${ic(x.icon, 28)}<span>${esc(this._tm2Name(x))}</span>${x.id === "ww" && bad ? `<i class="tmdot"></i>` : ""}</button>`;
     const list = [items[0], ...r].map(btn).join("") + `<button class="tmdk" data-act="tmmore">${ic("grid", 28)}<span>Mehr</span></button>`;
-    return land ? `<nav class="tm2rail" aria-label="Module"><img class="blogo" src="${LOGO_URL}" alt="" draggable="false"><div class="tm2rl">${list}</div>${this._tm2Lock()}</nav>` : `<nav class="tmdock tm2dock" aria-label="Module">${list}</nav>`;
+    return land ? `<nav class="tm2rail" aria-label="Module"><img class="blogo" src="${ICON_URL}" alt="" draggable="false"><div class="tm2rl">${list}</div>${this._tm2Lock()}</nav>` : `<nav class="tmdock tm2dock" aria-label="Module">${list}</nav>`;
   }
   _tm2Lock() { const me = this._tmMe(); return `<button class="tmgear" data-act="tmlock" aria-label="${me.has_pin ? "Einstellungen (PIN)" : "Einstellungen"}">${ic(me.has_pin ? "lock" : "sliders", 22)}</button>`; }
   /* Zustandssatz für die Kopfzeile einer Modulseite */
@@ -14689,7 +14690,7 @@ class FensterHeizungPanel extends HTMLElement {
     const x = sr.querySelector(".tmbody"), keep = x && this._tmVOld === v ? x.scrollTop : 0; this._tmVOld = v;
     const d = new Date(), nav = this._tm2Nav(land);
     sr.getElementById("main").innerHTML = `<div class="tmw tm2 ${land ? "land" : "port"}${land && window.innerHeight < 700 ? " short" : ""} sz-${esc(c.size)}">${land ? nav : ""}<div class="tm2main">
-      <header class="tmh tm2h">${land ? "" : `<img class="blogo" src="${LOGO_URL}" alt="" draggable="false">`}<div class="tmht"><b>${title}</b><span>${sub}</span></div>${land ? tabs : ""}
+      <header class="tmh tm2h">${land ? "" : `<img class="blogo" src="${ICON_URL}" alt="" draggable="false">`}<div class="tmht"><b>${title}</b><span>${sub}</span></div>${land ? tabs : ""}
       <div class="tmclk"><span data-tmclk>${d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</span><small data-tmdate>${d.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}</small></div>${land ? "" : this._tm2Lock()}</header>
       ${land || !tabs ? "" : `<div class="tm2tr">${tabs}</div>`}
       <div class="tmbody${fit ? " tm2fit" : ""}${mod ? ` tm2mod tm2-${v}` : ""}"${fit ? "" : ` style="zoom:${zoom}"`}>${mod ? this._tm2ModBody(v) : `${v === "ev" && this._evWallFull ? `<button class="btn2 evwback" data-act="wbwall" data-k="">${ic("back", 18)}Zurück zur Tablet-Seite</button>` : ""}${this._tmBody(v)}`}</div></div>${land ? "" : nav}</div>`;
@@ -17828,7 +17829,7 @@ class FensterHeizungPanel extends HTMLElement {
     const chips = s.active ? `<span class="lgchips">${dev ? `<em class="lgchip pk">Entwickler-Zugang</em>` : `<em class="lgchip ${mx ? "gd" : "pk"}">${mx ? "★ Sponsor Max" : "♥ Sponsor"}${s.since ? " seit " + esc(this._spnDate(s.since)) : ""}</em>${s.source === "github" ? `<em class="lgchip gh">${ic("link", 12)} GitHub @${esc((s.gh || {}).login || "")} · ${this._ghValid((s.gh || {}).eval)}</em>` : `<em class="lgchip">Schlüssel gültig bis ${esc(this._spnDate(s.bis))}</em>`}`}</span>`
       : adm && !this._ghS().ready ? `<button class="lgchip btn" data-act="spnkeydlg">Ich habe schon einen Schlüssel</button>` : "";
     const bar = `<div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
-        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>${s.active ? "Sponsor-Lounge" : "Sponsor-Bereich"}</b><span>${this._verTag()}</span></div></div>
+        <div class="brand"><img class="blogo" src="${ICON_URL}" alt="" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>${s.active ? "Sponsor-Lounge" : "Sponsor-Bereich"}</b><span>${this._verTag()}</span></div></div>
         ${this._narrow ? "" : chips}<button class="pillbtn pri" data-act="lgxback">${ic("check", 16)}<span class="bl">Fertig</span></button></div>`;
     mainEl.innerHTML = `${bar}<div class="wrap"><div class="sxw stow lgw${this._narrow ? " lgn" : ""}">${this._narrow && chips ? `<div class="lgchipsn">${chips}</div>` : ""}${s.active ? this._lgIn(s, sw) : this._lgOut(s)}${foot}</div></div>`;
     if (s.active) { try { localStorage.setItem("fh_lg_seen", String(Date.now())); } catch (_) { /* egal */ } }
@@ -23578,6 +23579,7 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
         <p><b>Jahr · Monat · Release.</b> 2026.11.1 ist das erste Update im November 2026, 2026.11.2 das zweite. Mit jedem neuen Monat beginnt der Zähler wieder bei 1, zum Beispiel 2026.12.1 oder 2027.1.1.</p>
         <p>Testversionen tragen die Nummer des Updates, das sie vorbereiten, mit b1, b2 … am Ende: 2026.11.2b1 und 2026.11.2b2 werden zu 2026.11.2. Sie erscheinen nur, wenn ${this._isMkt() ? "du sie im Marketplace als Version wählst" : "in HACS Beta-Versionen eingeschaltet sind"}, nicht in dieser Liste.</p>
         <p>Was sich in einem Modul geändert hat, zeigen die Modulversionen.</p></div>
+      <div class="rlby"><img src="${LOGO_URL}" alt=""><span>${esc(PRODUCT)} · von <b>MADDOG3010</b></span></div>
       <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
   /* Updates der Integration: Stand, Suche und Hinweis – gehört zu den Versionen (vorher unter „Sichern & Wiederherstellen“) */
@@ -26147,7 +26149,7 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
     if (a !== "ww" && a !== "en" && a !== "gs" && a !== "mu" && a !== "li" && a !== "st" && !m.beta && !m.addon && adm) pills = `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>`;
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
-        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>${m.n || m.num0 ? `<i class="mn">Modul ${m.n} – </i>` : ""}${esc(m.name)}</b><span>${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].h}</em>` : ""}${MV[a] ? this._mvChip(a) : ""}<em class="tag">${esc(m.tag)}</em>${this._labHdr(a)}${MV[a] ? this._verTag() : this._mvVer(a)}</span></div></div>${this._tmBtn()}${this._spnBtn()}${this._stoBtn()}${pills}</div>
+        <div class="brand"><img class="blogo" src="${ICON_URL}" alt="" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>${m.n || m.num0 ? `<i class="mn">Modul ${m.n} – </i>` : ""}${esc(m.name)}</b><span>${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].h}</em>` : ""}${MV[a] ? this._mvChip(a) : ""}<em class="tag">${esc(m.tag)}</em>${this._labHdr(a)}${MV[a] ? this._verTag() : this._mvVer(a)}</span></div></div>${this._tmBtn()}${this._spnBtn()}${this._stoBtn()}${pills}</div>
       ${this._mdBar()}<div class="wrap">${this._mvPop(a)}${this._tmHint()}${this._labCards(a)}${body}</div>`;
     /* Das Banner steht in jedem Modul ganz oben, auch wenn davor Labs-Karten oder Hinweise erzeugt werden. */
     const wr = sr.getElementById("main").querySelector(".wrap"), hb = wr && wr.querySelector(":scope > .hero.mh");

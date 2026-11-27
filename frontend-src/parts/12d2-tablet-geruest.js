@@ -24,7 +24,7 @@
     const bad = this._wwProblems && this._mdState().on.ww && this._wwProblems().some((p) => p[0] === "bad" || p[0] === "warn");
     const btn = (x) => `<button class="tmdk ${v === x.id ? "sel" : ""}" data-act="tmgo" data-k="${x.id}" aria-pressed="${v === x.id}">${ic(x.icon, 28)}<span>${esc(this._tm2Name(x))}</span>${x.id === "ww" && bad ? `<i class="tmdot"></i>` : ""}</button>`;
     const list = [items[0], ...r].map(btn).join("") + `<button class="tmdk" data-act="tmmore">${ic("grid", 28)}<span>Mehr</span></button>`;
-    return land ? `<nav class="tm2rail" aria-label="Module"><img class="blogo" src="${LOGO_URL}" alt="" draggable="false"><div class="tm2rl">${list}</div>${this._tm2Lock()}</nav>` : `<nav class="tmdock tm2dock" aria-label="Module">${list}</nav>`;
+    return land ? `<nav class="tm2rail" aria-label="Module"><img class="blogo" src="${ICON_URL}" alt="" draggable="false"><div class="tm2rl">${list}</div>${this._tm2Lock()}</nav>` : `<nav class="tmdock tm2dock" aria-label="Module">${list}</nav>`;
   }
   _tm2Lock() { const me = this._tmMe(); return `<button class="tmgear" data-act="tmlock" aria-label="${me.has_pin ? "Einstellungen (PIN)" : "Einstellungen"}">${ic(me.has_pin ? "lock" : "sliders", 22)}</button>`; }
   /* Zustandssatz für die Kopfzeile einer Modulseite */
@@ -50,7 +50,7 @@
     const x = sr.querySelector(".tmbody"), keep = x && this._tmVOld === v ? x.scrollTop : 0; this._tmVOld = v;
     const d = new Date(), nav = this._tm2Nav(land);
     sr.getElementById("main").innerHTML = `<div class="tmw tm2 ${land ? "land" : "port"}${land && window.innerHeight < 700 ? " short" : ""} sz-${esc(c.size)}">${land ? nav : ""}<div class="tm2main">
-      <header class="tmh tm2h">${land ? "" : `<img class="blogo" src="${LOGO_URL}" alt="" draggable="false">`}<div class="tmht"><b>${title}</b><span>${sub}</span></div>${land ? tabs : ""}
+      <header class="tmh tm2h">${land ? "" : `<img class="blogo" src="${ICON_URL}" alt="" draggable="false">`}<div class="tmht"><b>${title}</b><span>${sub}</span></div>${land ? tabs : ""}
       <div class="tmclk"><span data-tmclk>${d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</span><small data-tmdate>${d.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}</small></div>${land ? "" : this._tm2Lock()}</header>
       ${land || !tabs ? "" : `<div class="tm2tr">${tabs}</div>`}
       <div class="tmbody${fit ? " tm2fit" : ""}${mod ? ` tm2mod tm2-${v}` : ""}"${fit ? "" : ` style="zoom:${zoom}"`}>${mod ? this._tm2ModBody(v) : `${v === "ev" && this._evWallFull ? `<button class="btn2 evwback" data-act="wbwall" data-k="">${ic("back", 18)}Zurück zur Tablet-Seite</button>` : ""}${this._tmBody(v)}`}</div></div>${land ? "" : nav}</div>`;

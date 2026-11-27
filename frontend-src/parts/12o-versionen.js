@@ -46,6 +46,7 @@
         <p><b>Jahr · Monat · Release.</b> 2026.11.1 ist das erste Update im November 2026, 2026.11.2 das zweite. Mit jedem neuen Monat beginnt der Zähler wieder bei 1, zum Beispiel 2026.12.1 oder 2027.1.1.</p>
         <p>Testversionen tragen die Nummer des Updates, das sie vorbereiten, mit b1, b2 … am Ende: 2026.11.2b1 und 2026.11.2b2 werden zu 2026.11.2. Sie erscheinen nur, wenn ${this._isMkt() ? "du sie im Marketplace als Version wählst" : "in HACS Beta-Versionen eingeschaltet sind"}, nicht in dieser Liste.</p>
         <p>Was sich in einem Modul geändert hat, zeigen die Modulversionen.</p></div>
+      <div class="rlby"><img src="${LOGO_URL}" alt=""><span>${esc(PRODUCT)} · von <b>MADDOG3010</b></span></div>
       <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
   /* Updates der Integration: Stand, Suche und Hinweis – gehört zu den Versionen (vorher unter „Sichern & Wiederherstellen“) */

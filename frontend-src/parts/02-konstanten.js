@@ -16,7 +16,7 @@ const MODE = {
 const SPN_MAIL = "support@stromwaerme.dev";
 const SUPPORT_MAIL = "support@stromwaerme.dev";
 const BL_SPONSOR_DAYS = 3;  // Testversionen: Sponsor Max sofort, Sponsoren so viele Tage nach Erscheinen
-const LOGO_URL = "/fenster_heizung_static/logo.png", PRODUCT = "Strom & Wärme";
+const LOGO_URL = "/fenster_heizung_static/logo.png", ICON_URL = "/fenster_heizung_static/icon.png", PRODUCT = "Strom & Wärme";
 const FUELS = {
   erdgas: { short: "Gas", label: "m³ Gas", noun: "Gasersparnis" },
   heizoel: { short: "Heizöl", label: "l Heizöl", noun: "Heizölersparnis" },
