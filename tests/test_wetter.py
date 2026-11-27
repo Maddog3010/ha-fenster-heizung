@@ -406,6 +406,10 @@ def test_zeitleiste():
     t = W.timeline(c, fc, [{"art": "storm", "titel": "Sturmböen", "stufe": 2, "von": "a", "bis": "b", "vorab": False, "quelle": "DWD", "text": ""}])
     assert t["own"]["storm"] == [3, 1, 0, 0] and t["own"]["thunder"] == [0, 2, 0, 0] and t["own"]["hail"] == [0, 0, 3, 0] and t["own"]["rain"] == [0, 1, 0, 0]
     assert "heat" not in t["own"] and t["off"][0]["titel"] == "Sturmböen" and len(t["t"]) == 4
+    # 2026.11.5b13: Kurven im Tablet-Modus
+    assert t["temp"] == [8.0] * 4 and t["wind"] == [95.0, 70.0, 20.0, 10.0] and t["cond"][1] == "lightning-rainy"
+    t2 = W.timeline(c, [{"t": "x", "temp": None, "wind": None, "cond": None}], [])
+    assert t2["temp"] == [None] and t2["wind"] == [None] and t2["cond"] == [""]
 
 
 def _storm_mgr(acts, **cfgx):

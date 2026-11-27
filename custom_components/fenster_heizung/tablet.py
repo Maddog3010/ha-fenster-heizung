@@ -16,6 +16,7 @@ from typing import Any
 
 from homeassistant.core import CALLBACK_TYPE, Event, HomeAssistant, callback
 from homeassistant.helpers.event import async_call_later, async_track_state_change_event
+from homeassistant.util import dt as dt_util
 
 from .backup import SafeStore
 from .const import DOMAIN
@@ -32,7 +33,10 @@ IDLE_HOME = (0, 2, 5, 15)
 SLEEP = (0, 5, 15, 30)
 OFF_AFTER = (0, 10, 30)
 LOOKS = ("new", "classic")
-RESTS = ("auto", "en", "ef")
+RESTS = ("auto", "clock", "en", "ef")
+HM_RE = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
+HOME_RE = re.compile(r"^[a-z0-9_]{1,16}$")
+NIGHT_DEF = {"on": False, "from": "22:00", "to": "06:00", "bri": 30}
 MAX_TABLETS = 20
 ITER = 60000
 FAILS_MAX = 5
@@ -45,6 +49,8 @@ def default_cfg() -> dict[str, Any]:
         "size": "auto", "idle_home": 2, "sleep": 15, "wake_warn": True,
         "motion": "", "screen": "", "notify": "", "off_after": 0, "dock_hide": [],
         "look": "new", "rail": [], "rest": "auto",
+        # 2026.11.5b13: Startseite, Wetter-Szene bei Warnung, Nachtruhe (Ruhebild dunkler, Display-Licht gedimmt)
+        "home": "st", "rest_wx": True, "night": dict(NIGHT_DEF),
     }
 
 
@@ -79,7 +85,31 @@ def clean_cfg(raw: Any) -> dict[str, Any]:
         "look": _pick(raw.get("look"), LOOKS, d["look"]),
         "rail": list(dict.fromkeys(rail))[:4],
         "rest": _pick(raw.get("rest"), RESTS, d["rest"]),
+        "home": raw["home"] if isinstance(raw.get("home"), str) and HOME_RE.match(raw["home"]) else "st",
+        "rest_wx": raw.get("rest_wx") is not False,
+        "night": clean_night(raw.get("night")),
     }
+
+
+def clean_night(raw: Any) -> dict[str, Any]:
+    raw = raw if isinstance(raw, dict) else {}
+    hm = lambda k: raw[k] if isinstance(raw.get(k), str) and HM_RE.match(raw[k]) else NIGHT_DEF[k]  # noqa: E731
+    try:
+        bri = int(raw.get("bri", NIGHT_DEF["bri"]))
+    except (TypeError, ValueError):
+        bri = NIGHT_DEF["bri"]
+    return {"on": raw.get("on") is True, "from": hm("from"), "to": hm("to"), "bri": max(5, min(100, round(bri / 5) * 5))}
+
+
+def night_active(cfg: dict[str, Any], hm: str) -> bool:
+    """Liegt die Uhrzeit „HH:MM“ in der Nachtruhe? Über Mitternacht (22:00–06:00) zählt beides."""
+    n = cfg.get("night") or {}
+    if not n.get("on"):
+        return False
+    a, b = n.get("from", "22:00"), n.get("to", "06:00")
+    if a == b:
+        return False
+    return a <= hm < b if a < b else hm >= a or hm < b
 
 
 def hash_pin(pin: str, salt: str | None = None) -> str:
@@ -291,6 +321,26 @@ class TabletManager:
                 n += 1
         return n
 
+    async def async_test(self, tid: str) -> dict[str, Any]:
+        """Display-Schalter testen: aus, nach 3 Sekunden wieder an (2026.11.5b13)."""
+        t = self.tablets.get(tid)
+        if t is None:
+            return {"ok": False, "error": "unbekannt"}
+        c = t["cfg"]
+        if not c["screen"] and not c["notify"]:
+            return {"ok": False, "error": "kein_schalter"}
+        if c["screen"] and self.hass.states.get(c["screen"]) is None:
+            return {"ok": False, "error": "fehlt"}
+
+        async def _run() -> None:
+            import asyncio
+            if c["screen"]:
+                await self._screen(t, False)
+                await asyncio.sleep(3)
+            await self._screen(t, True)
+        self.hass.async_create_task(_run())
+        return {"ok": True, "off": bool(c["screen"])}
+
     async def _screen(self, t: dict[str, Any], on: bool) -> None:
         c = t["cfg"]
         try:
@@ -301,7 +351,11 @@ class TabletManager:
                 if not on and cur is not None and cur.state == "off":
                     return
                 domain = c["screen"].split(".", 1)[0]  # Fully: Schalter, Kiosk Satellite: Licht „Screen“
-                await self.hass.services.async_call(domain, "turn_on" if on else "turn_off", {"entity_id": c["screen"]}, blocking=False)
+                data: dict[str, Any] = {"entity_id": c["screen"]}
+                if on and domain == "light" and (c.get("night") or {}).get("on"):
+                    # Nachtruhe: Display-Licht gedimmt, am Tag wieder volle Helligkeit
+                    data["brightness_pct"] = c["night"]["bri"] if night_active(c, dt_util.now().strftime("%H:%M")) else 100
+                await self.hass.services.async_call(domain, "turn_on" if on else "turn_off", data, blocking=False)
             elif c["notify"] and on:
                 await self.hass.services.async_call("notify", c["notify"], {"message": "command_screen_on"}, blocking=False)
         except Exception as err:  # noqa: BLE001 - Gerät kann fehlen

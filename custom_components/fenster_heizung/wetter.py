@@ -468,7 +468,10 @@ def timeline(cfg: dict[str, Any], fc: list[dict[str, Any]], offl: list[dict[str,
         if cfg["warn"][k]["on"]:
             own[k] = [level_of(cfg, k, {"temp": h.get("temp"), "wind": h.get("wind"), "cond": h.get("cond"), "rain": h.get("p"), "hum": h.get("hum")}) for h in rows]
     off = [{"art": x["art"], "titel": x["titel"], "stufe": x["stufe"], "von": x.get("von") or "", "bis": x.get("bis") or "", "vorab": x["vorab"], "quelle": x["quelle"]} for x in offl]
-    return {"t": [h["t"] for h in rows], "own": own, "off": off}
+    num = lambda v: round(float(v), 1) if isinstance(v, (int, float)) else None  # noqa: E731
+    # 2026.11.5b13: Temperatur, Wind und Wetterlage je Stunde für die 48-Stunden-Kurven im Tablet-Modus
+    return {"t": [h["t"] for h in rows], "own": own, "off": off,
+            "temp": [num(h.get("temp")) for h in rows], "wind": [num(h.get("wind")) for h in rows], "cond": [h.get("cond") or "" for h in rows]}
 
 
 def review_of(days: dict[str, dict[str, Any]], today: Any) -> dict[str, Any]:

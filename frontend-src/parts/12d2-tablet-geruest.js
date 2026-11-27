@@ -190,6 +190,7 @@
     if (a === "tm2spgs") { (this._tm2T = this._tm2T || {}).gs = "win"; this._tmView = "gs"; this._tmHomed = false; this._render(); return true; }
     /* Modul 8: ganze Seite zum Bearbeiten (kommt über tm2g, also erst nach der PIN) */
     if (a === "tm2evfull") { this._evWallFull = true; this._wbTab = k === "set" && this._evNew() ? "veh" : k; this._tmHomed = false; this._render(); return true; }
+    if (a === "tm2sfdet") { this._modal = { type: "sfdet", id: k }; this._renderModal(); return true; }   /* Melder: Detailfenster statt Unterseite */
     if (a === "tm2prob") { this._modal = { type: "tm2prob" }; this._renderModal(); return true; }
     if (a === "tm2ww") { this._modal = { type: "tm2ww", kind: k }; this._renderModal(); return true; }
     /* Ändern erst nach der PIN: data-g ist die eigentliche Aktion */

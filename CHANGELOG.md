@@ -2,6 +2,25 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.5b13] - 2026-11-27
+
+Tablet-Modus, fünfte Stufe: Wetter, Melder und Müll ohne Scrollen. Dazu neue Tablet-Einstellungen und ein reparierter Knopf.
+
+### Neu
+- **Tablet-Modus · Modul 9 (v1.0 Build 4):** passt auf eine Seite, mit den Reitern „Jetzt“ (Lage, sechs Warnkacheln, amtliche Warnungen, Vorsorge), „48 Stunden“ (Temperatur und Wind als Kurven mit Frostzeit und Sturmgrenze) und „Karte“ (DWD-Warnkarte oder Regenradar).
+- **Tablet-Modus · Modul 11 (v1.0 Build 2):** mit den Reitern „Übersicht“ (Zustand, vier Werte, „Kann ich gehen?“, „Als Nächstes“), „Melder“ (bis zu 12 je Seite, auffällige zuerst) und „Grundriss“ (nur mit gezeichnetem Plan). Antippen öffnet das Detailfenster des Melders.
+- **Tablet-Modus · Modul 17:** mit den Reitern „Abholung“ (was zu tun ist, großer Knopf „Steht draußen“, alle Tonnen), „Kalender“ (Monat, wer ist dran) und „Haushalt“ (Verlauf, Jahresübersicht, Kosten, Säcke).
+- **Ruhebild bei einer Wetterwarnung:** die Wetter-Szene mit Stufe und dem, was schon erledigt oder noch offen ist. Abschaltbar.
+- **Tablet-Einstellungen in neuer Optik:** Kopf mit Vorschau des Tablets und Zustand auf einen Blick, Reiter Tablet, Anzeige, Module, Display und Verwalten.
+- **Neu in den Tablet-Einstellungen:** Startseite wählbar (auch für „Zurück nach …“), Ruhebild „Uhr“, Nachtruhe mit Zeitraum (Ruhebild dunkler, Display-Licht von Kiosk Satellite gedimmt), „Display testen“, „Ruhemodus jetzt“, „Seite neu laden“, Leiste und Module mit einem Tipp zurücksetzen.
+- Geräte schalten und Einstellungen fragen nach der PIN, „Verstanden“ und „Steht draußen“ nicht.
+
+### Behoben
+- **Tablet-Modus · Energie:** Der Knopf „Hausfluss“ und die Knoten im Energiefluss öffnen jetzt die Tablet-Seite des Moduls. Vorher wechselte nur die normale Ansicht im Hintergrund.
+
+### Noch offen
+- Getestet im Browser mit Beispieldaten, noch nicht auf einem echten Tablet. Ob die DWD-Karte in der Seitengröße lädt, ließ sich im Test nicht prüfen.
+
 ## [2026.11.5b12] - 2026-11-27
 
 Korrektur: Alte, nicht neu geladene Seiten erzeugen keine falschen Fehlerberichte mehr.

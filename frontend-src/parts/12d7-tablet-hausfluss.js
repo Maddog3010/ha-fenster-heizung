@@ -56,7 +56,8 @@
   /* ---------- Ruhebilder ---------- */
   _tm2RestKind() {
     if (!this._tm2On()) return "";
-    const want = this._tmC().rest, k = want === "en" || want === "ef" ? want : this._tmV() === "en" || this._tmV() === "ef" ? this._tmV() : "";
+    const want = this._tmC().rest; if (want === "clock") return "";
+    const k = want === "en" || want === "ef" ? want : this._tmV() === "en" || this._tmV() === "ef" ? this._tmV() : "";
     if (!k || !this._mdList().some((m) => m.id === k)) return "";
     if (k === "en") return this._enConfigured() ? k : "";
     if (!this._efxD) { this._efxLoad(); return ""; }
@@ -64,7 +65,8 @@
   }
   _tm2RestWall() {
     try {
-      const k = this._tm2RestKind(), inner = k === "en" ? this._tm2RestEn() : k === "ef" ? this._tm2RestEf() : "";
+      /* Stufe 5: Bei einer Wetterwarnung zeigt das Ruhebild die Wetter-Szene, egal welches Ruhebild gewählt ist */
+      const k = this._tm2RestWxOn() ? "wx" : this._tm2RestKind(), inner = k === "wx" ? this._tm2RestWx() : k === "en" ? this._tm2RestEn() : k === "ef" ? this._tm2RestEf() : "";
       if (!inner) return "";
       const d = new Date();
       return `<div class="tmrest tm2rw ${this._tm2Land() ? "land" : "port"}" data-kind="${k}"><div class="tm2rwh"><span class="tm2rwt"><b data-tmclk>${d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</b><small data-tmdate>${d.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}</small></span>${this._tm2RestHints()}</div>${inner}<div class="tmrw">Antippen zum Aufwecken</div></div>`;

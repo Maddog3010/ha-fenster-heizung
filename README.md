@@ -396,6 +396,8 @@ Für Tablets an der Wand: große Knöpfe, Uhr im Kopf, untere Leiste mit den akt
 
 **Neu ab 2026.11.5b10 (Testversion):** Dazu E-Auto, Stromtarif und Solar-Prognose.
 
+**Neu ab 2026.11.5b13 (Testversion):** Dazu Wetter & Warnungen, Melder und Müllabfuhr. Bei einer Wetterwarnung zeigt das Ruhebild die Wetter-Szene. Die Tablet-Einstellungen haben eine neue Optik mit Reitern, dazu wählbare Startseite, Ruhebild „Uhr“, Nachtruhe (Ruhebild dunkler, Display-Licht gedimmt) und „Display testen“.
+
 - **Einschalten:** Knopf im Kopf (ab 600 px Breite), Einstellung „Automatisch“ oder Direktlink `?tablet=1`, zum Beispiel als Start-URL in Fully Kiosk.
 - **PIN:** sechs Ziffern schützen die Einstellungen, im neuen Aufbau auch Heizplan, Fensterregelung und Warmwasser-Einstellungen. Nach fünf falschen Eingaben ist die Eingabe 60 Sekunden gesperrt.
 - **Ruhemodus** mit dunkler Uhr, Wetter, Alarm und Personen. Eine Warnung weckt das Tablet auf. Ab 2026.11.5b8 gibt es im neuen Aufbau auch die Ruhebilder Energie und Hausfluss (Einstellung „Ruhebild“).

@@ -97,6 +97,14 @@
   /* ---------------- Aktionen ---------------- */
   _act(a, b) {
     const m = this._modal, i = +b.dataset.i, id = b.dataset.id;
+    /* Tablet-Modus (2026.11.5b13): Sprünge in ein anderes Modul („Hausfluss“, Knoten im Energiefluss) öffnen die Tablet-Seite.
+       Vorher wechselte nur das Modul der normalen Ansicht im Hintergrund, auf dem Tablet passierte sichtbar nichts. */
+    if (a === "mdgo" && this._tmOn && this._tmOn()) {
+      const k = b.dataset.k;
+      if (this._tmItems().some((x) => x.id === k)) { this._modal = null; this._renderModal(); this._tmAct("tmgo", { dataset: { k } }); }
+      else this._toast((this._tmC().dock_hide || []).includes(k) ? "Dieses Modul ist auf diesem Tablet ausgeblendet (Tablet-Einstellungen → Module)" : "Dieses Modul ist nicht eingeschaltet");
+      return;
+    }
     if (a === "menu") this.dispatchEvent(new Event("hass-toggle-menu", { bubbles: true, composed: true }));
     else if (a === "pkopen") { const was = this._pkId === b.dataset.pid; this._pkId = was ? null : b.dataset.pid; if (!was) this._pkS = null; this._renderModal(); if (!this._modal) this._render(); }
     else if (a === "pktab" || a === "pkarea" || a === "pkflt" || a === "pkmore" || a === "pkall" || a === "pkqclr") this._pkAct(a, b);

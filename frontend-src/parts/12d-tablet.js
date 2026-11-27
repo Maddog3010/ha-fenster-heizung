@@ -24,7 +24,7 @@
   _tmModeSet(m) { try { localStorage.setItem("fh_tm_mode", m); } catch (_) { /* privater Modus */ } this._tmSleep = false; this._tmLast = Date.now(); }
   _tmOn() { const m = this._tmMode(); return m === "on" || (m === "auto" && this._tmTouch() && window.innerWidth >= 600); }
   _tmMe() { const id = this._tmId(), t = ((this._tm && this._tm.tablets) || []).find((x) => x.id === id); return t || { id, name: "Tablet", has_pin: false, cfg: {} }; }
-  _tmC() { return { size: "auto", idle_home: 2, sleep: 15, wake_warn: true, motion: "", screen: "", notify: "", off_after: 0, dock_hide: [], look: "new", rail: [], rest: "auto", ...(this._tmMe().cfg || {}) }; }
+  _tmC() { return { size: "auto", idle_home: 2, sleep: 15, wake_warn: true, motion: "", screen: "", notify: "", off_after: 0, dock_hide: [], look: "new", rail: [], rest: "auto", home: "st", rest_wx: true, night: { on: false, from: "22:00", to: "06:00", bri: 30 }, ...(this._tmMe().cfg || {}) }; }
   async _tmLoad() {
     if (this._tmBound !== true) { this._tmBound = true; this._tmBind(); }
     const k = this._tmKind();
@@ -54,9 +54,9 @@
     if (this._tmSleep) { if (moved || newWarn) this._tmWake(); return; }
     if (newWarn && !this._modal) { this._tmView = "st"; this._tmLast = Date.now(); this._render(); return; }
     if (c.sleep && idle >= c.sleep * 60000) { this._tmSleep = true; this._modal = null; this._renderModal(); this._render(); return; }
-    if (c.idle_home && idle >= c.idle_home * 60000 && !this._tmHomed) { this._tmHomed = true; this._tm2Unl = 0; const full = this._tm2On() && !!this._evWallFull && !this._modal; if (full) this._tm2FullOff(); const paged = full || Object.values(this._tmPg || {}).some(Boolean) || Object.keys(this._tm2T || {}).length > 0; if (!this._modal) { this._tmPg = {}; this._tm2T = {}; } if ((this._tmV() !== "st" || paged) && !this._modal) { this._tmView = "st"; this._render(); } }
+    if (c.idle_home && idle >= c.idle_home * 60000 && !this._tmHomed) { this._tmHomed = true; this._tm2Unl = 0; const full = this._tm2On() && !!this._evWallFull && !this._modal; if (full) this._tm2FullOff(); const paged = full || Object.values(this._tmPg || {}).some(Boolean) || Object.keys(this._tm2T || {}).length > 0; if (!this._modal) { this._tmPg = {}; this._tm2T = {}; } if ((this._tmV() !== this._tmHome() || paged) && !this._modal) { this._tmView = this._tmHome(); this._render(); } }
   }
-  _tmV() { return this._tmView || "st"; }
+  _tmV() { return this._tmView || this._tmHome(); }
   _tmItems() {
     const hide = this._tmC().dock_hide, mods = this._mdList().filter((m) => m.id !== "st").map((m) => ({ id: m.id, name: m.short || m.name, icon: m.icon }));
     return [{ id: "st", name: "Start", icon: "home" }, ...mods].filter((x) => x.id === "st" || !hide.includes(x.id));
@@ -102,7 +102,8 @@
     const rooms = this._collect();
     return rooms.length ? `<div class="tmrooms">${rooms.map((r) => this._tmRoom(r)).join("")}</div>` : `<div class="card empty">Noch keine Räume eingerichtet.</div>`;
   }
-  _tmSleepHtml() {
+  _tmSleepHtml() { const h = this._tmSleepHtml0(); return this._tmNight && this._tmNight() ? h.replace('class="tmrest', 'class="tmrest tmnight') : h; }
+  _tmSleepHtml0() {
     const mq = this._mqRest ? this._mqRest() : ""; if (mq) return mq;
     const wall = this._tm2RestWall ? this._tm2RestWall() : ""; if (wall) return wall;
     const facts = ["wetter", "alarm", "personen", "muell"].map((id) => this._hzBubDef(id)).filter((x) => x && x.i).map((x) => `<div>${ic(x.i, 26)}<span>${esc(x.b)}${x.s ? ` · ${esc(x.s)}` : ""}</span></div>`).join("");
@@ -177,6 +178,7 @@
   _tmAct(a, b) {
     const k = b.dataset.k, m = this._modal;
     if (a.startsWith("tm2")) { this._tm2Act(a, b); return; }
+    if (this._tmxAct(a, b)) return;
     if (a === "tmgo") { this._tm2FullOff(); this._tmPg = {}; this._tm2T = {}; this._tmView = k; this._tmHomed = false; this._render(); }
     else if (a === "tmbub") { const d = this._hzBubDef(k) || {}; if (d.mod && this._mdList().some((x) => x.id === d.mod)) { this._tm2FullOff(); this._tmView = d.mod; this._render(); } }
     else if (a === "tmgomore") { this._tm2FullOff(); this._tmPg = {}; this._tm2T = {}; this._tmView = k; this._tmHomed = false; this._modal = null; this._renderModal(); this._render(); }
@@ -217,6 +219,7 @@
     const f = t.dataset.f;
     if (f === "tmname") { this._tmSave({}, String(t.value || "").trim().slice(0, 24) || "Tablet"); return true; }
     if (f === "tmsel") { const k = t.dataset.k; this._tmPkOpen = false; this._tmSave({ [k]: t.value || "" }); return true; }
+    if (f === "tmnf" || f === "tmnt") { const v = String(t.value || ""); if (/^\d{2}:\d{2}$/.test(v)) this._tmSave({ night: { ...(this._tmC().night || {}), [f === "tmnf" ? "from" : "to"]: v } }); return true; }
     if (f === "tmnot") { this._tmSave({ notify: String(t.value || "").trim().replace(/^notify\./, "") }); return true; }
     return false;
   }
@@ -244,41 +247,5 @@
       return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Weitere Module</b><span>Tablet-Modus</span></div>${close}</div>
         <div class="tmmore">${rest.map((x) => `<button class="tmdk ${this._tmV() === x.id ? "sel" : ""}" data-act="tmgo" data-k="${x.id}">${ic(x.icon, 26)}<span>${esc(x.name)}</span></button>`).join("")}</div></div>`.replace(/data-act="tmgo"/g, 'data-act="tmgomore"');
     }
-    const inT = m.type === "tmset", me = this._tmMe(), c = this._tmC(), kd = this._tmKind(), mode = this._tmMode(), adm = this._admin(), lock = this._tmLocked();
-    const seg = (act, cur, opts) => `<span class="gschs">${opts.map(([k, t]) => `<button class="gsch ${String(cur) === String(k) ? "sel" : ""}" data-act="${act}" data-k="${k}" aria-pressed="${String(cur) === String(k)}" ${lock ? "disabled" : ""}>${t}</button>`).join("")}</span>`;
-    const row = (t, s, ctl) => `<div class="vrow"><span>${t}${s ? `<small class="mut" style="display:block">${s}</small>` : ""}</span>${ctl}</div>`;
-    const sw = (act, on, label) => `<button class="sw ${on ? "on" : ""}" data-act="${act}" aria-pressed="${!!on}" aria-label="${esc(label)}" ${lock ? "disabled" : ""}></button>`;
-    const motions = Object.keys(st).filter((e) => e.startsWith("binary_sensor.") && ["motion", "occupancy", "presence"].includes((st[e].attributes || {}).device_class)), sws = this._tmScreens(c.screen);
-    const moAll = motions.length ? motions : Object.keys(st).filter((e) => e.startsWith("binary_sensor."));
-    const mods = this._mdList().filter((x) => x.id !== "st");
-    const pinRow = lock
-      ? `<div class="gst on">${ic("lock", 15)}<span>Die Einstellungen dieses Tablets sind mit einer PIN geschützt.</span></div><div class="gbtns"><button class="btn2 pri" data-act="tmunl">${ic("lock", 16)} Mit PIN entsperren</button></div>`
-      : row("PIN", me.has_pin ? "6 Stellen, schützt die Einstellungen" : "Noch keine PIN festgelegt", `<button class="btn2 ${me.has_pin ? "" : "pri"}" data-act="tmchg" style="flex:none">${ic("lock", 16)} ${me.has_pin ? "PIN ändern" : "PIN festlegen"}</button>`);
-    const list = !inT && adm ? `<div class="lsec" style="margin-top:14px">${ic("tablet", 15)}Tablets verwalten</div>${((this._tm && this._tm.tablets) || []).map((t) => `<div class="vrow"><span><b>${esc(t.name)}${t.id === me.id ? " (dieses)" : ""}</b><small class="mut" style="display:block">${t.kind === "fully" ? "Fully Kiosk" : t.kind === "app" ? "HA-App" : "Browser"} · ${t.size || ""} · ${t.has_pin ? "mit PIN" : "ohne PIN"} · zuletzt ${t.seen ? this._hzSince(new Date(t.seen * 1000).toISOString()) : "–"}</small></span><span class="gschs">${t.has_pin ? `<button class="gsch" data-act="tmreset" data-id="${esc(t.id)}">PIN zurücksetzen</button>` : ""}${t.id === me.id ? "" : `<button class="gsch" data-act="tmdel" data-id="${esc(t.id)}">Entfernen</button>`}</span></div>`).join("")}` : "";
-    return `<div class="ov" data-act="${inT ? "tmdone" : "close"}"></div><div class="sheet wide" role="dialog" aria-modal="true"><div class="sh"><div><b>Tablet-Modus</b><span>Gilt nur für dieses Gerät</span></div><button class="ibtn" data-act="${inT ? "tmdone" : "close"}" aria-label="Schließen">${ic("close", 20)}</button></div>
-      ${pinRow}
-      <div class="lsec" style="margin-top:12px">${ic("tablet", 15)}${inT ? "Dieses Tablet" : "Aktivierung"}</div>
-      ${inT ? "" : row("Tablet-Modus", "Ersetzt die normale Ansicht. Automatisch: auf Touchgeräten ab 600 px Breite.", seg("tmmode", mode, [["off", "Aus"], ["auto", "Automatisch"], ["on", "Immer an"]]))}
-      <div class="vrow"><span>Name dieses Tablets<small class="mut" style="display:block">Erkannt: ${esc(kd.label)}, ${window.innerWidth} × ${window.innerHeight}</small></span><input class="osel" data-f="tmname" value="${esc(me.name)}" maxlength="24" style="width:46%;margin:0" ${lock ? "disabled" : ""} aria-label="Name"></div>
-      ${row("Größe", "Bedienelemente und Schrift", seg("tmsz", c.size, [["auto", "Auto"], ["large", "Groß"], ["xl", "Sehr groß"]]))}
-      ${row("Aufbau", "Neu: Leiste links, Start ohne Scrollen", seg("tm2look", c.look, [["new", "Neu"], ["classic", "Wie bisher"]]))}
-      ${row("Zurück zu Start nach", "Ohne Berührung", seg("tmih", c.idle_home, [[0, "Aus"], [2, "2 Min."], [5, "5 Min."], [15, "15 Min."]]))}
-      ${row("Ruhemodus nach", "Dunkle Uhr statt Inhalt. Berühren oder Bewegung weckt auf.", seg("tmsl", c.sleep, [[0, "Aus"], [5, "5 Min."], [15, "15 Min."], [30, "30 Min."]]))}
-      ${this._tm2On() ? row("Ruhebild", "Auto: Wandanzeige, wenn Energie oder Hausfluss offen ist, sonst die Uhr", seg("tm2rest", c.rest, [["auto", "Auto"], ...[["en", "Energie"], ["ef", "Hausfluss"]].filter(([k]) => mods.some((x) => x.id === k) && (k !== "ef" || this._efxSp()))])) : ""}
-      ${row("Warnungen wecken auf", "Zum Beispiel ein ausgelöster Alarm", sw("tmww", c.wake_warn, "Warnungen wecken auf"))}
-      ${this._tm2On() ? `<div class="lsec" style="margin-top:12px">${ic("grid", 15)}Modulleiste</div>
-      <div class="mut sm" style="margin:0 0 6px">Quer links, hochkant unten: Start, bis zu vier Module und „Mehr“.</div>
-      <div class="gschs" style="flex-wrap:wrap">${this._tm2Rail(this._tmItems()).length ? this._tmItems().filter((x) => x.id !== "st").map((x) => { const on = this._tm2Rail(this._tmItems()).some((y) => y.id === x.id); return `<button class="gsch ${on ? "sel" : ""}" data-act="tm2rail" data-k="${x.id}" aria-pressed="${on}" ${lock ? "disabled" : ""}>${esc(this._tm2Name(x))}</button>`; }).join("") : ""}</div>` : ""}
-      <div class="lsec" style="margin-top:12px">${ic("grid", 15)}${this._tm2On() ? "Module anzeigen" : "Untere Leiste"}</div>
-      <div class="mut sm" style="margin:0 0 6px">${this._tm2On() ? "Abgewählte Module erscheinen weder in der Leiste noch unter „Mehr“." : "Start ist immer dabei. Bei schmalen Bildschirmen steht der Rest unter „Mehr“."}</div>
-      <div class="gschs" style="flex-wrap:wrap">${mods.map((x) => `<button class="gsch ${c.dock_hide.includes(x.id) ? "" : "sel"}" data-act="tmdock" data-k="${x.id}" aria-pressed="${!c.dock_hide.includes(x.id)}" ${lock ? "disabled" : ""}>${esc(x.short || x.name)}</button>`).join("")}</div>
-      <div class="lsec" style="margin-top:14px">${ic("eye", 15)}Bewegung und Display</div>
-      <div class="mut sm" style="margin:0 0 6px">Der Bewegungsmelder wird im Home Assistant überwacht und funktioniert auch bei ausgeschaltetem Display. Bei Bewegung geht das Display an, ohne Bewegung nach der eingestellten Zeit wieder aus.</div>
-      ${lock ? "" : `<div class="of"><div class="ol"><b>Bewegungsmelder</b></div></div>${this._wzSel(moAll, c.motion, "tmsel", 'data-k="motion"', "– keiner –")}<div class="of"><div class="ol"><b>Display-Schalter</b><span>Fully: Schalter „Screen“ · Kiosk Satellite: Licht „Screen“</span></div></div>${this._wzSel(sws, c.screen, "tmsel", 'data-k="screen"', "– keiner –", /screen|display|bildschirm/i)}`}
-      ${row("Display ausschalten nach", "Ohne Bewegung. Nur mit Display-Schalter.", seg("tmoff", c.off_after, [[0, "Nie"], [10, "10 Min."], [30, "30 Min."]]))}
-      <div class="vrow"><span>HA-App (Android)<small class="mut" style="display:block">Benachrichtigungsdienst, z. B. mobile_app_tablet. Schaltet nur ein.</small></span><input class="osel" data-f="tmnot" value="${esc(c.notify)}" placeholder="mobile_app_…" style="width:46%;margin:0" ${lock ? "disabled" : ""} aria-label="Benachrichtigungsdienst"></div>
-      ${inT ? "" : `<div class="lsec" style="margin-top:14px">${ic("copy", 15)}Fully Kiosk</div><div class="mut sm" style="margin:0 0 6px">Diesen Link in Fully unter Web Content Settings als Start-URL eintragen. Dann startet das Tablet immer im Tablet-Modus.</div><div class="tmurl"><code>${esc(this._tmUrlStr())}</code><button class="ibtn" data-act="tmcopy" aria-label="Kopieren">${ic("copy", 18)}</button></div>`}
-      ${this._mqOn && this._mqOn("tb") ? `<div class="lsec" style="margin-top:14px"><span class="lggd">★</span>&nbsp;Wand-Tablet-Extras</div>${row("Raum, Nacht, Schnellaktionen, Alarm", "Sponsor Max · gilt für dieses Tablet", `<button class="btn2" data-act="mqxset" data-k="tb" style="flex:none">Einstellen</button>`)}` : ""}
-      ${list}
-      <div class="gbtns" style="margin-top:14px">${inT ? `<button class="btn2" data-act="tmend" ${lock ? "disabled" : ""}>Tablet-Modus beenden</button><button class="btn2 pri" data-act="tmdone">${ic("check", 16)} Fertig</button>` : `<button class="btn2" data-act="close">Schließen</button><button class="btn2 pri" data-act="tmstart" ${lock ? "disabled" : ""}>${ic("tablet", 16)} Tablet-Modus jetzt starten</button>`}</div></div>`;
+    return this._tmSetHtml();   /* 2026.11.5b13: neue Optik mit Reitern (12db-tablet-menue.js) */
   }

@@ -799,9 +799,9 @@ const MV = {
   rb: { v: "0.1", b: 2, d: "2026-11-22", p: "2026.11.4b47", log: [["0.1", 2, "2026.11.4b47", "Neues Banner: Fassade mit der Sonne auf ihrem Bogen (Richtung und Höhe aus sun.sun), nachts Mond und Licht in den Fenstern"], ["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   wp: { v: "0.1", b: 2, d: "2026-11-22", p: "2026.11.4b47", log: [["0.1", 2, "2026.11.4b47", "Neues Banner: Außengerät mit drehendem Lüfter und Thermometer, bei Frost Reif und Schnee, Hinweis auf Abtauen"], ["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   ev: { v: "1.0.2", b: 2, d: "2026-11-26", p: "2026.11.5b10", log: [["1.0.2", 2, "2026.11.5b10", "Tablet-Modus: passt ohne Scrollen auf eine Seite (Reiter Laden, Planung, Statistik)"], ["1.0.2", 1, "2026.11.5b5", "Nicht angekommene Befehle nicht mehr alle 10 s neu senden, Höchststrom der go-e beachten, kein falsches „von Hand umgestellt“, höchstens alle 3 h eine Meldung; „Heute“ zeigt auch Nachtladungen ab gestern (auch in 2026.11.4.6)"], ["1.0.1", 2, "2026.11.4.1", "Kilometer je Tag ohne Sprünge: Lieferte der Kilometer-Sensor tagelang keinen Wert, landete die ganze Strecke auf einem Tag – jetzt wird sie auf die Tage verteilt. Neu: Kilometerstände nachtragen (Statistik › Kilometer & Verbrauch)"], ["1.0", 1, "2026.11.4", "Stabil: Laden mit Sonne und nach Preis, Planung bis zur Abfahrt, Ladestatistik mit Nachweis, go-e und andere Wallboxen, mehrere Fahrzeuge und Gastfahrzeug, Modus beim Anstecken – keine Änderungen gegenüber dem Release-Kandidaten"], ["0.9", 10, "2026.11.4b37", "Release-Kandidat: Modus beim Anstecken je Fahrzeug, Befehls-Rückmeldung (kein „von Hand umgestellt“ mehr bei nicht angekommenem Befehl), veralteter Ladestand mit Schätzung, Diagnose, Einrichtungs-Check erweitert, Entscheidungen bleiben nach Neustart"], ["0.9", 9, "2026.11.4b36", "„Wer lädt gerade?“: Gastfahrzeug oder ein Fahrzeug von Hand wählen (bis zum Abstecken); Gastfahrzeug auch beim Bearbeiten von Ladungen"], ["0.9", 8, "2026.11.4b23", "„Nur mit Karte“ bei offener Zugangskontrolle der go-e: Ladelimit gilt trotzdem (vorher lud die Wallbox ohne Karte ungeregelt bis 100 %); nachts keine Sonne mehr in der Statistik, Sonnenanteil von Hand änderbar"], ["0.9", 7, "2026.11.3", "Laufende Ladung überlebt einen Neustart von Home Assistant, fehlende kWh zuerst der Ladung zurechnen, Hinweis in der Tagesansicht; go-e-Import, mehrere Ladungen bearbeiten, Kosten ändern, Kilometer-Statistik"], ["0.9", 6, "2026.11.3b24", "Carport-Szene näher an der Wirklichkeit: Kabelkanal am Träger, Wechselrichter an der Hauswand, Netzstrom aus dem Haus, Ladekabel vor dem Auto mit Typ-2-Stecker in der Ladeklappe; nach dem Zurückwechseln in die App keine leeren Werte mehr; „Heute“ übersichtlicher"], ["0.9", 5, "2026.11.3b23", "Eine Ladung reicht bis zum Abstecken (kein neuer Eintrag nach Phasenwechsel), getrennte Teile zusammenführen, Ladenachweis als echte PDF-Datei"], ["0.9", 4, "2026.11.3b22", "Überschuss-Balken mit eingestellter Leistung, Start/Stopp mit Restzeit, Überschuss-Vorschau, Abfahrt aus dem Kalender je Fahrzeug (Lab übernommen), Tablet-Wandansicht, Strompreis-Chip, Kilometer & Verbrauch in der Statistik"], ["0.9", 3, "2026.11.3b20", "Laden startete nach einem Stopp nicht wieder (Wallbox meldete „fertig“); Ziel-Etikett bleibt in der Karte"], ["0.9", 2, "2026.11.3b18", "Ladungen bearbeiten: Fahrzeug-Werte rechnen mit, jede Änderung wird angezeigt, „Unbekannt“ zuordnen"], ["0.9", 1, "2026.11.3b17", "Vorabversion: Hausakku nicht ins Auto entladen, Auto vor dem Hausakku, § 14a Dimmen, Anwesenheit, Ladenachweis, Ladungen bearbeiten, Startseite, robuster bei Funkstille und alten Werten"], ["0.8", 1, "2026.11.3b16", "Planung als ein Band mit Satz, Statistik mit Tag/Woche/Monat/Jahr, pro 100 km und je Karte, geschätzter Ladestand ohne Sensor, Sensoren und Ereignis „Ladung beendet“"], ["0.7", 2, "2026.11.3b16", "Autos realistischer gezeichnet: echte Proportionen, Radläufe, Aero-Felgen, LED-Licht, Spiegelungen, Ladeklappe mit Stecker"], ["0.7", 1, "2026.11.3b16", "Neue Optik: Carport-Szene als Banner, Satz-Zeile, Ladeband bis zum Ziel, Kacheln 2.0, Modus-Karten, Heute-Zeitleiste, „Warum gerade so?“, Register „Fahrzeuge“, Handy und Hell"], ["0.6", 1, "2026.11.3b16", "Technik-Stufe: ein Ladeplan aus dem Backend, Sensoren und Aussehen je Fahrzeug, Quellen aus Haus-Werten und Modul 16, andere Wallboxen über Home Assistant, Tests"], ["0.5", 3, "2026.11.2b10", "Nach dem Umschalten der Phasen gilt „fertig“ kurz als Pause, die Ladung läuft weiter; Akkukapazität mit einer Nachkommastelle"], ["0.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
-  wx: { v: "1.0", b: 3, d: "2026-11-17", p: "2026.11.4b3", log: [["1.0", 3, "2026.11.4b3", "Wetterkarte zeigt Warnungen und Regen wieder"], ["1.0", 2, "2026.11.4b2", "Wetterkarte flackert nicht mehr"], ["1.0", 1, "2026.11.4b1", "Stabil: DWD-Wetterkarte (Warnungen und Regenradar), Rückblick, schneller warnen, Speichern nur bei Änderung, Änderungsverlauf mit Rückgängig, Feinschliff"], ["0.9", 1, "2026.11.3b11", "Vorabversion: Vorsorge (Akku, Auto, Hitzeschutz, Frost), Alarm auf dem Wandtablet, Startseite mit amtlichen Warnungen und Stufen, Sensoren und Ereignis für Automationen, Verlauf mit Filter"], ["0.8", 1, "2026.11.3b11", "48-Stunden-Zeitleiste, Aktionen als Ablaufkarten mit Stufe, Bedingung, Verzögerung und Aussperrschutz, Quittieren, Aussetzen, Knöpfe in der Meldung, Einstellungen mit Reitern"], ["0.7", 1, "2026.11.3b11", "Neue Optik Stufe 1: Wetter-Szene als Banner, Warnkacheln 2.0 mit Bogen, Stufenfarben wie beim DWD, Handy-Ansicht"], ["0.6", 1, "2026.11.3b11", "Stufe 1 der Fertigstellung: alle amtlichen Warnungen mit Vorabinformation, Stufen 1–4, Hagel getrennt, Starkregen in mm/h, Glätte, Wetterquelle wird geprüft"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
+  wx: { v: "1.0", b: 4, d: "2026-11-27", p: "2026.11.5b13", log: [["1.0", 4, "2026.11.5b13", "Tablet-Modus: passt ohne Scrollen auf eine Seite (Reiter Jetzt, 48 Stunden, Karte), Wetter-Szene als Ruhebild bei einer Warnung"], ["1.0", 3, "2026.11.4b3", "Wetterkarte zeigt Warnungen und Regen wieder"], ["1.0", 2, "2026.11.4b2", "Wetterkarte flackert nicht mehr"], ["1.0", 1, "2026.11.4b1", "Stabil: DWD-Wetterkarte (Warnungen und Regenradar), Rückblick, schneller warnen, Speichern nur bei Änderung, Änderungsverlauf mit Rückgängig, Feinschliff"], ["0.9", 1, "2026.11.3b11", "Vorabversion: Vorsorge (Akku, Auto, Hitzeschutz, Frost), Alarm auf dem Wandtablet, Startseite mit amtlichen Warnungen und Stufen, Sensoren und Ereignis für Automationen, Verlauf mit Filter"], ["0.8", 1, "2026.11.3b11", "48-Stunden-Zeitleiste, Aktionen als Ablaufkarten mit Stufe, Bedingung, Verzögerung und Aussperrschutz, Quittieren, Aussetzen, Knöpfe in der Meldung, Einstellungen mit Reitern"], ["0.7", 1, "2026.11.3b11", "Neue Optik Stufe 1: Wetter-Szene als Banner, Warnkacheln 2.0 mit Bogen, Stufenfarben wie beim DWD, Handy-Ansicht"], ["0.6", 1, "2026.11.3b11", "Stufe 1 der Fertigstellung: alle amtlichen Warnungen mit Vorabinformation, Stufen 1–4, Hagel getrennt, Starkregen in mm/h, Glätte, Wetterquelle wird geprüft"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   ga: { v: "0.1", b: 2, d: "2026-11-22", p: "2026.11.4b48", log: [["0.1", 2, "2026.11.4b48", "Neues Banner: Beet mit dem aktuellen Wetter (Sonne, Wolken, Regen, Schnee), Hinweise zum Gießen und bei Frost"], ["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
-  sf: { v: "1.0", b: 1, d: "2026-11-23", p: "2026.11.4", log: [["1.0", 1, "2026.11.4", "Stabil: Alarm mit Stufen und „Verstanden“, Melder-Übersicht mit Batterien und Prüfungen, Test am Melder wird erkannt, Grundriss mit Ausgängen, Diagnose und Anleitung – keine Änderungen gegenüber der Testwoche"], ["0.9", 12, "2026.11.4b39", "Testwoche: Stufen mit eigener Melderart, Fehlalarm zählt nicht als Prüfung, Mitteilungen verschwinden am Alarmende, Kontaktperson bekommt Entwarnung, Selbsttest in der Ruhezeit, Diagnose, Anleitung"], ["0.9", 11, "2026.11.4b39", "Quellen-Wächter (eine Meldung, wenn alle Melder einer Quelle ausfallen), Wochen-Selbsttest, Sensoren „nicht erreichbar“ und „Letzter Alarm“, Dienste für Automationen, Abzeichen „Vorab“"], ["0.9", 10, "2026.11.4b21", "Anpassen in der Übersicht, Ereignisse kompakt"], ["0.9", 9, "2026.11.4b20", "Grundriss: Durchgang und Räume mit gestricheltem Rand"], ["0.9", 8, "2026.11.4b19", "Ausgänge im Grundriss selbst markieren: Außentür oder Treppe nach unten"], ["0.9", 7, "2026.11.4b18", "Test per Testknopf wird automatisch eingetragen (Test-Entität oder kurzer Alarm)"], ["0.9", 6, "2026.11.4b17", "Test per Testknopf wird sofort erkannt und eingetragen"], ["0.9", 5, "2026.11.4b16", "Räume im Grundriss mit freier Form: L, T, U und beliebige Ecken"], ["0.9", 4, "2026.11.4b15", "Grundriss-Bearbeiten-Feld und Batterie-Verlauf auf dem Tablet korrigiert"], ["0.9", 3, "2026.11.4b14", "Batterie-Verlauf mit festem Maximum, Einbaudatum als Kalender-Karte statt Monatsrad"], ["0.9", 2, "2026.11.4b13", "Neue Menüstruktur: Reiter Melder, Melder-Seite, Einstellungen mit Bereichs-Reitern, Auswahl-Seiten statt Aufklappmenüs"], ["0.9", 1, "2026.11.4b12", "Vorabversion: Einstellungsfenster und Auswahlmenüs in der neuen Optik"], ["0.8", 5, "2026.11.4b11", "Kein roter Alarm mehr beim Zurückwechseln in die App (Warndienste, Ladephase)"], ["0.8", 4, "2026.11.4b10", "Warndienst-Sensoren (z. B. NINA) lösen keinen Alarm mehr aus"], ["0.8", 3, "2026.11.4b9", "Grundriss 2.0 (Fluchtweg um Wände herum, Maßstab, Abdeckung, Halos, Rückgängig, Mehrfachauswahl), PDF-Dateien über das Teilen-Menü, Anwesenheit wie Modul 6"], ["0.8", 2, "2026.11.4b8", "Alle Reiter in der neuen Optik: Übersicht mit „Als Nächstes“, Grundriss mit Kacheln, Legende und Melderliste, Wartung mit Kennzahlen und Lebensdauer-Karten, Einstellungen mit Sprungleiste"], ["0.8", 1, "2026.11.4b7", "Ausgeschaltete Melder ohne Warnungen (Frage nach langer Funkstille), Alarm mit Stufen und „Verstanden“, Alarm-Ansicht für Handy und Wandtablet, Fehlalarm-Hilfe, Fluchtweg im Grundriss, Sensoren und Ereignis für Automationen"], ["0.7", 1, "2026.11.4b5", "Neue Optik: Haus-Szene im Banner, Kennzahl-Kacheln, Zeitleiste, Melder-Karten 2.0 mit Detailblatt, Wartung mit Jahresband und Batterie-Prognose; Schalter „Karten wie bisher“"], ["0.6", 1, "2026.11.4b5", "Technik: Melder-Ausfall in Sekunden erkannt, Plan und Hintergrundbild in eigenem Speicher, Batterie-Prognose seit dem letzten Tausch mit früher Erinnerung, Schema-Version, Tests"], ["0.5", 4, "2026.11.1b16", "Neue Tag-Aktion „Melder geprüft“ für ein NFC-Tag neben dem Melder"], ["0.5", 3, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
+  sf: { v: "1.0", b: 2, d: "2026-11-27", p: "2026.11.5b13", log: [["1.0", 2, "2026.11.5b13", "Tablet-Modus: passt ohne Scrollen auf eine Seite (Reiter Übersicht, Melder, Grundriss)"], ["1.0", 1, "2026.11.4", "Stabil: Alarm mit Stufen und „Verstanden“, Melder-Übersicht mit Batterien und Prüfungen, Test am Melder wird erkannt, Grundriss mit Ausgängen, Diagnose und Anleitung – keine Änderungen gegenüber der Testwoche"], ["0.9", 12, "2026.11.4b39", "Testwoche: Stufen mit eigener Melderart, Fehlalarm zählt nicht als Prüfung, Mitteilungen verschwinden am Alarmende, Kontaktperson bekommt Entwarnung, Selbsttest in der Ruhezeit, Diagnose, Anleitung"], ["0.9", 11, "2026.11.4b39", "Quellen-Wächter (eine Meldung, wenn alle Melder einer Quelle ausfallen), Wochen-Selbsttest, Sensoren „nicht erreichbar“ und „Letzter Alarm“, Dienste für Automationen, Abzeichen „Vorab“"], ["0.9", 10, "2026.11.4b21", "Anpassen in der Übersicht, Ereignisse kompakt"], ["0.9", 9, "2026.11.4b20", "Grundriss: Durchgang und Räume mit gestricheltem Rand"], ["0.9", 8, "2026.11.4b19", "Ausgänge im Grundriss selbst markieren: Außentür oder Treppe nach unten"], ["0.9", 7, "2026.11.4b18", "Test per Testknopf wird automatisch eingetragen (Test-Entität oder kurzer Alarm)"], ["0.9", 6, "2026.11.4b17", "Test per Testknopf wird sofort erkannt und eingetragen"], ["0.9", 5, "2026.11.4b16", "Räume im Grundriss mit freier Form: L, T, U und beliebige Ecken"], ["0.9", 4, "2026.11.4b15", "Grundriss-Bearbeiten-Feld und Batterie-Verlauf auf dem Tablet korrigiert"], ["0.9", 3, "2026.11.4b14", "Batterie-Verlauf mit festem Maximum, Einbaudatum als Kalender-Karte statt Monatsrad"], ["0.9", 2, "2026.11.4b13", "Neue Menüstruktur: Reiter Melder, Melder-Seite, Einstellungen mit Bereichs-Reitern, Auswahl-Seiten statt Aufklappmenüs"], ["0.9", 1, "2026.11.4b12", "Vorabversion: Einstellungsfenster und Auswahlmenüs in der neuen Optik"], ["0.8", 5, "2026.11.4b11", "Kein roter Alarm mehr beim Zurückwechseln in die App (Warndienste, Ladephase)"], ["0.8", 4, "2026.11.4b10", "Warndienst-Sensoren (z. B. NINA) lösen keinen Alarm mehr aus"], ["0.8", 3, "2026.11.4b9", "Grundriss 2.0 (Fluchtweg um Wände herum, Maßstab, Abdeckung, Halos, Rückgängig, Mehrfachauswahl), PDF-Dateien über das Teilen-Menü, Anwesenheit wie Modul 6"], ["0.8", 2, "2026.11.4b8", "Alle Reiter in der neuen Optik: Übersicht mit „Als Nächstes“, Grundriss mit Kacheln, Legende und Melderliste, Wartung mit Kennzahlen und Lebensdauer-Karten, Einstellungen mit Sprungleiste"], ["0.8", 1, "2026.11.4b7", "Ausgeschaltete Melder ohne Warnungen (Frage nach langer Funkstille), Alarm mit Stufen und „Verstanden“, Alarm-Ansicht für Handy und Wandtablet, Fehlalarm-Hilfe, Fluchtweg im Grundriss, Sensoren und Ereignis für Automationen"], ["0.7", 1, "2026.11.4b5", "Neue Optik: Haus-Szene im Banner, Kennzahl-Kacheln, Zeitleiste, Melder-Karten 2.0 mit Detailblatt, Wartung mit Jahresband und Batterie-Prognose; Schalter „Karten wie bisher“"], ["0.6", 1, "2026.11.4b5", "Technik: Melder-Ausfall in Sekunden erkannt, Plan und Hintergrundbild in eigenem Speicher, Batterie-Prognose seit dem letzten Tausch mit früher Erinnerung, Schema-Version, Tests"], ["0.5", 4, "2026.11.1b16", "Neue Tag-Aktion „Melder geprüft“ für ein NFC-Tag neben dem Melder"], ["0.5", 3, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   pl: { v: "0.1", b: 2, d: "2026-11-22", p: "2026.11.4b48", log: [["0.1", 2, "2026.11.4b48", "Neues Banner: Pool mit Wellen und Saunahütte, Außentemperatur, PV-Überschuss und Strompreis"], ["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   bt: { v: "0.1", b: 2, d: "2026-11-22", p: "2026.11.4b48", log: [["0.1", 2, "2026.11.4b48", "Neues Banner: Akku mit Füllstand und PV-Dach, Fluss bei PV-Überschuss, Untergrenze aus Modul 1"], ["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   dt: { v: "0.9", b: 2, d: "2026-11-26", p: "2026.11.5b10", log: [["0.9", 2, "2026.11.5b10", "Tablet-Modus: passt ohne Scrollen auf eine Seite (Reiter Preise, Geräte, Tarif-Check), Preisgrenze der Frost-Heizer"], ["0.9", 1, "2026.11.4b38", "Vorabversion: „Lohnt sich dein Tarif?“ (Monat und Jahr gegen Festpreis), Kachel „Gespart im Monat“, Wochenansicht, Daten prüfen, Hinweis auf der Startseite bei negativen Preisen, Sensor Ersparnis Monat, Diagnose"], ["0.8", 1, "2026.11.4b1", "Bestes Fenster je Gerät, Preisalarm, Sensoren und Ereignis"], ["0.7", 1, "2026.11.4b1", "Neue Optik: Preisband-Banner, Kacheln 2.0, Heute und morgen mit Sonne"], ["0.6", 1, "2026.11.4b1", "Tarif-Dienst: Tibber direkt, Preis-Sensoren, Viertelstunden, morgen, Endpreis, Push"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -815,7 +815,7 @@ const FH_CACHE = (window.__fhCache = window.__fhCache || {});
 /* Automatisch aus CHANGELOG.md erzeugt (frontend-src/build.py). Nicht von Hand ändern. */
 const REL = [{"v":"2026.11.4.5","d":"2026-11-24","t":["Behoben: Modul 1 · „Warum?“","Behoben: Kopieren auf iPad und iPhone","Behoben: Modul 11 · „Plan sichern“ und Modul 0 · „Datei herunterladen“"],"c":[]},{"v":"2026.11.4.4","d":"2026-11-24","t":["Wohnklima-Zeugnis (Sponsor Max)","Heizkosten je Raum (Sponsor Max)","Wand-Tablet-Extras (Sponsor Max)"],"c":[]},{"v":"2026.11.4.3","d":"2026-11-24","t":["Fehlerprotokoll","Modul 0 · Heizkörper wie in echt","Einstellungen › Module"],"c":[]},{"v":"2026.11.4.2","d":"2026-11-23","t":["Behoben: Modul 1 · Elektroheizer bearbeiten, pausieren, in anderen Raum stellen, entfernen, wiederherstellen und endgültig löschen","Behoben: Modul 0 · Sonne im Raum","Behoben: Modul 0 · Keine Sonne durch die Fenster"],"c":[]},{"v":"2026.11.4.1","d":"2026-11-23","t":["Behoben: Modul 0 · Raumnamen ragten in den Nachbarraum","Behoben: Modul 8 · Ein Tag mit viel zu vielen Kilometern","Behoben: Update-Hinweis"],"c":[]},{"v":"2026.11.4","d":"2026-11-23","t":["Modul 0 · Haus & Grundriss (neu, Beta v0.10)","Modul 18 · Licht & Lampen (Addon v0.9)","Weihnachts-Theme & Adventskalender"],"c":["Modul 14 · v0.9","Modul 15 · v0.2"]},{"v":"2026.11.3.1","d":"2026-11-17","t":["Kopf, Chat und E-Mail","Kopf, Store und Labs","Behoben: E-Mail-Knopf"],"c":[]},{"v":"2026.11.3","d":"2026-11-17","t":["Startseite, Neue Optik","Modul 8 Elektroauto & Wallbox (v0.9, Vorabversion)","Modul 9 (v0.9) Wetter & Warnungen"],"c":["Modul 1 · v1.8","Modul 3 · v1.6"]}];
 /* Version dieser Oberfläche (aus manifest.json). Weicht sie von der installierten ab, läuft im Browser noch die alte Seite. */
-const FE_VER = "2026.11.5b12";
+const FE_VER = "2026.11.5b13";
 const CSS_MAIN = `
 .room.hph,.crow.hph{background-size:cover;background-position:center}
 .room.hph{background-image:linear-gradient(180deg,color-mix(in srgb,var(--card) 50%,transparent) 0,color-mix(in srgb,var(--card) 84%,transparent) 34%,color-mix(in srgb,var(--card) 95%,transparent) 100%),var(--ph)}
@@ -4137,6 +4137,132 @@ button.tm2dtn{border-radius:12px;border:1px solid color-mix(in srgb,var(--teal) 
 .tm2site .h{flex:none;display:flex;justify-content:space-between;gap:10px}.tm2site .h b{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tm2site .h em{font-style:normal;color:var(--mut)}
 .tm2site .v{flex:none}.tm2site .v b{display:block;font-size:2.4rem;line-height:1.1}.tm2site .v small{font-size:.85rem;font-weight:500;color:var(--mut);margin-left:6px}.tm2site .v span{font-size:.85rem;color:var(--mut)}
 .tm2site .sl{flex:1;min-height:0;width:100%;max-height:240px;margin-top:auto}
+/* ---------- Stufe 5 · Modul 9 Wetter, 11 Melder, 17 Müll ---------- */
+.tm2wxk{display:flex;align-items:center;gap:6px;font-size:.78rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--mut)}
+.tm2wxln{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin-top:8px}.tm2wxln>span:not(.wxlvp):not(.tm2chip){display:inline-flex;align-items:center;gap:6px;font-size:.95rem}
+.tm2wxlb{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.tm2wxlb .btn2,.tm2wxv .btn2{min-height:48px;display:inline-flex;align-items:center;gap:8px}
+.tm2wxok{display:inline-flex;align-items:center;gap:6px;min-height:48px;color:var(--teal);font-weight:700}
+.tm2wxn{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:10px}
+.tm2wxl{grid-column:1;grid-row:1;margin:0;display:flex;align-items:stretch;overflow:hidden;padding:0;border-left:5px solid var(--wc)}
+.tm2wxl.ok{border-left-color:var(--teal)}.tm2wxl.on{background:color-mix(in srgb,var(--wc) 9%,var(--card))}
+.tm2wxlt{flex:1;min-width:0;padding:14px 16px;display:flex;flex-direction:column}.tm2wxlt>b{font-size:1.6rem;line-height:1.2;margin-top:4px}.tm2wxlt>small{color:var(--mut);font-size:.92rem}
+.tm2wxsc{flex:none;width:38%;max-width:300px;position:relative;overflow:hidden}.tm2wxsc svg{position:absolute;inset:0;width:100%;height:100%}
+.tm2wxt{grid-column:1;grid-row:2;min-height:0;display:flex}.tm2wxt .wxtiles{flex:1;min-height:0;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:10px}
+.tm2wxt .wxtl{min-height:0;overflow:hidden;justify-content:center}
+.tm2wxr{grid-column:2;grid-row:1/3;min-height:0;display:flex;flex-direction:column;gap:10px}.tm2wxr>.card{margin:0;min-height:0}
+.tm2wxoc{flex:none;gap:6px}.tm2wxo{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;background:color-mix(in srgb,var(--wc,var(--teal)) 10%,transparent)}
+.tm2wxo i{flex:none;width:10px;height:36px;border-radius:5px;background:var(--wc,var(--teal))}.tm2wxo.ok{--wc:#34d399}.tm2wxo span{min-width:0}.tm2wxo b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tm2wxo small{display:block;font-size:.8rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tm2wxvc{flex:1}.tm2wxvl{flex:1;min-height:0;display:grid;grid-template-rows:repeat(var(--n),minmax(0,1fr));gap:8px}
+.tm2wxv{min-height:0;overflow:hidden;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;border:1px solid var(--line)}.tm2wxv.done{opacity:.6}
+.tm2wxv .i{flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:rgba(127,127,127,.12);color:var(--teal)}
+.tm2wxv .t{flex:1;min-width:0}.tm2wxv .t b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tm2wxv .t small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:.82rem;color:var(--mut)}
+.tm2wxv em{flex:none;display:inline-flex;align-items:center;gap:4px;font-style:normal;font-size:.82rem;color:var(--teal)}
+.tm2wx48{flex:1;min-height:0}.tm2wx48 .tm2ch{flex:1;min-height:0}.tm2legend{display:flex;align-items:center;gap:6px;font-size:.82rem;color:var(--mut)}.tm2legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-left:8px}.tm2legend i.ln{height:3px}
+.tm2wxax{font-size:12px;fill:var(--mut)}.tm2wxg{stroke:var(--line);stroke-width:1}.tm2wxlim{stroke-width:2;stroke-dasharray:6 5}.tm2wxlt{font-size:12px;font-weight:700}.tm2wxtm{fill:rgba(127,127,127,.07)}
+.tm2wxm{flex:1;min-height:0;gap:8px}.tm2wxm .tm2sh{flex-wrap:wrap}.tm2wxmb{flex:1;min-height:0;position:relative}
+.tm2wxmi{position:absolute;inset:0;aspect-ratio:auto}.tm2wxmi img{object-fit:fill}.tm2wxmf{flex:none;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.tm2seg{display:flex;gap:4px;padding:4px;border-radius:14px;border:1px solid var(--line)}.tm2seg button{min-height:44px;min-width:64px;padding:0 14px;border:0;border-radius:10px;background:none;color:var(--mut);font:inherit;font-weight:700;cursor:pointer}.tm2seg button.sel{background:color-mix(in srgb,var(--teal) 20%,transparent);color:var(--primary-text-color)}
+.tm2.port .tm2wxn{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1.25fr) minmax(0,1fr)}
+.tm2.port .tm2wxl{grid-row:1}.tm2.port .tm2wxt{grid-row:2}.tm2.port .tm2wxt .wxtiles{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr))}
+.tm2.port .tm2wxr{grid-column:1;grid-row:3;flex-direction:row}.tm2.port .tm2wxr>.card{flex:1;min-width:0}
+.tm2.short .tm2wxlt>b{font-size:1.3rem}.tm2.short .wxtl .wxtg{display:none}
+/* Ruhebild bei einer Wetterwarnung */
+.tm2rwwx{flex:1;min-height:0;display:flex;align-items:center;gap:32px;padding:0 4vw}.tm2rw.port .tm2rwwx{flex-direction:column;justify-content:center;gap:16px}
+.tm2rwwxs{flex:1;min-width:0;align-self:stretch;position:relative;border-radius:28px;overflow:hidden;border:2px solid var(--wc)}.tm2rwwxs svg{position:absolute;inset:0;width:100%;height:100%}.tm2rw.port .tm2rwwxs{flex:none;width:100%;height:42vh}
+.tm2rwwxt{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}.tm2rwwxt>b{font-size:2.6rem;line-height:1.15}.tm2rwwxt>small{font-size:1.15rem;color:var(--mut)}.wxlvp.big{align-self:flex-start;font-size:1rem;padding:6px 14px}
+.tm2rwwxl{display:flex;flex-direction:column;gap:6px;margin-top:10px}.tm2rwwxl div{display:flex;align-items:center;gap:10px;font-size:1.15rem}.tm2rwwxl .ok svg{color:var(--teal)}.tm2rwwxl .no svg{color:var(--amber)}
+/* Melder */
+.tm2sfo{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr);gap:10px}
+.tm2sfo>.tm2sums{grid-column:1/3}.tm2sfst{grid-column:1/3;margin:0;display:flex;align-items:center;gap:18px;padding:14px 18px;border-left:5px solid #34d399}
+.tm2sfst.warn{border-left-color:#f59e0b}.tm2sfst.alarm{border-left-color:#ef4444;background:color-mix(in srgb,#ef4444 12%,var(--card))}
+.tm2sfst>div{min-width:0;display:flex;flex-direction:column}.tm2sfst b{font-size:1.6rem;line-height:1.2;margin-top:4px}.tm2sfst small{color:var(--mut);font-size:.92rem}.tm2sfsi{flex:none;display:grid;place-items:center}
+.tm2sf2{grid-column:1/3;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}.tm2sf2>.card{margin:0;min-height:0}
+.tm2sfdl{flex:1;min-height:0;display:flex;flex-direction:column;gap:6px}
+.tm2sfdr{flex:none;display:flex;align-items:center;gap:10px;min-height:48px;padding:4px 12px;border-radius:12px;border:1px solid var(--line);background:none;color:inherit;font:inherit;text-align:left;width:100%}
+button.tm2sfdr{cursor:pointer}.tm2sfdr>svg{flex:none;color:var(--c,var(--mut))}.tm2sfdr>span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tm2sfdr>b{flex:none;font-size:.85rem;color:var(--c,var(--teal))}
+.tm2sfdr.open{border-color:color-mix(in srgb,var(--amber) 60%,transparent);background:color-mix(in srgb,var(--amber) 10%,transparent)}.tm2sfdr.open>b,.tm2sfdr.open>svg{color:var(--amber)}
+.tm2sfd em.wa{color:var(--amber)}.tm2sfhint{flex:none;display:flex;align-items:center;gap:8px;margin-top:6px;font-size:.85rem;color:#93c5fd}
+.tm2sfg{flex:1;min-height:0;display:grid;grid-template-columns:repeat(var(--c),minmax(0,1fr));grid-template-rows:repeat(var(--r),minmax(0,1fr));gap:10px}
+.tm2sfm{min-width:0;min-height:0;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;gap:4px;padding:10px 12px;border-radius:16px;border:1px solid var(--line);border-top:4px solid var(--c);background:var(--card);color:inherit;font:inherit;text-align:left;cursor:pointer}
+.tm2sfm.alarm{background:color-mix(in srgb,#ef4444 14%,var(--card))}.tm2sfm.warn{background:color-mix(in srgb,#f59e0b 8%,var(--card))}.tm2sfm.pause,.tm2sfm.off{opacity:.75}
+.tm2sfmh{display:flex;align-items:center;gap:10px;min-width:0}.tm2sfmh .i{flex:none}.tm2sfmh .n{min-width:0}.tm2sfmh b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tm2sfmh small{display:block;font-size:.78rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tm2sfms{display:flex;align-items:center;gap:6px;font-size:.85rem;font-weight:700;color:var(--c)}.tm2sfms i{width:9px;height:9px;border-radius:50%;background:var(--c)}
+.tm2sfmb{display:flex;align-items:center;gap:8px}.tm2sfmb>i{flex:1;height:8px;border-radius:4px;background:rgba(127,127,127,.18);overflow:hidden}.tm2sfmb>i>i{display:block;height:100%}.tm2sfmb em{font-style:normal;font-size:.82rem;color:var(--mut)}
+.tm2sfp{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,2.2fr) minmax(0,1fr);gap:10px}.tm2sfp>.card{margin:0;min-height:0}
+.tm2sfpv{flex:1;min-height:0;display:flex}.tm2sfpv svg{flex:1;width:100%;height:100%}
+.tm2.port .tm2sf2,.tm2.port .tm2sfp{grid-template-columns:minmax(0,1fr)}.tm2.port .tm2sfp{grid-template-rows:minmax(0,1.6fr) minmax(0,1fr)}
+.tm2.short .tm2sfst b{font-size:1.3rem}.tm2.short .tm2sfst{padding:8px 14px}
+/* Müll */
+.tm2muo{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px}
+.tm2mut{margin:0;flex:none;display:flex;align-items:center;gap:22px;padding:16px 20px;border-left:5px solid var(--teal)}
+.tm2mut.today,.tm2mut.due{border-left-color:var(--amber);background:color-mix(in srgb,var(--amber) 9%,var(--card))}.tm2mut.back{border-left-color:#7dd3fc}
+.tm2mupic{flex:none;display:flex;align-items:flex-end;gap:4px}.tm2mutx{flex:1;min-width:0;display:flex;flex-direction:column}.tm2mutx>b{font-size:1.9rem;line-height:1.15;margin-top:4px}.tm2mutx>small{color:var(--mut);font-size:1rem}
+.tm2mubs{flex:none;display:flex;flex-direction:column;gap:8px}.tm2mub{min-height:64px;padding:0 26px;font-size:1.15rem;display:inline-flex;align-items:center;justify-content:center;gap:10px}.tm2mubs .btn2{min-height:48px}
+.tm2mubc{flex:1;min-height:0}.tm2mubg{flex:1;min-height:0;display:grid;grid-template-columns:repeat(var(--c),minmax(0,1fr));grid-template-rows:repeat(var(--r),minmax(0,1fr));gap:10px}
+.tm2mub1{min-width:0;min-height:0;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:10px;border-radius:16px;border:1px solid var(--line);border-bottom:4px solid var(--c);background:rgba(127,127,127,.06);color:inherit;font:inherit;text-align:center}
+button.tm2mub1{cursor:pointer}.tm2mub1 b{font-size:1.05rem}.tm2mub1 em{font-style:normal;font-weight:800;font-size:.9rem;color:var(--green,#34d399)}.tm2mub1 small{font-size:.8rem;color:var(--mut)}
+.tm2mub1.s-out,.tm2mub1.s-today{background:color-mix(in srgb,var(--amber) 14%,transparent)}.tm2mub1.s-out em,.tm2mub1.s-today em{color:var(--amber)}.tm2mub1.s-soon em{color:#facc15}
+.tm2mub1.s-done{background:color-mix(in srgb,var(--teal) 11%,transparent)}.tm2mub1.s-done em{color:var(--teal)}.tm2mub1.s-back em{color:#7dd3fc}.tm2mub1.s-none{opacity:.55}
+.tm2muc{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:10px}.tm2muc>.card{margin:0;min-height:0}
+.tm2mucal{min-height:0;display:flex}.tm2mucal>.card{flex:1;margin:0;min-height:0;display:flex;flex-direction:column;overflow:hidden}.tm2mucal .mucal2{flex:1;min-height:0;grid-auto-rows:minmax(0,1fr)}
+.tm2mucal .mucd2{min-height:0;overflow:hidden;font-size:.95rem}.tm2mucal .mucd2 u{height:6px}.tm2mucal .muyg{flex:1;min-height:0}.tm2mucal .ibtn{width:44px;height:44px}.tm2mucal .gsch{min-height:40px}
+.tm2mul{flex:1;min-height:0;display:flex;flex-direction:column;gap:6px}.tm2mur{flex:none;display:flex;align-items:center;gap:10px;min-height:48px;padding:4px 10px;border-radius:12px;background:rgba(127,127,127,.06)}
+.tm2mur .t{flex:1;min-width:0}.tm2mur .t b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tm2mur .t small{display:block;font-size:.8rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tm2mur>em{flex:none;font-style:normal;font-weight:700;color:var(--teal)}.tm2mur .k{flex:none;display:flex;gap:2px}.tm2mur .h{flex:none;text-align:right}.tm2mur .h b{display:block;font-size:.88rem}.tm2mur .h small{display:block;font-size:.74rem;color:var(--mut)}
+.tm2mur .h.ok b{color:var(--teal)}.tm2mur .h.sk b{color:var(--mut)}.tm2mur .h.no b{color:var(--amber)}.tm2muyb{flex:0 0 28%;height:10px}
+.tm2muhm{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}.tm2muhm.one{grid-template-columns:minmax(0,1fr)}.tm2muhm>.card{margin:0;min-height:0}
+.tm2muy .muleg{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:.74rem;color:var(--mut)}.tm2muy .muleg u{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:4px}
+.tm2.port .tm2mut{flex-wrap:wrap}.tm2.port .tm2mubs{flex-direction:row;width:100%}.tm2.port .tm2mubs .btn2{flex:1}
+.tm2.port .tm2muc,.tm2.port .tm2muhm{grid-template-columns:minmax(0,1fr)}.tm2.port .tm2muc{grid-template-rows:minmax(0,1.5fr) minmax(0,1fr)}
+.tm2.short .tm2mutx>b{font-size:1.4rem}.tm2.short .tm2mut{padding:8px 14px}.tm2.short .tm2mub{min-height:52px}
+.tm2wxt .wxtv{font-size:2rem;line-height:1.15}.tm2wxt .wxtv small{font-size:.9rem}.tm2wxt .wxtn{font-size:.95rem;line-height:1.35;overflow:visible}.tm2wxt .wxts{font-size:.85rem}.tm2wxt .wxtg{font-size:.78rem}
+.tm2.port .tm2wxt .wxtv{font-size:1.5rem}.tm2.port .tm2wxt .wxtl{padding:8px 12px}
+.tm2mub1 svg{width:auto;height:46%;max-height:170px}.tm2mub1 b{font-size:1.2rem}.tm2mub1 em{font-size:1rem}
+.tm2sf2 .tm2sfdr{min-height:56px;font-size:1.02rem}
+/* ---------- Tablet-Einstellungen in neuer Optik (2026.11.5b13) ---------- */
+.sheet.tmx{display:flex;flex-direction:column;gap:12px;max-width:980px}
+.tmxh{display:flex;align-items:center;gap:18px;padding:14px 16px;border-radius:18px;border:1px solid var(--line);background:linear-gradient(135deg,color-mix(in srgb,var(--teal) 12%,var(--card)),var(--card))}
+.tmxhi{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.tmxhi b{font-size:1.35rem}.tmxhi small{color:var(--mut)}
+.tmxchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.tmxchip{display:inline-flex;align-items:center;gap:6px;min-height:30px;padding:0 10px;border-radius:999px;border:1px solid var(--line);font-size:.8rem;color:var(--mut)}
+.tmxchip.ok{color:var(--primary-text-color);border-color:color-mix(in srgb,var(--teal) 55%,transparent);background:color-mix(in srgb,var(--teal) 10%,transparent)}.tmxchip.ok svg{color:var(--teal)}
+.tmxpv{flex:none;display:flex;gap:4px;padding:6px;border-radius:12px;border:3px solid #475569;background:#0b1117;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.tmxpv.land{width:150px;height:96px}.tmxpv.port{width:84px;height:124px;flex-direction:column}.tmxpv.cl{flex-direction:column}
+.tmxpr{flex:none;display:flex;flex-direction:column;gap:3px;width:18px}.tmxpd{flex:none;display:flex;justify-content:center;gap:3px;height:16px}
+.tmxpr i,.tmxpd i{display:grid;place-items:center;width:18px;height:14px;border-radius:4px;background:rgba(127,127,127,.18);color:var(--mut)}.tmxpr i.on,.tmxpd i.on{background:var(--teal);color:#04201d}
+.tmxpr i svg,.tmxpd i svg{width:10px;height:10px}
+.tmxpb{flex:1;min-width:0;min-height:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr 1fr;gap:3px}.tmxpb b{grid-column:1/3;font-size:.55rem;color:#cbd5e1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tmxpb span{border-radius:4px;background:rgba(127,127,127,.18)}.tmxpb span.w{grid-column:1/3;background:color-mix(in srgb,var(--teal) 25%,transparent)}
+.tmxpv.big .tmxpb b{font-size:.68rem}.tmxpv.mini{width:96px;height:60px;padding:4px;border-width:2px}.tmxpv.mini .tmxpr{width:10px}.tmxpv.mini .tmxpr i{width:10px;height:7px}.tmxpv.mini .tmxpd{height:8px}.tmxpv.mini .tmxpd i{width:10px;height:7px}.tmxpv.mini .tmxpb{grid-template-rows:1fr 1fr}
+.tmxlock{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:14px;border:1px solid color-mix(in srgb,var(--amber) 55%,transparent);background:color-mix(in srgb,var(--amber) 9%,transparent)}
+.tmxlock>span{flex:1;min-width:0;display:flex;flex-direction:column}.tmxlock small{color:var(--mut)}.tmxlock>svg{color:var(--amber)}
+.tmxtabs{display:flex;gap:4px;padding:4px;border-radius:16px;border:1px solid var(--line);background:var(--card);overflow-x:auto}
+.tmxtabs button{flex:1;min-width:96px;min-height:46px;padding:0 14px;border:0;border-radius:12px;background:none;color:var(--mut);font:inherit;font-weight:700;cursor:pointer;white-space:nowrap}.tmxtabs button.sel{background:var(--teal);color:var(--on-acc,#04201d)}
+.tmxbody{display:flex;flex-direction:column;gap:12px}
+.tmxc{display:flex;flex-direction:column;gap:2px;padding:6px 14px 10px;border-radius:18px;border:1px solid var(--line);background:var(--card)}
+.tmxct{padding:8px 0 4px;font-size:.78rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--mut)}.tmxct em{font-style:normal;color:var(--teal);margin-left:4px}
+.tmxr,.tmxt{display:flex;align-items:center;gap:12px;min-height:60px;padding:6px 0;flex-wrap:wrap}.tmxr+.tmxr,.tmxt+.tmxt{border-top:1px solid var(--line)}
+.tmxri{flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:rgba(127,127,127,.12);color:var(--teal)}
+.tmxrt{flex:1 1 220px;min-width:0;display:flex;flex-direction:column}.tmxrt small{font-size:.82rem;color:var(--mut)}
+.tmxrc{flex:none;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px;max-width:100%}.tmxr.wide .tmxrc{flex:1 1 300px}
+.tmxin{width:min(320px,100%);margin:0;min-height:44px}
+.tmxseg{display:flex;flex-wrap:wrap;gap:4px;padding:4px;border-radius:14px;border:1px solid var(--line);background:rgba(127,127,127,.05)}
+.tmxseg button{min-height:42px;min-width:64px;padding:0 14px;border:0;border-radius:10px;background:none;color:var(--mut);font:inherit;font-weight:700;cursor:pointer}.tmxseg button.sel{background:var(--teal);color:var(--on-acc,#04201d)}.tmxseg button:disabled{opacity:.5;cursor:default}
+.tmxlooks{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:2px 0 6px}
+.tmxlook{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:12px;border-radius:14px;border:2px solid var(--line);background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}.tmxlook.sel{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 8%,transparent)}
+.tmxlook small{color:var(--mut);font-size:.8rem}.tmxlook .tmxpv{margin-bottom:6px}
+.tmxnight{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:4px 0 6px 52px}.tmxnight label{display:flex;align-items:center;gap:6px;color:var(--mut)}.tmxnight input{margin:0;min-height:44px;width:auto;color-scheme:dark}
+.tmxhint{display:block;font-size:.82rem;color:var(--mut);margin:2px 0 6px}
+.tmxms{display:flex;flex-wrap:wrap;gap:8px;padding:4px 0 6px}
+.tmxm{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:none;color:var(--mut);font:inherit;font-weight:600;cursor:pointer}
+.tmxm.sel{border-color:color-mix(in srgb,var(--teal) 65%,transparent);background:color-mix(in srgb,var(--teal) 14%,transparent);color:var(--primary-text-color)}.tmxm.sel svg{color:var(--teal)}
+.tmxm em{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--teal);color:#04201d;font-style:normal;font-size:.78rem;font-weight:800}
+.tmxbtns{display:flex;flex-wrap:wrap;gap:8px;padding:4px 0 2px}.tmxbtns .btn2{display:inline-flex;align-items:center;gap:8px;min-height:46px}
+.tmxdisp{display:grid;grid-template-columns:1fr 1fr;gap:12px}.tmxdisp .tmxc{gap:6px}.tmxdisp .osel{margin:0}
+.tmxlive{display:inline-flex;align-items:center;gap:8px;font-weight:700}.tmxlive i{width:10px;height:10px;border-radius:50%;background:var(--gray,#64748b)}.tmxlive.on i{background:#34d399;box-shadow:0 0 0 4px rgba(52,211,153,.2)}.tmxlive.bad{color:var(--amber)}.tmxlive.bad i{background:var(--amber)}
+.tmxfoot{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}.tmxfoot .btn2{min-height:48px;display:inline-flex;align-items:center;gap:8px}
+@media(max-width:700px){.tmxdisp,.tmxlooks{grid-template-columns:1fr}.tmxh{flex-direction:column;align-items:flex-start}.tmxnight{padding-left:0}}
+.tmrest.tmnight{filter:brightness(.45)}
+.sheet.tmx>*{flex-shrink:0}.tmx .btn2{display:inline-flex;align-items:center;justify-content:center;gap:8px}.tmxfoot .btn2{flex:none;width:auto}.tmxtabs button{flex:1 0 auto}
 `;
 /* Umfragen: Popup, Karte auf der Startseite, Punkt am Einstellungen-Knopf */
 const CSS_UMF = `
@@ -8384,6 +8510,14 @@ class FensterHeizungPanel extends HTMLElement {
   /* ---------------- Aktionen ---------------- */
   _act(a, b) {
     const m = this._modal, i = +b.dataset.i, id = b.dataset.id;
+    /* Tablet-Modus (2026.11.5b13): Sprünge in ein anderes Modul („Hausfluss“, Knoten im Energiefluss) öffnen die Tablet-Seite.
+       Vorher wechselte nur das Modul der normalen Ansicht im Hintergrund, auf dem Tablet passierte sichtbar nichts. */
+    if (a === "mdgo" && this._tmOn && this._tmOn()) {
+      const k = b.dataset.k;
+      if (this._tmItems().some((x) => x.id === k)) { this._modal = null; this._renderModal(); this._tmAct("tmgo", { dataset: { k } }); }
+      else this._toast((this._tmC().dock_hide || []).includes(k) ? "Dieses Modul ist auf diesem Tablet ausgeblendet (Tablet-Einstellungen → Module)" : "Dieses Modul ist nicht eingeschaltet");
+      return;
+    }
     if (a === "menu") this.dispatchEvent(new Event("hass-toggle-menu", { bubbles: true, composed: true }));
     else if (a === "pkopen") { const was = this._pkId === b.dataset.pid; this._pkId = was ? null : b.dataset.pid; if (!was) this._pkS = null; this._renderModal(); if (!this._modal) this._render(); }
     else if (a === "pktab" || a === "pkarea" || a === "pkflt" || a === "pkmore" || a === "pkall" || a === "pkqclr") this._pkAct(a, b);
@@ -12594,7 +12728,7 @@ class FensterHeizungPanel extends HTMLElement {
     this._hass.callWS({ type: "fenster_heizung/sf_get" }).then((r) => { this._sfxRetry = 0; this._sfxD = { d: r || {}, ts: Date.now() }; }).catch(() => { const o = this._sfxD && this._sfxD.d && this._sfxD.d.cfg ? this._sfxD.d : null; this._sfxD = { d: o || { error: true }, ts: o ? Date.now() - 12000 : Date.now() }; this._sfxRetry = (this._sfxRetry || 0) + 1; if (this._sfxRetry <= 4) setTimeout(() => this._sfxLoad(true), 2500); })
       .finally(() => { this._sfxBusy = false; if (this._sfxVisible()) { this._render(); if (this._modal && this._modal.type === "sfset") this._renderModal(); } });
   }
-  _sfxVisible() { return !!(this._modal && (this._modal.type === "sfset" || this._modal.type === "sfdet" || this._modal.type === "sfalarm")) || (!!this._mdActive && this._mdActive() === "sf" && !this._stOpen); }
+  _sfxVisible() { return !!(this._modal && (this._modal.type === "sfset" || this._modal.type === "sfdet" || this._modal.type === "sfalarm")) || (!!this._mdActive && this._mdActive() === "sf" && !this._stOpen) || !!(this._tm2Shows && this._tm2Shows("sf")); }
   _sfx() { const d = (this._sfxD && this._sfxD.d) || {}, df = this._sfxDef(), c = d.cfg || {}; return { ...d, cfg: { ...df, ...c, bat: { ...df.bat, ...(c.bat || {}) }, off: { ...df.off, ...(c.off || {}) }, test: { ...df.test, ...(c.test || {}) }, notify: { ...df.notify, ...(c.notify || {}) }, kinds: c.kinds || df.kinds, excl: c.excl || [], acts: c.acts || [], meta: c.meta || {}, add: c.add || [], plan: { floors: c.plan && c.plan.floors && c.plan.floors.length ? c.plan.floors : df.plan.floors, items: (c.plan && c.plan.items) || [], bg: (c.plan && c.plan.bg) || {} }, quiet: { ...df.quiet, ...(c.quiet || {}) }, lead: c.lead != null ? c.lead : df.lead, depart: { ...df.depart, ...(c.depart || {}), frost: { ...df.depart.frost, ...((c.depart || {}).frost || {}) } }, proto: { ...df.proto, ...(c.proto || {}) }, stages: { s2: { ...df.stages.s2, ...((c.stages || {}).s2 || {}) }, s3: { ...df.stages.s3, ...((c.stages || {}).s3 || {}) }, s4: { ...df.stages.s4, ...((c.stages || {}).s4 || {}) } }, tts: { ...df.tts, ...(c.tts || {}) }, contact: { ...df.contact, ...(c.contact || {}) }, offask: { ...df.offask, ...(c.offask || {}) } } }; }
   _sfxSave(cfg) {
     if (!(this._sfxD && this._sfxD.d && this._sfxD.d.cfg)) { this._toast("Noch nicht geladen, bitte kurz warten und nochmal versuchen"); return; }
@@ -12715,7 +12849,7 @@ class FensterHeizungPanel extends HTMLElement {
     this._hass.callWS({ type: "fenster_heizung/wx_get" }).then((r) => { this._wxsD = { d: r || {}, ts: Date.now() }; }).catch(() => { this._wxsD = { d: { error: true }, ts: Date.now() }; })
       .finally(() => { this._wxsBusy = false; if (this._wxsVisible()) { this._render(); if (this._modal && ["wxset", "hswx", "wxalarm"].includes(this._modal.type)) this._renderModal(); } });
   }
-  _wxsVisible() { return !!(this._modal && ["wxset", "hswx", "wxalarm"].includes(this._modal.type)) || (this._stOpen && this._stA === "hs" && this._stS === "wx") || (!!this._mdActive && this._mdActive() === "wx" && !this._stOpen); }
+  _wxsVisible() { return !!(this._modal && ["wxset", "hswx", "wxalarm"].includes(this._modal.type)) || (this._stOpen && this._stA === "hs" && this._stS === "wx") || (!!this._mdActive && this._mdActive() === "wx" && !this._stOpen) || !!(this._tm2Shows && (this._tm2Shows("wx") || (this._tmSleep && this._tm2RestWxOn && this._tm2RestWxOn()))); }
   _wxs() { const d = (this._wxsD && this._wxsD.d) || {}, df = this._wxsDef(), c = d.cfg || {}; return { ...d, cfg: { ...df, ...c, warn: Object.fromEntries(Object.keys(df.warn).map((k) => [k, { ...df.warn[k], ...((c.warn || {})[k] || {}) }])), ahead: { ...df.ahead, ...(c.ahead || {}) }, official: { ...df.official, ...(c.official || {}) }, win: { ...df.win, ...(c.win || {}) }, notify: { ...df.notify, ...(c.notify || {}) }, acts: c.acts || [] } }; }
   _wxsSave(cfg) {
     if (!(this._wxsD && this._wxsD.d && this._wxsD.d.cfg)) { this._toast("Noch nicht geladen, bitte kurz warten und nochmal versuchen"); return; }
@@ -14165,7 +14299,7 @@ class FensterHeizungPanel extends HTMLElement {
   _tmModeSet(m) { try { localStorage.setItem("fh_tm_mode", m); } catch (_) { /* privater Modus */ } this._tmSleep = false; this._tmLast = Date.now(); }
   _tmOn() { const m = this._tmMode(); return m === "on" || (m === "auto" && this._tmTouch() && window.innerWidth >= 600); }
   _tmMe() { const id = this._tmId(), t = ((this._tm && this._tm.tablets) || []).find((x) => x.id === id); return t || { id, name: "Tablet", has_pin: false, cfg: {} }; }
-  _tmC() { return { size: "auto", idle_home: 2, sleep: 15, wake_warn: true, motion: "", screen: "", notify: "", off_after: 0, dock_hide: [], look: "new", rail: [], rest: "auto", ...(this._tmMe().cfg || {}) }; }
+  _tmC() { return { size: "auto", idle_home: 2, sleep: 15, wake_warn: true, motion: "", screen: "", notify: "", off_after: 0, dock_hide: [], look: "new", rail: [], rest: "auto", home: "st", rest_wx: true, night: { on: false, from: "22:00", to: "06:00", bri: 30 }, ...(this._tmMe().cfg || {}) }; }
   async _tmLoad() {
     if (this._tmBound !== true) { this._tmBound = true; this._tmBind(); }
     const k = this._tmKind();
@@ -14195,9 +14329,9 @@ class FensterHeizungPanel extends HTMLElement {
     if (this._tmSleep) { if (moved || newWarn) this._tmWake(); return; }
     if (newWarn && !this._modal) { this._tmView = "st"; this._tmLast = Date.now(); this._render(); return; }
     if (c.sleep && idle >= c.sleep * 60000) { this._tmSleep = true; this._modal = null; this._renderModal(); this._render(); return; }
-    if (c.idle_home && idle >= c.idle_home * 60000 && !this._tmHomed) { this._tmHomed = true; this._tm2Unl = 0; const full = this._tm2On() && !!this._evWallFull && !this._modal; if (full) this._tm2FullOff(); const paged = full || Object.values(this._tmPg || {}).some(Boolean) || Object.keys(this._tm2T || {}).length > 0; if (!this._modal) { this._tmPg = {}; this._tm2T = {}; } if ((this._tmV() !== "st" || paged) && !this._modal) { this._tmView = "st"; this._render(); } }
+    if (c.idle_home && idle >= c.idle_home * 60000 && !this._tmHomed) { this._tmHomed = true; this._tm2Unl = 0; const full = this._tm2On() && !!this._evWallFull && !this._modal; if (full) this._tm2FullOff(); const paged = full || Object.values(this._tmPg || {}).some(Boolean) || Object.keys(this._tm2T || {}).length > 0; if (!this._modal) { this._tmPg = {}; this._tm2T = {}; } if ((this._tmV() !== this._tmHome() || paged) && !this._modal) { this._tmView = this._tmHome(); this._render(); } }
   }
-  _tmV() { return this._tmView || "st"; }
+  _tmV() { return this._tmView || this._tmHome(); }
   _tmItems() {
     const hide = this._tmC().dock_hide, mods = this._mdList().filter((m) => m.id !== "st").map((m) => ({ id: m.id, name: m.short || m.name, icon: m.icon }));
     return [{ id: "st", name: "Start", icon: "home" }, ...mods].filter((x) => x.id === "st" || !hide.includes(x.id));
@@ -14243,7 +14377,8 @@ class FensterHeizungPanel extends HTMLElement {
     const rooms = this._collect();
     return rooms.length ? `<div class="tmrooms">${rooms.map((r) => this._tmRoom(r)).join("")}</div>` : `<div class="card empty">Noch keine Räume eingerichtet.</div>`;
   }
-  _tmSleepHtml() {
+  _tmSleepHtml() { const h = this._tmSleepHtml0(); return this._tmNight && this._tmNight() ? h.replace('class="tmrest', 'class="tmrest tmnight') : h; }
+  _tmSleepHtml0() {
     const mq = this._mqRest ? this._mqRest() : ""; if (mq) return mq;
     const wall = this._tm2RestWall ? this._tm2RestWall() : ""; if (wall) return wall;
     const facts = ["wetter", "alarm", "personen", "muell"].map((id) => this._hzBubDef(id)).filter((x) => x && x.i).map((x) => `<div>${ic(x.i, 26)}<span>${esc(x.b)}${x.s ? ` · ${esc(x.s)}` : ""}</span></div>`).join("");
@@ -14318,6 +14453,7 @@ class FensterHeizungPanel extends HTMLElement {
   _tmAct(a, b) {
     const k = b.dataset.k, m = this._modal;
     if (a.startsWith("tm2")) { this._tm2Act(a, b); return; }
+    if (this._tmxAct(a, b)) return;
     if (a === "tmgo") { this._tm2FullOff(); this._tmPg = {}; this._tm2T = {}; this._tmView = k; this._tmHomed = false; this._render(); }
     else if (a === "tmbub") { const d = this._hzBubDef(k) || {}; if (d.mod && this._mdList().some((x) => x.id === d.mod)) { this._tm2FullOff(); this._tmView = d.mod; this._render(); } }
     else if (a === "tmgomore") { this._tm2FullOff(); this._tmPg = {}; this._tm2T = {}; this._tmView = k; this._tmHomed = false; this._modal = null; this._renderModal(); this._render(); }
@@ -14358,6 +14494,7 @@ class FensterHeizungPanel extends HTMLElement {
     const f = t.dataset.f;
     if (f === "tmname") { this._tmSave({}, String(t.value || "").trim().slice(0, 24) || "Tablet"); return true; }
     if (f === "tmsel") { const k = t.dataset.k; this._tmPkOpen = false; this._tmSave({ [k]: t.value || "" }); return true; }
+    if (f === "tmnf" || f === "tmnt") { const v = String(t.value || ""); if (/^\d{2}:\d{2}$/.test(v)) this._tmSave({ night: { ...(this._tmC().night || {}), [f === "tmnf" ? "from" : "to"]: v } }); return true; }
     if (f === "tmnot") { this._tmSave({ notify: String(t.value || "").trim().replace(/^notify\./, "") }); return true; }
     return false;
   }
@@ -14385,43 +14522,7 @@ class FensterHeizungPanel extends HTMLElement {
       return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Weitere Module</b><span>Tablet-Modus</span></div>${close}</div>
         <div class="tmmore">${rest.map((x) => `<button class="tmdk ${this._tmV() === x.id ? "sel" : ""}" data-act="tmgo" data-k="${x.id}">${ic(x.icon, 26)}<span>${esc(x.name)}</span></button>`).join("")}</div></div>`.replace(/data-act="tmgo"/g, 'data-act="tmgomore"');
     }
-    const inT = m.type === "tmset", me = this._tmMe(), c = this._tmC(), kd = this._tmKind(), mode = this._tmMode(), adm = this._admin(), lock = this._tmLocked();
-    const seg = (act, cur, opts) => `<span class="gschs">${opts.map(([k, t]) => `<button class="gsch ${String(cur) === String(k) ? "sel" : ""}" data-act="${act}" data-k="${k}" aria-pressed="${String(cur) === String(k)}" ${lock ? "disabled" : ""}>${t}</button>`).join("")}</span>`;
-    const row = (t, s, ctl) => `<div class="vrow"><span>${t}${s ? `<small class="mut" style="display:block">${s}</small>` : ""}</span>${ctl}</div>`;
-    const sw = (act, on, label) => `<button class="sw ${on ? "on" : ""}" data-act="${act}" aria-pressed="${!!on}" aria-label="${esc(label)}" ${lock ? "disabled" : ""}></button>`;
-    const motions = Object.keys(st).filter((e) => e.startsWith("binary_sensor.") && ["motion", "occupancy", "presence"].includes((st[e].attributes || {}).device_class)), sws = this._tmScreens(c.screen);
-    const moAll = motions.length ? motions : Object.keys(st).filter((e) => e.startsWith("binary_sensor."));
-    const mods = this._mdList().filter((x) => x.id !== "st");
-    const pinRow = lock
-      ? `<div class="gst on">${ic("lock", 15)}<span>Die Einstellungen dieses Tablets sind mit einer PIN geschützt.</span></div><div class="gbtns"><button class="btn2 pri" data-act="tmunl">${ic("lock", 16)} Mit PIN entsperren</button></div>`
-      : row("PIN", me.has_pin ? "6 Stellen, schützt die Einstellungen" : "Noch keine PIN festgelegt", `<button class="btn2 ${me.has_pin ? "" : "pri"}" data-act="tmchg" style="flex:none">${ic("lock", 16)} ${me.has_pin ? "PIN ändern" : "PIN festlegen"}</button>`);
-    const list = !inT && adm ? `<div class="lsec" style="margin-top:14px">${ic("tablet", 15)}Tablets verwalten</div>${((this._tm && this._tm.tablets) || []).map((t) => `<div class="vrow"><span><b>${esc(t.name)}${t.id === me.id ? " (dieses)" : ""}</b><small class="mut" style="display:block">${t.kind === "fully" ? "Fully Kiosk" : t.kind === "app" ? "HA-App" : "Browser"} · ${t.size || ""} · ${t.has_pin ? "mit PIN" : "ohne PIN"} · zuletzt ${t.seen ? this._hzSince(new Date(t.seen * 1000).toISOString()) : "–"}</small></span><span class="gschs">${t.has_pin ? `<button class="gsch" data-act="tmreset" data-id="${esc(t.id)}">PIN zurücksetzen</button>` : ""}${t.id === me.id ? "" : `<button class="gsch" data-act="tmdel" data-id="${esc(t.id)}">Entfernen</button>`}</span></div>`).join("")}` : "";
-    return `<div class="ov" data-act="${inT ? "tmdone" : "close"}"></div><div class="sheet wide" role="dialog" aria-modal="true"><div class="sh"><div><b>Tablet-Modus</b><span>Gilt nur für dieses Gerät</span></div><button class="ibtn" data-act="${inT ? "tmdone" : "close"}" aria-label="Schließen">${ic("close", 20)}</button></div>
-      ${pinRow}
-      <div class="lsec" style="margin-top:12px">${ic("tablet", 15)}${inT ? "Dieses Tablet" : "Aktivierung"}</div>
-      ${inT ? "" : row("Tablet-Modus", "Ersetzt die normale Ansicht. Automatisch: auf Touchgeräten ab 600 px Breite.", seg("tmmode", mode, [["off", "Aus"], ["auto", "Automatisch"], ["on", "Immer an"]]))}
-      <div class="vrow"><span>Name dieses Tablets<small class="mut" style="display:block">Erkannt: ${esc(kd.label)}, ${window.innerWidth} × ${window.innerHeight}</small></span><input class="osel" data-f="tmname" value="${esc(me.name)}" maxlength="24" style="width:46%;margin:0" ${lock ? "disabled" : ""} aria-label="Name"></div>
-      ${row("Größe", "Bedienelemente und Schrift", seg("tmsz", c.size, [["auto", "Auto"], ["large", "Groß"], ["xl", "Sehr groß"]]))}
-      ${row("Aufbau", "Neu: Leiste links, Start ohne Scrollen", seg("tm2look", c.look, [["new", "Neu"], ["classic", "Wie bisher"]]))}
-      ${row("Zurück zu Start nach", "Ohne Berührung", seg("tmih", c.idle_home, [[0, "Aus"], [2, "2 Min."], [5, "5 Min."], [15, "15 Min."]]))}
-      ${row("Ruhemodus nach", "Dunkle Uhr statt Inhalt. Berühren oder Bewegung weckt auf.", seg("tmsl", c.sleep, [[0, "Aus"], [5, "5 Min."], [15, "15 Min."], [30, "30 Min."]]))}
-      ${this._tm2On() ? row("Ruhebild", "Auto: Wandanzeige, wenn Energie oder Hausfluss offen ist, sonst die Uhr", seg("tm2rest", c.rest, [["auto", "Auto"], ...[["en", "Energie"], ["ef", "Hausfluss"]].filter(([k]) => mods.some((x) => x.id === k) && (k !== "ef" || this._efxSp()))])) : ""}
-      ${row("Warnungen wecken auf", "Zum Beispiel ein ausgelöster Alarm", sw("tmww", c.wake_warn, "Warnungen wecken auf"))}
-      ${this._tm2On() ? `<div class="lsec" style="margin-top:12px">${ic("grid", 15)}Modulleiste</div>
-      <div class="mut sm" style="margin:0 0 6px">Quer links, hochkant unten: Start, bis zu vier Module und „Mehr“.</div>
-      <div class="gschs" style="flex-wrap:wrap">${this._tm2Rail(this._tmItems()).length ? this._tmItems().filter((x) => x.id !== "st").map((x) => { const on = this._tm2Rail(this._tmItems()).some((y) => y.id === x.id); return `<button class="gsch ${on ? "sel" : ""}" data-act="tm2rail" data-k="${x.id}" aria-pressed="${on}" ${lock ? "disabled" : ""}>${esc(this._tm2Name(x))}</button>`; }).join("") : ""}</div>` : ""}
-      <div class="lsec" style="margin-top:12px">${ic("grid", 15)}${this._tm2On() ? "Module anzeigen" : "Untere Leiste"}</div>
-      <div class="mut sm" style="margin:0 0 6px">${this._tm2On() ? "Abgewählte Module erscheinen weder in der Leiste noch unter „Mehr“." : "Start ist immer dabei. Bei schmalen Bildschirmen steht der Rest unter „Mehr“."}</div>
-      <div class="gschs" style="flex-wrap:wrap">${mods.map((x) => `<button class="gsch ${c.dock_hide.includes(x.id) ? "" : "sel"}" data-act="tmdock" data-k="${x.id}" aria-pressed="${!c.dock_hide.includes(x.id)}" ${lock ? "disabled" : ""}>${esc(x.short || x.name)}</button>`).join("")}</div>
-      <div class="lsec" style="margin-top:14px">${ic("eye", 15)}Bewegung und Display</div>
-      <div class="mut sm" style="margin:0 0 6px">Der Bewegungsmelder wird im Home Assistant überwacht und funktioniert auch bei ausgeschaltetem Display. Bei Bewegung geht das Display an, ohne Bewegung nach der eingestellten Zeit wieder aus.</div>
-      ${lock ? "" : `<div class="of"><div class="ol"><b>Bewegungsmelder</b></div></div>${this._wzSel(moAll, c.motion, "tmsel", 'data-k="motion"', "– keiner –")}<div class="of"><div class="ol"><b>Display-Schalter</b><span>Fully: Schalter „Screen“ · Kiosk Satellite: Licht „Screen“</span></div></div>${this._wzSel(sws, c.screen, "tmsel", 'data-k="screen"', "– keiner –", /screen|display|bildschirm/i)}`}
-      ${row("Display ausschalten nach", "Ohne Bewegung. Nur mit Display-Schalter.", seg("tmoff", c.off_after, [[0, "Nie"], [10, "10 Min."], [30, "30 Min."]]))}
-      <div class="vrow"><span>HA-App (Android)<small class="mut" style="display:block">Benachrichtigungsdienst, z. B. mobile_app_tablet. Schaltet nur ein.</small></span><input class="osel" data-f="tmnot" value="${esc(c.notify)}" placeholder="mobile_app_…" style="width:46%;margin:0" ${lock ? "disabled" : ""} aria-label="Benachrichtigungsdienst"></div>
-      ${inT ? "" : `<div class="lsec" style="margin-top:14px">${ic("copy", 15)}Fully Kiosk</div><div class="mut sm" style="margin:0 0 6px">Diesen Link in Fully unter Web Content Settings als Start-URL eintragen. Dann startet das Tablet immer im Tablet-Modus.</div><div class="tmurl"><code>${esc(this._tmUrlStr())}</code><button class="ibtn" data-act="tmcopy" aria-label="Kopieren">${ic("copy", 18)}</button></div>`}
-      ${this._mqOn && this._mqOn("tb") ? `<div class="lsec" style="margin-top:14px"><span class="lggd">★</span>&nbsp;Wand-Tablet-Extras</div>${row("Raum, Nacht, Schnellaktionen, Alarm", "Sponsor Max · gilt für dieses Tablet", `<button class="btn2" data-act="mqxset" data-k="tb" style="flex:none">Einstellen</button>`)}` : ""}
-      ${list}
-      <div class="gbtns" style="margin-top:14px">${inT ? `<button class="btn2" data-act="tmend" ${lock ? "disabled" : ""}>Tablet-Modus beenden</button><button class="btn2 pri" data-act="tmdone">${ic("check", 16)} Fertig</button>` : `<button class="btn2" data-act="close">Schließen</button><button class="btn2 pri" data-act="tmstart" ${lock ? "disabled" : ""}>${ic("tablet", 16)} Tablet-Modus jetzt starten</button>`}</div></div>`;
+    return this._tmSetHtml();   /* 2026.11.5b13: neue Optik mit Reitern (12db-tablet-menue.js) */
   }
   /* ================= Tablet-Modus · Neuer Aufbau, Stufe 1 (Konzept „Tabletmodus neu“) =================
      Ein Modul, eine Seite. Quer: Modulleiste links, hochkant: unten. Schlanke Kopfzeile mit einem Zustandssatz.
@@ -14615,6 +14716,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "tm2spgs") { (this._tm2T = this._tm2T || {}).gs = "win"; this._tmView = "gs"; this._tmHomed = false; this._render(); return true; }
     /* Modul 8: ganze Seite zum Bearbeiten (kommt über tm2g, also erst nach der PIN) */
     if (a === "tm2evfull") { this._evWallFull = true; this._wbTab = k === "set" && this._evNew() ? "veh" : k; this._tmHomed = false; this._render(); return true; }
+    if (a === "tm2sfdet") { this._modal = { type: "sfdet", id: k }; this._renderModal(); return true; }   /* Melder: Detailfenster statt Unterseite */
     if (a === "tm2prob") { this._modal = { type: "tm2prob" }; this._renderModal(); return true; }
     if (a === "tm2ww") { this._modal = { type: "tm2ww", kind: k }; this._renderModal(); return true; }
     /* Ändern erst nach der PIN: data-g ist die eigentliche Aktion */
@@ -14633,13 +14735,21 @@ class FensterHeizungPanel extends HTMLElement {
      Anzeigen geht immer. Einstellungen ändern fragt nach der PIN, wenn das Tablet eine hat (2 Minuten frei). */
   static TM2_TABS = { fh: [["rooms", "Räume"], ["stats", "Statistik"]], ww: [["now", "Jetzt"], ["times", "Zeiten"], ["hist", "Verlauf"]],
     en: [["now", "Jetzt"], ["hist", "Verlauf"], ["cost", "Kosten"]], gs: [["dev", "Geräte"], ["win", "Startfenster"], ["stats", "Statistik"]], ef: [["now", "Jetzt"], ["strom", "Strom"]],
-    ev: [["load", "Laden"], ["plan", "Planung"], ["stat", "Statistik"]], dt: [["price", "Preise"], ["dev", "Geräte"], ["check", "Tarif-Check"]], sp: [["now", "Prognose"], ["acc", "Treffsicherheit"], ["sites", "Anlagen"]] };
+    ev: [["load", "Laden"], ["plan", "Planung"], ["stat", "Statistik"]], dt: [["price", "Preise"], ["dev", "Geräte"], ["check", "Tarif-Check"]], sp: [["now", "Prognose"], ["acc", "Treffsicherheit"], ["sites", "Anlagen"]],
+    wx: [["now", "Jetzt"], ["h48", "48 Stunden"], ["map", "Karte"]], sf: [["ov", "Übersicht"], ["me", "Melder"], ["pl", "Grundriss"]], mu: [["now", "Abholung"], ["cal", "Kalender"], ["home", "Haushalt"]] };
   _tm2Fit(v) { if (v === "ev" && this._evWallFull) return false; return v === "st" || (!!this.constructor.TM2_TABS[v] && this._mdList().some((m) => m.id === v)); }
-  _tm2Tab(v) { const T = this.constructor.TM2_TABS[v], cur = (this._tm2T || {})[v]; return T.some((t) => t[0] === cur) ? cur : T[0][0]; }
+  /* Stufe 5: „Grundriss“ nur mit gezeichnetem Plan, „Karte“ nur, wenn die Wetterkarte an ist */
+  _tm2TabList(v) {
+    const T = this.constructor.TM2_TABS[v];
+    if (v === "sf" && !this._tm2SfPlanOn()) return T.filter((t) => t[0] !== "pl");
+    if (v === "wx" && !this._tm2WxMapOn()) return T.filter((t) => t[0] !== "map");
+    return T;
+  }
+  _tm2Tab(v) { const T = this._tm2TabList(v), cur = (this._tm2T || {})[v]; return T.some((t) => t[0] === cur) ? cur : T[0][0]; }
   _tm2Tabs(v) {
     if (!this._tm2Ready(v)) return "";
     const cur = this._tm2Tab(v);
-    return `<div class="tm2tabs" role="tablist">${this.constructor.TM2_TABS[v].map(([k, l]) => `<button role="tab" class="${cur === k ? "sel" : ""}" aria-selected="${cur === k}" data-act="tm2tab" data-v="${v}" data-k="${k}">${l}</button>`).join("")}</div>`;
+    return `<div class="tm2tabs" role="tablist">${this._tm2TabList(v).map(([k, l]) => `<button role="tab" class="${cur === k ? "sel" : ""}" aria-selected="${cur === k}" data-act="tm2tab" data-v="${v}" data-k="${k}">${l}</button>`).join("")}</div>`;
   }
   /* Reiter erst zeigen, wenn das Modul eingerichtet ist */
   _tm2Ready(v) {
@@ -14650,9 +14760,12 @@ class FensterHeizungPanel extends HTMLElement {
     if (v === "ev") return this._wbOn();
     if (v === "dt") return this._tm2TfReady();
     if (v === "sp") return this._tm2SpReady();
+    if (v === "wx") return this._tm2WxReady();
+    if (v === "sf") return this._tm2SfReady() && !!this._sfList().length;
+    if (v === "mu") return this._tm2MuReady();
     return !!this._efxD && this._efxSp() && !!this._tm2EfNodes().length;
   }
-  _tm2ModBody(v) { return v === "fh" ? this._tm2Fh() : v === "ww" ? this._tm2Ww() : v === "en" ? this._tm2En() : v === "gs" ? this._tm2Gs() : v === "ev" ? this._tm2Ev() : v === "dt" ? this._tm2Dt() : v === "sp" ? this._tm2Sp() : this._tm2Ef(); }
+  _tm2ModBody(v) { return v === "fh" ? this._tm2Fh() : v === "ww" ? this._tm2Ww() : v === "en" ? this._tm2En() : v === "gs" ? this._tm2Gs() : v === "ev" ? this._tm2Ev() : v === "dt" ? this._tm2Dt() : v === "sp" ? this._tm2Sp() : v === "wx" ? this._tm2Wx() : v === "sf" ? this._tm2Sf() : v === "mu" ? this._tm2Mu() : this._tm2Ef(); }
   _tm2ModStatus(v) {
     if (v === "ww") return this._wwConfigured() ? this._wwStatus()[1] : "Noch nicht eingerichtet";
     if (v === "en") {
@@ -14677,6 +14790,9 @@ class FensterHeizungPanel extends HTMLElement {
       if (!this._tm2SpReady()) return "Noch keine Prognose";
       const C = this._spCalc(); return C.night ? `Morgen ${this._spF(C.tmr)} kWh erwartet` : `Heute ${this._spF(C.base)} kWh erwartet`;
     }
+    if (v === "wx") return this._tm2WxStatus();
+    if (v === "sf") return this._tm2SfStatus();
+    if (v === "mu") return this._tm2MuStatus();
     if (v === "ef") {
       if (!this._tm2Ready("ef")) return "Für Sponsoren";
       const c = this._efxCfg(), list = this._tm2EfNodes(), nodes = list.map((p) => c.nodes[p]), calc = this._efxCalc(nodes);
@@ -14705,6 +14821,8 @@ class FensterHeizungPanel extends HTMLElement {
       else if (kind === "dtck") this._tm2DtCkChart(box, w, h);
       else if (kind === "sp") this._tm2SpChart(box, w, h);
       else if (kind === "spacc") this._tm2SpAccChart(box, w, h);
+      else if (kind === "wx48") this._tm2WxChart(box, w, h);
+      else if (kind === "wxmap") this._tm2WxMapDraw(box, w, h);
       else {
         const rooms = (kind === "fhroom" ? this._collect().filter((r) => r.id === box.dataset.id) : [...this._collect()].sort((a, b) => a.ci - b.ci));
         box.innerHTML = this._chart(rooms, { w, h });
@@ -15181,7 +15299,8 @@ class FensterHeizungPanel extends HTMLElement {
   /* ---------- Ruhebilder ---------- */
   _tm2RestKind() {
     if (!this._tm2On()) return "";
-    const want = this._tmC().rest, k = want === "en" || want === "ef" ? want : this._tmV() === "en" || this._tmV() === "ef" ? this._tmV() : "";
+    const want = this._tmC().rest; if (want === "clock") return "";
+    const k = want === "en" || want === "ef" ? want : this._tmV() === "en" || this._tmV() === "ef" ? this._tmV() : "";
     if (!k || !this._mdList().some((m) => m.id === k)) return "";
     if (k === "en") return this._enConfigured() ? k : "";
     if (!this._efxD) { this._efxLoad(); return ""; }
@@ -15189,7 +15308,8 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _tm2RestWall() {
     try {
-      const k = this._tm2RestKind(), inner = k === "en" ? this._tm2RestEn() : k === "ef" ? this._tm2RestEf() : "";
+      /* Stufe 5: Bei einer Wetterwarnung zeigt das Ruhebild die Wetter-Szene, egal welches Ruhebild gewählt ist */
+      const k = this._tm2RestWxOn() ? "wx" : this._tm2RestKind(), inner = k === "wx" ? this._tm2RestWx() : k === "en" ? this._tm2RestEn() : k === "ef" ? this._tm2RestEf() : "";
       if (!inner) return "";
       const d = new Date();
       return `<div class="tmrest tm2rw ${this._tm2Land() ? "land" : "port"}" data-kind="${k}"><div class="tm2rwh"><span class="tm2rwt"><b data-tmclk>${d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</b><small data-tmdate>${d.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}</small></span>${this._tm2RestHints()}</div>${inner}<div class="tmrw">Antippen zum Aufwecken</div></div>`;
@@ -15620,6 +15740,427 @@ class FensterHeizungPanel extends HTMLElement {
   _tm2SpModal(m) {
     const x = this._tm2SpDays(this._sp()).find((y) => y.d === m.id);
     return `<div class="ov" data-act="close"></div><div class="sheet wide tm2rm spx" role="dialog" aria-modal="true"><div class="sh"><div><b>Treffsicherheit${x && this._tm2SpHit(x) != null ? ` ${this._tm2SpHit(x)} %` : ""}</b><small>Solar-Prognose</small></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>${x ? this._spDay1(x) : `<div class="mut">Für diesen Tag gibt es keine Werte.</div>`}</div>`;
+  }
+  /* ================= Tablet-Modus · Stufe 5: Warnen und Erinnern (Modul 9, 11 und 17) ohne Scrollen =================
+     Modul 9 Wetter: Reiter Jetzt (Lage, sechs Warnkacheln, amtlich, Vorsorge), 48 Stunden (Temperatur und Wind als Kurven) und Karte (DWD).
+     Modul 11 Melder: Reiter Übersicht (Zustand, vier Werte, Abfahrt, Als Nächstes), Melder (bis zu 12 je Seite) und Grundriss (nur mit Plan).
+     Modul 17 Müll: Reiter Abholung (was heute zu tun ist, alle Tonnen), Kalender (Monat, wer ist dran) und Haushalt (Verlauf, Jahr, Kosten).
+     Anzeigen und „Verstanden“, „Steht draußen“ gehen immer. Geräte schalten und Einstellungen fragen nach der PIN, wenn das Tablet eine hat.
+     Bei einer Wetterwarnung zeigt das Ruhebild die Wetter-Szene (Konzept: Variante C bei Warnung). */
+  _tm2Set(g, label, extra = "") { return this._admin() ? `<button class="tm2mini" data-act="tm2g" data-g="${g}"${extra}>${ic(this._tmMe().has_pin ? "lock" : "sliders", 16)}${label}</button>` : ""; }
+  _tm2Hm(iso) { const t = new Date(iso); return isFinite(t) ? `${String(t.getHours()).padStart(2, "0")}:${String(t.getMinutes()).padStart(2, "0")}` : ""; }
+  _tm2When(iso) {
+    const t = new Date(iso); if (!isFinite(t)) return "";
+    const d0 = new Date(); d0.setHours(0, 0, 0, 0); const n = Math.floor((t - d0) / 864e5);
+    return `${n === 0 ? "" : n === 1 ? "morgen " : n === -1 ? "gestern " : t.toLocaleDateString("de-DE", { weekday: "short" }) + " "}${this._tm2Hm(iso)}`;
+  }
+
+  /* ---------- Modul 9 · Wetter & Warnungen ---------- */
+  _tm2WxReady() { return !!(this._wxsD && this._wxsD.d && this._wxsD.d.cfg); }
+  _tm2WxMapOn() { const M = (this._wxs().cfg || {}).map; return !M || M.on !== false; }
+  /* Lage in einem Satz – dieselbe Rechnung wie auf der normalen Modulseite */
+  _tm2WxSit() {
+    const S = this._wxs(), C = S.cfg, NM = this._wxsNames(), live = !S.error && !!S.state, W = (live ? S.state.warn : this._wxsLocal()) || {}, d = this._wxWarn(), hm = (iso) => this._tm2Hm(iso);
+    const KEYS = Object.keys(NM), on = (k) => !!(C.warn[k] && C.warn[k].on), lvOf = (k) => Math.max(1, Math.min(4, Number((W[k] || {}).lv) || 1)), nmOf = (k) => (k === "frost" && (W.frost || {}).kind === "ice" ? "Glätte" : NM[k]);
+    const act = KEYS.filter((k) => on(k) && (W[k] || {}).a).sort((a, b) => lvOf(b) - lvOf(a)), soon = KEYS.filter((k) => on(k) && !(W[k] || {}).a && (W[k] || {}).ahead);
+    const OL = (live && S.state.officials) || [], cur = OL.filter((x) => !x.vorab && !x.kommt).sort((a, b) => b.stufe - a.stufe);
+    const own = act.length ? lvOf(act[0]) : 0, off = cur.length ? cur[0].stufe : 0, lv = Math.max(own, off), offTop = off > own;
+    const tone = lv ? "hot" : soon.length || OL.length ? "soon" : "ok";
+    let head, sub;
+    if (offTop) { head = cur[0].titel; sub = `Amtlich${cur[0].bis ? ` bis ${this._tm2When(cur[0].bis)} Uhr` : ""}${act.length ? ` · gemessen: ${nmOf(act[0])}` : ""}`; }
+    else if (act.length) { const w = W[act[0]] || {}; head = `${nmOf(act[0])} · Stufe ${own}${act.length > 1 ? ` und ${act.length - 1} weitere` : ""}`; sub = `${w.since ? `Seit ${hm(w.since)} Uhr` : "Gerade aktiv"}${cur.length ? ` · amtlich: ${cur[0].titel}` : ""}`; }
+    else if (soon.length) { const w = W[soon[0]]; head = `${nmOf(soon[0])} wird erwartet`; sub = `Ab etwa ${this._tm2When(w.ahead)} Uhr${w.ahead_lv ? ` · Stufe ${w.ahead_lv}` : ""}`; }
+    else if (OL.length) { head = OL[0].titel; sub = `${OL[0].vorab ? "Vorabinformation" : "Kommt"}${OL[0].von ? ` ab ${this._tm2When(OL[0].von)} Uhr` : ""}`; }
+    else { head = "Keine Warnung"; sub = "Alle eingeschalteten Warnungen sind ruhig."; }
+    return { S, C, NM, W, d, live, act, soon, OL, cur, lv, tone, head, sub, hm };
+  }
+  _tm2WxStatus() {
+    if (!this._tm2WxReady()) return "Wird geladen";
+    const X = this._tm2WxSit(), d = X.d;
+    if (X.lv || X.tone === "soon") return esc(X.head);
+    return ["Keine Warnung", d.o.t != null ? `${num(d.o.t, 1)} °C` : "", isFinite(d.mx) && d.mx > 0 ? `Wind ${num(d.mx, 0)} km/h` : ""].filter(Boolean).join(" · ");
+  }
+  _tm2Wx() {
+    this._wxsLoad();
+    if (!this._tm2WxReady()) return this._tm2None("cloud", this._wxsD && this._wxsD.d && this._wxsD.d.error ? "Wetter konnte nicht geladen werden." : "Wetter wird geladen …");
+    const t = this._tm2Tab("wx");
+    return t === "h48" ? this._tm2Wx48() : t === "map" ? this._tm2WxMap() : this._tm2WxNow();
+  }
+  _tm2WxNow() {
+    const X = this._tm2WxSit(), { S, C, NM, W, d, live, hm } = X, st = S.state || {}, col = this._wxLvCol(X.lv), land = this._tm2Land();
+    const ICO = { storm: "fan", thunder: "bolt", hail: "snow", frost: "thermo", heat: "sun", rain: "drop" };
+    const wx = d.w ? (WX[d.w.state] || ["cloud", d.w.state]) : null;
+    const now = [wx && `<span>${ic(wx[0], 18)}${esc(wx[1])}</span>`, d.o.t != null && `<span>${ic("thermo", 18)}${num(d.o.t, 1)} °C</span>`, isFinite(d.mx) && d.mx > 0 && `<span>${ic("fan", 18)}${num(d.mx, 0)} km/h</span>`].filter(Boolean).join("");
+    const pill = `<span class="wxlvp" style="--wc:${X.tone === "soon" && !X.lv ? "#facc15" : col}">${X.lv ? `Stufe ${X.lv} · ${this._wxLvName(X.lv)}` : X.tone === "soon" ? "Vorwarnung" : "Ruhig"}</span>`;
+    /* Bedienung: „Verstanden“ ohne PIN, Rollläden schließen nur nach der PIN */
+    const covers = (C.acts || []).some((x) => String(x.ent).startsWith("cover.") && x.do === "close");
+    const btns = [st.any ? (st.acked ? `<span class="tm2wxok">${ic("check", 18)}Quittiert</span>` : `<button class="btn2 pri" data-act="wxsack">${ic("check", 18)}Verstanden</button>`) : "",
+      st.any && covers && this._admin() ? `<button class="btn2" data-act="tm2g" data-g="wxsclose">${ic(this._tmMe().has_pin ? "lock" : "blinds", 18)}Alles schließen</button>` : ""].join("");
+    const sc = this._wxScSvg(this._wxScState(S, W, X.lv));
+    const lage = `<div class="card tm2wxl ${X.lv ? "on" : X.tone}" style="--wc:${X.tone === "soon" && !X.lv ? "#facc15" : col}"><div class="tm2wxlt"><span class="tm2wxk">${ic("shield", 15)}Lage</span><b>${esc(X.head)}</b><small>${esc(X.sub)}</small>
+      <div class="tm2wxln">${pill}${now}</div>${btns ? `<div class="tm2wxlb">${btns}</div>` : ""}</div><div class="tm2wxsc">${sc}</div></div>`;
+    const tiles = `<div class="tm2wxt">${this._wxTiles({ S, W, C, NM, ICO, d, hm, live })}</div>`;
+    /* Rechts: amtliche Warnungen und Vorsorge */
+    const offOn = C.official.on;
+    const offRows = X.OL.slice(0, land ? 2 : 1).map((x) => `<div class="tm2wxo" style="--wc:${this._wxLvCol(x.stufe)}"><i></i><span><b>${esc(x.titel)}</b><small>${x.vorab ? "Vorab" : x.kommt ? "Kommt" : `Stufe ${x.stufe}`}${x.bis ? ` · bis ${this._tm2When(x.bis)} Uhr` : ""} · ${esc(String(x.quelle || "").split(" · ")[0])}</small></span></div>`).join("");
+    const off = offOn ? `<div class="card tm2cc tm2wxoc"><div class="tm2sh"><span>${ic("shield", 18)}Amtlich</span>${X.OL.length > (land ? 2 : 1) ? `<em>+${X.OL.length - (land ? 2 : 1)} weitere</em>` : ""}</div>${offRows || `<div class="tm2wxo ok"><i></i><span><b>Keine amtliche Warnung</b><small>Deutscher Wetterdienst</small></span></div>`}</div>` : "";
+    const V = S.vor || [], per = land ? (window.innerHeight < 760 ? 2 : 3) : 2, p = this._tm2Page("wxvor", V.length, per), ico = { battery: "energy", car: "car", sun: "sun", window: "window", snow: "snow" };
+    const vrow = (x) => `<div class="tm2wxv ${x.done ? "done" : ""}"><span class="i">${ic(ico[x.icon] || "info", 22)}</span><span class="t"><b>${esc(x.title)}</b><small>${esc(x.text)}</small></span>${x.done ? `<em>${ic("check", 16)}${hm(x.done)}</em>` : x.btn && this._admin() ? `<button class="btn2" data-act="tm2g" data-g="wxsvor" data-k="${esc(x.id)}">${esc(x.btn)}</button>` : x.auto ? `<em>automatisch</em>` : ""}</div>`;
+    const vor = `<div class="card tm2cc tm2wxvc" data-sw="wxvor"><div class="tm2sh"><span>${ic("list", 18)}Vorsorge</span>${this._tm2Set("wxsopen", "Einstellungen")}</div>${V.length ? `<div class="tm2wxvl" style="--n:${per}">${V.slice(p.from, p.to).map(vrow).join("")}</div>${this._tm2Pager("wxvor", p, "")}` : `<small class="tm2note">Gerade gibt es nichts vorzubereiten. Bei Frost, Sturm oder Hitze steht hier, was du tun kannst.</small>`}</div>`;
+    return `<div class="tm2wxn">${lage}${tiles}<div class="tm2wxr">${off}${vor}</div></div>`;
+  }
+  /* 48 Stunden: Temperatur mit Frostzeit, Wind gegen die Sturmgrenze */
+  _tm2WxSeries() {
+    const S = this._wxs(), T = S.tl || {};
+    if ((T.t || []).length > 1 && Array.isArray(T.temp)) return { t: T.t, temp: T.temp, wind: T.wind || [], cond: T.cond || [] };
+    const fc = S.fc || [];   /* ältere Backends: nur die 12 Stunden der Vorwarnung */
+    return { t: fc.map((x) => x.t), temp: fc.map((x) => (isFinite(x.temp) ? x.temp : null)), wind: fc.map((x) => (isFinite(x.wind) ? x.wind : null)), cond: fc.map((x) => x.cond || "") };
+  }
+  _tm2Wx48() {
+    const S = this._wxs(), C = S.cfg, R = this._tm2WxSeries(), n = R.t.length;
+    if (n < 2) return this._tm2None("clock", "Keine Stundenvorhersage.", "Die Wetter-Entität liefert keine Vorhersage je Stunde. Die Kurven brauchen sie.");
+    const fin = (v) => v != null && isFinite(v), T = R.temp.map((v, i) => [v, i]).filter(([v]) => fin(v)), Wd = R.wind.map((v, i) => [v, i]).filter(([v]) => fin(v));
+    const lo = T.length ? T.reduce((a, b) => (b[0] < a[0] ? b : a)) : null, hi = Wd.length ? Wd.reduce((a, b) => (b[0] > a[0] ? b : a)) : null;
+    const fr = C.warn.frost, frost = fr.on ? T.find(([v]) => v <= fr.temp) : null, st = C.warn.storm, storm = st.on ? Wd.find(([v]) => v >= st.kmh) : null;
+    const own = (S.tl || {}).own || {}, first = (() => { for (let i = 0; i < n; i++) { const k = Object.keys(own).find((q) => (own[q] || [])[i] > 0); if (k) return [k, i, own[k][i]]; } return null; })();
+    const at = (i) => `${this._tm2When(R.t[i])} Uhr`;
+    const tiles = [
+      this._tm2Tile4("Tiefstwert", lo ? num(lo[0], 1) : "–", lo ? "°C" : "", lo ? at(lo[1]) : "", lo && fr.on && lo[0] <= fr.temp ? "#60a5fa" : "#2dd4bf"),
+      this._tm2Tile4("Stärkster Wind", hi ? num(hi[0], 0) : "–", hi ? "km/h" : "", hi ? at(hi[1]) : "", hi && st.on && hi[0] >= st.kmh ? this._wxLvCol(hi[0] >= (st.kmh3 || 90) ? 3 : 1) : "#2dd4bf"),
+      this._tm2Tile4("Frost", frost ? this._tm2When(R.t[frost[1]]) : fr.on ? "keiner" : "aus", "", frost ? `ab ${fr.temp} °C` : fr.on ? `in ${n} Stunden` : "Warnung ausgeschaltet", frost ? "#60a5fa" : "#64748b"),
+      this._tm2Tile4("Nächste Warnung", first ? this._tm2When(R.t[first[1]]) : "keine", "", first ? `${this._wxsNames()[first[0]]} · Stufe ${first[2]}` : storm ? `Sturm ab ${at(storm[1])}` : `in ${n} Stunden`, first ? this._wxLvCol(first[2]) : "#34d399")].join("");
+    return `<div class="tm2sums">${tiles}</div><div class="card tm2cc tm2wx48"><div class="tm2sh"><span>${ic("chart", 18)}Nächste ${n} Stunden</span><span class="tm2legend"><i style="background:#60a5fa"></i>Temperatur<i style="background:#2dd4bf"></i>Wind${st.on ? `<i class="ln" style="background:${this._wxLvCol(1)}"></i>Sturmgrenze` : ""}</span></div><div class="tm2ch" data-tm2ch="wx48"></div></div>`;
+  }
+  _tm2WxChart(box, w, h) {
+    const S = this._wxs(), C = S.cfg, R = this._tm2WxSeries(), n = R.t.length; if (n < 2) { box.innerHTML = ""; return; }
+    const padL = 44, padR = 12, gap = 26, axis = 22, ph = Math.max(50, (h - gap - axis) / 2), cw = (w - padL - padR) / n, X = (i) => padL + cw * (i + 0.5);
+    const t0 = new Date(R.t[0]).getTime(), mid = new Date(t0); mid.setHours(24, 0, 0, 0);
+    const iOf = (ms) => (ms - t0) / 3600e3, xm0 = padL + cw * (iOf(mid.getTime()) + 0.5 - 0.5), xm1 = padL + cw * (iOf(mid.getTime() + 864e5) + 0.5 - 0.5);
+    const panel = (vals, y0, lo, hi, color, unit, lines, shade) => {
+      const Y = (v) => y0 + ph - ((v - lo) / Math.max(1e-6, hi - lo)) * ph;
+      let path = "", start = true;
+      vals.forEach((v, i) => { if (v == null || !isFinite(v)) { start = true; return; } path += `${start ? "M" : "L"}${X(i).toFixed(1)} ${Y(v).toFixed(1)}`; start = false; });
+      const ticks = [lo, (lo + hi) / 2, hi].map((v) => `<text x="${padL - 6}" y="${(Y(v) + 4).toFixed(1)}" text-anchor="end" class="tm2wxax">${num(v, 0)}</text><line x1="${padL}" x2="${w - padR}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" class="tm2wxg"/>`).join("");
+      const ls = lines.map(([v, c, t]) => (v >= lo && v <= hi ? `<line x1="${padL}" x2="${w - padR}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" stroke="${c}" class="tm2wxlim"/><text x="${w - padR - 4}" y="${(Y(v) - 5).toFixed(1)}" text-anchor="end" fill="${c}" class="tm2wxlt">${t}</text>` : "")).join("");
+      const sh = shade ? vals.map((v, i) => (v != null && isFinite(v) && shade(v) ? `<rect x="${(X(i) - cw / 2).toFixed(1)}" y="${y0}" width="${cw.toFixed(1)}" height="${ph}" fill="${shade(v)}" opacity=".18"/>` : "")).join("") : "";
+      return `${sh}${ticks}${ls}<path d="${path}" fill="none" stroke="${color}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><text x="${padL}" y="${y0 - 6}" class="tm2wxax">${unit}</text>`;
+    };
+    const tv = R.temp.filter((v) => v != null && isFinite(v)), wv = R.wind.filter((v) => v != null && isFinite(v)), fr = C.warn.frost, st = C.warn.storm;
+    const tlo = Math.floor(Math.min(...tv, fr.on ? fr.temp - 2 : Infinity) - 1), thi = Math.ceil(Math.max(...tv, fr.on ? fr.temp + 2 : -Infinity) + 1);
+    const whi = Math.ceil(Math.max(...wv, st.on ? st.kmh * 1.15 : 0, 20) / 10) * 10;
+    const tp = panel(R.temp, 18, tlo, thi, "#60a5fa", "°C", fr.on ? [[fr.temp, "#93c5fd", `Frost ab ${fr.temp} °C`]] : [], fr.on ? (v) => (v <= fr.temp ? "#60a5fa" : "") : null);
+    const wp = panel(R.wind, 18 + ph + gap, 0, whi, "#2dd4bf", "km/h", st.on ? [[st.kmh, this._wxLvCol(1), `Sturm ab ${st.kmh}`], ...(st.kmh3 && st.kmh3 <= whi ? [[st.kmh3, this._wxLvCol(3), `Stufe 3 ab ${st.kmh3}`]] : [])] : [], st.on ? (v) => (v >= st.kmh ? this._wxLvCol(v >= (st.kmh3 || 999) ? 3 : 1) : "") : null);
+    const ticks = R.t.map((t, i) => { const d = new Date(t); return d.getHours() % 6 === 0 ? `<text x="${X(i).toFixed(1)}" y="${h - 5}" text-anchor="middle" class="tm2wxax">${d.getHours() === 0 ? d.toLocaleDateString("de-DE", { weekday: "short" }) : `${d.getHours()} Uhr`}</text>` : ""; }).join("");
+    const tom = xm0 < w - padR ? `<rect x="${Math.max(padL, xm0).toFixed(1)}" y="0" width="${(Math.min(w - padR, xm1) - Math.max(padL, xm0)).toFixed(1)}" height="${h - axis}" class="tm2wxtm"/><text x="${(Math.max(padL, xm0) + 6).toFixed(1)}" y="12" class="tm2wxax">Morgen</text>` : "";
+    box.innerHTML = `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="Temperatur und Wind der nächsten ${n} Stunden">${tom}${tp}${wp}${ticks}</svg>`;
+  }
+  /* Karte: DWD-Warnkarte oder Regenradar, so groß wie der Platz */
+  _tm2WxMap() {
+    const S = this._wxs(), M = (S.cfg && S.cfg.map) || {}, layer = this._wxMapL || M.layer || "warn", zoom = this._wxMapZ || M.zoom || "region", Z = this.constructor.WX_MAP_Z;
+    const legend = layer === "radar" ? `<span class="wxmlg rad">leicht<i class="grad"></i>stark</span>` : `<span class="wxmlg">${[1, 2, 3, 4].map((l) => `<i style="background:${this._wxLvCol(l)}"></i>${l}`).join("")}<em>Stufe</em></span>`;
+    const seg = (act, cur, L) => `<div class="tm2seg">${L.map(([k, t]) => `<button class="${cur === k ? "sel" : ""}" data-act="${act}" data-k="${k}" aria-pressed="${cur === k}">${t}</button>`).join("")}</div>`;
+    return `<div class="card tm2cc tm2wxm"><div class="tm2sh">${seg("wxsmapl", layer, [["warn", "Warnungen"], ["radar", "Regenradar"]])}${seg("wxsmapz", zoom, Object.entries(Z).map(([k, [, t]]) => [k, t]))}</div>
+      <div class="tm2wxmb" data-tm2ch="wxmap"></div><div class="tm2wxmf">${legend}<small class="tm2note">Deutscher Wetterdienst · neu alle 5 Minuten</small></div></div>`;
+  }
+  _tm2WxMapDraw(box, w, h) {
+    const S = this._wxs(), M = (S.cfg && S.cfg.map) || {}, layer = this._wxMapL || M.layer || "warn", zoom = this._wxMapZ || M.zoom || "region";
+    const W = Math.round(w), H = Math.round(h), m = this._wxMapUrl(layer, zoom, W, H);
+    box.innerHTML = `${m.ok && !m.inDe ? `<div class="wxnote">${ic("info", 15)}Dein Zuhause liegt außerhalb Deutschlands. Der DWD zeigt nur Deutschland.</div>` : ""}<div class="wxmimg tm2wxmi"><img src="${esc(m.base)}" data-keep="1" alt="" width="${W}" height="${H}" onerror="this.parentNode&&this.parentNode.classList.add('err')"><img src="${esc(m.url)}" data-keep="1" alt="${layer === "radar" ? "Niederschlagsradar" : "Warnkarte"} des Deutschen Wetterdienstes" width="${W}" height="${H}">
+      ${m.pin ? `<span class="wxpin" style="left:${m.pin[0].toFixed(2)}%;top:${m.pin[1].toFixed(2)}%" title="Zuhause">${ic("home", 14)}</span>` : ""}<div class="wxmerr">${ic("alert", 16)}Karte vom DWD gerade nicht erreichbar.</div></div>`;
+  }
+  /* Ruhebild bei einer Warnung: große Wetter-Szene mit Lage und dem, was schon passiert ist */
+  _tm2RestWxOn() {
+    if (!this._tm2On() || this._tmC().rest_wx === false || !this._mdState().on.wx || !this._tm2WxReady()) return false;
+    const st = this._wxs().state || {}; return !!st.any;
+  }
+  _tm2RestWx() {
+    const X = this._tm2WxSit(), { S, C, W } = X, col = this._wxLvCol(X.lv), run = (S.state && S.state.acts) || {};
+    const done = (C.acts || []).filter((a) => run[a.id] && run[a.id].state === "run").map((a) => `${this._wzName(a.ent)} ${({ close: "geschlossen", open: "geöffnet", on: "an", off: "aus", run: "ausgeführt" })[a.do] || ""}`.trim());
+    const todo = (S.vor || []).filter((x) => !x.done && !x.auto).map((x) => x.title), open = (S.open || []).map((nm) => `Fenster ${nm} offen`);
+    const lines = [...done.map((t) => [1, t]), ...open.map((t) => [0, t]), ...todo.map((t) => [0, t])].slice(0, 4);
+    const sc = this._wxScSvg(this._wxScState(S, W, X.lv));
+    return `<div class="tm2rwwx" style="--wc:${col}"><div class="tm2rwwxs">${sc}</div><div class="tm2rwwxt"><span class="wxlvp big" style="--wc:${col}">${X.lv ? `${esc(this._wxLvName(X.lv).toUpperCase())} · STUFE ${X.lv}` : "VORWARNUNG"}</span><b>${esc(X.head)}</b><small>${esc(X.sub)}</small>
+      ${lines.length ? `<div class="tm2rwwxl">${lines.map(([ok, t]) => `<div class="${ok ? "ok" : "no"}">${ic(ok ? "check" : "alert", 20)}${esc(t)}</div>`).join("")}</div>` : ""}</div></div>`;
+  }
+
+  /* ---------- Modul 11 · Rauch- & Sicherheitsmelder ---------- */
+  _tm2SfReady() { return !!(this._sfxD && this._sfxD.d && (this._sfxD.d.cfg || this._sfxD.d.error)); }
+  _tm2SfPlanOn() { try { return this._sfx().cfg.plan.items.some((i) => i.t === "m" || i.t === "r"); } catch (_) { return false; } }
+  _tm2SfStatus() {
+    if (!this._tm2SfReady()) return "Wird geladen";
+    const T = this._sfStat();
+    if (!T.l.length) return "Noch keine Melder";
+    if (T.al.length) return `ALARM · ${esc(T.al.map((x) => x.room || x.area || x.name).join(", "))}`;
+    const p = [T.low.length && `${T.low.length} Batterie${T.low.length === 1 ? "" : "n"} schwach`, T.off.length && `${T.off.length} nicht erreichbar`, T.due.length && "Prüfung fällig", T.life.length && `${T.life.length} zu tauschen`].filter(Boolean);
+    return p.length ? esc(p.join(" · ")) : `Alles in Ordnung · ${T.act.length} Melder`;
+  }
+  _tm2Sf() {
+    this._sfxLoad();
+    if (!this._tm2SfReady()) return this._tm2None("shield", "Melder werden geladen …");
+    const T = this._sfStat();
+    if (!T.l.length) return `<div class="card empty tm2none">${ic("shield", 44)}<div>Noch keine Melder.</div><small>Melder aus Home Assistant erscheinen hier von selbst.</small>${this._tm2Set("sfxopen", "Einstellungen")}</div>`;
+    const t = this._tm2Tab("sf");
+    return t === "me" ? this._tm2SfMel(T) : t === "pl" && this._tm2SfPlanOn() ? this._tm2SfPlan(T) : this._tm2SfOv(T);
+  }
+  _tm2SfCol(st) { return { alarm: "#ef4444", pause: "#94a3b8", off: "#94a3b8", warn: "#f59e0b", ok: "#34d399" }[st] || "#64748b"; }
+  _tm2SfOv(T) {
+    const { S, C, l, al, low, off, due, life, act } = T, land = this._tm2Land(), bad = T.bad, withBat = act.filter((x) => x.bat != null);
+    let big, sub;
+    if (al.length) { big = al.length > 1 ? `${al.length} Alarme` : `${String(al[0].kind || "Alarm").replace(/melder$/i, "alarm")} · ${al[0].room || al[0].area || al[0].name}`; sub = `${al[0].since ? `Seit ${this._tm2Hm(al[0].since)} Uhr · ` : ""}${al.map((x) => x.name).join(", ")}`; }
+    else if (bad === "warn") { big = "Alles ruhig, aber Hinweise"; sub = this._tm2SfStatus(); }
+    else { big = "Alles in Ordnung"; sub = `${act.length} Melder · alle erreichbar · Batterien gut`; }
+    const stc = `<div class="card tm2sfst ${bad}"><span class="tm2sfsi">${this._gx("smoke", land ? 92 : 72, { alarm: bad === "alarm", off: bad === "warn" })}</span><div><span class="tm2wxk">${ic(bad === "alarm" ? "alert" : "shield", 15)}${bad === "alarm" ? "ALARM" : "Sicherheit im Haus"}</span><b>${esc(big)}</b><small>${sub}</small>
+      ${al.length ? `<div class="tm2wxlb"><button class="btn2 pri" data-act="tm2sfdet" data-k="${esc(al[0].id)}">${ic("alert", 18)}Melder ansehen</button></div>` : ""}</div></div>`;
+    const G = "#34d399", A = "#f59e0b", Rr = "#ef4444";
+    const tiles = [
+      this._tm2Tile4("Melder", String(act.length), "", al.length ? `${al.length} im Alarm` : T.pa.length ? `${T.pa.length} ausgeschaltet` : "kein Alarm", al.length ? Rr : G),
+      this._tm2Tile4("Batterien", withBat.length ? `${withBat.length - low.length}/${withBat.length}` : "–", "gut", low.length ? `${low[0].name} ${num(low[0].bat, 0)} %` : "alle gut", low.length ? A : G),
+      this._tm2Tile4("Erreichbar", `${act.length - off.length}/${act.length}`, "", off.length ? `${off[0].name} offline` : "alle erreichbar", off.length ? A : G),
+      this._tm2Tile4("Prüfung", !C.test.on ? "aus" : due.length ? "fällig" : "läuft", "", S.test && S.test.last ? `zuletzt ${this._sfAgo(S.test.last)}` : "noch nie geprüft", due.length ? A : G)].join("");
+    /* Abfahrt-Prüfung */
+    const rows = this._sfDepRows(), open = rows.filter((x) => x.open), H = this._hass, fr = C.depart.frost;
+    const ft = fr && fr.on && fr.ent && H.states[fr.ent] ? parseFloat(fr.ent.startsWith("weather.") ? H.states[fr.ent].attributes.temperature : H.states[fr.ent].state) : NaN;
+    const per = land ? (window.innerHeight < 760 ? 3 : 4) : 3, pd = this._tm2Page("sfdep", rows.length, per);
+    const dep = `<div class="card tm2cc tm2sfd" data-sw="sfdep"><div class="tm2sh"><span>${ic("lock", 18)}Kann ich gehen?</span><em class="${open.length ? "wa" : "on"}">${rows.length ? (open.length ? `${open.length} offen` : "alles zu") : ""}</em></div>
+      ${rows.length ? `<div class="tm2sfdl">${rows.slice(pd.from, pd.to).map((x) => `<div class="tm2sfdr ${x.open ? "open" : ""}">${ic(x.ico, 22)}<span>${esc(x.name)}</span><b>${esc(x.txt)}</b></div>`).join("")}</div>${this._tm2Pager("sfdep", pd, "")}` : `<small class="tm2note">Hier steht, was offen ist, bevor du gehst: Fenster, Türen, Herd, Garage. Auswahl in den Einstellungen von Modul 11.</small>`}
+      ${isFinite(ft) && ft < fr.below ? `<div class="tm2sfhint">${ic("snow", 16)}Frost: draußen ${num(ft, 0)} °C. Fenster zu, Außenhahn prüfen.</div>` : ""}</div>`;
+    /* Als Nächstes */
+    const nx = [];
+    act.filter((x) => x.bat != null && x.bat < C.bat.pct).forEach((x) => nx.push([0, "energy", `Batterie ${x.name}`, x.bat_days != null ? `noch ~ ${this._sfDur(x.bat_days)}` : `${num(x.bat, 0)} %`, A, x.id]));
+    act.filter((x) => x.off).forEach((x) => nx.push([0, "alert", `${x.name} meldet sich nicht`, x.off_days ? `seit ${x.off_days} ${x.off_days === 1 ? "Tag" : "Tagen"}` : "", A, x.id]));
+    if (C.test.on && due.length) nx.push([0, "clock", due.length === 1 ? `Prüfung ${due[0].name}` : `Prüfung von ${due.length} Meldern`, "fällig", A, due.length === 1 ? due[0].id : ""]);
+    life.forEach((x) => nx.push([x.life_days < 0 ? 0 : 1, "tools", `${x.name} tauschen`, x.life_days < 0 ? "überfällig" : `in ${this._sfDur(x.life_days)}`, x.life_days < 0 ? Rr : A, x.id]));
+    act.filter((x) => x.bat_thr_days != null && x.bat_thr_days <= C.lead && !(x.bat != null && x.bat < C.bat.pct)).forEach((x) => nx.push([1, "energy", `Batterie ${x.name}`, `in ~ ${this._sfDur(x.bat_thr_days)}`, G, x.id]));
+    nx.sort((a, b) => a[0] - b[0]);
+    const pn = this._tm2Page("sfnext", nx.length, per);
+    const next = `<div class="card tm2cc tm2sfn" data-sw="sfnext"><div class="tm2sh"><span>${ic("list", 18)}Als Nächstes</span>${this._tm2Set("sfxopen", "Einstellungen")}</div>
+      ${nx.length ? `<div class="tm2sfdl">${nx.slice(pn.from, pn.to).map(([, i, t, v, c, id]) => `<${id ? `button data-act="tm2sfdet" data-k="${esc(id)}"` : "div"} class="tm2sfdr" style="--c:${c}">${ic(i, 22)}<span>${esc(t)}</span><b>${esc(v)}</b></${id ? "button" : "div"}>`).join("")}</div>${this._tm2Pager("sfnext", pn, "")}` : `<small class="tm2note">Im Moment steht nichts an.</small>`}</div>`;
+    return `<div class="tm2sfo">${stc}<div class="tm2sums">${tiles}</div><div class="tm2sf2">${dep}${next}</div></div>`;
+  }
+  /* Melder: auffällige zuerst, bis zu 12 je Seite */
+  _tm2SfCap() {
+    const land = this._tm2Land(), W = window.innerWidth, H = window.innerHeight, size = this._tmC().size;
+    let c = land ? 4 : 2, r = land ? 3 : 6;
+    if (land && (W < 1150 || H < 720)) { c = 3; r = 3; }
+    if (!land && H < 1150) r = 5;
+    if (size === "xl") { c = Math.max(2, c - 1); r = Math.max(2, r - 1); } else if (size === "large" && land) c = 3;
+    return { c, r, n: c * r };
+  }
+  _tm2SfMel(T) {
+    const rank = (x) => (x.alarm ? 0 : x.off ? 1 : x.bat != null && x.bat < T.C.bat.pct ? 2 : x.life_days != null && x.life_days <= T.C.lead ? 3 : x.paused ? 5 : 4);
+    const L = [...T.l].sort((a, b) => rank(a) - rank(b) || a.name.localeCompare(b.name, "de")), cap = this._tm2SfCap(), p = this._tm2Page("sfmel", L.length, cap.n);
+    const fl = Object.fromEntries((this._sfx().cfg.plan.floors || []).map((f) => [f.id, f.n]));
+    const card = (x) => {
+      const st = this._sfSt(x), c = this._tm2SfCol(st), bt = x.bat != null ? Math.max(0, Math.min(100, x.bat)) : null;
+      const word = st === "alarm" ? "ALARM" : st === "pause" ? "ausgeschaltet" : st === "off" ? "nicht erreichbar" : st === "warn" ? "Batterie schwach" : "In Ordnung";
+      return `<button class="tm2sfm ${st}" style="--c:${c}" data-act="tm2sfdet" data-k="${esc(x.id)}" aria-label="${esc(x.name)}: ${word}"><span class="tm2sfmh"><span class="i">${this._sfHd(x.k, st, 40)}</span><span class="n"><b>${esc(x.name)}</b><small>${esc([fl[x.floor], x.room || x.area].filter(Boolean).join(" · ") || x.kind)}</small></span></span>
+        <span class="tm2sfms"><i></i>${word}</span><span class="tm2sfmb">${bt != null ? `<i><i style="width:${bt}%;background:${bt < T.C.bat.pct ? "#f59e0b" : "#34d399"}"></i></i><em>${num(bt, 0)} %</em>` : `<em class="mut">Batterie unbekannt</em>`}</span></button>`;
+    };
+    return `<div class="tm2swb" data-sw="sfmel"><div class="tm2sfg" style="--c:${cap.c};--r:${cap.r}">${L.slice(p.from, p.to).map(card).join("")}</div>${this._tm2Pager("sfmel", p, "Melder")}</div>`;
+  }
+  _tm2SfPlan(T) {
+    const P = this._sfPl(), fl = this._sfFl(), dm = this._sfDetMap(), on = P.items.filter((i) => i.fl === fl && i.t === "m" && i.e && dm[i.e]).map((i) => dm[i.e]);
+    const land = this._tm2Land(), per = land ? (window.innerHeight < 760 ? 5 : 7) : 4, p = this._tm2Page("sfpl" + fl, on.length, per);
+    const row = (x) => { const st = this._sfSt(x), c = this._tm2SfCol(st); return `<button class="tm2sfdr" style="--c:${c}" data-act="tm2sfdet" data-k="${esc(x.id)}">${this._sfHd(x.k, st, 30)}<span>${esc(x.name)}</span><b>${st === "ok" ? (x.bat != null ? `${num(x.bat, 0)} %` : "ok") : st === "warn" ? `${num(x.bat, 0)} %` : st === "alarm" ? "ALARM" : st === "off" ? "offline" : "aus"}</b></button>`; };
+    const floors = P.floors.length > 1 ? `<div class="tm2seg">${P.floors.map((f) => `<button class="${f.id === fl ? "sel" : ""}" data-act="sfxfl" data-k="${f.id}" aria-pressed="${f.id === fl}">${esc(f.n)}</button>`).join("")}</div>` : "";
+    const leg = `<span class="sfleg"><span><i style="background:#34d399"></i>in Ordnung</span><span><i style="background:#f59e0b"></i>Hinweis</span><span><i style="background:#ef4444"></i>Alarm</span><span><i style="background:#94a3b8"></i>aus</span></span>`;
+    return `<div class="tm2sfp"><div class="card tm2cc tm2sfpc"><div class="tm2sh">${floors || `<span>${ic("home", 18)}Grundriss</span>`}${leg}</div><div class="tm2sfpv"><svg class="sfpv gd" viewBox="0 0 800 480" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Grundriss">${this._grUnder ? this._grUnder(P, fl, { labels: true }) : ""}${this._sfPlanInner(fl, false)}</svg></div></div>
+      <div class="card tm2cc tm2sfpl" data-sw="${"sfpl" + fl}"><div class="tm2sh"><span>${ic("bell", 18)}Melder ${esc((P.floors.find((f) => f.id === fl) || {}).n || "")}</span><em>${on.length}</em></div>${on.length ? `<div class="tm2sfdl">${on.slice(p.from, p.to).map(row).join("")}</div>${this._tm2Pager("sfpl" + fl, p, "")}` : `<small class="tm2note">Auf dieser Etage sind noch keine Melder eingezeichnet.</small>`}</div></div>`;
+  }
+
+  /* ---------- Modul 17 · Müllabfuhr (Addon) ---------- */
+  _tm2MuReady() { if (!this._muOn()) return false; const S = this._mu(); return !!(this._muD && S.on && S.cal && (S.bins || []).length); }
+  _tm2MuCss() { try { const d = this._adDef("muell"); return d && d.css ? `<style>${d.css}</style>` : ""; } catch (_) { return ""; } }
+  /* Was gerade zu tun ist – wie das Banner der Modulseite */
+  _tm2MuSit(S) {
+    const rows = S.bins || [], C = S.cfg, has = (x, l) => l.includes(x.state);
+    const today = rows.filter((x) => x.state === "today" || (x.state === "done" && x.days === 0)), tom = rows.filter((x) => x.state === "out" || (x.state === "done" && x.days === 1));
+    const open = rows.filter((x) => has(x, ["out", "today"])), back = rows.filter((x) => x.state === "back"), soon = rows.filter((x) => x.state === "soon"), done = rows.filter((x) => x.state === "done");
+    const up = rows.filter((x) => x.next && !has(x, ["out", "today", "done", "soon", "skip"]));
+    const nD = (L) => L.filter((x) => x.state === "done").length;
+    if (today.length && nD(today) < today.length) return { k: "today", show: today, t: "Heute wird abgeholt", s: `${this._muNames(today)} · bis ${this._muHM(Math.min(...today.map((x) => (S.until || {})[x.k] || 720)))} Uhr rausstellen`, btn: "out" };
+    if (tom.length && nD(tom) < tom.length) return { k: "due", show: tom, t: "Morgen früh wird abgeholt", s: `${this._muNames(tom)} · jetzt rausstellen`, btn: "out" };
+    if (back.length) return { k: "back", show: back, t: "Tonnen reinholen", s: `${this._muNames(back)} · abgeholt ${this._muDate(back[0].back_d)}`, btn: "back" };
+    if (done.length) return { k: "done", show: done, t: done.length > 1 ? "Alles steht draußen" : `${done[0].name} steht draußen`, s: today.length ? "Abholung heute" : "Abholung morgen früh" };
+    if (soon.length) return { k: "soon", show: soon, t: `Morgen: ${this._muNames(soon)}`, s: `Ab ${C.time} Uhr rausstellen` };
+    if (up.length) { const same = up.filter((x) => x.next === up[0].next); return { k: "ok", show: same, t: "Nichts zu tun", s: `Als Nächstes: ${this._muNames(same)}, ${this._muWhen(up[0].days)} (${this._muDate(up[0].next)})` }; }
+    return { k: "ok", show: [], t: "Keine Termine", s: "In den nächsten Wochen steht nichts im Kalender." };
+  }
+  _tm2MuStatus() {
+    if (!this._muOn()) return "Addon aus";
+    if (!this._tm2MuReady()) return this._muD ? "Noch nicht eingerichtet" : "Wird geladen";
+    const X = this._tm2MuSit(this._mu()); return esc(X.k === "ok" ? X.s.replace(/^Als Nächstes: /, "Nächste Abholung: ") : `${X.t}${X.show.length ? `: ${this._muNames(X.show)}` : ""}`);
+  }
+  _tm2Mu() {
+    if (!this._muOn()) return this._tm2None("trash", "Das Müll-Addon ist aus.");
+    if (!this._muD) this._muWant = true;
+    this._muLoad();
+    const S = this._mu();
+    if (!this._muD) return this._tm2None("trash", "Termine werden geladen …");
+    if (!this._tm2MuReady()) return `<div class="card empty tm2none">${ic("trash", 44)}<div>${S.error ? esc(S.error) : "Noch kein Abfallkalender."}</div><small>Die Abholtermine kommen aus einem Kalender in Home Assistant.</small>${this._tm2Set("muxopen", "Einstellungen")}</div>`;
+    const t = this._tm2Tab("mu");
+    return this._tm2MuCss() + (t === "cal" ? this._tm2MuCal(S) : t === "home" ? this._tm2MuHome(S) : this._tm2MuNow(S));
+  }
+  _tm2MuNow(S) {
+    const X = this._tm2MuSit(S), land = this._tm2Land(), rows = S.bins || [];
+    const turn = (() => { const nx = rows.find((x) => ["out", "today", "soon"].includes(x.state)), w = nx && (S.turn || []).find((q) => q.d === nx.next); return w ? `<span class="tm2chip">${ic("users", 16)}${esc(w.name)} ist dran</span>` : ""; })();
+    const open = rows.filter((x) => ["out", "today"].includes(x.state)), back = rows.filter((x) => x.state === "back");
+    const btn = X.btn === "out" ? `<button class="btn2 pri tm2mub" data-act="muxdoneall">${ic("check", 22)}${open.length > 1 ? "Alle stehen draußen" : "Steht draußen"}</button>` : X.btn === "back" ? `<button class="btn2 pri tm2mub" data-act="muxinall">${ic("check", 22)}${back.length > 1 ? "Alle wieder drin" : "Wieder drin"}</button>` : "";
+    const skip = S.api_v >= 2 && open.length === 1 ? `<button class="btn2" data-act="muxskip" data-k="${esc(open[0].k)}">Diesmal nicht</button>` : "";
+    const pics = X.show.slice(0, 3).map((x) => this._muImg(x.img, x.color, land ? 96 : 80)).join("") || this._gx("bin", land ? 96 : 80, {});
+    const top = `<div class="card tm2mut ${X.k}"><span class="tm2mupic">${pics}</span><div class="tm2mutx"><span class="tm2wxk">${ic(X.k === "ok" ? "check" : "bin", 15)}${X.k === "ok" ? "Müllabfuhr" : X.k === "back" ? "Reinholen" : "Heute zu tun"}</span><b>${esc(X.t)}</b><small>${esc(X.s)}</small>${turn || S.snooze ? `<div class="tm2wxln">${turn}${S.snooze ? `<span class="tm2chip">${ic("clock", 16)}Erinnerung um ${esc(S.snooze_until)}</span>` : ""}</div>` : ""}</div>${btn || skip ? `<div class="tm2mubs">${btn}${skip}</div>` : ""}</div>`;
+    /* Alle Tonnen: quer eine Reihe, hochkant 2 × 3 */
+    const per = land ? (window.innerWidth < 1150 ? 4 : 5) : 6, p = this._tm2Page("mubins", rows.length, per);
+    const word = (x) => (x.state === "skip" ? "diesmal nicht" : x.state === "back" ? "reinholen" : x.state === "out" ? "raus!" : x.state === "today" ? "heute raus" : x.state === "soon" ? "morgen" : x.state === "done" ? "steht draußen" : x.state === "none" ? "kein Termin" : x.days <= 3 ? "bald" : "ok");
+    const tile = (x) => {
+      const tap = ["out", "today", "soon"].includes(x.state) ? "muxdone" : x.state === "done" ? "muxundo" : x.state === "back" ? "muxin" : x.state === "skip" ? "muxunskip" : "";
+      const tag = tap ? `button data-act="${tap}" data-k="${esc(x.k)}"` : "div";
+      return `<${tag} class="tm2mub1 s-${x.state}" style="--c:${x.color}">${this._muImg(x.img, x.color, land ? 72 : 64)}<b>${esc(x.name)}</b><em>${word(x)}</em><small>${x.next ? `${this._muDate(x.next)} · ${this._muWhen(x.days)}` : "kein Termin"}</small></${tag.split(" ")[0]}>`;
+    };
+    const cols = land ? Math.max(3, Math.min(per, rows.length)) : 2;
+    return `<div class="tm2muo">${top}<div class="card tm2cc tm2mubc" data-sw="mubins"><div class="tm2sh"><span>${ic("trash", 18)}Alle Tonnen</span>${this._tm2Set("muxopen", "Einstellungen")}</div><div class="tm2mubg" style="--c:${cols};--r:${land ? 1 : 3}">${rows.slice(p.from, p.to).map(tile).join("")}</div>${this._tm2Pager("mubins", p, "Tonnen")}</div></div>`;
+  }
+  _tm2MuCal(S) {
+    const C = S.cfg, land = this._tm2Land(), rows = S.bins || [];
+    const cal = this._muCal2 ? this._muCal2(S) : "";
+    let side;
+    if (C.turn && C.turn.on && (C.turn.people || []).length) {
+      const P = C.turn.people, K = Object.fromEntries(C.kinds.map((k) => [k.id, k])), T = (S.turn || []).slice(0, land ? 5 : 3);
+      side = `<div class="card tm2cc tm2mus"><div class="tm2sh"><span>${ic("users", 18)}Wer ist dran?</span><em>${C.turn.mode === "week" ? "wöchentlich" : "je Abholung"}</em></div><div class="tm2mul">${T.map((t) => { const i = P.findIndex((p) => p.pid === t.pid); return `<div class="tm2mur"><span class="muav" style="--h:${(i * 67) % 360}">${esc(String(t.name || "?").trim().slice(0, 1).toUpperCase())}</span><span class="t"><b>${esc(t.name)}${t.ovr ? " <small>(getauscht)</small>" : ""}</b><small>${this._muDate(t.d)} · ${t.kinds.map((k) => (K[k] ? esc(K[k].name) : k)).join(", ")}</small></span><span class="k">${t.kinds.map((k) => (K[k] ? this._muImg(K[k].img, K[k].color, 26) : "")).join("")}</span></div>`; }).join("") || `<small class="tm2note">Keine Abholungen in nächster Zeit.</small>`}</div>${this._tm2Set("muxopen", "Tauschen")}</div>`;
+    } else {
+      const up = rows.filter((x) => x.next).slice(0, land ? 6 : 4);
+      side = `<div class="card tm2cc tm2mus"><div class="tm2sh"><span>${ic("clock", 18)}Nächste Abholungen</span></div><div class="tm2mul">${up.map((x) => `<div class="tm2mur">${this._muImg(x.img, x.color, 30)}<span class="t"><b>${esc(x.name)}</b><small>${this._muDate(x.next)}</small></span><em>${this._muWhen(x.days)}</em></div>`).join("")}</div></div>`;
+    }
+    return `<div class="tm2muc"><div class="tm2mucal">${cal}</div>${side}</div>`;
+  }
+  _tm2MuHome(S) {
+    const C = S.cfg, land = this._tm2Land(), K = Object.fromEntries(C.kinds.map((k) => [k.id, k])), Y = S.year, st = S.stats;
+    const tiles = [
+      Y && Y.tot && Y.tot.rate != null ? this._tm2Tile4("Rausgestellt", `${Y.tot.rate} %`, "", "der Abholungen markiert", "#2dd4bf") : this._tm2Tile4("Abholungen", Y && Y.tot ? String(Y.tot.plan) : "–", "", `im Jahr ${Y ? Y.year : ""}`, "#2dd4bf"),
+      C.cost && C.cost.on && st ? this._tm2Tile4("Restmüll", `${st.done}/${st.total}`, "", "Leerungen bisher", "#78716c") : this._tm2Tile4("Abfallarten", String(C.kinds.filter((k) => k.on).length), "", "im Kalender", "#78716c"),
+      C.cost && C.cost.on && st && st.cost != null ? this._tm2Tile4("Kosten", num(st.cost, 2), "€", `${st.extra || 0} Leerungen extra`, "#f59e0b") : "",
+      C.bags && C.bags.on ? this._tm2Tile4(K[C.bags.kind] && K[C.bags.kind].name === "Gelber Sack" ? "Gelbe Säcke" : "Säcke", S.bags == null ? "–" : String(S.bags), "übrig", S.bags != null && S.bags <= C.bags.warn ? "Zeit für eine neue Rolle" : "Vorrat", S.bags != null && S.bags <= C.bags.warn ? "#f59e0b" : "#eab308") : ""].filter(Boolean);
+    const H = S.hist || [], per = land ? (window.innerHeight < 760 ? 4 : 6) : 4, ph = this._tm2Page("muhist", H.length, per);
+    const how = { tipp: "per Tipp", tag: "per Tag", meldung: "aus der Meldung", auto: "erkannt" };
+    const hrow = (h) => { const k = K[h.k] || { name: h.k, img: "tonne", color: "#888" }, t = h.ts ? new Date(h.ts * 1000).toLocaleString("de-DE", { weekday: "short", hour: "2-digit", minute: "2-digit" }) : "";
+      const [cls, w, s] = h.st === "out" ? ["ok", "draußen", `${t}${h.how ? " · " + (how[h.how] || h.how) : ""}${h.who ? " · " + h.who : ""}`] : h.st === "skip" ? ["sk", "ausgelassen", h.who || ""] : ["no", "nicht markiert", ""];
+      return `<div class="tm2mur">${this._muImg(k.img, k.color, 28)}<span class="t"><b>${esc(k.name)}</b><small>${this._muDate(h.d)}</small></span><span class="h ${cls}"><b>${w}</b><small>${esc(s)}</small></span></div>`; };
+    const hist = S.api_v >= 2 ? `<div class="card tm2cc tm2muh" data-sw="muhist"><div class="tm2sh"><span>${ic("clock", 18)}Verlauf</span></div>${H.length ? `<div class="tm2mul" style="--n:${per}">${H.slice(ph.from, ph.to).map(hrow).join("")}</div>${this._tm2Pager("muhist", ph, "")}` : `<small class="tm2note">Ab jetzt wird jede Abholung festgehalten: draußen, ausgelassen, wann und wer.</small>`}</div>` : "";
+    const YR = Y && (Y.rows || []).filter((r) => r.plan > 0), py = this._tm2Page("muyear", YR ? YR.length : 0, per);
+    const yrow = (r) => { const k = K[r.k] || { img: "tonne", color: "#888" }, t = Math.max(1, r.plan), w = (n) => `${(n / t) * 100}%`, un = Math.max(0, r.past - r.tracked);
+      return `<div class="tm2mur">${this._muImg(k.img, k.color, 28)}<span class="t"><b>${esc(r.name)}</b><small>${r.past} von ${r.plan} vorbei${r.skip ? ` · ${r.skip}× ausgelassen` : ""}</small></span><span class="muyb tm2muyb"><i class="o" style="width:${w(r.out)}"></i><i class="s" style="width:${w(r.skip)}"></i><i class="n" style="width:${w(r.none)}"></i><i class="u" style="width:${w(un)}"></i></span><em>${r.out}</em></div>`; };
+    const year = YR && YR.length ? `<div class="card tm2cc tm2muy" data-sw="muyear"><div class="tm2sh"><span>${ic("chart", 18)}Jahr ${Y.year}</span><span class="muleg"><span><u style="background:var(--teal)"></u>draußen</span><span><u style="background:var(--gray)"></u>ausgelassen</span><span><u style="background:var(--amber)"></u>ohne Angabe</span></span></div><div class="tm2mul" style="--n:${per}">${YR.slice(py.from, py.to).map(yrow).join("")}</div>${this._tm2Pager("muyear", py, "")}</div>` : "";
+    if (!hist && !year) return `${tiles.length ? `<div class="tm2sums">${tiles.join("")}</div>` : ""}${this._tm2None("chart", "Noch kein Verlauf.", "Sobald die erste Abholung vorbei ist, stehen hier Verlauf und Jahresübersicht.")}`;
+    return `${tiles.length ? `<div class="tm2sums${tiles.length === 3 ? " three" : tiles.length === 2 ? " two" : ""}">${tiles.join("")}</div>` : ""}<div class="tm2muhm${hist && year ? "" : " one"}">${hist}${year}</div>`;
+  }
+  /* ================= Tablet-Modus · Einstellungen in neuer Optik (2026.11.5b13) =================
+     Kopf mit kleiner Vorschau des Tablets (Leiste, Startseite, Ausrichtung) und dem Zustand auf einen Blick.
+     Fünf Reiter statt einer langen Liste: Tablet, Anzeige, Module, Display, Verwalten (nur Administratoren in der normalen Ansicht).
+     Neu: Startseite wählbar, Ruhebild „Uhr“, Wetter-Szene abschaltbar, Nachtruhe (Ruhebild dunkler, Display-Licht gedimmt),
+     Display testen, Ruhemodus jetzt, Seite neu laden, Leiste und Module mit einem Tipp zurücksetzen. */
+  _tmHome() { const h = this._tmC().home; return h && h !== "st" && this._tmItems().some((x) => x.id === h) ? h : "st"; }
+  _tmHm(d = new Date()) { return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`; }
+  _tmNight() {
+    const n = this._tmC().night || {}; if (!n.on || n.from === n.to) return false;
+    const hm = this._tmHm(); return n.from < n.to ? hm >= n.from && hm < n.to : hm >= n.from || hm < n.to;
+  }
+  /* Kleine Vorschau: so sieht das Tablet mit diesen Einstellungen aus */
+  _tmxPreview(c) {
+    const items = this._tmItems(), land = window.innerWidth >= window.innerHeight, nw = c.look !== "classic";
+    const rail = nw ? [items[0], ...this._tm2Rail(items)] : items.slice(0, land ? 7 : 5);
+    const icons = rail.map((x) => `<i class="${x.id === this._tmHome() ? "on" : ""}">${ic(x.icon, 13)}</i>`).join("") + `<i>${ic("grid", 13)}</i>`;
+    const home = items.find((x) => x.id === this._tmHome()) || items[0];
+    const body = `<div class="tmxpb"><b>${esc(home.id === "st" ? "Start" : this._tm2Name ? this._tm2Name(home) : home.name)}</b><span></span><span></span><span class="w"></span></div>`;
+    return `<div class="tmxpv ${land ? "land" : "port"} ${nw ? "nw" : "cl"}${c.size !== "auto" ? " big" : ""}" aria-hidden="true">${nw && land ? `<div class="tmxpr">${icons}</div>${body}` : `${body}<div class="tmxpd">${icons}</div>`}</div>`;
+  }
+  _tmxState(ent, onWord, offWord) {
+    const s = ent && this._hass.states[ent]; if (!s) return ["", "–"];
+    const on = s.state === "on", ago = s.last_changed ? this._hzSince(s.last_changed) : "";
+    return [on ? "on" : "off", `${on ? onWord : offWord}${ago ? ` · ${ago}` : ""}`];
+  }
+  _tmSetHtml() {
+    const m = this._modal, inT = m.type === "tmset", me = this._tmMe(), c = this._tmC(), kd = this._tmKind(), mode = this._tmMode(), adm = this._admin(), lock = this._tmLocked(), st = this._hass.states;
+    const mods = this._mdList().filter((x) => x.id !== "st"), items = this._tmItems();
+    const tabs = [["dev", "Tablet"], ["show", "Anzeige"], ["mods", "Module"], ["disp", "Display"], ...(!inT && adm ? [["adm", "Verwalten"]] : [])];
+    const tab = tabs.some((t) => t[0] === this._tmxTab) ? this._tmxTab : "dev";
+    const dis = lock ? " disabled" : "";
+    const seg = (act, cur, opts) => `<div class="tmxseg" role="group">${opts.map(([k, t]) => `<button class="${String(cur) === String(k) ? "sel" : ""}" data-act="${act}" data-k="${k}" aria-pressed="${String(cur) === String(k)}"${dis}>${t}</button>`).join("")}</div>`;
+    const sw = (act, on, label) => `<button class="sw ${on ? "on" : ""}" data-act="${act}" aria-pressed="${!!on}" aria-label="${esc(label)}"${dis}></button>`;
+    const row = (icon, t, s, ctl, wide) => `<div class="tmxr${wide ? " wide" : ""}"><span class="tmxri">${ic(icon, 20)}</span><span class="tmxrt"><b>${t}</b>${s ? `<small>${s}</small>` : ""}</span><span class="tmxrc">${ctl}</span></div>`;
+    const card = (t, inner) => `<div class="tmxc">${t ? `<div class="tmxct">${t}</div>` : ""}${inner}</div>`;
+    /* Kopf */
+    const ms = this._tmxState(c.motion, "Bewegung", "ruhig"), ds = c.screen && st[c.screen] ? (st[c.screen].state === "on" ? "an" : "aus") : "";
+    const chip = (ok, icon, t) => `<span class="tmxchip ${ok ? "ok" : ""}">${ic(icon, 14)}${t}</span>`;
+    const chips = [inT ? chip(true, "tablet", "Tablet-Modus an") : chip(mode !== "off", "tablet", mode === "on" ? "Immer an" : mode === "auto" ? "Automatisch" : "Tablet-Modus aus"),
+      chip(me.has_pin, "lock", me.has_pin ? "PIN gesetzt" : "ohne PIN"), chip(!!c.screen || !!c.notify, "lamp", c.screen ? `Display ${ds || "verbunden"}` : c.notify ? "HA-App weckt" : "kein Display-Schalter"),
+      chip(!!c.motion, "eye", c.motion ? ms[1] : "kein Bewegungsmelder"), ...(c.night && c.night.on ? [chip(true, "moon", `Nachtruhe ${c.night.from}–${c.night.to}`)] : [])].join("");
+    const head = `<div class="tmxh">${this._tmxPreview(c)}<div class="tmxhi"><b>${esc(me.name)}</b><small>${esc(kd.label)} · ${window.innerWidth} × ${window.innerHeight}</small><div class="tmxchips">${chips}</div></div></div>`;
+    const lockBox = lock ? `<div class="tmxlock">${ic("lock", 18)}<span><b>Geschützt mit PIN</b><small>Ansehen geht, Ändern erst nach der PIN.</small></span><button class="btn2 pri" data-act="tmunl">${ic("lock", 16)}Entsperren</button></div>` : "";
+    let body = "";
+    if (tab === "dev") {
+      const opts = items.map((x) => `<option value="${x.id}"${this._tmHome() === x.id ? " selected" : ""}>${esc(x.id === "st" ? "Start" : this._tm2Name ? this._tm2Name(x) : x.name)}</option>`).join("");
+      body = card("", (inT ? "" : row("tablet", "Tablet-Modus", "Ersetzt die normale Ansicht. Automatisch: auf Touchgeräten ab 600 px Breite.", seg("tmmode", mode, [["off", "Aus"], ["auto", "Automatisch"], ["on", "Immer an"]]), true))
+        + row("pencil", "Name", "Damit du die Tablets auseinanderhältst", `<input class="osel tmxin" data-f="tmname" value="${esc(me.name)}" maxlength="24" aria-label="Name"${dis}>`)
+        + row("lock", "PIN", me.has_pin ? "6 Stellen · schützt die Einstellungen und Schalten mit Folgen" : "Ohne PIN kann jeder am Tablet alles ändern", lock ? "" : `<button class="btn2 ${me.has_pin ? "" : "pri"}" data-act="tmchg">${ic("lock", 16)}${me.has_pin ? "PIN ändern" : "PIN festlegen"}</button>`))
+        + card("Startseite", row("home", "Startseite", "Öffnet beim Start und nach „Zurück nach“", `<select class="osel tmxin" data-f="tmsel" data-k="home" aria-label="Startseite"${dis}>${opts}</select>`)
+        + row("clock", "Zurück zur Startseite nach", "Ohne Berührung", seg("tmih", c.idle_home, [[0, "Aus"], [2, "2 Min."], [5, "5 Min."], [15, "15 Min."]]), true))
+        + (inT ? card("Jetzt", `<div class="tmxbtns"><button class="btn2" data-act="tmsleepnow">${ic("moon", 18)}Ruhemodus jetzt</button><button class="btn2" data-act="tmreload">${ic("refresh", 18)}Seite neu laden</button><button class="btn2" data-act="tmend"${dis}>${ic("close", 18)}Tablet-Modus beenden</button></div>`)
+          : card("Start-Link", `<small class="tmxhint">Für Fully Kiosk (Start-URL) oder Kiosk Satellite: Dann startet das Tablet immer im Tablet-Modus.</small><div class="tmurl"><code>${esc(this._tmUrlStr())}</code><button class="ibtn" data-act="tmcopy" aria-label="Kopieren">${ic("copy", 18)}</button></div>`));
+    } else if (tab === "show") {
+      const look = (k, t, s) => `<button class="tmxlook ${c.look === k ? "sel" : ""}" data-act="tm2look" data-k="${k}" aria-pressed="${c.look === k}"${dis}><span class="tmxpv land ${k === "new" ? "nw" : "cl"} mini"><span class="${k === "new" ? "tmxpr" : "tmxpd"}">${"<i></i>".repeat(k === "new" ? 5 : 6)}</span><span class="tmxpb"><span></span><span></span></span></span><b>${t}</b><small>${s}</small></button>`;
+      const rests = [["auto", "Auto"], ["clock", "Uhr"], ...[["en", "Energie"], ["ef", "Hausfluss"]].filter(([k]) => mods.some((x) => x.id === k) && (k !== "ef" || this._efxSp()))];
+      const n = c.night || {}, wx = mods.some((x) => x.id === "wx");
+      body = card("Aufbau", `<div class="tmxlooks">${look("new", "Neu", "Leiste links, jede Seite ohne Scrollen")}${look("classic", "Wie bisher", "Leiste unten, Seiten scrollen")}</div>${row("eye", "Größe", "Bedienelemente und Schrift", seg("tmsz", c.size, [["auto", "Auto"], ["large", "Groß"], ["xl", "Sehr groß"]]))}`)
+        + card("Ruhemodus", row("moon", "Ruhemodus nach", "Ruhebild statt Inhalt. Berühren oder Bewegung weckt auf.", seg("tmsl", c.sleep, [[0, "Aus"], [5, "5 Min."], [15, "15 Min."], [30, "30 Min."]]), true)
+          + (this._tm2On() ? row("image", "Ruhebild", "Auto: Wandanzeige, wenn Energie oder Hausfluss offen ist, sonst die Uhr", seg("tm2rest", c.rest, rests), true) : "")
+          + (wx && this._tm2On() ? row("cloud", "Wetter-Szene bei einer Warnung", "Zeigt die Lage statt des Ruhebilds, solange eine Wetterwarnung läuft", sw("tmrestwx", c.rest_wx !== false, "Wetter-Szene bei Warnung")) : "")
+          + row("bell", "Warnungen wecken auf", "Zum Beispiel ein Alarm oder ein Unwetter", sw("tmww", c.wake_warn, "Warnungen wecken auf")))
+        + card("Nachtruhe", row("moon", "Nachts dunkler", "Ruhebild gedimmt, Display-Licht (Kiosk Satellite) mit weniger Helligkeit", sw("tmnight", n.on, "Nachtruhe"))
+          + (n.on ? `<div class="tmxnight"><label>von <input type="time" class="osel" data-f="tmnf" value="${esc(n.from || "22:00")}"${dis}></label><label>bis <input type="time" class="osel" data-f="tmnt" value="${esc(n.to || "06:00")}"${dis}></label>${seg("tmnbri", n.bri, [[10, "10 %"], [20, "20 %"], [30, "30 %"], [50, "50 %"]])}</div><small class="tmxhint">${this._tmNight() ? "Gerade ist Nachtruhe." : "Gerade ist keine Nachtruhe."} Die Helligkeit gilt nur für einen Display-Schalter als Licht.</small>` : ""));
+    } else if (tab === "mods") {
+      const rail = this._tm2Rail(items).map((x) => x.id), own = (c.rail || []).length > 0, hid = c.dock_hide || [];
+      const chipR = (x) => { const i = rail.indexOf(x.id); return `<button class="tmxm ${i >= 0 ? "sel" : ""}" data-act="tm2rail" data-k="${x.id}" aria-pressed="${i >= 0}"${dis}>${i >= 0 ? `<em>${i + 1}</em>` : ic(x.icon, 16)}${esc(this._tm2Name(x))}</button>`; };
+      body = (this._tm2On() ? card("Leiste", `<small class="tmxhint">Start, bis zu vier Module und „Mehr“. Die Zahl zeigt den Platz. ${own ? "" : "Gerade automatisch: Modul 1–4."}</small><div class="tmxms">${items.filter((x) => x.id !== "st").map(chipR).join("")}</div>${own ? `<div class="tmxbtns"><button class="btn2" data-act="tmrailreset"${dis}>${ic("refresh", 16)}Automatisch</button></div>` : ""}`) : "")
+        + card("Module anzeigen", `<small class="tmxhint">${this._tm2On() ? "Abgewählte Module erscheinen weder in der Leiste noch unter „Mehr“." : "Start ist immer dabei. Bei schmalen Bildschirmen steht der Rest unter „Mehr“."}</small><div class="tmxms">${mods.map((x) => `<button class="tmxm ${hid.includes(x.id) ? "" : "sel"}" data-act="tmdock" data-k="${x.id}" aria-pressed="${!hid.includes(x.id)}"${dis}>${ic(x.icon, 16)}${esc(x.short || x.name)}</button>`).join("")}</div>${hid.length ? `<div class="tmxbtns"><button class="btn2" data-act="tmdockall"${dis}>${ic("eye", 16)}Alle zeigen (${hid.length} aus)</button></div>` : ""}`);
+    } else if (tab === "disp") {
+      const motions = Object.keys(st).filter((e) => e.startsWith("binary_sensor.") && ["motion", "occupancy", "presence"].includes((st[e].attributes || {}).device_class)), sws = this._tmScreens(c.screen);
+      const moAll = motions.length ? motions : Object.keys(st).filter((e) => e.startsWith("binary_sensor."));
+      const live = (s, t) => `<span class="tmxlive ${s}"><i></i>${esc(t)}</span>`;
+      const ds2 = c.screen ? (st[c.screen] ? ["" + (st[c.screen].state === "on" ? "on" : "off"), `Display ${st[c.screen].state === "on" ? "an" : "aus"}`] : ["bad", "Schalter fehlt in Home Assistant"]) : ["", "nicht gewählt"];
+      body = `<div class="tmxdisp">${card("Bewegungsmelder", `${live(c.motion ? ms[0] : "", c.motion ? ms[1] : "nicht gewählt")}${lock ? "" : this._wzSel(moAll, c.motion, "tmsel", 'data-k="motion"', "– keiner –")}<small class="tmxhint">Home Assistant überwacht ihn, auch bei dunklem Display. Bewegung schaltet das Display an.</small>`)}
+        ${card("Display-Schalter", `${live(ds2[0], ds2[1])}${lock ? "" : this._wzSel(sws, c.screen, "tmsel", 'data-k="screen"', "– keiner –", /screen|display|bildschirm/i)}<small class="tmxhint">Fully Kiosk: Schalter „Screen“ · Kiosk Satellite: Licht „Screen“</small>${c.screen || c.notify ? `<div class="tmxbtns"><button class="btn2" data-act="tmtest"${dis}>${ic("play", 16)}Display testen</button></div>` : ""}`)}</div>`
+        + card("", row("clock", "Display ausschalten nach", "Ohne Bewegung · nur mit Display-Schalter", seg("tmoff", c.off_after, [[0, "Nie"], [10, "10 Min."], [30, "30 Min."]]), true)
+          + row("bell", "HA-App (Android)", "Benachrichtigungsdienst, z. B. mobile_app_tablet. Schaltet nur ein.", `<input class="osel tmxin" data-f="tmnot" value="${esc(c.notify)}" placeholder="mobile_app_…" aria-label="Benachrichtigungsdienst"${dis}>`));
+    } else {
+      const T = (this._tm && this._tm.tablets) || [];
+      body = card(`Tablets <em>${T.length}</em>`, T.length ? T.map((t) => `<div class="tmxt"><span class="tmxri">${ic("tablet", 20)}</span><span class="tmxrt"><b>${esc(t.name)}${t.id === me.id ? " · dieses" : ""}</b><small>${t.kind === "fully" ? "Fully Kiosk" : t.kind === "app" ? "HA-App" : "Browser"} · ${esc(t.size || "")} · ${t.has_pin ? "mit PIN" : "ohne PIN"} · zuletzt ${t.seen ? this._hzSince(new Date(t.seen * 1000).toISOString()) : "–"}</small></span><span class="tmxrc">${t.has_pin ? `<button class="btn2" data-act="tmreset" data-id="${esc(t.id)}">PIN zurücksetzen</button>` : ""}${t.id === me.id ? "" : `<button class="btn2" data-act="tmdel" data-id="${esc(t.id)}">Entfernen</button>`}</span></div>`).join("") : `<small class="tmxhint">Noch kein Tablet angemeldet.</small>`)
+        + (this._mqOn && this._mqOn("tb") ? card(`<span class="lggd">★</span> Wand-Tablet-Extras`, row("sliders", "Raum, Nacht, Schnellaktionen, Alarm", "Sponsor Max · gilt für dieses Tablet", `<button class="btn2" data-act="mqxset" data-k="tb">Einstellen</button>`)) : "");
+    }
+    const bar = `<div class="tmxtabs" role="tablist">${tabs.map(([k, t]) => `<button role="tab" class="${tab === k ? "sel" : ""}" aria-selected="${tab === k}" data-act="tmxtab" data-k="${k}">${t}</button>`).join("")}</div>`;
+    const foot = inT ? `<button class="btn2 pri" data-act="tmdone">${ic("check", 16)}Fertig</button>` : `<button class="btn2" data-act="close">Schließen</button><button class="btn2 pri" data-act="tmstart"${dis}>${ic("tablet", 16)}Tablet-Modus jetzt starten</button>`;
+    return `<div class="ov" data-act="${inT ? "tmdone" : "close"}"></div><div class="sheet wide tmx" role="dialog" aria-modal="true" aria-label="Tablet-Modus">
+      <div class="sh"><div><b>Tablet-Modus</b><span>Gilt nur für dieses Gerät</span></div><button class="ibtn" data-act="${inT ? "tmdone" : "close"}" aria-label="Schließen">${ic("close", 20)}</button></div>
+      ${head}${lockBox}${bar}<div class="tmxbody">${body}</div><div class="tmxfoot">${foot}</div></div>`;
+  }
+  _tmxAct(a, b) {
+    const k = b.dataset.k, c = this._tmC();
+    if (a === "tmxtab") { this._tmxTab = k; this._renderModal(); const sh = this.shadowRoot.querySelector(".sheet"); if (sh) sh.scrollTop = 0; return true; }
+    if (a === "tmreload") { location.reload(); return true; }
+    if (a === "tmsleepnow") { this._modal = null; this._renderModal(); this._tmSleep = true; this._tmGuard = Date.now() + 700; this._render(); return true; }
+    if (this._tmLocked()) return false;
+    if (a === "tmrestwx") { this._tmSave({ rest_wx: c.rest_wx === false }); return true; }
+    if (a === "tmnight") { this._tmSave({ night: { ...(c.night || {}), on: !(c.night && c.night.on) } }); return true; }
+    if (a === "tmnbri") { this._tmSave({ night: { ...(c.night || {}), bri: +k } }); return true; }
+    if (a === "tmrailreset") { this._tmSave({ rail: [] }); return true; }
+    if (a === "tmdockall") { this._tmSave({ dock_hide: [] }); return true; }
+    if (a === "tmtest") {
+      const me = this._tmMe();
+      this._hass.callWS({ type: "fenster_heizung/tm_test", tid: me.id, ...(this._tmPin ? { pin: this._tmPin } : {}) })
+        .then((r) => this._toast(r && r.ok ? (r.off ? "Display geht kurz aus und nach 3 Sekunden wieder an" : "Die HA-App bekommt den Befehl zum Einschalten") : r && r.error === "fehlt" ? "Der Display-Schalter fehlt in Home Assistant" : "Erst einen Display-Schalter wählen"))
+        .catch(() => this._toast("Das ging nicht – ist die Integration aktuell?"));
+      return true;
+    }
+    return false;
   }
   /* ================= Sponsor-Bereich (3.0.2.13) =================
      Die Integration bleibt kostenlos. Mit einem Sponsor-Schlüssel gibt es Schönes obendrauf: Abzeichen, Farbverläufe,
