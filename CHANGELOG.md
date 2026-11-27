@@ -2,6 +2,19 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.5b12] - 2026-11-27
+
+Korrektur: Alte, nicht neu geladene Seiten erzeugen keine falschen Fehlerberichte mehr.
+
+### Behoben
+- **Fehlerprotokoll:** Nach einem Update läuft eine offene Seite (Wandtablet, App, Browser-Tab) mit der alten Oberfläche weiter, bis sie neu geladen wird. Ihre Fehler, zum Beispiel „Maximum call stack size exceeded“ beim Neuaufbau, erschienen dann unter der neuen Version, obwohl sie längst behoben sind. Die Oberfläche schickt jetzt ihre eigene Version mit. Passt sie nicht zur installierten, wird die Meldung nicht eingetragen. (Auch in 2026.11.4.12.)
+
+### Neu
+- **Hinweis „Update installiert“:** Weicht die Version der geöffneten Seite von der installierten ab (beim Öffnen und nach jedem Neustart von Home Assistant geprüft), erscheint unten „Neu laden“. Im Tablet-Modus lädt die Seite einmal von selbst neu, nie während einer Eingabe oder bei offenem Fenster.
+
+### Hinweis
+- Seiten mit älterem Code (bis 2026.11.5b11) zeigen den Hinweis noch nicht. Nach diesem Update bitte einmal neu laden.
+
 ## [2026.11.5b11] - 2026-11-26
 
 Neu: Umfragen. Der Entwickler kann kurze Fragen stellen, Mitmachen ist freiwillig.

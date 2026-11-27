@@ -513,6 +513,8 @@ Seit `2026.11.4` fragt die Integration einmalig, ob sie **anonym mitteilen darf,
 
 Ab 2026.11.5b2 enthält der Bericht außerdem die Fehler-IDs schon gesendeter Fehler (`"known"`). Der Server antwortet nur mit dem Status dieser eigenen Fehler (offen, in Arbeit, behoben in …), damit das Fehlerprotokoll „Behoben in … – Update installieren“ anzeigen kann. Weggelassene Fehler werden nie abgefragt.
 
+Ab 2026.11.5b12 kennt die Oberfläche ihre eigene Version. Läuft nach einem Update noch eine alte, nicht neu geladene Seite (zum Beispiel auf einem Wandtablet), kommen deren Fehler nicht ins Fehlerprotokoll und werden nicht gesendet. Die Seite zeigt stattdessen „Update installiert – Neu laden“, im Tablet-Modus lädt sie einmal von selbst neu.
+
 Ab 2026.11.5b3 enthält ein Fehler außerdem bis zu drei Stellen im Code von Strom & Wärme (`"chain"`, z. B. `gr_ent.py:171 _sync`) und – bei Fehlern der Oberfläche – die Geräteart (`"dev"`: Handy, Tablet, Computer oder App). Keine Pfade außerhalb der Integration, keine Gerätenamen oder Modelle.
 
 **Was nie gesendet wird:** Name, E-Mail, Standort, Räume, Geräte, Sensor- und Verbrauchswerte, Anwesenheit, die Instanz-ID von Home Assistant und Zugangsdaten. Die IP-Adresse wird auf dem Server weder gespeichert noch protokolliert.

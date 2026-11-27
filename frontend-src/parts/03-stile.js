@@ -161,6 +161,7 @@ button.rico::after{content:"";position:absolute;right:-5px;bottom:-5px;width:18p
 .ic2{display:block}
 .igrid button.sel{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 20%,transparent);box-shadow:0 0 0 1.5px var(--teal) inset}
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;background:#111827;color:#fff;border:1px solid #334155;padding:10px 16px;border-radius:999px;font-size:.86rem;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.festale{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:59;display:flex;align-items:center;gap:10px;width:max-content;max-width:calc(100vw - 24px);box-sizing:border-box;background:#0f2f2c;color:#e6fffb;border:1px solid #14b8a6;border-radius:18px;padding:8px 8px 8px 14px;box-shadow:0 10px 30px rgba(0,0,0,.45)}.festale>svg{flex:none;color:#5eead4}.festale span{display:flex;flex-direction:column;min-width:0;line-height:1.25}.festale small{color:#99f6e4;font-size:.78rem}.festale .btn2{white-space:nowrap}.festale .ibtn{color:#99f6e4}
 .pres h2{margin-bottom:12px}
 .seg3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
 .seg3 button{display:grid;justify-items:center;gap:5px;padding:11px 4px;border-radius:14px;border:1px solid var(--line);background:transparent;font-weight:600;font-size:.8rem;color:var(--mut);cursor:pointer}

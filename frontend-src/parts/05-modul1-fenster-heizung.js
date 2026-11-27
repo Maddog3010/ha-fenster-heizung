@@ -841,6 +841,7 @@
     if (!this._hass || this._dragging) return;
     const sr = this.shadowRoot;
     if (!this._built) { this._build(); }
+    if (this._feNew) this._feShow();   /* Hinweis „Update installiert“ liegt außerhalb von #main und bleibt beim Neuaufbau stehen */
     const bg = getComputedStyle(this).backgroundColor.match(/\d+/g) || [15, 20, 25];
     this.style.colorScheme = (0.299 * bg[0] + 0.587 * bg[1] + 0.114 * bg[2]) < 140 ? "dark" : "light";
     this._applyLook();

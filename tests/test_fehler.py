@@ -307,3 +307,13 @@ def test_build12_chain_and_device():
         assert len(L.clean_chain(bad)) <= 1, bad
     assert "chain" in L.clean(st)["items"][a["fp"]] and L.clean(st)["items"][a["fp"]]["chain"] == ch[:3]
     assert "chain" not in L.add(L.empty(), src="backend", kind="X", where="a.py:1 f", msg="m", today=D, version="2026.11.5b3", chain=["a.py:1 f"]), "eine Stelle allein ist keine Kette"
+
+
+def test_stale_frontend_is_not_recorded():
+    """2026.11.5b12: Meldungen einer alten, nicht neu geladenen Oberfläche (ohne oder mit anderer Version) zählen nicht."""
+    F = _stub_ha()
+    me = types.SimpleNamespace(_version="2026.11.5b12")
+    assert F.FehlerSammler.stale(me, "2026.11.5b12") is False
+    assert F.FehlerSammler.stale(me, "") is True
+    assert F.FehlerSammler.stale(me, "2026.11.5b11") is True
+    assert F.FehlerSammler.stale(types.SimpleNamespace(_version=""), "") is False   # Version noch unbekannt: nichts verwerfen

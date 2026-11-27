@@ -142,6 +142,10 @@ class FehlerSammler:
     def _save(self) -> None:
         self._store.async_delay_save(lambda: self._st, 10)
 
+    def stale(self, fe: str) -> bool:
+        """Meldet eine Oberfläche, die nicht zur installierten Version passt? Ohne Angabe: Oberfläche älter als 2026.11.5b12 / 2026.11.4.12."""
+        return bool(self._version) and fe != self._version
+
     def report(self, src: str, kind: str, where: str, msg: str, cmd: str = "", dev: str = "") -> bool:
         """Meldung aus der Oberfläche (Befehl oder Anzeige). Begrenzt, damit ein Fehler in einer Schleife nichts flutet."""
         now = time.monotonic()

@@ -26,7 +26,7 @@
     const t = Date.now(); this._errQ = (this._errQ || []).filter((x) => t - x < 60000);
     if (this._errQ.length >= 10 || !this._hass) return;   /* höchstens 10 Meldungen pro Minute */
     this._errQ.push(t);
-    try { this._hass.callWS({ type: "fenster_heizung/err_report", dev: this._errDev(), ...p }).catch(() => { /* älteres Backend */ }); } catch (_) { /* egal */ }
+    try { this._hass.callWS({ type: "fenster_heizung/err_report", dev: this._errDev(), fe: FE_VER, ...p }).catch(() => { /* älteres Backend */ }); } catch (_) { /* egal */ }
   }
   /* Fehlgeschlagener Befehl: nur echte Programmfehler – „nicht bereit“, „nicht gefunden“ und Hinweise zur Eingabe
      („invalid_input“, z. B. „mindestens eine Entität wählen“) sind erwartete Antworten */
