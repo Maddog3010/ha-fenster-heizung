@@ -22,3 +22,14 @@
     };
     return `<div class="grdock">${one("select")}${one("r")}${one("w")}${group("op", "Öffnungen")}${one("s")}<i></i>${one("o")}${group("te", "Technik")}${sf ? one("m:smoke") : ""}${li ? one("l") : ""}${one("x")}</div>`;
   }
+  /* Reiter „Etage & Plan“ im Vollbild-Baukasten: die langen Abschnitte werden auf drei Seiten verteilt, damit nichts gescrollt werden muss */
+  _grEtagePages(html) {
+    const parts = String(html).split(/(?=<div class="sffld")/), pg = { etage: [], plan: [], daten: [] };
+    parts.forEach((c, n) => {
+      const L = (c.match(/<label[^>]*>([^<]*)</) || [])[1] || "";
+      pg[/Name der Etage|Art der Etage|Etage kopieren/.test(L) || (!L && n === 0) ? "etage" : /Raster|Maßstab|Norden/.test(L) ? "plan" : "daten"].push(c);
+    });
+    const names = [["etage", "Etage"], ["plan", "Raster & Maßstab"], ["daten", "Bild & Daten"]].filter(([k]) => pg[k].join("").trim());
+    let cur = this._grEP; if (!names.some((x) => x[0] === cur)) cur = names[0] ? names[0][0] : "etage";
+    return `<div class="grrt grrt2">${names.map(([k, t]) => `<button class="${cur === k ? "on" : ""}" data-act="grxep" data-v="${k}" aria-pressed="${cur === k}">${t}</button>`).join("")}</div><div class="grpsec">${pg[cur].join("")}</div>`;
+  }

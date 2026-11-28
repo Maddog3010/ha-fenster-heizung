@@ -2,6 +2,15 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.5b23] - 2026-11-28
+
+Modul 0 Haus & Grundriss, Version 0.17, vierter Teil.
+
+### Neu
+- **Kein Scrollen mehr im Bearbeiten-Fenster:** Ist der Inhalt eines Reiters rechts höher als der Platz, wird er automatisch verkleinert (bis 62 %), statt zu scrollen.
+- **Technik-Katalog als Kacheln:** Der Katalog für Haustechnik (Werkzeug „Technik“) sieht aus wie der für Möbel: Suche, Kategorien (Heizen & Klima, Strom, Sensoren, Netz & Medien, Notfall, Notiz), Kachel mit Symbol und seitenweises Blättern statt Scrollen.
+- **Reiter „Etage & Plan“ ohne Scrollen:** Die Einstellungen sind auf drei Seiten verteilt: **Etage** (Name, Art, kopieren), **Raster & Maßstab** (Raster, Maßstab messen, Norden) und **Bild & Daten** (Hintergrundbild, Grundstück, Plan sichern, Kontakte zuordnen).
+
 ## [2026.11.5b22] - 2026-11-28
 
 Modul 0 Haus & Grundriss, Version 0.17, dritter Teil: Baukasten ohne Scrollen.

@@ -107,7 +107,15 @@
     return d + over;
   }
   /* ---- Baukasten */
-  _grTechCat(cur, act) { const K = this._grTK(); return Object.entries(K.G).map(([g, [gn, gc]]) => `<div class="grtkg"><small style="color:${gc}">${gn}</small><div class="grseg">${K.L.filter((x) => x[2] === g).map((x) => `<button class="${cur === x[0] ? "on" : ""}" data-act="${act}" data-v="${x[0]}">${x[1]}</button>`).join("")}</div></div>`).join(""); }
+  /* Katalog der Haustechnik als Kacheln wie bei den Möbeln: Suche, Kategorien, Symbol, Seiten statt Scrollen (neue Optik, quer) */
+  _grTechCat(cur, act) {
+    const K = this._grTK(), ct = this._grTCT || "", num0 = (v) => v, esc0 = esc;
+    const PG = this._grPaged && this._grPaged(), pp = PG ? this._grPerPage() : 0, list = K.L.filter((x) => !ct || x[2] === ct), pg = Math.min(this._grPg || 0, Math.max(0, Math.ceil(list.length / (pp || 1)) - 1));
+    const chip = (k, t) => `<button class="${ct === k ? "on" : ""}" data-act="grxtcat" data-v="${k}" aria-pressed="${ct === k}">${t}</button>`;
+    const rows = list.map((x, n) => `<div class="pkrow grkt${cur === x[0] ? " cur" : ""}"${pp && (n < pg * pp || n >= (pg + 1) * pp) ? " hidden" : ""} data-s="${esc0((x[1] + " " + K.G[x[2]][0]).toLowerCase())}"><button class="grkb" data-act="${act}" data-v="${x[0]}"><svg class="grkth" viewBox="-6 -2 36 28" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><g fill="none" stroke="${K.G[x[2]][1]}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${K.I[x[3]]}</g></svg><b>${esc0(x[1])}</b><small style="color:${K.G[x[2]][1]}">${esc0(K.G[x[2]][0])}</small></button></div>`).join("");
+    return `${this._grKatCss()}<div class="pkbox grkc"${pp ? ` data-pp="${pp}"` : ""}><input class="grkq" data-f="enq" type="search" placeholder="Suchen: Steckdose, Sensor, Kamera …" aria-label="Katalog durchsuchen" autocomplete="off"><div class="grkcs">${chip("", "Alle")}${Object.entries(K.G).map(([g, [gn]]) => chip(g, esc0(gn))).join("")}</div>
+      <div class="grkl">${rows}<div class="mut sm pkno" hidden style="padding:8px">Nichts gefunden.</div></div>${pp ? `<div class="grkpg"><button data-act="grxpg" data-v="-1" aria-label="Vorherige Seite">‹</button><span class="grkpl">${pg + 1} / ${Math.max(1, Math.ceil(list.length / pp))}</span><button data-act="grxpg" data-v="1" aria-label="Nächste Seite">›</button></div>` : `<div class="mut sm" style="margin-top:6px">${K.L.length} Teile</div>`}</div>`;
+  }
   _grTechProps(sel) {
     const K = this._grTK(), k = this._grTk(sel), st = this._hass.states;
     const groups = this._grTechCat(sel.hk, "grxhk");

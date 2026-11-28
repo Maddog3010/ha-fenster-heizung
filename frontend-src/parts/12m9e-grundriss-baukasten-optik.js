@@ -25,7 +25,8 @@
       .grfs .grhint{margin:0}.grfs .grtray{margin:0;padding:6px 10px}
       .grfs .grprops{position:static;top:auto;min-height:0;min-width:0;display:flex;flex-direction:column;gap:8px;overflow:hidden}
       .grfs .grrt{flex:none;display:flex;gap:6px}.grfs .grrt button{flex:1;border:0;border-radius:12px;padding:9px 6px;background:color-mix(in srgb,var(--primary-text-color) 7%,transparent);color:inherit;font:inherit;font-size:.82rem;cursor:pointer;white-space:nowrap}.grfs .grrt button.on{background:var(--teal,#2dd4bf);color:#042f2e;font-weight:650}
-      .grfs .grrtb{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:8px;scrollbar-width:thin}.grfs .grrtb .grpsec{margin:0}
+      .grfs .grrt2{flex-wrap:wrap;gap:5px;margin-bottom:8px}.grfs .grrt2 button{flex:none;padding:6px 11px;font-size:.78rem}
+      .grfs .grrtb{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:8px;scrollbar-width:thin}.grfs .grrtb .grpsec{margin:0}.grfs .grfit{flex:none;display:flex;flex-direction:column;gap:8px;transform-origin:top left}
       .grfs .grkl{display:grid;grid-template-columns:1fr 1fr;max-height:none;overflow:visible;gap:7px}.grfs .grkth{height:42px}.grfs .grkt .grkb{padding:6px 7px 5px}.grfs .grkt .grkb b{margin-top:3px;font-size:.78rem}
       .grfs .grkcs{flex-wrap:wrap;overflow:visible;gap:5px}.grfs .grkcs button{padding:5px 10px;font-size:.78rem}.grfs .grkq{padding:7px 10px}
       .grfs .sfpl.edit{position:relative;padding-left:74px;box-sizing:border-box}

@@ -21,18 +21,27 @@
       return `<div class="pkrow grkt${cur === x[0] ? " cur" : ""}"${pp && (n < pg * pp || n >= (pg + 1) * pp) ? " hidden" : ""} data-s="${esc((x[1] + " " + K.G[x[2]][0] + " " + (SYN[x[0]] || "")).toLowerCase())}"><button class="grkb" data-act="${act}" data-v="${x[0]}"><svg class="grkth" viewBox="${-pd} ${-pd} ${w + pd * 2} ${h + pd * 2}" preserveAspectRatio="xMidYMid meet" aria-hidden="true">${th}</svg><b>${esc(x[1])}</b><small>${x[3]}×${x[4]} cm</small></button><button class="grks${fav.includes(x[0]) ? " on" : ""}" data-act="grxfav" data-v="${x[0]}" aria-pressed="${fav.includes(x[0])}" aria-label="Favorit">${fav.includes(x[0]) ? "★" : "☆"}</button></div>`;
     }).join("");
     const empty = ct === "rec" ? "Noch nichts benutzt." : ct === "fav" ? "Noch keine Favoriten – tippe auf ☆." : "Nichts gefunden.";
+    return `${this._grKatCss()}
+      <div class="pkbox grkc"${pp ? ` data-pp="${pp}"` : ""}><input class="grkq" data-f="enq" type="search" placeholder="Suchen: Sofa, Pool, Zaun …" aria-label="Katalog durchsuchen" autocomplete="off"><div class="grkcs">${chip("", "Alle")}${chip("rec", "Zuletzt")}${chip("fav", "★")}${gs.map(([g, [gn]]) => chip(g, esc(gn))).join("")}</div>
+      <div class="grkl">${rows}<div class="mut sm pkno" ${list.length ? "hidden" : ""} style="padding:8px">${empty}</div></div>${pp ? `<div class="grkpg"><button data-act="grxpg" data-v="-1" aria-label="Vorherige Seite">‹</button><span class="grkpl">${pg + 1} / ${Math.max(1, Math.ceil(list.length / pp))}</span><button data-act="grxpg" data-v="1" aria-label="Nächste Seite">›</button></div>` : `<div class="mut sm" style="margin-top:6px">${K.L.length} Gegenstände</div>`}</div>`;
+  }
+  _grKatCss() {
     return `<style>.grkc{margin:0}.grkl{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px;max-height:min(58vh,460px);overflow:auto;margin-top:8px;padding:2px}.grkl .pkno{grid-column:1/-1}
       .grkt{position:relative;border-radius:14px;background:color-mix(in srgb,var(--primary-text-color) 5%,transparent);border:1px solid color-mix(in srgb,var(--primary-text-color) 8%,transparent);display:block}.grkt[hidden]{display:none}.grkt.cur{border-color:var(--teal,#2dd4bf)}
       .grkt .grkb{display:flex;flex-direction:column;align-items:flex-start;width:100%;box-sizing:border-box;background:none;border:0;color:inherit;font:inherit;text-align:left;padding:8px 8px 7px;cursor:pointer}.grkt .grkb b{font-size:.82rem;font-weight:650;margin-top:4px}.grkt .grkb small{font-size:.7rem;color:var(--mut)}
       .grkth{width:100%;height:54px;display:block;background:#0e1626;border-radius:9px}.grkt .grks{position:absolute;top:4px;right:4px;border:0;background:none;color:color-mix(in srgb,var(--primary-text-color) 35%,transparent);font-size:1rem;min-width:30px;min-height:30px;cursor:pointer;padding:0}.grkt .grks.on{color:#fbbf24}
       .grkcs{display:flex;gap:6px;overflow-x:auto;margin:8px 0 0;padding-bottom:4px;scrollbar-width:none}.grkcs button{flex:none;border:0;border-radius:999px;padding:7px 13px;background:color-mix(in srgb,var(--primary-text-color) 8%,transparent);color:inherit;font:inherit;font-size:.84rem;cursor:pointer}.grkcs button.on{background:var(--teal,#2dd4bf);color:#042f2e;font-weight:650}
-      .grkq{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:none;color:inherit;font:inherit}</style>
-      <div class="pkbox grkc"${pp ? ` data-pp="${pp}"` : ""}><input class="grkq" data-f="enq" type="search" placeholder="Suchen: Sofa, Pool, Zaun …" aria-label="Katalog durchsuchen" autocomplete="off"><div class="grkcs">${chip("", "Alle")}${chip("rec", "Zuletzt")}${chip("fav", "★")}${gs.map(([g, [gn]]) => chip(g, esc(gn))).join("")}</div>
-      <div class="grkl">${rows}<div class="mut sm pkno" ${list.length ? "hidden" : ""} style="padding:8px">${empty}</div></div>${pp ? `<div class="grkpg"><button data-act="grxpg" data-v="-1" aria-label="Vorherige Seite">‹</button><span class="grkpl">${pg + 1} / ${Math.max(1, Math.ceil(list.length / pp))}</span><button data-act="grxpg" data-v="1" aria-label="Nächste Seite">›</button></div>` : `<div class="mut sm" style="margin-top:6px">${K.L.length} Gegenstände</div>`}</div>`;
+      .grkq{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:none;color:inherit;font:inherit}</style>`;
   }
   /* Seitenweise statt scrollen (neue Optik, Tablet/Desktop quer): so viele Kacheln, wie in die Spalte passen */
   _grPaged() { return !!(this._grLookNew && this._grLookNew() && (window.innerWidth || 0) > 900 && (window.innerHeight || 0) > 520); }
   _grPerPage() { const rows = Math.max(2, Math.floor(((window.innerHeight || 700) - 330) / 100)); return rows * 2; }
+  /* Passt der Inhalt eines Reiters nicht in die Spalte, wird er verkleinert statt gescrollt (bis 62 %) */
+  _grFit(root) {
+    const b = root && root.querySelector && root.querySelector(".grfs .grrtb"), f = b && b.querySelector(".grfit"); if (!f) return;
+    f.style.zoom = ""; const H = f.offsetHeight, A = b.clientHeight; if (!H || !A || H <= A) return;
+    f.style.zoom = String(Math.max(0.62, Math.floor((A / H) * 100) / 100));
+  }
   _grKatApply(root) {
     const box = root && root.querySelector && root.querySelector(".grkc[data-pp]"); if (!box) return;
     const pp = Number(box.dataset.pp) || 8, qi = box.querySelector(".grkq"), q = ((qi && qi.value) || "").trim().toLowerCase();
@@ -56,9 +65,11 @@
     const v = b && b.dataset ? b.dataset.v : "";
     if (this._grFloorAct && this._grFloorAct(a, b)) return true;
     if (this._grMassAct && this._grMassAct(a, b)) return true;
+    if (a === "grxtcat") { this._grTCT = v; this._grPg = 0; this._render(); return true; }
     if (a === "grxcat") { this._grCT = v; this._grPg = 0; this._render(); return true; }
-    if (a === "grxpg") { this._grPg = Math.max(0, (this._grPg || 0) + Number(v)); this._grKatApply(this.shadowRoot); return true; }
+    if (a === "grxpg") { this._grPg = Math.max(0, (this._grPg || 0) + Number(v)); this._grKatApply(this.shadowRoot); this._grFit(this.shadowRoot); return true; }
     if (a === "grxfly") { this._grFly = this._grFly === v ? "" : v; this._render(); return true; }
+    if (a === "grxep") { this._grEP = v; this._render(); return true; }
     if (a === "grxrt") { this._grRT = v; this._render(); return true; }
     if (a === "grxfav") { const f = this._grKatLs("fh_gr_fav"); this._grKatSv("fh_gr_fav", f.includes(v) ? f.filter((x) => x !== v) : [...f, v]); this._render(); return true; }
     if (a === "grxlock") { const e0 = this._sfEd, c0 = e0 && e0.plan.items.find((x) => x.id === e0.sel); if (c0) { this._sfSnap(); if (c0.lk) delete c0.lk; else c0.lk = 1; this._render(); } return true; }
