@@ -36,6 +36,11 @@
     clearTimeout(this._grMarkT); this._grMarkT = setTimeout(() => { this._grMark = null; this._render(); }, 9000);
     this._render();
   }
+  _grMeasDraw(sr) {
+    const ed = this._sfEd, m = ed && ed.meas; if (!m || !sr) return; const svg = sr.querySelector("svg.sfpe"); if (!svg || svg.querySelector(".grms")) return;
+    const p = m.p, ln = p.length === 2 ? `<line x1="${p[0][0]}" y1="${p[0][1]}" x2="${p[1][0]}" y2="${p[1][1]}" stroke="#2dd4bf" stroke-width="2.5" stroke-dasharray="7 5"/>` : "";
+    svg.insertAdjacentHTML("beforeend", `<g class="grms" pointer-events="none">${ln}${p.map((q) => `<circle cx="${q[0]}" cy="${q[1]}" r="7" fill="#2dd4bf" stroke="#042f2e" stroke-width="2"/>`).join("")}</g>`);
+  }
   _grMarkDraw(sr) {
     const m = this._grMark; if (!m || !sr) return; const svg = sr.querySelector(`svg.grzsvg[data-fl="${m.fl}"]`); if (!svg || svg.querySelector(".grmk")) return;
     svg.insertAdjacentHTML("beforeend", `<g class="grmk" pointer-events="none"><circle cx="${m.x}" cy="${m.y}" r="26" fill="#2dd4bf" fill-opacity=".14" stroke="#2dd4bf" stroke-width="3"><animate attributeName="r" values="20;42;20" dur="1.6s" repeatCount="indefinite"/><animate attributeName="stroke-opacity" values="1;.2;1" dur="1.6s" repeatCount="indefinite"/></circle><circle cx="${m.x}" cy="${m.y}" r="5" fill="#2dd4bf"/></g>`);

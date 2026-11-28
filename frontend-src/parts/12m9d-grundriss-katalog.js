@@ -74,6 +74,8 @@
     if (a === "grxfav") { const f = this._grKatLs("fh_gr_fav"); this._grKatSv("fh_gr_fav", f.includes(v) ? f.filter((x) => x !== v) : [...f, v]); this._render(); return true; }
     if (a === "grxlock") { const e0 = this._sfEd, c0 = e0 && e0.plan.items.find((x) => x.id === e0.sel); if (c0) { this._sfSnap(); if (c0.lk) delete c0.lk; else c0.lk = 1; this._render(); } return true; }
     if (a === "grxtpl") { this._grTplPend = v; this._grEdit("gr", "select"); return true; }
+    if (a === "grxnotf") { this._grNotfallPrint(); return true; }
+    if (a === "grxnb") { this._grNbAdd(v); return true; }
     if (a === "grxfind") { this._grFindGo(v); return true; }
     if (a === "grxfc") { const ed0 = this._sfEd, cur = ed0 && ed0.plan.items.find((x) => x.id === ed0.sel); if (cur) { this._sfSnap(); if (Number(v) > 0) cur.fc = Number(v); else delete cur.fc; this._render(); } return true; }
     if (a === "grxorots") { const ed0 = this._sfEd, cur = ed0 && ed0.plan.items.find((x) => x.id === ed0.sel); if (cur) { this._sfSnap(); cur.r = Number(v) % 360; this._render(); } return true; }

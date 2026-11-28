@@ -148,6 +148,38 @@ def plan_diff(old: dict[str, Any], new: dict[str, Any]) -> dict[str, dict[str, i
     return out
 
 
+def _in_poly(r: dict[str, Any], x: float, y: float) -> bool:
+    pts = r.get("pts")
+    if isinstance(pts, list) and len(pts) >= 3:
+        ins = False
+        for i, a in enumerate(pts):
+            b = pts[(i + 1) % len(pts)]
+            if (a[1] > y) != (b[1] > y) and x < (b[0] - a[0]) * (y - a[1]) / ((b[1] - a[1]) or 1e-9) + a[0]:
+                ins = not ins
+        return ins
+    return r.get("x", 0) <= x <= r.get("x", 0) + r.get("w", 0) and r.get("y", 0) <= y <= r.get("y", 0) + r.get("h", 0)
+
+
+def room_of(plan: dict[str, Any], entity: str, ent_area: dict[str, str] | None = None, room_area: dict[str, str] | None = None) -> str:
+    """Raum-Register (v0.17, Teil C): ID des Plan-Raums, in dem eine Entität liegt. Erst über ihre Position im Plan (Gegenstand mit dieser
+    Entität liegt im Raum), sonst über den Home-Assistant-Bereich (ent_area: Entität → Bereich, room_area: Raum-ID → Bereich). Leer, wenn unbekannt."""
+    items = plan.get("items") or []
+    rooms = [r for r in items if r.get("t") == "r"]
+    for it in items:
+        if it.get("e") != entity or it.get("t") == "r":
+            continue
+        cx, cy = float(it.get("x", 0)) + float(it.get("w", 0)) / 2, float(it.get("y", 0)) + float(it.get("h", 0)) / 2
+        for r in rooms:
+            if r.get("fl") == it.get("fl") and _in_poly(r, cx, cy):
+                return str(r.get("id", ""))
+    a = (ent_area or {}).get(entity)
+    if a:
+        for r in rooms:
+            if (room_area or {}).get(r.get("id", "")) == a:
+                return str(r.get("id", ""))
+    return ""
+
+
 def plan_stats(plan: dict[str, Any]) -> dict[str, Any]:
     """Zahlen für Banner und Ebenen: Etagen, Räume (mit Namen), Bauplan-Elemente, Elemente je Ebene."""
     items = plan.get("items") or []

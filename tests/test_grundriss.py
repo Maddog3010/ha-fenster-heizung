@@ -352,3 +352,14 @@ if __name__ == "__main__":
         if k.startswith("test_") and callable(f):
             f(); n += 1
     print(f"{n} Tests ok")
+
+
+def test_room_of_raum_register():
+    G = _load()
+    plan = {"items": [
+        {"id": "r1", "fl": "eg", "t": "r", "x": 0, "y": 0, "w": 200, "h": 200, "n": "Büro"},
+        {"id": "r2", "fl": "eg", "t": "r", "x": 200, "y": 0, "w": 200, "h": 200, "n": "Küche"},
+        {"id": "m1", "fl": "eg", "t": "m", "x": 250, "y": 50, "e": "binary_sensor.fenster"}]}
+    assert G.room_of(plan, "binary_sensor.fenster") == "r2"
+    assert G.room_of(plan, "sensor.x") == ""
+    assert G.room_of(plan, "sensor.x", {"sensor.x": "buero"}, {"r1": "buero"}) == "r1"

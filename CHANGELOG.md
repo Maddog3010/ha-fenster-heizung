@@ -2,6 +2,18 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.5b27] - 2026-11-28
+
+Modul 0 Haus & Grundriss, Version 0.17, achter Teil.
+
+### Neu
+- **Anleitung zu Modul 0:** Neue Anleitung als PDF (`docs/Anleitung_Modul0_Haus_Grundriss.pdf`, 5 Seiten) mit Baukasten, Vorlagen, Suche, Notfallplan, Maßstab und den Verbindungen zu anderen Modulen.
+- **Nebengebäude (D6):** Im Baukasten unter „Etage“ gibt es „Nebengebäude hinzufügen“: Garage, Gartenhaus oder Carport kommen mit eigenem Raum (Garage und Gartenhaus mit Wänden) auf die Etage „Außen“, die bei Bedarf angelegt wird.
+- **E-Auto im Plan (C9):** Im Werkzeug „Technik“ gibt es unter „Strom“ das neue Teil „E-Auto“. Mit dem Batteriesensor des Autos zeigt es den Ladezustand als Zahl im Plan, die Wallbox gibt es wie bisher.
+- **Raum-Register im Backend:** `grundriss.room_of(plan, entity)` liefert den Raum einer Entität (über ihre Position im Plan, sonst über den Home-Assistant-Bereich) – die Gegenstelle zur Abfrage im Panel.
+- **Notfallplan zum Aushängen (D4):** Unter „Sichern & Einlesen“ gibt es „Drucken / als PDF“. Es entsteht je Etage eine Seite im hellen Stil mit dem Plan, den Ausgängen und den Notfall-Punkten (Haupthahn, Sicherungskasten, Feuerlöscher …), jeweils mit Raum. Im Druckfenster lässt sich auch „Als PDF sichern“ wählen.
+- **Maßstab am Hintergrundbild setzen (D8):** Im Baukasten unter „Etage & Plan“ gibt es bei Etagen mit Hintergrundbild „Maßstab am Bild setzen“: zwei Punkte einer bekannten Strecke antippen, die echte Länge in Metern eingeben, fertig. Danach stimmen Raster, Flächen und Reichweiten.
+
 ## [2026.11.5b26] - 2026-11-28
 
 Modul 0 Haus & Grundriss, Version 0.17, siebter Teil.

@@ -255,6 +255,7 @@
         <div class="mut sm">Liest eine gesicherte Datei aus Modul 0 – oder eine ältere aus dem Baukasten von Modul 11. Du siehst vorher, was sich ändert, und wählst: <b>ersetzen</b> oder <b>als weitere Etagen hinzufügen</b>. Der jetzige Stand landet im Verlauf.</div>
         <div class="row" style="margin-top:auto"><label class="btn2 pri">${ic("upload", 15)} Datei wählen<input type="file" accept="application/json,.json" data-f="grximp" hidden></label></div></div>
       </div>
+      <div class="card" style="margin-top:12px"><h3 style="margin:0 0 6px;font-size:1rem;display:flex;gap:8px;align-items:center">${ic("alert", 18)} Notfallplan zum Aushängen</h3><div class="mut sm" style="margin-bottom:8px">Eine Seite je Etage im hellen Stil mit Ausgängen und Notfall-Punkten (Haupthahn, Sicherungskasten, Feuerlöscher …) – zum Ausdrucken für Gäste oder Babysitter. Im Druckfenster kannst du auch „Als PDF sichern“ wählen.</div><button class="btn2 pri" data-act="grxnotf">${ic("download", 15)} Drucken / als PDF</button></div>
       <div class="card" style="margin-top:12px"><h3 style="margin:0 0 6px;font-size:1rem;display:flex;gap:8px;align-items:center">${ic("clock", 18)} Verlauf</h3><div class="mut sm" style="margin-bottom:6px">Vor jedem Speichern legt Modul 0 den vorherigen Stand hier ab – ohne Hintergrundbilder, die bleiben beim Wiederherstellen wie sie sind.</div>${hist}${cp}</div>`;
   }
   /* Datei gelesen → Vorschau-Fenster */

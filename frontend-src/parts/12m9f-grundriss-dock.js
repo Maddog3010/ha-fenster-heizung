@@ -27,7 +27,7 @@
     const parts = String(html).split(/(?=<div class="sffld")/), pg = { etage: [], plan: [], daten: [] };
     parts.forEach((c, n) => {
       const L = (c.match(/<label[^>]*>([^<]*)</) || [])[1] || "";
-      pg[/Name der Etage|Art der Etage|Etage kopieren/.test(L) || (!L && n === 0) ? "etage" : /Raster|Maßstab|Norden/.test(L) ? "plan" : "daten"].push(c);
+      pg[/Name der Etage|Art der Etage|Etage kopieren|Nebengebäude/.test(L) || (!L && n === 0) ? "etage" : /Raster|Maßstab|Norden/.test(L) ? "plan" : "daten"].push(c);
     });
     const names = [["etage", "Etage"], ["plan", "Raster & Maßstab"], ["daten", "Bild & Daten"]].filter(([k]) => pg[k].join("").trim());
     let cur = this._grEP; if (!names.some((x) => x[0] === cur)) cur = names[0] ? names[0][0] : "etage";

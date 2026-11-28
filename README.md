@@ -395,6 +395,10 @@ Für Tablets an der Wand: große Knöpfe, Uhr im Kopf, untere Leiste mit den akt
 
 **Neu ab 2026.11.5b10 (Testversion):** Dazu E-Auto, Stromtarif und Solar-Prognose.
 
+**Neu: Anleitung zu Modul 0** – [Anleitung_Modul0_Haus_Grundriss.pdf](docs/Anleitung_Modul0_Haus_Grundriss.pdf) (5 Seiten: Baukasten, Vorlagen, Suche, Notfallplan, Verbindungen).
+
+**Neu ab 2026.11.5b27 (Testversion):** Haus & Grundriss: Ein Notfallplan lässt sich je Etage drucken oder als PDF sichern, Garage, Gartenhaus und Carport lassen sich als Nebengebäude hinzufügen, ein E-Auto zeigt seinen Ladezustand im Plan, und am Hintergrundbild kann man den Maßstab über eine bekannte Strecke setzen.
+
 **Neu ab 2026.11.5b26 (Testversion):** Haus & Grundriss: Unter „Boden & Höhe“ zeigt ein Raum eine grobe Schätzung seines Heizbedarfs, Vorlagen (Wohnung, Reihenhaus, Doppelhaushälfte, Bungalow) erleichtern den Start, und ein Suchfeld im Plan findet „Wo ist …?“ (Sicherungskasten, Haupthahn, Steckdose Büro).
 
 **Neu ab 2026.11.5b25 (Testversion):** Haus & Grundriss: Modul 1 ordnet Plan-Räume jetzt auch über Sensoren und Bereiche zu, wenn der Name nicht passt.
