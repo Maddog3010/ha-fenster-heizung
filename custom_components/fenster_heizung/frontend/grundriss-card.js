@@ -5,7 +5,7 @@
    type: custom:sw-grundriss-card
    titel: Unser Haus          # optional
    etage: EG                  # Name oder Kürzel der Etage, ohne = Umschalter
-   stil: modern               # modern | bauplan | hell
+   stil: modern               # modern | bauplan | hell | karte
    ebenen: [jetzt, licht, melder, geraete]
    tippen: raum               # raum (Raum-Blatt) | modul0 | nichts
 */
@@ -24,7 +24,7 @@ class SwGrundrissCard extends HTMLElement {
       schema: [
         { name: "titel", selector: { text: {} } },
         { name: "etage", selector: { text: {} } },
-        { name: "stil", selector: { select: { mode: "dropdown", options: [{ value: "modern", label: "Modern" }, { value: "bauplan", label: "Bauplan" }, { value: "hell", label: "Hell" }] } } },
+        { name: "stil", selector: { select: { mode: "dropdown", options: [{ value: "modern", label: "Modern" }, { value: "bauplan", label: "Bauplan" }, { value: "hell", label: "Hell" }, { value: "karte", label: "Karte" }] } } },
         { name: "ebenen", selector: { select: { multiple: true, options: [{ value: "jetzt", label: "Jetzt (Temperatur, Bewegung)" }, { value: "licht", label: "Lampen" }, { value: "melder", label: "Melder" }, { value: "geraete", label: "Mobile Geräte" }] } } },
         { name: "tippen", selector: { select: { mode: "dropdown", options: [{ value: "raum", label: "Raum-Blatt" }, { value: "modul0", label: "Modul 0 öffnen" }, { value: "nichts", label: "Nichts" }] } } },
       ],
@@ -85,7 +85,7 @@ class SwGrundrissCard extends HTMLElement {
     if (!P) { c.innerHTML = `<div class="msg">Grundriss wird geladen …</div>`; return; }
     if (!(P.items || []).some((i) => i.t === "r")) { c.innerHTML = `<div class="msg">Noch kein Grundriss – zeichnen in Strom &amp; Wärme → Modul 0.</div>`; return; }
     const R = this._r(); if (!R) { c.innerHTML = `<div class="msg">Grundriss wird geladen …</div>`; return; }
-    const fl = this._fl(), E = new Set(this._c.ebenen || []), sty = ["modern", "bauplan", "hell"].includes(this._c.stil) ? this._c.stil : "modern";
+    const fl = this._fl(), E = new Set(this._c.ebenen || []), sty = ["modern", "bauplan", "hell", "karte"].includes(this._c.stil) ? this._c.stil : "modern";
     let G;
     const opt = { style: sty, dims: false, narrow: (this.clientWidth || 600) < 420, click: this._c.tippen !== "nichts", layers: { licht: E.has("licht"), sf: E.has("melder"), gt: E.has("geraete") } };
     try { G = R._grDraw(P, fl, { ...opt, now: E.has("jetzt") }); } catch (_) { try { G = R._grDraw(P, fl, { ...opt, now: false }); } catch (e) { c.innerHTML = `<div class="msg">Der Grundriss konnte nicht gezeichnet werden.</div>`; return; } }

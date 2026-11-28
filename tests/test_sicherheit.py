@@ -510,6 +510,19 @@ def test_boden_je_raum():
     assert d["e"]["fm"] == "rasen" and d["e"]["fd"] == 90
 
 
+def test_etagen_art_und_dachschraege():
+    base = {"fl": "dg", "t": "r", "x": 0, "y": 0, "w": 200, "h": 200}
+    p = S.clean_plan({"floors": [{"id": "dg", "n": "DG", "k": "dg"}, {"id": "x1", "n": "X", "k": "burg"}], "items": [
+        {**base, "id": "a", "hh": 250, "dn": 35, "sd": "n", "kn": 100}, {**base, "id": "b", "hh": 9999, "dn": 90, "sd": "w", "kn": 500},
+        {**base, "id": "c", "hh": 250, "dn": 35, "sd": "x"}, {**base, "id": "d", "dn": 35, "sd": "n"}]})
+    assert [f.get("k") for f in p["floors"]] == ["dg", None]
+    d = {i["id"]: i for i in p["items"]}
+    assert (d["a"]["hh"], d["a"]["dn"], d["a"]["sd"], d["a"]["kn"]) == (250, 35, "n", 100)
+    assert (d["b"]["hh"], d["b"]["dn"], d["b"]["kn"]) == (600, 70, 200)           # Werte werden begrenzt
+    assert d["c"]["hh"] == 250 and "dn" not in d["c"] and "sd" not in d["c"]       # ungültige Seite: keine Schräge
+    assert "hh" not in d["d"] and "dn" not in d["d"]                                # Schräge ohne Raumhöhe entfällt
+
+
 if __name__ == "__main__":
     for k, v in list(globals().items()):
         if k.startswith("test_"):

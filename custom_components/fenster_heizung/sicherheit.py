@@ -81,6 +81,7 @@ MOB_K = ("bett", "bett1", "sofa", "sessel", "tisch", "couchtisch", "schreibtisch
          "hochbeet", "obstbaum", "teich", "gewaechshaus", "kompost", "regentonne", "bewaesserung", "wasserhahn", "spielturm", "schaukel", "sandkasten",
          "whirlpool", "sauna", "liegestuhl", "sonnenschirm", "feuerstelle", "trittsteine", "holzterrasse", "fahrrad", "gartenlampe",
          "nachttisch", "kleiderschrank", "schuhschrank", "garderobe", "teppich", "tischrund", "hocker", "stuhl", "kinderbett", "stockbett", "buecherregal", "herd", "spuelmaschine", "gefrierschrank", "theke", "spuele", "trockner", "doppelwaschtisch", "waeschestaender", "kiesbett", "pergola", "blumenkuebel", "brunnen", "steinmauer", "kraeuter", "tischtennis", "hollywood", "hundehuette", "fussballtor", "wallbox", "waermepumpe", "briefkasten", "kellerabgang", "lichtschacht", "terrasse", "fahrradgarage", "solarthermie")  # Modul 0 Build 10 und v0.15: Möbel und Außenbereich (Katalog mit 96 Gegenständen)
+FLOOR_K = ("keller", "eg", "og", "dg", "dachboden", "garage")  # v0.16 F1: Art der Etage
 FLOOR_M = ("holz", "parkett_hell", "parkett_dunkel", "fliese", "fliese_gross", "fliese_klein", "naturstein", "teppich", "vinyl", "pflaster", "rasen")  # v0.16 A4
 _ID = re.compile(r"^[a-z0-9_]{1,24}$")
 _MON = re.compile(r"^(20\d\d|19\d\d)-(0[1-9]|1[0-2])$")
@@ -266,6 +267,8 @@ def clean_plan(raw: Any) -> dict[str, Any]:
         if isinstance(f, dict) and _ID.match(str(f.get("id") or "")) and f["id"] not in ids and len(floors) < MAX_FLOORS:
             ids.add(f["id"])
             floors.append({"id": f["id"], "n": str(f.get("n") or f["id"]).strip()[:16] or f["id"]})
+            if f.get("k") in FLOOR_K:
+                floors[-1]["k"] = f["k"]
             if f.get("ga") in (1, True):  # Modul 0 Build 10: Grundstück (Außenbereich) statt Geschoss
                 floors[-1]["ga"] = 1
     if not floors:
@@ -352,6 +355,11 @@ def clean_plan(raw: Any) -> dict[str, Any]:
             o["rg"] = round(_num(it.get("rg"), 0, 15, 0) * 2) / 2  # Reichweite in Metern, 0 = je nach Art
         if it["t"] == "r":
             o["lk"] = str(it.get("lk") or "").strip()[:40]  # Raum aus Modul 1
+            if it.get("hh") not in (None, ""):  # v0.16 F1: Raumhöhe und Dachschräge (Kniestock, Neigung, Seite der niedrigen Kante)
+                o["hh"] = int(_num(it.get("hh"), 180, 600, 250))
+                if it.get("dn") not in (None, "") and it.get("sd") in ("n", "s", "w", "o"):
+                    o["dn"], o["sd"] = int(_num(it.get("dn"), 10, 70, 35)), it["sd"]
+                    o["kn"] = int(_num(it.get("kn"), 0, 200, 100))
             if it.get("fm") in FLOOR_M:  # v0.16 A4: Bodenbelag und Verlegerichtung (ohne Angabe: Belag nach dem Raumnamen)
                 o["fm"] = it["fm"]
                 if it.get("fd") in (45, 90):

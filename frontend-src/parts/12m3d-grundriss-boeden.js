@@ -12,7 +12,7 @@
   }
   _grFmPats(u, FM, T, o) {
     const ks = Object.keys(FM); if (!ks.length) return "";
-    const F = T.fl, hell = o.style === "hell", blue = o.style === "bauplan";
+    const F = T.fl, hell = o.style === "hell" || o.style === "karte", blue = o.style === "bauplan";
     const col = { parkett_hell: [["#8a6f4a", "#6d563a"], ["#e6cf9f", "#c9ab72"]], parkett_dunkel: [["#4a3426", "#2f2118"], ["#9b7b5f", "#7a5c42"]], naturstein: [["#5d636d", "#454a53"], ["#d3d6db", "#aeb3bb"]], vinyl: [["#59606b", "#444a54"], ["#e5e7eb", "#c4c8cf"]], rasen: [["#2f6a3f", "#3f8a52"], ["#a7d9a0", "#7fbf7a"]] };
     const C = (m, fb) => (blue ? [F.fliese[0], F.fliese[1]] : col[m] ? col[m][hell ? 1 : 0] : fb);
     return ks.map((key) => {

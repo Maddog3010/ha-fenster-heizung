@@ -56,7 +56,7 @@
   _grExOpt() { return (this._grEx = this._grEx || { f: "pdf", all: true, dims: true }); }
   _grExModal() {
     const o = this._grExOpt(), P = this._grRaw(), n = P ? this._grFloors(P).length : 1, seg = (k, opts) => `<div class="grseg">${opts.map(([v, t]) => `<button class="${String(o[k]) === String(v) ? "on" : ""}" data-act="grxexo" data-k="${k}" data-v="${v}">${t}</button>`).join("")}</div>`;
-    return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Grundriss exportieren</b><span>Stil „${{ modern: "Modern", bauplan: "Bauplan", hell: "Hell" }[this._grStyle()]}“ · Ebenen wie im Plan</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+    return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Grundriss exportieren</b><span>Stil „${{ modern: "Modern", bauplan: "Bauplan", hell: "Hell", karte: "Karte" }[this._grStyle()]}“ · Ebenen wie im Plan</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="sffld"><label>Format</label>${seg("f", [["pdf", "PDF (A4 quer)"], ["png", "PNG-Bild"], ["svg", "SVG (Vektor)"]])}<small class="mut" style="display:block;margin-top:4px">${{ pdf: "Zum Drucken, für Handwerker oder Versicherung – mit Titel, Datum, Fläche und Legende.", png: "Bild in hoher Auflösung, z. B. für Nachrichten.", svg: "Vektorgrafik zum Weiterbearbeiten." }[o.f]}</small></div>
       ${o.f === "pdf" && n > 1 ? `<div class="sffld"><label>Etagen</label>${seg("all", [[true, `Alle ${n} Etagen`], [false, "Nur diese Etage"]])}</div>` : ""}
       <div class="sffld"><label>Maße</label>${seg("dims", [[true, "Mit Maßen"], [false, "Ohne"]])}</div>
@@ -121,5 +121,5 @@
       <div class="mut sm" style="margin-bottom:8px">Den Plan gibt es auch als Karte für deine Dashboards – z. B. auf dem Tablet an der Wand. Dashboard bearbeiten → Karte hinzufügen → „Grundriss (Strom &amp; Wärme)“, oder als YAML:</div>
       <pre class="grpre">${esc(this._grCardYaml())}</pre>
       <div class="grseg" style="margin-top:8px"><button data-act="grxcopy">Kopieren</button></div>
-      <div class="mut sm" style="margin-top:8px"><b>etage</b>: Name oder Kürzel (ohne = Umschalter) · <b>stil</b>: modern, bauplan, hell · <b>ebenen</b>: jetzt, licht, melder, geraete · <b>tippen</b>: raum (Raum-Blatt), modul0 (öffnet Modul 0) oder nichts. Zoomen mit zwei Fingern, Doppeltipp setzt zurück.</div></div>`;
+      <div class="mut sm" style="margin-top:8px"><b>etage</b>: Name oder Kürzel (ohne = Umschalter) · <b>stil</b>: modern, bauplan, hell, karte · <b>ebenen</b>: jetzt, licht, melder, geraete · <b>tippen</b>: raum (Raum-Blatt), modul0 (öffnet Modul 0) oder nichts. Zoomen mit zwei Fingern, Doppeltipp setzt zurück.</div></div>`;
   }

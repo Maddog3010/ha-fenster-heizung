@@ -5,7 +5,7 @@
      Build 4: Sonderfälle – passt die Leiste nicht, werden die Symbole zu Punkten; sind es zu viele, endet die Leiste mit „+2“.
      Antippen des Raums öffnet wie bisher das Raum-Blatt mit allen Werten. Alle Größen in Bildschirm-Pixeln (upx = Plan-Einheiten je Pixel). */
   _grStrip(P, fl, rs, items, o, T, vb) {
-    const S = o.strip || {}, upx = Math.max(vb.w / Math.max(200, S.pw || 340), vb.h / Math.max(200, S.ph || 520)), st = this._hass.states, hell = o.style === "hell";
+    const S = o.strip || {}, upx = Math.max(vb.w / Math.max(200, S.pw || 340), vb.h / Math.max(200, S.ph || 520)), st = this._hass.states, hell = o.style === "hell" || o.style === "karte";
     const L = o.layers || {}, skip = new Set(), boxes = [];
     const inRoom = (r, x, y) => (this._sfInRoom ? this._sfInRoom(r, x, y) : x > r.x && x < r.x + r.w && y > r.y && y < r.y + r.h);
     const kinds = new Map(rs.map((r) => [r.id, this._grKind(r)])), order = rs.filter((r) => !(kinds.get(r.id).k === "aussen" || r.ds)).concat(rs.filter((r) => kinds.get(r.id).k === "aussen" || r.ds));

@@ -2,6 +2,28 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.5b20] - 2026-11-28
+
+Modul 0 Haus & Grundriss, Version 0.16 zweiter Teil und Version 0.17 erster Teil.
+
+### Neu
+- **Plan-Stil „Karte“:** Ein vierter Stil neben Modern, Bauplan und Hell. Haus und Garten sehen aus wie auf einer Landkarte: helles Kartenpapier, Räume in warmen Flächen, Außenbereiche grün, dünne graue Wände. Du wählst ihn über den Stil-Umschalter im Plan und im Baukasten. Er gilt auch für die Dashboard-Karte („stil: karte“) und den Export als PDF, PNG oder SVG.
+
+- **Art der Etage:** Keller, Erdgeschoss, Obergeschoss, Dachgeschoss, Dachboden oder Garage. Jede Art bringt eine übliche Raumhöhe mit.
+- **Raumhöhe und Dachschräge:** Im Baukasten stellst du für einen Raum (oder mehrere) die Höhe ein und optional eine Dachschräge: Seite der niedrigen Kante, Kniestock und Neigung. Das Raum-Blatt zeigt Höhe und Volumen, bei Schräge auch Grundfläche und Wohnfläche. Die Wohnfläche folgt der Wohnflächenverordnung: unter 1 m zählt nichts, von 1 bis 2 m die Hälfte, ab 2 m voll.
+
+- **Mehr Raum-Sensoren** (wenn „Raum-Sensoren“ in Modul 0 eingeschaltet ist): Je Raum jetzt auch **Luftfeuchte** (Mittel der Feuchtesensoren im Bereich), **Fensterfläche** in m² (aus den Fenstern im Plan, Standard 0,90 × 1,20 m) und **zuletzt belegt** (Zeitpunkt der letzten Bewegung; nach einem Neustart leer, bis wieder jemand im Raum ist).
+- **Ereignis `strom_waerme_raum_geaendert`** für eigene Automationen: wird ausgelöst, wenn sich bei einem Raum Fenster offen, belegt oder Lampen an ändern. Mit Raum, Bereich, was sich geändert hat sowie altem und neuem Wert.
+- **Wohnfläche des Hauses mit Dachschrägen:** Der Sensor `haus_wohnflaeche` rechnet Räume mit Dachschräge nach Wohnflächenverordnung.
+
+### Noch offen
+- Schnitt-Ansicht der Etagen, Schrägen schraffiert im Plan, Keller und Dachboden als unbeheizt in Modul 1.
+- Heizbedarf je Raum (grob) als Raum-Sensor.
+- Verbindungen zu Gerätestrom, Rollläden, Wetter, Wallbox, Saugroboter und Tags im Plan.
+- Echte Karte aus dem Internet als Hintergrund (nur als Zeichnung, ohne Kartendaten).
+- Gegenstands-Pakete als Addon (Max).
+- Farbe/Material und Hilfslinien beim Verschieben im Baukasten.
+
 ## [2026.11.5b19] - 2026-11-28
 
 Modul 0 Haus & Grundriss, Version 0.15 zweiter Teil und Version 0.16 erster Teil, und eine wichtige Korrektur zu 2026.11.5b18.

@@ -56,7 +56,31 @@ def test_raum_werte():
     assert "r4:flaeche" not in R and "r5:flaeche" not in R   # gestrichelt oder ohne Namen: keine Sensoren
     assert R["haus:wohnflaeche"]["value"] == 20.0 + 50.0 + 6.0   # Terrasse zählt nicht zur Wohnfläche
     assert R["r3:lampen_an"]["value"] is None and R["r3:fenster_offen"]["value"] is None   # ohne Bereich: nicht verfügbar
-    assert set(out["watch"]) == {"sensor.t1", "sensor.t2", "binary_sensor.fk", "binary_sensor.bw", "light.a", "light.b", "light.w", "binary_sensor.bad_bw"}
+    assert set(out["watch"]) == {"sensor.t1", "sensor.t2", "sensor.h", "binary_sensor.fk", "binary_sensor.bw", "light.a", "light.b", "light.w", "binary_sensor.bad_bw"}
+
+
+def test_b8_feuchte_fensterflaeche_ereignis():
+    plan = {**PLAN, "items": PLAN["items"] + [
+        {"id": "f1", "t": "f", "fl": "eg", "x": 90, "y": 0, "w": 20, "h": 4, "b": 100, "hh": 130},       # in der Küche: 1,30 m²
+        {"id": "f2", "t": "f", "fl": "eg", "x": 150, "y": 0, "w": 20, "h": 4},                           # Küche, Standard 0,9 × 1,2 = 1,08 m²
+        {"id": "f3", "t": "f", "fl": "og", "x": 10, "y": 10, "w": 20, "h": 4, "b": 200, "hh": 100}]}    # andere Etage: Bad, 2 m²
+    R = G.compute(plan, {"r6": "bad"}, AREAS, EA, ST)["rows"]
+    assert R["r1:luftfeuchte"]["value"] == 55.0 and R["r6:luftfeuchte"]["value"] is None
+    assert R["r1:fensterflaeche"]["value"] == 2.38 and R["r1:fensterflaeche"]["attrs"]["fenster"] == 2
+    assert R["r6:fensterflaeche"]["value"] == 2.0
+    assert R["r1:zuletzt_belegt"]["value"] is None and R["r1:zuletzt_belegt"]["dc"] == "timestamp"
+    old = G.compute(plan, {"r6": "bad"}, AREAS, EA, ST)
+    st2 = {**ST, "binary_sensor.bw": ("on", {"device_class": "motion"}), "binary_sensor.fk": ("off", {"device_class": "window"})}
+    new = G.compute(plan, {"r6": "bad"}, AREAS, EA, st2)
+    ch = G.raum_changes(old, new)
+    assert {(c["raum"], c["was"], c["alt"], c["neu"]) for c in ch} == {("Küche", "belegt", False, True), ("Küche", "fenster_offen", True, False)}
+    assert G.raum_changes(None, new) == [] and G.raum_changes(old, old) == []
+
+
+def test_wohnflaeche_mit_dachschraege():
+    plan = {"scale": 40, "items": [{"id": "a", "t": "r", "fl": "dg", "n": "Kind", "x": 0, "y": 0, "w": 160, "h": 200, "hh": 250, "dn": 35, "sd": "n", "kn": 100}]}
+    R = G.compute(plan, {}, {}, {}, {})["rows"]
+    assert R["a:flaeche"]["value"] == 20.0 and R["haus:wohnflaeche"]["value"] == 17.2   # Grundfläche 20 m², Wohnfläche 17,15 m² (gerundet)
 
 
 def test_ids_und_bereich():

@@ -27,9 +27,11 @@ DEVICE = {"identifiers": {(DOMAIN, "grundriss")}, "name": "Strom & Wärme · Hau
 WIN_DC = ("window", "door", "opening", "garage_door")
 OCC_DC = ("motion", "occupancy", "presence")
 OUT_RE = re.compile(r"terrasse|balkon|garten|außen|aussen|hof|carport|einfahrt", re.I)
-SENS = ("flaeche", "temperatur", "lampen_an")
+SENS = ("flaeche", "temperatur", "lampen_an", "luftfeuchte", "fensterflaeche", "zuletzt_belegt")
+EVENT = "strom_waerme_raum_geaendert"   # v0.17 B8: feuert, wenn sich bei einem Raum Fenster, Belegung oder Lampen ändern
+EVENT_KINDS = ("fenster_offen", "belegt", "lampen_an")
 BINS = ("fenster_offen", "belegt")
-LABEL = {"flaeche": "Fläche", "temperatur": "Temperatur", "lampen_an": "Lampen an", "fenster_offen": "Fenster offen", "belegt": "belegt"}
+LABEL = {"flaeche": "Fläche", "temperatur": "Temperatur", "lampen_an": "Lampen an", "fenster_offen": "Fenster offen", "belegt": "belegt", "luftfeuchte": "Luftfeuchte", "fensterflaeche": "Fensterfläche", "zuletzt_belegt": "zuletzt belegt"}
 
 
 def _norm(s: Any) -> str:
@@ -46,6 +48,44 @@ def poly_area(r: dict[str, Any]) -> float:
     if isinstance(pts, list) and len(pts) >= 3:
         return abs(sum(pts[i][0] * pts[(i + 1) % len(pts)][1] - pts[(i + 1) % len(pts)][0] * pts[i][1] for i in range(len(pts)))) / 2
     return float(r.get("w") or 0) * float(r.get("h") or 0)
+
+
+def _in_room(r: dict[str, Any], x: float, y: float) -> bool:
+    pts = r.get("pts")
+    if isinstance(pts, list) and len(pts) >= 3:
+        ins = False
+        for i, a in enumerate(pts):
+            b = pts[(i + 1) % len(pts)]
+            if (a[1] > y) != (b[1] > y) and x < (b[0] - a[0]) * (y - a[1]) / ((b[1] - a[1]) or 1e-9) + a[0]:
+                ins = not ins
+        return ins
+    return r.get("x", 0) <= x <= r.get("x", 0) + r.get("w", 0) and r.get("y", 0) <= y <= r.get("y", 0) + r.get("h", 0)
+
+
+def wohn_area(r: dict[str, Any], sc: float) -> float:
+    """Wohnfläche in m² (v0.16 F1): mit Dachschräge nach Wohnflächenverordnung (unter 1 m 0 %, 1–2 m 50 %, ab 2 m 100 %), sonst Grundfläche."""
+    gf = poly_area(r) / (sc * sc)
+    if not (r.get("dn") and r.get("sd") and r.get("hh")):
+        return gf
+    import math
+    ln = float(r.get("h" if r["sd"] in ("n", "s") else "w") or 0) / sc * 100
+    tan, n, wf = math.tan(math.radians(r["dn"])), 200, 0.0
+    for i in range(n):
+        h = min(r["hh"], (r.get("kn") or 0) + (i + 0.5) / n * ln * tan)
+        wf += (0 if h < 100 else 0.5 if h < 200 else 1.0) / n
+    return gf * wf
+
+
+def raum_changes(prev: dict[str, Any] | None, new: dict[str, Any] | None) -> list[dict[str, Any]]:
+    """v0.17 B8: Was hat sich zwischen zwei Berechnungen bei Fenster, Belegung und Lampen geändert? Beim ersten Mal (ohne Vorgänger) nichts."""
+    out: list[dict[str, Any]] = []
+    if not prev or not new:
+        return out
+    for k, r in new["rows"].items():
+        o = prev["rows"].get(k)
+        if r.get("kind") in EVENT_KINDS and o is not None and o.get("value") is not None and r.get("value") is not None and o["value"] != r["value"]:
+            out.append({"raum_id": r["room"], "raum": r["name"].rsplit(" ", 1 if r["kind"] == "belegt" else 2)[0], "bereich": r.get("area", ""), "was": r["kind"], "alt": o["value"], "neu": r["value"]})
+    return out
 
 
 def area_of(r: dict[str, Any], rooms: dict[str, str], areas: dict[str, str]) -> str:
@@ -73,20 +113,21 @@ def compute(plan: dict[str, Any], rooms: dict[str, str], areas: dict[str, str], 
     watch: set[str] = set()
     used: set[str] = set()
     total = 0.0
+    wins_plan = [i for i in plan.get("items") or [] if i.get("t") == "f"]
     for r in plan.get("items") or []:
         if r.get("t") != "r" or r.get("ds") or not str(r.get("n") or "").strip():
             continue
         name = str(r["n"]).strip()
         m2 = round(poly_area(r) / (sc * sc), 1)
         if not OUT_RE.search(name):
-            total += m2
+            total += wohn_area(r, sc)
         s = slug(name)
         while s in used:
             s += "_2"
         used.add(s)
         aid = area_of(r, rooms, areas)
         ents = by_area.get(aid, []) if aid else []
-        temps, wins, occ, lamps_on, lamps = [], [], [], 0, 0
+        temps, wins, occ, lamps_on, lamps, hum = [], [], [], 0, 0, []
         for e in ents:
             st = states.get(e)
             if not st:
@@ -97,6 +138,12 @@ def compute(plan: dict[str, Any], rooms: dict[str, str], areas: dict[str, str], 
             if dom == "sensor" and dc == "temperature" and not e.startswith(f"sensor.{PRE}_raum_"):
                 try:
                     temps.append(float(val))
+                    watch.add(e)
+                except (TypeError, ValueError):
+                    pass
+            elif dom == "sensor" and dc == "humidity" and not e.startswith(f"sensor.{PRE}_raum_"):
+                try:
+                    hum.append(float(val))
                     watch.add(e)
                 except (TypeError, ValueError):
                     pass
@@ -115,6 +162,10 @@ def compute(plan: dict[str, Any], rooms: dict[str, str], areas: dict[str, str], 
         base = {"room": r["id"], "slug": s, "area": aid, "floor": r.get("fl", "")}
         rows[f"{r['id']}:flaeche"] = {**base, "kind": "flaeche", "name": f"{name} Fläche", "value": m2, "unit": "m²", "icon": "mdi:floor-plan", "sc": "measurement"}
         rows[f"{r['id']}:temperatur"] = {**base, "kind": "temperatur", "name": f"{name} Temperatur", "value": round(sum(temps) / len(temps), 1) if temps else None, "unit": "°C", "dc": "temperature", "sc": "measurement", "attrs": {"sensoren": len(temps)}}
+        rows[f"{r['id']}:luftfeuchte"] = {**base, "kind": "luftfeuchte", "name": f"{name} Luftfeuchte", "value": round(sum(hum) / len(hum), 1) if hum else None, "unit": "%", "dc": "humidity", "sc": "measurement", "attrs": {"sensoren": len(hum)}}
+        fa = [w for w in wins_plan if w.get("fl") == r.get("fl") and _in_room(r, float(w.get("x", 0)) + float(w.get("w", 0)) / 2, float(w.get("y", 0)) + float(w.get("h", 0)) / 2)]
+        rows[f"{r['id']}:fensterflaeche"] = {**base, "kind": "fensterflaeche", "name": f"{name} Fensterfläche", "value": round(sum(float(w.get("b") or 90) * float(w.get("hh") or 120) for w in fa) / 10000, 2), "unit": "m²", "icon": "mdi:window-closed-variant", "attrs": {"fenster": len(fa)}}
+        rows[f"{r['id']}:zuletzt_belegt"] = {**base, "kind": "zuletzt_belegt", "name": f"{name} zuletzt belegt", "value": None, "dc": "timestamp", "attrs": {}}
         rows[f"{r['id']}:lampen_an"] = {**base, "kind": "lampen_an", "name": f"{name} Lampen an", "value": lamps_on if aid else None, "icon": "mdi:lightbulb-group", "sc": "measurement", "attrs": {"lampen": lamps}}
         rows[f"{r['id']}:fenster_offen"] = {**base, "kind": "fenster_offen", "name": f"{name} Fenster offen", "value": bool(wins) if aid else None, "dc": "window", "attrs": {"offen": wins}}
         rows[f"{r['id']}:belegt"] = {**base, "kind": "belegt", "name": f"{name} belegt", "value": bool(occ) if aid else None, "dc": "occupancy", "attrs": {"durch": occ}}
@@ -152,12 +203,23 @@ def register(hass: HomeAssistant, platform: str, add: Callable[[list], None], ma
 
     store = hass.data.setdefault(DOMAIN, {})
     have: set[str] = set()
-    kinds = ("flaeche", "temperatur", "lampen_an", "wohnflaeche") if platform == "sensor" else BINS
+    kinds = ("flaeche", "temperatur", "lampen_an", "wohnflaeche", "luftfeuchte", "fensterflaeche", "zuletzt_belegt") if platform == "sensor" else BINS
     st: dict[str, Any] = {"watch": set(), "later": None, "gm": None}
 
     @callback
     def _sync(*_a) -> None:
         snap = _snapshot(hass)
+        if snap:   # v0.17 B8: „zuletzt belegt“ merken (im Speicher, nach einem Neustart leer bis zur nächsten Belegung) und Änderungen als Ereignis melden
+            from datetime import datetime, timezone
+            last = store.setdefault("raum_last_occ", {})
+            for k, r in snap["rows"].items():
+                if r.get("kind") == "belegt" and r.get("value"):
+                    last[r["room"]] = datetime.now(timezone.utc)
+            for r in snap["rows"].values():
+                if r.get("kind") == "zuletzt_belegt":
+                    r["value"] = last.get(r["room"])
+            for c in raum_changes(store.get("raum_vals"), snap):
+                hass.bus.async_fire(EVENT, c)
         store["raum_vals"] = snap
         st["watch"] = set(snap["watch"]) if snap else set()
         if snap:

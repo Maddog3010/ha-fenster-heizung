@@ -3,7 +3,7 @@
      Teppich, Pflaster draußen), Türen mit Türblatt und Schwenkbogen, Fenster mit Rahmen und Glas (offen = gelb, aus dem Kontakt),
      Treppen mit Stufen und Laufrichtung, Raumnamen mit Symbol und Fläche in m², Maßketten, Nordpfeil und Maßstab. Drei Stile:
      „Modern“ (dunkel), „Bauplan“ (blau mit weißen Linien) und „Hell“ (Papier). Stil und „Maße“ merkt sich der Browser. */
-  _grStyle() { let s = this._grSty; if (!s) { try { s = localStorage.getItem("fh_gr_style"); } catch (_) { /* privater Modus */ } } return ["modern", "bauplan", "hell"].includes(s) ? s : "modern"; }
+  _grStyle() { let s = this._grSty; if (!s) { try { s = localStorage.getItem("fh_gr_style"); } catch (_) { /* privater Modus */ } } return ["modern", "bauplan", "hell", "karte"].includes(s) ? s : "modern"; }
   _grDimsOn() { if (this._grDim == null) { try { this._grDim = localStorage.getItem("fh_gr_dims") === "1"; } catch (_) { this._grDim = false; } } return this._grDim; }
   _grTheme(s) {
     return {
@@ -11,6 +11,8 @@
         fl: { holz: ["#33291f", "#3f3226", "#2c241b"], fliese: ["#1c2633", "#2a3747"], teppich: ["#262a3a", "#2f3448"], aussen: ["#18241f", "#22322a"], technik: ["#22262d", "#2c3139"] } },
       bauplan: { bg: "#0a3566", grid: "#ffffff12", gridDot: false, wall: "url(#U_hatchW)", wallIn: "url(#U_hatchW)", wallStroke: "#e0f2fe", shadow: false, text: "#ffffff", sub: "#bae6fd", leaf: "#ffffff", arc: "#93c5fd", glass: "#bae6fd", frame: "#ffffff", open: "#fde047", dim: "#bae6fd", stair: "#e0f2fe", accent: "#fde047",
         fl: { holz: ["#0a3566", "#ffffff10", "#0a3566"], fliese: ["#0a3566", "#ffffff14"], teppich: ["#0a3566", "#ffffff0a"], aussen: ["#0a3566", "#ffffff12"], technik: ["#0a3566", "#ffffff0d"] } },
+      karte: { bg: "#f2efe9", grid: "#00000000", gridDot: false, wall: "#8a8175", wallIn: "#9c9387", shadow: false, text: "#33312e", sub: "#6e6a63", leaf: "#6b645a", arc: "#b3aa9c", glass: "#7cb9e8", frame: "#6b645a", open: "#c2410c", dim: "#6e6a63", stair: "#8a8175", accent: "#0d9488",
+        fl: { holz: ["#ebe1d3", "#e0d4c2", "#e6dbcb"], fliese: ["#efe9de", "#ddd4c4"], teppich: ["#ece3d8", "#dfd3c4"], aussen: ["#cfe8b8", "#b9d99f"], technik: ["#ddd8cf", "#cdc6ba"] } },
       hell: { bg: "#f7f4ee", grid: "#00000009", gridDot: false, wall: "#1f2430", wallIn: "#3b4252", shadow: true, text: "#111827", sub: "#6b7280", leaf: "#111827", arc: "#9ca3af", glass: "#38bdf8", frame: "#111827", open: "#d97706", dim: "#6b7280", stair: "#4b5563", accent: "#0d9488",
         fl: { holz: ["#ead9bf", "#dcc6a4", "#e3cfb1"], fliese: ["#e8edf2", "#cfd7e0"], teppich: ["#ece7f4", "#e0d9ee"], aussen: ["#e4e9dc", "#cfd9c3"], technik: ["#e7e7e4", "#d5d5d0"] } },
     }[s];
@@ -113,7 +115,7 @@
       ${this._grFmPats ? this._grFmPats(u, FM, T, o) : ""}
       <pattern id="${u}hatchW" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="${T.wallStroke ? "#0a3566" : T.bg}"/><path d="M0 0V6" stroke="${T.wallStroke || T.wall}" stroke-width="2.2"/></pattern>
       ${T.gridDot ? `<pattern id="${u}grid" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="${T.grid}"/></pattern>` : `<pattern id="${u}grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="${T.grid}" stroke-width="1"/></pattern>`}
-      <filter id="${u}sh" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="${o.style === "hell" ? 3 : 6}" stdDeviation="${o.style === "hell" ? 4 : 8}" flood-color="#000" flood-opacity="${o.style === "hell" ? 0.18 : 0.55}"/></filter>
+      <filter id="${u}sh" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="${(o.style === "hell" || o.style === "karte") ? 3 : 6}" stdDeviation="${(o.style === "hell" || o.style === "karte") ? 4 : 8}" flood-color="#000" flood-opacity="${(o.style === "hell" || o.style === "karte") ? 0.18 : 0.55}"/></filter>
       <marker id="${u}ar" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 1L9 5L0 9z" fill="${T.stair}"/></marker>
     </defs>
     ${o.bare ? "" : `<rect x="${vb.x}" y="${vb.y}" width="${vb.w}" height="${vb.h}" fill="${T.bg}"/>${o.cover ? `<rect x="${o.cover.x}" y="${o.cover.y}" width="${o.cover.w}" height="${o.cover.h}" fill="${T.bg}"/>` : ""}<rect x="${Math.min(vb.x, o.cover ? o.cover.x : vb.x)}" y="${Math.min(vb.y, o.cover ? o.cover.y : vb.y)}" width="${Math.max(vb.w, o.cover ? o.cover.w + 400 : 0)}" height="${Math.max(vb.h, o.cover ? o.cover.h + 400 : 0)}" fill="url(#${u}grid)"/>`}`;   /* bare: ohne Hintergrund */
@@ -134,7 +136,7 @@
     const floorAtR = (i) => { const an = ((i.r || 0) * Math.PI) / 180, nx = -Math.sin(an) * 10, ny = Math.cos(an) * 10, inR = (q, x, y) => (this._sfInRoom ? this._sfInRoom(q, x, y) : x > q.x && x < q.x + q.w && y > q.y && y < q.y + q.h); const r = ins.find((q) => inR(q, i.x + nx, i.y + ny) || inR(q, i.x - nx, i.y - ny)); return r ? `url(#${u}${kinds.get(r.id).k})` : T.bg; };
     items.forEach((i) => {
       const rot = i.r ? `rotate(${i.r} ${i.x} ${i.y})` : "", mir = i.mh || i.mv ? ` translate(${i.x} ${i.y}) scale(${i.mh ? -1 : 1} ${i.mv ? -1 : 1}) translate(${-i.x} ${-i.y})` : "";
-      if ((i.t === "d" && o.doors) || (i.t === "f" && o.windows)) d += this._grOpenSvg(i, T, WI, i.t === "d" ? floorAtR(i) : T.bg, P.scale > 0 ? P.scale : 40, st, P, o.style === "hell");   /* Build 7: alle Arten, jede Breite, jeder Winkel */
+      if ((i.t === "d" && o.doors) || (i.t === "f" && o.windows)) d += this._grOpenSvg(i, T, WI, i.t === "d" ? floorAtR(i) : T.bg, P.scale > 0 ? P.scale : 40, st, P, (o.style === "hell" || o.style === "karte"));   /* Build 7: alle Arten, jede Breite, jeder Winkel */
       else if (i.t === "s" && o.stairs) d += this._grStairSvg ? this._grStairSvg(i, T, u) : "";   /* Build 7: Treppenarten */
       else if (i.t === "a" && o.doors && this._grAwnSvg) d += this._grAwnSvg(i, T, P.scale > 0 ? P.scale : 40, st, u);   /* Build 7: Markise */
       else if (i.t === "x") d += `<text x="${i.x}" y="${i.y}" font-size="${12 * NF}" font-style="italic" fill="${T.sub}">${esc(i.n || "")}</text>`;
@@ -154,11 +156,11 @@
       d += `<g><title>${esc(this._wzName(i.e))} · ${on ? "an" : s2 && s2.state === "unavailable" ? "offline" : "aus"}</title>${on ? `<radialGradient id="${g}"><stop offset="0" stop-color="${c}" stop-opacity=".55"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></radialGradient><circle cx="${i.x}" cy="${i.y}" r="${46 * q}" fill="url(#${g})"/>` : ""}
         ${i.k === "streifen" ? `<rect x="${i.x - 22 * q}" y="${i.y - 3.5 * q}" width="${44 * q}" height="${7 * q}" rx="${3.5 * q}" fill="${c}" stroke="${on ? "#fff" : T.sub}" stroke-width="1.4"${i.r ? ` transform="rotate(${i.r} ${i.x} ${i.y})"` : ""}/>` : `<circle cx="${i.x}" cy="${i.y}" r="${(i.k === "spot" ? 5 : 8) * q}" fill="${c}" stroke="${on ? "#fff" : T.sub}" stroke-width="1.8"/>`}</g>`;
     });
-    if ((o.layers.ht || o.layers.nf) && this._grTechSvg) d += this._grTechSvg(P, fl, T, q, u, o.style === "hell", o.layers.ht ? "" : "notfall");   /* Build 9: Haustechnik, Notfall-Punkte */
-    if (o.layers.gt && this._grDevSvg) d += this._grDevSvg(P, fl, T, q, u, o.style === "hell", SP ? SP.skip : null);   /* Build 7: mobile Heizer und Entfeuchter */
+    if ((o.layers.ht || o.layers.nf) && this._grTechSvg) d += this._grTechSvg(P, fl, T, q, u, (o.style === "hell" || o.style === "karte"), o.layers.ht ? "" : "notfall");   /* Build 9: Haustechnik, Notfall-Punkte */
+    if (o.layers.gt && this._grDevSvg) d += this._grDevSvg(P, fl, T, q, u, (o.style === "hell" || o.style === "karte"), SP ? SP.skip : null);   /* Build 7: mobile Heizer und Entfeuchter */
     if (o.layers.sf) items.filter((i) => i.t === "m" && !(SP && SP.skip.has(i))).forEach((i) => {
       const s2 = i.e && st[i.e], al = !!(s2 && s2.state === "on");
-      d += `<g><title>${esc(i.e ? this._wzName(i.e) : "Melder")}${al ? " · Alarm" : ""}</title><circle cx="${i.x}" cy="${i.y}" r="${10 * q}" fill="${o.style === "hell" ? "#fff" : "#111827"}" stroke="${al ? "#ef4444" : "#f87171"}" stroke-width="2"/><g transform="translate(${i.x - 6 * q} ${i.y - 6 * q}) scale(${(12 * q) / 24})" fill="none" stroke="${al ? "#ef4444" : "#f87171"}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${ICONS.shield}</g></g>`;
+      d += `<g><title>${esc(i.e ? this._wzName(i.e) : "Melder")}${al ? " · Alarm" : ""}</title><circle cx="${i.x}" cy="${i.y}" r="${10 * q}" fill="${(o.style === "hell" || o.style === "karte") ? "#fff" : "#111827"}" stroke="${al ? "#ef4444" : "#f87171"}" stroke-width="2"/><g transform="translate(${i.x - 6 * q} ${i.y - 6 * q}) scale(${(12 * q) / 24})" fill="none" stroke="${al ? "#ef4444" : "#f87171"}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${ICONS.shield}</g></g>`;
     });
     if (SP) d += SP.svg;
     /* 7) Maßketten außen, Nordpfeil und Maßstab */

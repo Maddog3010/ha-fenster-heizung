@@ -590,7 +590,7 @@ class MuellSensor(muell_ent._Base, SensorEntity):
 
 
 class RaumSensor(gr_ent.Base, SensorEntity):
-    """Modul 0: Fläche, Temperatur und Lampen an je Raum, Wohnfläche des Hauses."""
+    """Modul 0: Fläche, Temperatur, Luftfeuchte, Fensterfläche, zuletzt belegt und Lampen an je Raum, Wohnfläche des Hauses."""
 
     @property
     def native_value(self) -> Any:

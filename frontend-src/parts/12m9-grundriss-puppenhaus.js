@@ -130,7 +130,7 @@
   }
   /* Möbel und Außen-Gegenstände einer Etage. which = "aussen" (unter den Räumen) oder "innen" (über den Böden) */
   _grMobLayer(P, fl, T, o, which, st) {
-    const hell = o.style === "hell", K = this._grMK(), isOut = (i) => this._grMK() && this._grOUT.has(this._grMk(i).g), f = (P.floors || []).find((x) => x.id === fl) || {};
+    const hell = o.style === "hell" || o.style === "karte", K = this._grMK(), isOut = (i) => this._grMK() && this._grOUT.has(this._grMk(i).g), f = (P.floors || []).find((x) => x.id === fl) || {};
     let d = "";
     if (which === "aussen" && f.ga) d += this._grHouseOnLot(P, T, o);
     const its = (P.items || []).filter((i) => i.t === "o" && i.fl === fl && (which === "aussen" ? isOut(i) : !isOut(i)));
@@ -143,7 +143,7 @@
     const main = (P.floors || []).find((f) => !f.ga && /^(eg|erdgeschoss)$/i.test(f.n)) || (P.floors || []).find((f) => !f.ga); if (!main) return "";
     const rs = (P.items || []).filter((i) => i.t === "r" && i.fl === main.id && !i.ds && this._grKind(i).k !== "aussen"); if (!rs.length) return "";
     const pth = rs.map((r) => "M" + this._grPoly(r).map((p) => p[0] + " " + p[1]).join("L") + "Z").join(""), x0 = Math.min(...rs.map((r) => r.x)), y0 = Math.min(...rs.map((r) => r.y)), x1 = Math.max(...rs.map((r) => r.x + r.w)), y1 = Math.max(...rs.map((r) => r.y + r.h));
-    const hell = o.style === "hell", fill = hell ? "#e2e8f0" : "#273246";
+    const hell = o.style === "hell" || o.style === "karte", fill = hell ? "#e2e8f0" : "#273246";
     return `<g${o.click ? ` data-act="grxfl" data-k="${esc(main.id)}" style="cursor:pointer"` : ""}><title>Haus · ${esc(main.n)} öffnen</title><path d="${pth}" fill="${fill}" stroke="${fill}" stroke-width="16" stroke-linejoin="miter"/><path d="${pth}" fill="${fill}" stroke="${hell ? "#94a3b8" : "#64748b"}" stroke-width="2"/>
       <path d="M${x0} ${y0}L${(x0 + x1) / 2} ${(y0 + y1) / 2}L${x1} ${y0}M${x0} ${y1}L${(x0 + x1) / 2} ${(y0 + y1) / 2}L${x1} ${y1}" stroke="${hell ? "#94a3b8" : "#475569"}" stroke-width="1.2" fill="none"/>
       <rect x="${(x0 + x1) / 2 - 46}" y="${(y0 + y1) / 2 - 13}" width="92" height="26" rx="13" fill="${hell ? "#fff" : "#0b1220"}" stroke="var(--teal,#2dd4bf)"/><text x="${(x0 + x1) / 2}" y="${(y0 + y1) / 2 + 4}" text-anchor="middle" font-size="12" font-weight="800" fill="${hell ? "#0f172a" : "#e2e8f0"}">Haus · ${esc(main.n)}</text></g>`;
