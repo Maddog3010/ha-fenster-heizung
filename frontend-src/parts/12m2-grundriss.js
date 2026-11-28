@@ -182,6 +182,7 @@
     try { this.shadowRoot.querySelector(".gred").scrollIntoView({ block: "start" }); } catch (_) { /* egal */ }
   }
   _grEditHead(ed) {
+    if (this._grLookNew && this._grLookNew()) return "";   /* neue Optik: wie im Konzept ohne Titelband – der Baukasten füllt den Bildschirm */
     const ms = this._mdList(), sf = ms.some((m) => m.id === "sf"), li = !!(this._liOn && this._liOn());
     return `<div class="gredh">${ic("pencil", 16)}<b>Grundriss bearbeiten</b><span>Modul 0 · ein Plan für Modul 1${sf ? ", 11" : ""}${li ? " und 18" : ""} – nach dem Speichern sofort überall${ed.from && ed.from !== "gr" ? `, danach zurück zu ${esc(this._grModName(ed.from))}` : ""}</span></div>`;
   }

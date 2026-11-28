@@ -29,6 +29,7 @@
     sr.addEventListener("pointermove", hhov); sr.addEventListener("pointerdown", hhov);
     sr.addEventListener("input", (e) => this._onInput(e.target));
     sr.addEventListener("pointerdown", (e) => { const g = e.target.closest("[data-handle]"); if (g) this._dragStart(e, g); });
+    sr.addEventListener("focusout", (e) => { if (this._renderHeld && e.target && e.target.classList && e.target.classList.contains("grkq")) { this._renderHeld = false; setTimeout(() => this._render(), 50); } });
     sr.addEventListener("input", (e) => { const t = e.target; if (t.dataset && t.dataset.f === "enq") { const q = t.value.trim().toLowerCase(); let n = 0; t.closest(".pkbox").querySelectorAll(".pkrow").forEach((r) => { const ok = !q || r.dataset.s.includes(q); r.hidden = !ok; if (ok) n++; }); const z = t.closest(".pkbox").querySelector(".pkno"); if (z) z.hidden = n > 0; } });
     /* Uhrzeit aus zwei Feldern (Stunde, Minute) statt <input type="time">: Das Auswahlrad der Mac-App von Home Assistant
        (iPad-App auf dem Mac) bringt die App zum Absturz. Das unsichtbare Feld dahinter trägt Wert und data-Angaben wie bisher. */

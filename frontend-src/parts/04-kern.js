@@ -107,7 +107,9 @@ class FensterHeizungPanel extends HTMLElement {
     }
     this._hass = this._errWrap(h);   /* Fehler-Statistik: fehlgeschlagene eigene Befehle ins Fehlerprotokoll (eigene Kopie) */
     if (first) this._load();
-    this._render();
+    /* Tippt jemand gerade in ein Suchfeld (Katalog im Baukasten), wird nicht neu gezeichnet: Das Feld würde sonst verschwinden und die Tastatur schließen. Nach dem Tippen wird nachgeholt. */
+    const fo = this.shadowRoot && this.shadowRoot.activeElement;
+    if (fo && fo.classList && fo.classList.contains("grkq")) this._renderHeld = true; else { this._renderHeld = false; this._render(); }
     if (this._modal && ["why", "rkhtr", "ehlist", "tm2s6li"].includes(this._modal.type)) this._renderModal();  // Gründe bleiben aktuell
   }
   set narrow(v) { this._narrow = v; this._render(); }

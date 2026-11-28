@@ -2,6 +2,18 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.5b21] - 2026-11-28
+
+Modul 0 Haus & Grundriss, Version 0.17, zweiter Teil: zwei Korrekturen am Baukasten.
+
+### Neu
+- **Katalog als Kacheln wie im Konzept:** Jeder Gegenstand hat eine Kachel mit Bild von oben, Name und Größe in cm, ★ für Favoriten, die Kategorien als Reihe zum Wischen. Die Suche findet auch Wortteile und Synonyme („Couch“ findet Sofa).
+- **Farbige Gegenstände:** Im Baukasten und im Plan (Stil Modern und Bauplan) haben Möbel und Außen-Teile jetzt Farbe nach Art: Holz, Stoff, Porzellan, Grün, Wasser. Die hellen Stile (Hell, Karte) bleiben wie bisher.
+
+### Behoben
+- **Suche im Katalog ließ sich nicht tippen:** Home Assistant meldet laufend neue Werte, das Panel zeichnete sich dabei neu und das Suchfeld verschwand mitten im Tippen (die Tastatur schloss sich). Solange du im Suchfeld schreibst, wird jetzt nicht neu gezeichnet.
+- **Baukasten sah nicht aus wie im Konzept:** Er passte nicht auf einen Bildschirm, man musste scrollen. Jetzt füllt er auf Tablet und Desktop (quer) den Bildschirm: kein Titelband mehr darüber, der Plan nimmt die ganze Höhe, die Werkzeugleiste links und die Eigenschaften rechts scrollen für sich. Auf dem Handy bleibt alles wie bisher.
+
 ## [2026.11.5b20] - 2026-11-28
 
 Modul 0 Haus & Grundriss, Version 0.16 zweiter Teil und Version 0.17 erster Teil.
