@@ -922,3 +922,10 @@ def test_eigene_farbe_je_gegenstand():
         {"id": "c", "fl": "eg", "t": "o", "ok": "sofa", "x": 0, "y": 0, "w": 100, "h": 50, "fc": True}]})
     by = {i["id"]: i for i in p["items"]}
     assert by["a"]["fc"] == 3 and "fc" not in by["b"] and "fc" not in by["c"]
+
+
+def test_nfc_tag_als_technikteil():
+    p = S.clean_plan({"floors": [{"id": "eg", "n": "EG"}], "items": [
+        {"id": "t1", "fl": "eg", "t": "h", "hk": "nfc", "x": 10, "y": 10, "e": "tag.haustuer"}]})
+    it = p["items"][0]
+    assert it["hk"] == "nfc" and it["e"] == "tag.haustuer"

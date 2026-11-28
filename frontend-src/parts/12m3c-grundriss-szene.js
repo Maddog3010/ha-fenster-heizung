@@ -54,6 +54,7 @@
       chip("win", "windowOpen", L.win ? `${L.win} Fenster offen` : "Fenster zu", L.win ? "warn" : ""),
       this._liOn && this._liOn() ? chip("lamp", "", L.lamps ? `${L.lamps} ${L.lamps === 1 ? "Lampe" : "Lampen"} an` : "Lampen aus") : "",
       chip("chk", chk.n ? "alert" : "check", chk.n ? `Plan-Check · ${chk.n}` : "Plan-Check ok", chk.n ? "warn" : "ok"),
+      (() => { /* v0.17 (C6): Unwetter oder Sturm und Fenster offen – Hinweis aus Modul 9 */ try { const W = this._mdList().some((m) => m.id === "wx") && this._wxWarn ? this._wxWarn() : null; const b = W && W.w && W.w.attributes && W.w.attributes.wind_bearing != null ? Number(W.w.attributes.wind_bearing) : null, n = W && this._grOpenWins ? this._grOpenWins(isFinite(b) ? b : null).length : L.win; return W && (W.storm || W.gale) && L.win ? chip("win", "alert", `${W.storm ? "Gewitter" : "Sturm"} · ${n} ${n === 1 ? "Fenster" : "Fenster"} offen${isFinite(b) && n < L.win ? " auf der Windseite" : ""}`, "warn") : ""; } catch (_) { return ""; } })(),
       nUse ? `<span class="grc dim">genutzt von ${nUse} ${nUse === 1 ? "Modul" : "Modulen"}${uTxt ? ` (${esc(uTxt)})` : ""}</span>` : "",
     ].join("");
     const sub = rooms ? `Ein Bauplan für alle Module · ${nFl} ${nFl === 1 ? "Etage" : "Etagen"}${hasLot ? " · Außen" : ""}` : "Einmal zeichnen, in allen Modulen nutzen";

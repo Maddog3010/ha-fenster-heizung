@@ -395,6 +395,8 @@ Für Tablets an der Wand: große Knöpfe, Uhr im Kopf, untere Leiste mit den akt
 
 **Neu ab 2026.11.5b10 (Testversion):** Dazu E-Auto, Stromtarif und Solar-Prognose.
 
+**Neu ab 2026.11.5b25 (Testversion):** Haus & Grundriss: Modul 1 ordnet Plan-Räume jetzt auch über Sensoren und Bereiche zu, wenn der Name nicht passt.
+
 **Neu ab 2026.11.5b24 (Testversion):** Haus & Grundriss: Beim Verschieben im Baukasten zeigen Hilfslinien die Ausrichtung an anderen Gegenständen, und jeder Gegenstand kann eine eigene Farbe bekommen.
 
 **Neu ab 2026.11.5b23 (Testversion):** Haus & Grundriss: Der Reiter „Etage & Plan“ im Baukasten ist auf drei Seiten verteilt, damit auch dort nichts gescrollt werden muss, und der Technik-Katalog hat Kacheln und Seiten.

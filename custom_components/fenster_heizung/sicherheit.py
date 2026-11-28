@@ -73,7 +73,7 @@ DEV_K = ("heizer", "entf")  # Modul 0 Build 7: mobiler Heizer, mobiler Luftentfe
 DEV_DOM = ("switch", "climate", "humidifier", "fan", "input_boolean", "water_heater")
 TECH_K = ("heizkoerper", "thermostat", "klima", "lueftung", "kamin", "therme", "wp", "speicher", "steckdose", "schalter", "sicherung", "zaehler", "wechselrichter", "akku", "wallbox",
           "temp", "bewegung", "kontakt", "wasser", "luft", "hell", "wlan", "router", "kamera", "klingel", "lautsprecher", "tv",
-          "haupthahn_w", "haupthahn_g", "feuerloescher", "notausgang", "sammelpunkt", "erstehilfe", "notiz")  # Modul 0 Build 9: Haustechnik, Sensoren, Notfall
+          "haupthahn_w", "haupthahn_g", "feuerloescher", "notausgang", "sammelpunkt", "erstehilfe", "notiz", "nfc")  # Modul 0 Build 9: Haustechnik, Sensoren, Notfall
 MOB_K = ("bett", "bett1", "sofa", "sessel", "tisch", "couchtisch", "schreibtisch", "schrank", "regal", "kommode", "tvboard", "kueche", "insel", "kuehlschrank",
          "waschmaschine", "badewanne", "dusche", "wc", "waschbecken",
          "baum", "busch", "hecke", "beet", "rasen", "weg", "zaun", "tor", "pool", "gartenhaus", "garage", "carport", "pv", "muell", "zisterne",

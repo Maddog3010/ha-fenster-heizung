@@ -24,7 +24,12 @@
     if (gm[item.id] === "-") return null;
     if (gm[item.id]) return rooms.find((r) => r.id === gm[item.id]) || null;
     const n = this._gpNorm(item.n); if (!n) return null;
-    return rooms.find((r) => this._gpNorm(r.name) === n) || rooms.find((r) => { const m = this._gpNorm(r.name); return m.length > 2 && (m.includes(n) || n.includes(m)); }) || null;
+    return rooms.find((r) => this._gpNorm(r.name) === n) || rooms.find((r) => { const m = this._gpNorm(r.name); return m.length > 2 && (m.includes(n) || n.includes(m)); }) || this._gpByRegister(item, rooms);
+  }
+  /* v0.17 (C1): findet der Name nichts, ordnet das Raum-Register über Sensoren und Bereich zu (Fenster, Thermostate, Temperatur des Modul-1-Raums liegen im selben Raum) */
+  _gpByRegister(item, rooms) {
+    if (!this._grRoomOf) return null;
+    return rooms.find((r) => [r.rtEid, ...(r.thermos || []), ...(r.windows || [])].filter(Boolean).some((e) => { const q = this._grRoomOf(e); return q && q.id === item.id; })) || null;
   }
   _gpView(rooms) {
     const P = this._gpPlan(), adm = this._admin();

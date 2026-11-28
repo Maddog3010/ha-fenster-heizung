@@ -2,6 +2,15 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.5b25] - 2026-11-28
+
+Modul 0 Haus & Grundriss, Version 0.17, sechster Teil.
+
+### Neu
+- **NFC-Tags im Plan (C13):** Im Werkzeug „Technik“ gibt es unter „Netz & Medien“ das neue Teil „NFC-Tag“. Verbunden mit einem Tag von Home Assistant zeigt es im Plan 20 Sekunden lang „gescannt“, wenn das Tag benutzt wurde.
+- **Sturmwarnung an der Haus-Kachel (C6):** Ist Modul 9 aktiv und meldet Gewitter, Hagel oder Sturm ab 60 km/h, zeigt die Kennzahl „Fenster“ in Modul 0 „Gewitter/Sturm · N Fenster offen“ in Warnfarbe. Kennt Modul 9 die Windrichtung, zählt die Anzeige nur offene Fenster auf der Windseite („… auf der Windseite“); die Himmelsrichtung jedes Fensters wird aus seiner Lage im Raum und der Nordrichtung des Plans berechnet. Ein Tipp springt wie bisher in den Plan.
+- **Modul 1 nutzt das Raum-Register (C1, erster Schritt):** Findet Modul 1 zu einem Plan-Raum über den Namen keinen Raum, fragt es jetzt das Raum-Register: Liegen Temperatursensor, Thermostat oder Fenstermelder eines Modul-1-Raums im Plan-Raum (oder im selben Home-Assistant-Bereich), werden beide automatisch zugeordnet. Von Hand gesetzte Zuordnungen und der Name haben weiter Vorrang.
+
 ## [2026.11.5b24] - 2026-11-28
 
 Modul 0 Haus & Grundriss, Version 0.17, fünfter Teil.
