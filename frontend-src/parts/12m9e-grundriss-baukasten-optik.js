@@ -14,17 +14,28 @@
       .grneo .grpsec{border:0;border-radius:18px;background:color-mix(in srgb,var(--primary-text-color) 5%,var(--card,#111a2b))}
       .grneo .grtray{border-radius:16px;border-color:color-mix(in srgb,var(--teal,#2dd4bf) 40%,transparent)}.grneo .grchip{border-color:transparent;background:color-mix(in srgb,var(--primary-text-color) 8%,transparent)}
       .grneo .grseg button{border-color:transparent;background:color-mix(in srgb,var(--primary-text-color) 7%,transparent)}.grneo .grseg button.on{background:color-mix(in srgb,var(--teal,#2dd4bf) 20%,transparent)}
-      @media (min-width:901px) and (min-height:520px){
-        .grneo{height:calc(100dvh - 150px);min-height:430px;gap:10px}
-        .grneo .grbody{flex:1;min-height:0;align-items:stretch}
-        .grneo .grrail{position:static;top:auto;overflow-y:auto;min-height:0;scrollbar-width:none;padding:6px 4px;gap:1px}
-        .grneo .grtl{padding:5px 2px;font-size:.58rem}.grneo .grtl svg{width:22px;height:22px}
-        .grneo .grcv{display:flex;flex-direction:column;min-height:0;gap:8px}
-        .grneo .grcv .sfpl.edit{flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
-        .grneo .grcv svg.sfpe{width:100%;height:100%;max-height:100%}
-        .grneo .grprops{position:static;top:auto;overflow-y:auto;min-height:0;scrollbar-width:thin;padding-right:2px}
-        .grneo .grhint{margin:0}.grneo .grtray{margin:0}
-      }
+      /* Tablet/Desktop quer: der Baukasten füllt den ganzen Bildschirm, nichts muss gescrollt werden */
+      .grfs{position:fixed;inset:0;z-index:30;box-sizing:border-box;padding:max(10px,env(safe-area-inset-top)) 12px 10px;background:var(--primary-background-color,#0f141c);display:flex;flex-direction:column;gap:8px;overflow:hidden}
+      .grfs .grtop{flex:none;padding:6px 10px}.grfs .grb{padding:8px 12px}
+      .grfs .grbody{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:10px;align-items:stretch}
+      .grfs .grrail{position:static;top:auto;display:flex;flex-direction:column;min-height:0;overflow-y:auto;scrollbar-width:none;padding:4px 3px;gap:0}
+      .grfs .grrail .grtl{flex:1 1 0;min-height:38px;max-height:64px;padding:2px 1px;justify-content:center;font-size:.56rem}.grfs .grrail .grtl svg{width:21px;height:21px}.grfs .grrail i{flex:none;margin:2px 6px}
+      .grfs .grcv{display:flex;flex-direction:column;min-height:0;min-width:0;gap:6px}
+      .grfs .grcv .sfpl.edit{flex:1;min-height:0;display:flex;align-items:center;justify-content:center}.grfs .grcv svg.sfpe{width:100%;height:100%;max-height:100%}
+      .grfs .grhint{margin:0}.grfs .grtray{margin:0;padding:6px 10px}
+      .grfs .grprops{position:static;top:auto;min-height:0;min-width:0;display:flex;flex-direction:column;gap:8px;overflow:hidden}
+      .grfs .grrt{flex:none;display:flex;gap:6px}.grfs .grrt button{flex:1;border:0;border-radius:12px;padding:9px 6px;background:color-mix(in srgb,var(--primary-text-color) 7%,transparent);color:inherit;font:inherit;font-size:.82rem;cursor:pointer;white-space:nowrap}.grfs .grrt button.on{background:var(--teal,#2dd4bf);color:#042f2e;font-weight:650}
+      .grfs .grrtb{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:8px;scrollbar-width:thin}.grfs .grrtb .grpsec{margin:0}
+      .grfs .grkl{display:grid;grid-template-columns:1fr 1fr;max-height:none;overflow:visible;gap:7px}.grfs .grkth{height:42px}.grfs .grkt .grkb{padding:6px 7px 5px}.grfs .grkt .grkb b{margin-top:3px;font-size:.78rem}
+      .grfs .grkcs{flex-wrap:wrap;overflow:visible;gap:5px}.grfs .grkcs button{padding:5px 10px;font-size:.78rem}.grfs .grkq{padding:7px 10px}
+      .grfs .sfpl.edit{position:relative;padding-left:74px;box-sizing:border-box}
+      .grdock{position:absolute;left:10px;top:50%;transform:translateY(-50%);z-index:3;display:flex;flex-direction:column;gap:2px;padding:6px;border-radius:18px;background:color-mix(in srgb,var(--card,#111a2b) 88%,transparent);backdrop-filter:blur(8px);box-shadow:0 8px 26px #0000005c,inset 0 0 0 1px color-mix(in srgb,var(--primary-text-color) 9%,transparent)}
+      .grdock i{height:1px;margin:3px 6px;background:color-mix(in srgb,var(--primary-text-color) 14%,transparent)}
+      .grdb{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;width:50px;height:46px;border:0;border-radius:13px;background:none;color:var(--mut);font:inherit;font-size:.56rem;cursor:pointer;padding:0}.grdb svg{width:22px;height:22px}.grdb:hover{background:color-mix(in srgb,var(--primary-text-color) 9%,transparent)}.grdb.on{background:color-mix(in srgb,var(--teal,#2dd4bf) 24%,transparent);color:var(--teal,#2dd4bf)}
+      .grdb .grdc{position:absolute;right:4px;bottom:5px;width:0;height:0;margin:0;background:none;border-left:4px solid transparent;border-bottom:4px solid currentColor;opacity:.7}
+      .grdg{position:relative}.grfly{position:absolute;left:calc(100% + 10px);top:0;z-index:4;display:flex;flex-direction:column;gap:2px;padding:6px;min-width:150px;border-radius:14px;background:var(--card,#111a2b);box-shadow:0 10px 30px #0000007a,inset 0 0 0 1px color-mix(in srgb,var(--primary-text-color) 10%,transparent)}
+      .grfly button{display:flex;align-items:center;gap:10px;border:0;border-radius:10px;background:none;color:inherit;font:inherit;font-size:.88rem;padding:8px 10px;cursor:pointer;text-align:left}.grfly button svg{width:22px;height:22px;flex:none}.grfly button:hover{background:color-mix(in srgb,var(--primary-text-color) 9%,transparent)}.grfly button.on{background:color-mix(in srgb,var(--teal,#2dd4bf) 22%,transparent);color:var(--teal,#2dd4bf)}
+      .grkpg{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:8px}.grkpg button{border:0;border-radius:12px;background:color-mix(in srgb,var(--primary-text-color) 9%,transparent);color:inherit;font:inherit;font-size:1.3rem;min-width:64px;min-height:40px;cursor:pointer}.grkpg button:disabled{opacity:.35}.grkpl{min-width:54px;text-align:center;color:var(--mut)}
       .grgap{display:flex;gap:8px;align-items:center;color:var(--mut);font-size:.8rem;margin:2px 0 8px}.grgap b{color:var(--primary-text-color)}</style>`;
   }
   /* Farbe je Gegenstand (Füllung, Linie) nach Art – Möbel haben Holz, Stoff und Porzellan, Außen-Teile Grün und Wasser. null = bisherige Darstellung */

@@ -70,6 +70,17 @@
     const oS = tl === "o" && this._grMobCat ? `<div class="grpsec"><b>Was setzen? Danach in den Plan tippen.</b>${this._grMobCat(this._grOkLast || "tisch", "grxokt", (ed.plan.floors.find((f) => f.id === fl) || {}).ga ? true : null)}</div>` : "";
     const props = `<div class="grprops">${mk}${gS}${hS}${oS}<div class="grpsec">${X.prop}</div>${this._grFloorBox ? this._grFloorBox() : ""}${this._grHeightBox ? this._grHeightBox() : ""}<details class="grpsec"${this._grEdFl ? " open" : ""}><summary data-act="grxedfl">Etage &amp; Plan</summary>${X.flBox}${this._grB10Box ? this._grB10Box() : ""}${this._grKAutoBox ? this._grKAutoBox() : ""}${this._grB7Box ? this._grB7Box() : ""}${X.scaleBox}${X.bgBox}${X.ioBox}</details></div>`;
     const NEO = this._grLookNew && this._grLookNew();
+    if (NEO && this._grPaged && this._grPaged()) {   /* Tablet/Desktop quer: Reiter statt langer Spalte – kein Scrollen nötig */
+      const sel = P.items.find((x) => x.id === ed.sel), multi = (ed.multi || []).length, hasRoom = !!(this._grFloorTargets && this._grFloorTargets().length);
+      const setH = `${mk}${gS}${hS}${oS}`, key = `${tl}|${ed.sel}|${multi}`;
+      if (this._grRTk !== key) { this._grRTk = key; this._grRT = ""; }
+      const tabs = [...(setH ? [["set", "Setzen"]] : []), ["elem", "Auswahl"], ...(hasRoom ? [["raum", "Boden & Höhe"]] : []), ["etage", "Etage & Plan"]];
+      let cur = this._grRT; if (!tabs.some((t) => t[0] === cur)) cur = setH ? "set" : sel || multi ? "elem" : "etage";
+      const body = cur === "set" ? setH : cur === "elem" ? `<div class="grpsec">${X.prop}</div>` : cur === "raum" ? `${this._grFloorBox ? this._grFloorBox() : ""}${this._grHeightBox ? this._grHeightBox() : ""}` : `<div class="grpsec">${X.flBox}${this._grB10Box ? this._grB10Box() : ""}${this._grKAutoBox ? this._grKAutoBox() : ""}${this._grB7Box ? this._grB7Box() : ""}${X.scaleBox}${X.bgBox}${X.ioBox}</div>`;
+      const rt = `<div class="grrt">${tabs.map(([k, t]) => `<button class="${cur === k ? "on" : ""}" data-act="grxrt" data-v="${k}" aria-pressed="${cur === k}">${t}</button>`).join("")}</div>`;
+      return `${this._grNeoCss()}<div class="gred2 grneo grfs">${bar}${this._grKMigBar ? this._grKMigBar() : ""}<div class="grbody grdk"><div class="grcv"><div class="sfpl edit">${this._grDock ? this._grDock(tl, sf, li, PP) : ""}<svg class="sfpe gd" viewBox="${this._grEdVB ? this._grEdVB(fl).join(" ") : "0 0 800 480"}" role="img" aria-label="Grundriss bearbeiten">${this._grEditSvg(fl)}</svg></div>
+      <div class="grhint">${ic("info", 14)}<span>${hint}</span></div>${tray}</div><div class="grprops">${rt}<div class="grrtb">${body}</div></div></div></div>`;
+    }
     return `${NEO && this._grNeoCss ? this._grNeoCss() : ""}<div class="gred2${NEO ? " grneo" : ""}">${bar}${this._grKMigBar ? this._grKMigBar() : ""}<div class="grbody">${rail}<div class="grcv"><div class="sfpl edit"><svg class="sfpe gd" viewBox="${this._grEdVB ? this._grEdVB(fl).join(" ") : "0 0 800 480"}" role="img" aria-label="Grundriss bearbeiten">${this._grEditSvg(fl)}</svg></div>
       <div class="grhint">${ic("info", 14)}<span>${hint}</span></div>${tray}</div>${props}</div></div>`;
   }

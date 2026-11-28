@@ -395,6 +395,8 @@ Für Tablets an der Wand: große Knöpfe, Uhr im Kopf, untere Leiste mit den akt
 
 **Neu ab 2026.11.5b10 (Testversion):** Dazu E-Auto, Stromtarif und Solar-Prognose.
 
+**Neu ab 2026.11.5b22 (Testversion):** Haus & Grundriss: Der Baukasten füllt auf Tablet und Desktop quer den ganzen Bildschirm, mit der Werkzeugleiste im Plan, Reitern rechts und einem Katalog zum Blättern – ohne Scrollen.
+
 **Neu ab 2026.11.5b21 (Testversion):** Haus & Grundriss: Katalog als Kacheln mit Bild von oben, farbige Gegenstände, die Suche lässt sich wieder tippen, der Baukasten füllt auf Tablet und Desktop den Bildschirm.
 
 **Neu ab 2026.11.5b20 (Testversion):** Haus & Grundriss: neuer Plan-Stil „Karte“ (auch für Dashboard-Karte und Export), Art der Etage, Raumhöhe und Dachschräge mit Wohnfläche, mehr Raum-Sensoren (Luftfeuchte, Fensterfläche, zuletzt belegt) und ein Ereignis bei Änderungen im Raum.

@@ -2,6 +2,22 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.5b22] - 2026-11-28
+
+Modul 0 Haus & Grundriss, Version 0.17, dritter Teil: Baukasten ohne Scrollen.
+
+### Neu
+- **Baukasten im Vollbild, ohne Scrollen** (Tablet und Desktop quer): Der Baukasten deckt den ganzen Bildschirm ab. Alle Werkzeuge stehen links untereinander, der Plan füllt die Mitte. Rechts sind Reiter statt einer langen Spalte: **Setzen** (Katalog), **Auswahl** (Eigenschaften), **Boden & Höhe** (bei Räumen) und **Etage & Plan**. Der passende Reiter öffnet sich von selbst, wenn du ein Werkzeug oder ein Element wählst.
+- **Werkzeugleiste im Plan:** Die Werkzeuge liegen jetzt als schmale Leiste mit Symbolen links im Plan, wie im Konzept. Zusammengehörige sind gruppiert: **Öffnungen** (Tür, Durchgang, Fenster) und **Technik** (Technik, Gerät, Markise). Ein Tipp auf die Gruppe zeigt die Auswahl daneben. Neu in der Leiste: **Text**. Dadurch bleiben zehn Symbole statt dreizehn Werkzeugen untereinander.
+- **Katalog seitenweise:** Statt zu scrollen blätterst du mit ‹ › durch die Kacheln, so viele pro Seite, wie auf den Bildschirm passen. Suche und Kategorien zeigen nur die Treffer.
+
+### Behoben
+- **Scrollen sprang immer an den Anfang:** Werkzeugleiste, Eigenschaften und Katalog behalten ihre Scrollposition, auch wenn Home Assistant neue Werte meldet. (Im Vollbild-Baukasten ist Scrollen ohnehin kaum noch nötig.)
+- Auf dem Handy und bei schmalem Fenster bleibt der Baukasten wie bisher.
+
+### Noch offen
+- Der Katalog für Haustechnik (Werkzeug „Technik“) ist noch eine Liste und scrollt.
+
 ## [2026.11.5b21] - 2026-11-28
 
 Modul 0 Haus & Grundriss, Version 0.17, zweiter Teil: zwei Korrekturen am Baukasten.

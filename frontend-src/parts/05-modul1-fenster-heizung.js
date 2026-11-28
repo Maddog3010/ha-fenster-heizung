@@ -825,15 +825,16 @@
     /* Wischleisten (Werkzeuge im Baukasten, Ebenen, Etagen): Position merken, sonst springen sie bei jedem Neuaufbau an den Anfang zurück */
     const HS = ".grrail,.grl,.sffl", hsx = {}; if (sr0) sr0.querySelectorAll(HS).forEach((e, n) => { if (e.scrollLeft) hsx[e.className.split(" ")[0] + "|" + n] = e.scrollLeft; });
     /* senkrechte Listen im Baukasten (Gegenstands-Katalog): Position und Suchtext merken */
-    const VS = ".grkl", vsx = {}; if (sr0) sr0.querySelectorAll(VS).forEach((e, n) => { if (e.scrollTop) vsx[n] = e.scrollTop; });
+    const VS = ".grkl,.grprops,.grrail", vsx = {}; if (sr0) sr0.querySelectorAll(VS).forEach((e, n) => { if (e.scrollTop) vsx[e.className.split(" ")[0] + "|" + n] = e.scrollTop; });
     const kq = sr0 && sr0.querySelector(".grkq"), kqv = kq ? kq.value : "", kqf = !!(kq && sr0.activeElement === kq);
     const keep = {}; if (sr0) sr0.querySelectorAll("img[data-keep]").forEach((i) => { keep[i.getAttribute("src")] = i; });  /* Bilder behalten, sonst flackern sie bei jedem Neuaufbau */
     const kk = {}; if (sr0) sr0.querySelectorAll("#main [data-kk]").forEach((e) => { kk[e.dataset.kk] = e; });  /* Raumbilder (Raumkarte 2.0): gleicher Zustand = altes Bild bleibt, Bewegung läuft weiter */
     const at = this._animSave(kk);  /* Stand der laufenden Bewegung (Flüsse, Wolken …), sonst beginnt sie bei jedem neuen Wert von vorn */
     try { this._render0(); this._kontaktLeiste(); if (sr0) { sr0.querySelectorAll("img[data-keep]").forEach((i) => { const o = keep[i.getAttribute("src")]; if (o && o !== i) i.replaceWith(o); }); sr0.querySelectorAll("#main [data-kk]").forEach((n) => { const o = kk[n.dataset.kk]; if (o && o !== n && !n.contains(o) && (!n.hasAttribute("data-ks") || this._kkSync(o, n))) n.replaceWith(o); }); this._animLoad(at); this._visObs(); if (this._saiDeco) this._saiDeco(sr0); this._msn(); if (this._hzAnimRun) this._hzAnimRun(); } } catch (err) { console.error("fenster_heizung render", err); try { this._errJs(err, "Neuaufbau"); } catch (_) { /* nie stören */ } if (this._toast && Date.now() - (this._errT || 0) > 4000) { this._errT = Date.now(); this._toast("Anzeigefehler: " + (err && err.message || err)); } return; }
     if (sr0) sr0.querySelectorAll(HS).forEach((e, n) => { const v = hsx[e.className.split(" ")[0] + "|" + n]; if (v) e.scrollLeft = v; });
-    if (sr0) sr0.querySelectorAll(".grkl").forEach((e, n) => { if (vsx[n]) e.scrollTop = vsx[n]; });
-    if (kqv && sr0) { const q = sr0.querySelector(".grkq"); if (q) { q.value = kqv; q.dispatchEvent(new Event("input", { bubbles: true })); if (kqf) q.focus(); sr0.querySelectorAll(".grkl").forEach((e, n) => { if (vsx[n]) e.scrollTop = vsx[n]; }); } }
+    if (sr0) sr0.querySelectorAll(VS).forEach((e, n) => { const v = vsx[e.className.split(" ")[0] + "|" + n]; if (v) e.scrollTop = v; });
+    if (this._grKatApply && sr0) this._grKatApply(sr0);
+    if (kqv && sr0) { const q = sr0.querySelector(".grkq"); if (q) { q.value = kqv; q.dispatchEvent(new Event("input", { bubbles: true })); if (kqf) q.focus(); sr0.querySelectorAll(VS).forEach((e, n) => { const v = vsx[e.className.split(" ")[0] + "|" + n]; if (v) e.scrollTop = v; }); } }
     this._dkApply(sr0 && sr0.getElementById("main"));
     this._umfDot();
     const nb = sr0 && sr0.querySelector(".mbar"); if (!nb) { this._mbId = id; return; }
