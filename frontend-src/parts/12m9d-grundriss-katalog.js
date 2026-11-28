@@ -30,8 +30,10 @@
   }
   _grKatAct(a, b) {
     const v = b && b.dataset ? b.dataset.v : "";
+    if (this._grFloorAct && this._grFloorAct(a, b)) return true;
     if (a === "grxcat") { this._grCT = v; this._render(); return true; }
     if (a === "grxfav") { const f = this._grKatLs("fh_gr_fav"); this._grKatSv("fh_gr_fav", f.includes(v) ? f.filter((x) => x !== v) : [...f, v]); this._render(); return true; }
+    if (a === "grxlock") { const e0 = this._sfEd, c0 = e0 && e0.plan.items.find((x) => x.id === e0.sel); if (c0) { this._sfSnap(); if (c0.lk) delete c0.lk; else c0.lk = 1; this._render(); } return true; }
     if (a === "grxorots") { const ed0 = this._sfEd, cur = ed0 && ed0.plan.items.find((x) => x.id === ed0.sel); if (cur) { this._sfSnap(); cur.r = Number(v) % 360; this._render(); } return true; }
     const ed = this._sfEd; if (!ed || (a !== "grxmir" && a !== "grxal")) return false;
     const sel = this._grKatSel(); if (!sel.length) return true;

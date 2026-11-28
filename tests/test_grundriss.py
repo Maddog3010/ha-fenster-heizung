@@ -328,6 +328,24 @@ def test_sperre_blockiert_schreiben_anderer_geraete():
     m.async_stop()
 
 
+def test_verlauf_zeigt_aenderungen():
+    d = G.plan_diff({"floors": [{"id": "eg"}], "items": [_item("r1"), _item("r2"), _item("t1", "d")]},
+                    {"floors": [{"id": "eg"}, {"id": "og"}], "items": [_item("r1", n="Neu"), _item("r3"), _item("r4"), _item("t1", "d")]})
+    assert d == {"add": {"floor": 1, "r": 2}, "del": {"r": 1}, "mod": {"r": 1}}, d
+    assert G.plan_diff({}, {}) == {"add": {}, "del": {}, "mod": {}}
+
+
+def test_hist_list_hat_chg():
+    m, gm, h, st = _setup(PLAN)
+    gm.set_plan(_p(1), "gr")
+    gm.set_plan(_p(2), "gr")
+    lst = asyncio.run(gm.hist_list())
+    assert all("chg" in x for x in lst["hist"])
+    assert lst["hist"][0]["chg"] == G.plan_diff(gm.hist[0]["plan"], gm.plan)        # neuester Eintrag: Stand → jetzt
+    assert lst["hist"][1]["chg"] == G.plan_diff(gm.hist[1]["plan"], gm.hist[0]["plan"])
+    m.async_stop()
+
+
 if __name__ == "__main__":
     n = 0
     for k, f in list(globals().items()):

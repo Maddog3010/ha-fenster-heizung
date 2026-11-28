@@ -102,12 +102,15 @@
     const W = (T.wall || "").replace("U_", u), WI = (T.wallIn || "").replace("U_", u), kinds = new Map(rs.map((r) => [r.id, this._grKind(r)]));
     /* Muster: Böden in Plan-Einheiten (40 = 1 m) */
     const F = T.fl;
+    const FM = {};   /* v0.16 A4: Böden mit eigenem Belag – Muster nur für benutzte Beläge */
+    if (this._grFmKey) rs.forEach((r) => this._grFmKey(r, kinds.get(r.id).k, FM));
     let d = `<defs>
       <pattern id="${u}holz" width="180" height="40" patternUnits="userSpaceOnUse"><rect width="180" height="40" fill="${F.holz[0]}"/><rect y="10" width="180" height="10" fill="${F.holz[2]}"/><rect y="30" width="180" height="10" fill="${F.holz[2]}"/><path d="M0 10H180M0 20H180M0 30H180M0 40H180M40 0V10M130 0V10M85 10V20M175 10V20M20 20V30M110 20V30M65 30V40M155 30V40" stroke="${F.holz[1]}" stroke-width="1"/></pattern>
       <pattern id="${u}fliese" width="24" height="24" patternUnits="userSpaceOnUse"><rect width="24" height="24" fill="${F.fliese[0]}"/><path d="M0 0.5H24M0.5 0V24" stroke="${F.fliese[1]}" stroke-width="1.2"/></pattern>
       <pattern id="${u}teppich" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="10" height="10" fill="${F.teppich[0]}"/><circle cx="5" cy="5" r="1" fill="${F.teppich[1]}"/></pattern>
       <pattern id="${u}aussen" width="40" height="20" patternUnits="userSpaceOnUse"><rect width="40" height="20" fill="${F.aussen[0]}"/><path d="M0 0.5H40M0 10.5H40M20.5 0V10M0.5 10V20M40 10V20" stroke="${F.aussen[1]}" stroke-width="1.4"/></pattern>
       <pattern id="${u}technik" width="16" height="16" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="16" height="16" fill="${F.technik[0]}"/><path d="M0 0.5H16" stroke="${F.technik[1]}" stroke-width="1"/></pattern>
+      ${this._grFmPats ? this._grFmPats(u, FM, T, o) : ""}
       <pattern id="${u}hatchW" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="${T.wallStroke ? "#0a3566" : T.bg}"/><path d="M0 0V6" stroke="${T.wallStroke || T.wall}" stroke-width="2.2"/></pattern>
       ${T.gridDot ? `<pattern id="${u}grid" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="${T.grid}"/></pattern>` : `<pattern id="${u}grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="${T.grid}" stroke-width="1"/></pattern>`}
       <filter id="${u}sh" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="${o.style === "hell" ? 3 : 6}" stdDeviation="${o.style === "hell" ? 4 : 8}" flood-color="#000" flood-opacity="${o.style === "hell" ? 0.18 : 0.55}"/></filter>
@@ -118,10 +121,10 @@
     const out = rs.filter((r) => kinds.get(r.id).k === "aussen" || r.ds), ins = rs.filter((r) => !out.includes(r));
     if (this._grMobLayer) d += this._grMobLayer(P, fl, T, o, "aussen", st);   /* Build 10: Grundstück, Rasen, Wege, Pool … unter den Räumen */
     /* 1) Außenflächen: Pflaster, gestrichelter Rand */
-    out.forEach((r) => { d += `<path d="${pathOf(r)}" fill="url(#${u}${kinds.get(r.id).k})" stroke="${T.sub}" stroke-width="2" stroke-dasharray="8 6" opacity=".9"/>`; });
+    out.forEach((r) => { d += `<path d="${pathOf(r)}" fill="url(#${u}${this._grFmKey ? this._grFmKey(r, kinds.get(r.id).k, FM) : kinds.get(r.id).k})" stroke="${T.sub}" stroke-width="2" stroke-dasharray="8 6" opacity=".9"/>`; });
     /* 2) Wände: dicke Kontur aller Innenräume (wird zur Außenwand), darüber Böden mit dünner Kontur (Innenwand). Gemeinsame Kanten bleiben dünn. */
     d += `<g${T.shadow ? ` filter="url(#${u}sh)"` : ""}>${ins.map((r) => `<path d="${pathOf(r)}" fill="${o.style === "bauplan" ? "#0a3566" : T.wallIn.startsWith("url") ? T.bg : T.wallIn}" stroke="${W}" stroke-width="16" stroke-linejoin="miter"/>`).join("")}</g>`;
-    d += ins.map((r) => `<path d="${pathOf(r)}" fill="url(#${u}${kinds.get(r.id).k})" stroke="${WI}" stroke-width="6" stroke-linejoin="miter"${o.click ? ` data-act="grxroom" data-k="${esc(r.id)}" style="cursor:pointer"` : ""}/>`).join("");
+    d += ins.map((r) => `<path d="${pathOf(r)}" fill="url(#${u}${this._grFmKey ? this._grFmKey(r, kinds.get(r.id).k, FM) : kinds.get(r.id).k})" stroke="${WI}" stroke-width="6" stroke-linejoin="miter"${o.click ? ` data-act="grxroom" data-k="${esc(r.id)}" style="cursor:pointer"` : ""}/>`).join("");
     if (o.click) out.forEach((r) => { d += `<path d="${pathOf(r)}" fill="transparent" data-act="grxroom" data-k="${esc(r.id)}" style="cursor:pointer"/>`; });
     /* 3) Freie Wände */
     items.filter((i) => i.t === "w").forEach((w) => { d += `<line x1="${w.x}" y1="${w.y}" x2="${w.x2}" y2="${w.y2}" stroke="${WI}" stroke-width="7" stroke-linecap="square"/>`; });

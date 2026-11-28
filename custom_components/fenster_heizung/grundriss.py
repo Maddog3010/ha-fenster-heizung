@@ -123,6 +123,31 @@ def check_plan(raw: Any) -> tuple[dict[str, Any], dict[str, Any]]:
     return p, {"ids": fixed, "dropped": max(0, dropped)}
 
 
+def plan_diff(old: dict[str, Any], new: dict[str, Any]) -> dict[str, dict[str, int]]:
+    """v0.16 B7: Was hat sich zwischen zwei Ständen geändert? Elemente je Art: neu (add), weg (del), anders (mod). Etagen zählen als Art „floor“."""
+    out: dict[str, dict[str, int]] = {"add": {}, "del": {}, "mod": {}}
+
+    def idx(p: dict[str, Any], key: str) -> dict[str, dict[str, Any]]:
+        return {str(i.get("id")): i for i in (p.get(key) or []) if isinstance(i, dict)}
+
+    def cnt(kind: str, name: str, n: int) -> None:
+        if n:
+            out[kind][name] = out[kind].get(name, 0) + n
+
+    for key, label in (("floors", "floor"), ("items", None)):
+        a, b = idx(old or {}, key), idx(new or {}, key)
+        for iid, it in b.items():
+            t = label or str(it.get("t") or "?")
+            if iid not in a:
+                cnt("add", t, 1)
+            elif a[iid] != it:
+                cnt("mod", t, 1)
+        for iid, it in a.items():
+            if iid not in b:
+                cnt("del", label or str(it.get("t") or "?"), 1)
+    return out
+
+
 def plan_stats(plan: dict[str, Any]) -> dict[str, Any]:
     """Zahlen für Banner und Ebenen: Etagen, Räume (mit Namen), Bauplan-Elemente, Elemente je Ebene."""
     items = plan.get("items") or []
@@ -298,6 +323,9 @@ class GrundrissManager:
     async def hist_list(self) -> dict[str, Any]:
         """Verlauf für die Oberfläche (ohne Pläne) und die Umzugs-Kopie aus Modul 11, falls noch da."""
         out = {"hist": [{k: x.get(k) for k in ("id", "t", "by", "next", "stats")} for x in self.hist], "copy": None}
+        for i, e in enumerate(out["hist"]):   # B7: was die Änderung nach diesem Stand gebracht hat (Stand → nächster, neuester → jetzt)
+            after = self.hist[i - 1].get("plan") if i else self.plan
+            e["chg"] = plan_diff(self.hist[i].get("plan") or {}, after or {})
         c = await self._copy.async_load() if self.meta.get("copy_until") else None
         if isinstance(c, dict) and isinstance(c.get("plan"), dict):
             out["copy"] = {"t": c.get("t", ""), "src": c.get("src", ""), "until": self.meta.get("copy_until", ""), "stats": plan_stats(clean_plan(c["plan"]))}

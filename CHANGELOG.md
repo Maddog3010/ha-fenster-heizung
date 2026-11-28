@@ -2,6 +2,26 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.5b19] - 2026-11-28
+
+Modul 0 Haus & Grundriss, Version 0.15 zweiter Teil und Version 0.16 erster Teil, und eine wichtige Korrektur zu 2026.11.5b18.
+
+### Behoben
+- **Neue Gegenstände gingen beim Speichern verloren:** Die 37 neuen Gegenstände aus 2026.11.5b18 (zum Beispiel Nachttisch, Herd, Pergola, Wärmepumpe) wurden beim Speichern des Plans still in einen Esstisch umgewandelt. Jetzt bleiben sie erhalten. Wer mit der b18 neue Gegenstände gesetzt und gespeichert hat, muss sie neu setzen. Ein Test prüft ab jetzt, dass jeder Gegenstand des Katalogs beim Speichern erhalten bleibt.
+- **Zahl korrigiert:** Es sind 37 neue Gegenstände (jetzt 96), nicht 46 wie in 2026.11.5b18 angegeben.
+- **Katalog im Baukasten sprang beim Scrollen nach oben:** Die Liste der Gegenstände behält jetzt ihre Scrollposition und den Suchtext, auch wenn Home Assistant zwischendurch neue Werte meldet.
+
+### Neu
+- **Böden je Raum:** Im Baukasten wählst du für einen Raum (oder mehrere per Mehrfachauswahl) den Belag: Holz, Parkett hell/dunkel, Fliese, Fliese groß/klein, Naturstein, Teppich, Vinyl, Pflaster oder Rasen. Dazu die Verlegerichtung 0°, 45° oder 90°. Räume mit gleichem Belag und gleicher Richtung sind durchgehend verlegt. „Standard“ bringt den bisherigen Belag nach dem Raumnamen zurück.
+- **Verlauf zeigt Änderungen:** Jeder Stand im Verlauf nennt, was danach geändert wurde (zum Beispiel „+2 Räume · 1 Tür geändert“).
+- **Zustand im Plan:** Jeder Gegenstand mit verbundener Entität, der gerade läuft, hat einen farbigen Schein (gelb, orange bei Heizung und Warmwasser, blau bei Wasser, rot bei Fehler). Die kleine Zeile mit dem Zustand gab es schon.
+- **Fest:** Ein Gegenstand lässt sich im Baukasten auf „Fest“ stellen. Er lässt sich dann nicht mehr versehentlich verschieben, bis „Fest“ wieder ausgeschaltet wird. Gilt für Möbel, Außen-Gegenstände und Haustechnik.
+
+### Noch offen
+- Plan-Stil „Karte“ (Haus und Garten wie auf einer Landkarte).
+- Gegenstands-Pakete als Addon (Max).
+- Farbe/Material und Hilfslinien beim Verschieben im Baukasten.
+
 ## [2026.11.5b18] - 2026-11-28
 
 Modul 0 Haus & Grundriss: Version 0.14 „Neue Optik Plan“, zweiter Teil, und Version 0.15 „Baukasten & Gegenstände“, erster Teil.
@@ -9,7 +29,7 @@ Modul 0 Haus & Grundriss: Version 0.14 „Neue Optik Plan“, zweiter Teil, und 
 ### Neu
 - **Baukasten in neuer Optik:** dieselbe ruhige Gestaltung wie der Plan. Die Kopfleiste trägt den Titel „Baukasten“, der Plan-Check ist eine Ampel (grün, gelb, rot) mit der Zahl der Hinweise, Werkzeugleiste, Eigenschaften und Ablage haben weiche dunkle Flächen ohne harte Rahmen. Bei Gegenständen gibt es die Drehung in Schritten (0°, 90°, 180°, 270°) und „Abstand zur nächsten Wand“ in cm. Unter Einstellungen → Optik → „Wie bisher“ kommt der frühere Baukasten zurück.
 - **Ein Katalog mit Suche:** Im Werkzeug „Möbel“ und beim Ändern eines Gegenstands gibt es jetzt ein Suchfeld, „Zuletzt“, Favoriten ★ und die Kategorien. Zuletzt und Favoriten merkt sich jeder Browser.
-- **46 neue Gegenstände (jetzt 96):** zum Beispiel Nachttisch, Kleiderschrank, Teppich, Herd, Spülmaschine, Wäschetrockner, Pergola, Tischtennisplatte, Wallbox, Wärmepumpe und Kellerabgang. Mit passender Home-Assistant-Entität, wo es Sinn ergibt (zum Beispiel Wärmepumpe, Wallbox, Spülmaschine).
+- **37 neue Gegenstände (jetzt 96):** zum Beispiel Nachttisch, Kleiderschrank, Teppich, Herd, Spülmaschine, Wäschetrockner, Pergola, Tischtennisplatte, Wallbox, Wärmepumpe und Kellerabgang. Mit passender Home-Assistant-Entität, wo es Sinn ergibt (zum Beispiel Wärmepumpe, Wallbox, Spülmaschine).
 - **Spiegeln:** Mehrere ausgewählte Elemente links ↔ rechts oder oben ↔ unten an der Mitte der Auswahl spiegeln.
 - **Ausrichten und Verteilen:** Möbel, Geräte und Technik bündig links, rechts, oben, unten, mittig oder mit gleichen Abständen. Alles lässt sich mit „Rückgängig“ zurücknehmen.
 - **Raum-Blatt 2.0:** Antippen eines Raums zeigt oben drei Kacheln (Temperatur mit Soll, Feuchte, Lampen), darunter eine Zeile mit Fenstern, Heizung und Bewegung. „Genutzt von“ zeigt, welche Module den Raum kennen, mit Sprung dorthin. Die Kacheln springen in Modul 1 und 18. Schnellaktionen: Heizen, Licht, Heranzoomen. Gilt mit „Neue Optik“, „Wie bisher“ zeigt die Liste wie zuvor.

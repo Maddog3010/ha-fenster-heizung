@@ -476,6 +476,40 @@ def time_ago(days):
     return time.time() - days * DAY
 
 
+def test_katalog_im_frontend_passt_zur_liste_im_backend():
+    """Jeder Gegenstand des Katalogs (Frontend) muss beim Speichern erhalten bleiben – sonst wird er still zu „tisch“ (Fehler in 2026.11.5b18)."""
+    import re
+    src = (pathlib.Path(__file__).resolve().parent.parent / "frontend-src" / "parts" / "12m9-grundriss-puppenhaus.js").read_text(encoding="utf-8")
+    a = src.index("const L = ["); b = src.index("const G = {", a)
+    ids = re.findall(r'\["([a-z0-9]+)", "[^"]+", "(?:wohnen|kueche|bad|garten|spiel|bauten)"', src[a:b])
+    assert len(ids) >= 90 and len(set(ids)) == len(ids)
+    items = [{"id": f"o{n}", "fl": "eg", "t": "o", "ok": k, "x": 10, "y": 10, "w": 40, "h": 40} for n, k in enumerate(ids)]
+    p = S.clean_plan({"floors": [{"id": "eg", "n": "EG"}], "items": items})
+    assert [i["ok"] for i in p["items"]] == ids[: len(p["items"])] and len(p["items"]) == len(ids)
+
+
+def test_fest_bleibt_erhalten():
+    p = S.clean_plan({"floors": [{"id": "eg", "n": "EG"}], "items": [
+        {"id": "a", "fl": "eg", "t": "o", "ok": "sofa", "x": 1, "y": 1, "w": 40, "h": 40, "lk": 1},
+        {"id": "b", "fl": "eg", "t": "o", "ok": "sofa", "x": 1, "y": 1, "w": 40, "h": 40},
+        {"id": "c", "fl": "eg", "t": "h", "hk": "steckdose", "x": 1, "y": 1, "lk": True}]})
+    d = {i["id"]: i for i in p["items"]}
+    assert d["a"].get("lk") == 1 and "lk" not in d["b"] and d["c"].get("lk") == 1
+
+
+def test_boden_je_raum():
+    base = {"fl": "eg", "t": "r", "x": 0, "y": 0, "w": 100, "h": 100}
+    p = S.clean_plan({"floors": [{"id": "eg", "n": "EG"}], "items": [
+        {**base, "id": "a", "fm": "parkett_dunkel", "fd": 45}, {**base, "id": "b", "fm": "fliese_klein", "fd": 33},
+        {**base, "id": "c", "fm": "lava"}, {**base, "id": "d", "fd": 90}, {**base, "id": "e", "fm": "rasen", "fd": 90}]})
+    d = {i["id"]: i for i in p["items"]}
+    assert d["a"]["fm"] == "parkett_dunkel" and d["a"]["fd"] == 45
+    assert d["b"]["fm"] == "fliese_klein" and "fd" not in d["b"]            # ungültige Richtung entfällt
+    assert "fm" not in d["c"] and "fd" not in d["c"]                          # unbekannter Belag entfällt
+    assert "fm" not in d["d"] and "fd" not in d["d"]                          # Richtung ohne Belag entfällt
+    assert d["e"]["fm"] == "rasen" and d["e"]["fd"] == 90
+
+
 if __name__ == "__main__":
     for k, v in list(globals().items()):
         if k.startswith("test_"):

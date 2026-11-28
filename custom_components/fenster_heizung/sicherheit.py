@@ -79,7 +79,9 @@ MOB_K = ("bett", "bett1", "sofa", "sessel", "tisch", "couchtisch", "schreibtisch
          "baum", "busch", "hecke", "beet", "rasen", "weg", "zaun", "tor", "pool", "gartenhaus", "garage", "carport", "pv", "muell", "zisterne",
          "gartentisch", "grill", "trampolin", "auto", "maehroboter",
          "hochbeet", "obstbaum", "teich", "gewaechshaus", "kompost", "regentonne", "bewaesserung", "wasserhahn", "spielturm", "schaukel", "sandkasten",
-         "whirlpool", "sauna", "liegestuhl", "sonnenschirm", "feuerstelle", "trittsteine", "holzterrasse", "fahrrad", "gartenlampe")  # Modul 0 Build 10: Möbel und Außenbereich
+         "whirlpool", "sauna", "liegestuhl", "sonnenschirm", "feuerstelle", "trittsteine", "holzterrasse", "fahrrad", "gartenlampe",
+         "nachttisch", "kleiderschrank", "schuhschrank", "garderobe", "teppich", "tischrund", "hocker", "stuhl", "kinderbett", "stockbett", "buecherregal", "herd", "spuelmaschine", "gefrierschrank", "theke", "spuele", "trockner", "doppelwaschtisch", "waeschestaender", "kiesbett", "pergola", "blumenkuebel", "brunnen", "steinmauer", "kraeuter", "tischtennis", "hollywood", "hundehuette", "fussballtor", "wallbox", "waermepumpe", "briefkasten", "kellerabgang", "lichtschacht", "terrasse", "fahrradgarage", "solarthermie")  # Modul 0 Build 10 und v0.15: Möbel und Außenbereich (Katalog mit 96 Gegenständen)
+FLOOR_M = ("holz", "parkett_hell", "parkett_dunkel", "fliese", "fliese_gross", "fliese_klein", "naturstein", "teppich", "vinyl", "pflaster", "rasen")  # v0.16 A4
 _ID = re.compile(r"^[a-z0-9_]{1,24}$")
 _MON = re.compile(r"^(20\d\d|19\d\d)-(0[1-9]|1[0-2])$")
 _HM = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
@@ -330,9 +332,13 @@ def clean_plan(raw: Any) -> dict[str, Any]:
         if it["t"] == "o":  # Möbel / Außen: Art, Größe über w/h, optional eine Entität (Pool-Temperatur, PV-Leistung, Zisterne …)
             o["ok"] = it.get("ok") if it.get("ok") in MOB_K else "tisch"
             o["e"] = _ent(it.get("e"))
+            if it.get("lk") in (1, True):  # v0.15: „Fest“ – im Baukasten nicht versehentlich verschiebbar
+                o["lk"] = 1
         if it["t"] == "h":  # Haustechnik: Art, beliebige Entität, Reichweite/Blickwinkel, Notiztext
             o["hk"] = it.get("hk") if it.get("hk") in TECH_K else "steckdose"
             o["e"] = _ent(it.get("e"))
+            if it.get("lk") in (1, True):
+                o["lk"] = 1
             if it.get("rg") is not None:
                 o["rg"] = round(_num(it.get("rg"), 1, 30, 6) * 2) / 2
             if it.get("fov") is not None:
@@ -346,6 +352,10 @@ def clean_plan(raw: Any) -> dict[str, Any]:
             o["rg"] = round(_num(it.get("rg"), 0, 15, 0) * 2) / 2  # Reichweite in Metern, 0 = je nach Art
         if it["t"] == "r":
             o["lk"] = str(it.get("lk") or "").strip()[:40]  # Raum aus Modul 1
+            if it.get("fm") in FLOOR_M:  # v0.16 A4: Bodenbelag und Verlegerichtung (ohne Angabe: Belag nach dem Raumnamen)
+                o["fm"] = it["fm"]
+                if it.get("fd") in (45, 90):
+                    o["fd"] = int(it["fd"])
             pts = _poly(it.get("pts"))
             if pts:  # freie Raumform: x, y, w, h bleiben der umschließende Rahmen
                 o["pts"] = pts

@@ -120,7 +120,13 @@
     }
     const S2 = i.e && this._grTechState ? this._grTechState(i) : null, lab = S2 && S2.t ? S2.t : "", lw = lab.length * 5.6 + 12;
     const chip = lab ? `<rect x="${cx - lw / 2}" y="${cy - 7.5}" width="${lw}" height="15" rx="7.5" fill="${hell ? "#fff" : "#0b1220"}" opacity=".92"/><text x="${cx}" y="${cy + 3.5}" text-anchor="middle" font-size="9.5" font-weight="700" fill="${S2.on ? "#fbbf24" : hell ? "#334155" : "#e2e8f0"}">${esc(lab)}</text>` : "";
-    return `<g><title>${esc(k.n)}${i.n ? ` · ${esc(i.n)}` : ""}${lab ? ` · ${esc(lab)}` : ""}</title><g${rot}>${s}</g>${chip}</g>`;
+    /* v0.15 E3: Zustand direkt im Plan – farbiger Schein um jeden Gegenstand mit Entität, der gerade läuft (rot bei Fehler) */
+    let glow = "";
+    if (S2 && (S2.on || S2.al) && !i.ng) {
+      const dom = String(i.e || "").split(".")[0], gc = S2.al ? "#ef4444" : ["climate", "water_heater"].includes(dom) ? "#fb923c" : ["valve", "moisture"].includes(dom) ? "#38bdf8" : "#fbbf24";
+      glow = `<rect x="${x - 3}" y="${y - 3}" width="${w + 6}" height="${h + 6}" rx="${Math.min(12, m / 3)}" fill="${gc}" fill-opacity=".1" stroke="${gc}" stroke-opacity=".55" stroke-width="2.5" pointer-events="none"/><rect x="${x - 7}" y="${y - 7}" width="${w + 14}" height="${h + 14}" rx="${Math.min(16, m / 2.5)}" fill="none" stroke="${gc}" stroke-opacity=".2" stroke-width="3" pointer-events="none"/>`;
+    }
+    return `<g><title>${esc(k.n)}${i.n ? ` · ${esc(i.n)}` : ""}${lab ? ` · ${esc(lab)}` : ""}</title><g${rot}>${glow}${s}</g>${chip}</g>`;
   }
   /* Möbel und Außen-Gegenstände einer Etage. which = "aussen" (unter den Räumen) oder "innen" (über den Böden) */
   _grMobLayer(P, fl, T, o, which, st) {
@@ -216,6 +222,7 @@
       ${step("grxow", "Breite", cm(sel.w || 40))}${step("grxoh", "Tiefe", cm(sel.h || 40))}
       <div class="grseg" style="margin:2px 0 8px"><button data-act="grxorot" data-s="-15">↺ 15°</button><button data-act="grxorot" data-s="15">↻ 15°</button><button data-act="grxorot" data-s="90">↻ 90°</button><button data-act="grxosz">Normgröße</button></div>
       ${this._grNeoRot ? this._grNeoRot(sel) : ""}
+      <div class="vrow" style="margin:6px 0"><span>Fest<small class="mut" style="display:block">Nicht verschiebbar, bis du es ausschaltest</small></span><button class="sw ${sel.lk ? "on" : ""}" data-act="grxlock" role="switch" aria-checked="${!!sel.lk}" aria-label="Fest"></button></div>
       ${want.length ? `<div class="sffld"><label>Verbinden mit Home Assistant (optional)</label>${cand.length || sel.e ? this._grPick(sel, cand, /heiz|thermostat|trv|radiator|klima|ofen|kamin|lampe|licht/i) : `<div class="mut sm">Keine passende Entität gefunden.</div>`}${S ? `<div class="grwall ok" style="margin-top:6px">${ic("check", 14)}<span>${esc(this._wzName(sel.e))} · <b>${esc(S.t || "verbunden")}</b></span></div>` : ""}</div>` : ""}`;
   }
   _grB10Box() {
