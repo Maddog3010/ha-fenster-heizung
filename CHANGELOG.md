@@ -2,6 +2,15 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.5b24] - 2026-11-28
+
+Modul 0 Haus & Grundriss, Version 0.17, fünfter Teil.
+
+### Neu
+- **Raum-Register (Grundlage):** Neue Schnittstelle für die Module: `_grRoom(id)` liefert Etage, Home-Assistant-Bereich, Fläche, Volumen, Boden, Anzahl Fenster/Türen und die Entitäten eines Raums, `_grRoomOf(entity)` den Raum eines Sensors (über seine Position im Plan, sonst über den Bereich). Ohne Plan bleibt sie leer. Noch benutzt kein Modul sie, die Umstellung folgt Modul für Modul.
+- **Eigene Farbe je Gegenstand:** Bei Möbeln und Außen-Teilen gibt es unter „Drehung“ eine Farbwahl mit acht Farben und „Auto“ (Farbe nach Art). Die Farbe gilt in allen Plan-Stilen.
+- **Hilfslinien beim Verschieben:** Im Baukasten rasten Gegenstände und Technik-Teile mit Kanten und Mitte an anderen Gegenständen der Etage ein. Eine gestrichelte Linie zeigt, woran ausgerichtet wird.
+
 ## [2026.11.5b23] - 2026-11-28
 
 Modul 0 Haus & Grundriss, Version 0.17, vierter Teil.

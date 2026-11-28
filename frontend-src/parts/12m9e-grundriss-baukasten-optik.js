@@ -40,7 +40,10 @@
       .grgap{display:flex;gap:8px;align-items:center;color:var(--mut);font-size:.8rem;margin:2px 0 8px}.grgap b{color:var(--primary-text-color)}</style>`;
   }
   /* Farbe je Gegenstand (Füllung, Linie) nach Art – Möbel haben Holz, Stoff und Porzellan, Außen-Teile Grün und Wasser. null = bisherige Darstellung */
-  _grTint(id, hell) {
+  /* Eigene Farbe je Gegenstand (Feld fc 1–8): [Füllung, Linie] */
+  _grFc() { return [["#3d5f91", "#a9c3ec"], ["#2f6b41", "#8ed09f"], ["#8a3b3b", "#e6a3a3"], ["#b7791f", "#f3d08a"], ["#6e5538", "#c19a66"], ["#5d4a72", "#b39ad0"], ["#c6cfdb", "#6b7a90"], ["#2b3445", "#9aa7bb"]]; }
+  _grTint(id, hell, fc) {
+    if (fc >= 1 && fc <= 8) return this._grFc()[fc - 1];
     const k = String(id || ""); if (!k || hell || (this._grLookNew && !this._grLookNew())) return null;
     const R = [[/herd|kuehl|gefrier|spuelmaschine|waschmaschine|trockner|kochinsel|kuechen/, ["#c6cfdb", "#6b7a90"]], [/bett|stockbett|kinderbett/, ["#3d5f91", "#a9c3ec"]], [/sofa|sessel|hollywood|hocker|stuhl|bank/, ["#4b5f7c", "#a3b6d4"]], [/tisch|theke|schreib|nachttisch|tischtennis/, ["#8a6238", "#d2a56b"]],
       [/schrank|regal|kommode|garderobe|buecher|schuhschrank/, ["#6e5538", "#c19a66"]], [/wanne|waschtisch|spuele|wc|dusche|bidet|toilette/, ["#8cc6ec", "#e2f2fc"]],
@@ -54,7 +57,7 @@
   _grNeoRot(sel) {
     if (!this._grLookNew || !this._grLookNew() || !sel) return "";
     const r = ((Math.round(sel.r || 0) % 360) + 360) % 360, gap = this._grWallGap(sel);
-    return `<div class="sffld" style="margin:6px 0"><label>Drehung</label><div class="grseg">${[0, 90, 180, 270].map((d) => `<button class="${r === d ? "on" : ""}" data-act="grxorots" data-v="${d}">${d}°</button>`).join("")}${r % 90 ? `<button class="on" disabled>${r}°</button>` : ""}</div></div>${gap != null ? `<div class="grgap">${ic("ruler", 14)}<span>Abstand zur nächsten Wand: <b>${gap} cm</b></span></div>` : ""}`;
+    return `<div class="sffld" style="margin:6px 0"><label>Drehung</label><div class="grseg">${[0, 90, 180, 270].map((d) => `<button class="${r === d ? "on" : ""}" data-act="grxorots" data-v="${d}">${d}°</button>`).join("")}${r % 90 ? `<button class="on" disabled>${r}°</button>` : ""}</div></div>${sel.t === "o" ? `<div class="sffld" style="margin:6px 0"><label>Farbe</label><div class="grseg"><button class="${sel.fc ? "" : "on"}" data-act="grxfc" data-v="0">Auto</button>${this._grFc().map((c, n) => `<button class="${sel.fc === n + 1 ? "on" : ""}" data-act="grxfc" data-v="${n + 1}" aria-label="Farbe ${n + 1}" style="min-width:34px;background:${c[0]};box-shadow:inset 0 0 0 2px ${c[1]}"> </button>`).join("")}</div></div>` : ""}${gap != null ? `<div class="grgap">${ic("ruler", 14)}<span>Abstand zur nächsten Wand: <b>${gap} cm</b></span></div>` : ""}`;
   }
   /* kürzester Abstand (cm) vom Rahmen eines Gegenstands zu einer Wand derselben Etage; null ohne Wände */
   _grWallGap(sel) {

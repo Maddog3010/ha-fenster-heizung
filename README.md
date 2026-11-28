@@ -395,6 +395,8 @@ Für Tablets an der Wand: große Knöpfe, Uhr im Kopf, untere Leiste mit den akt
 
 **Neu ab 2026.11.5b10 (Testversion):** Dazu E-Auto, Stromtarif und Solar-Prognose.
 
+**Neu ab 2026.11.5b24 (Testversion):** Haus & Grundriss: Beim Verschieben im Baukasten zeigen Hilfslinien die Ausrichtung an anderen Gegenständen, und jeder Gegenstand kann eine eigene Farbe bekommen.
+
 **Neu ab 2026.11.5b23 (Testversion):** Haus & Grundriss: Der Reiter „Etage & Plan“ im Baukasten ist auf drei Seiten verteilt, damit auch dort nichts gescrollt werden muss, und der Technik-Katalog hat Kacheln und Seiten.
 
 **Neu ab 2026.11.5b22 (Testversion):** Haus & Grundriss: Der Baukasten füllt auf Tablet und Desktop quer den ganzen Bildschirm, mit der Werkzeugleiste im Plan, Reitern rechts und einem Katalog zum Blättern – ohne Scrollen.

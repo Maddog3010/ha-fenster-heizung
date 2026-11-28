@@ -335,6 +335,8 @@ def clean_plan(raw: Any) -> dict[str, Any]:
         if it["t"] == "o":  # Möbel / Außen: Art, Größe über w/h, optional eine Entität (Pool-Temperatur, PV-Leistung, Zisterne …)
             o["ok"] = it.get("ok") if it.get("ok") in MOB_K else "tisch"
             o["e"] = _ent(it.get("e"))
+            if isinstance(it.get("fc"), int) and not isinstance(it.get("fc"), bool) and 1 <= it["fc"] <= 8:  # v0.17: eigene Farbe
+                o["fc"] = it["fc"]
             if it.get("lk") in (1, True):  # v0.15: „Fest“ – im Baukasten nicht versehentlich verschiebbar
                 o["lk"] = 1
         if it["t"] == "h":  # Haustechnik: Art, beliebige Entität, Reichweite/Blickwinkel, Notiztext

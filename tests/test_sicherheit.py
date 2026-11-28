@@ -913,3 +913,12 @@ def test_clean_plan_window_rollladen_and_height():
     assert p["f1"]["fk"] == "boden" and p["f1"]["ro"] == 1 and p["f1"]["hh"] == 215 and p["f1"]["b"] == 120
     assert "fk" not in p["f2"] and p["f2"]["ro"] == 1
     assert p["f3"]["hh"] == 400 and "ro" not in p["f3"]
+
+
+def test_eigene_farbe_je_gegenstand():
+    p = S.clean_plan({"floors": [{"id": "eg", "n": "EG"}], "items": [
+        {"id": "a", "fl": "eg", "t": "o", "ok": "sofa", "x": 0, "y": 0, "w": 100, "h": 50, "fc": 3},
+        {"id": "b", "fl": "eg", "t": "o", "ok": "sofa", "x": 0, "y": 0, "w": 100, "h": 50, "fc": 9},
+        {"id": "c", "fl": "eg", "t": "o", "ok": "sofa", "x": 0, "y": 0, "w": 100, "h": 50, "fc": True}]})
+    by = {i["id"]: i for i in p["items"]}
+    assert by["a"]["fc"] == 3 and "fc" not in by["b"] and "fc" not in by["c"]

@@ -38,7 +38,7 @@
   _grMobSvg(i, T, hell, st) {
     st = st || this._hass.states;
     const k = this._grMk(i), x = i.x, y = i.y, w = i.w || 40, h = i.h || 40, cx = x + w / 2, cy = y + h / 2, rot = i.r ? ` transform="rotate(${i.r} ${cx} ${cy})"` : "";
-    const TC = this._grTint ? this._grTint(i.ok, hell) : null;   /* v0.17: Farbe je Art (Holz, Stoff, Porzellan, Grün …) wie im Konzept */
+    const TC = this._grTint ? this._grTint(i.ok, hell, i.fc) : null;   /* v0.17: Farbe je Art (Holz, Stoff, Porzellan, Grün …) wie im Konzept */
     const S = TC ? TC[1] : hell ? "#64748b" : "#9aa7bb", F = TC ? TC[0] : hell ? "#ffffff" : "#1b2638", L = (dd, c, sw, da) => `<path d="${dd}" fill="none" stroke="${c || S}" stroke-width="${sw || 1.2}"${da ? ` stroke-dasharray="${da}"` : ""} stroke-linecap="round"/>`;
     const R = (xx, yy, ww, hh, rx, f, c, sw) => `<rect x="${xx}" y="${yy}" width="${ww}" height="${hh}" rx="${rx || 0}" fill="${f || F}" stroke="${c || S}" stroke-width="${sw || 1.3}"/>`;
     const C = (xx, yy, r, f, c, sw, da) => `<circle cx="${xx}" cy="${yy}" r="${r}" fill="${f || F}" stroke="${c || S}" stroke-width="${sw || 1.3}"${da ? ` stroke-dasharray="${da}"` : ""}/>`;
