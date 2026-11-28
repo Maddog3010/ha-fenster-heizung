@@ -2,6 +2,15 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.5b26] - 2026-11-28
+
+Modul 0 Haus & Grundriss, Version 0.17, siebter Teil.
+
+### Neu
+- **Vorlagen zum Start (D5):** Ist noch kein Grundriss gezeichnet, gibt es vier Vorlagen zum Anpassen: Wohnung mit 3 Zimmern, Reihenhaus, Doppelhaushälfte und Bungalow, jeweils mit Räumen, Wänden, Türen und Fenstern (Reihenhaus und Doppelhaushälfte mit EG und OG). Ein Tipp öffnet sie direkt im Baukasten.
+- **Suche „Wo ist …?“ (D3):** Über dem Plan gibt es ein Suchfeld für Technik, Möbel, Lampen, Melder und Räume, zum Beispiel „Sicherungskasten“, „Haupthahn“ oder „Steckdose Büro“. Ein Tipp auf einen Treffer wechselt die Etage, zoomt hin und markiert die Stelle 9 Sekunden lang mit einem pulsierenden Ring.
+- **Heizbedarf je Raum (D1, Schätzung):** Unter „Boden & Höhe“ steht bei einem einzelnen Raum eine grobe Einstufung (niedrig, mittel, hoch) aus Außenwänden, Raumhöhe und Fensterfläche, dazu die Zahlen. Ausdrücklich eine Schätzung, keine Heizlastberechnung.
+
 ## [2026.11.5b25] - 2026-11-28
 
 Modul 0 Haus & Grundriss, Version 0.17, sechster Teil.

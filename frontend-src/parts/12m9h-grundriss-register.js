@@ -31,6 +31,21 @@
     const P = this._grPlan(), st = this._hass.states; if (!P || P.error) return [];
     return (P.items || []).filter((i) => i.t === "f" && i.e && st[i.e] && ["on", "open"].includes(st[i.e].state)).map((i) => ({ id: i.id, deg: this._grWinDeg(i, P) })).filter((x) => bearing == null || x.deg == null || Math.abs((((x.deg - bearing) % 360) + 540) % 360 - 180) <= 70);
   }
+  /* D1 Heizbedarf je Raum (grobe Schätzung, keine Heizlastberechnung): Außenwand = Kante, hinter der kein anderer Raum der Etage liegt */
+  _grBedarf(P, r) {
+    const sc = P.scale > 0 ? P.scale : 40, I = P.items || [], oth = I.filter((q) => q.t === "r" && q.id !== r.id && q.fl === r.fl);
+    const pts = Array.isArray(r.pts) && r.pts.length >= 3 ? r.pts : [[r.x, r.y], [r.x + (r.w || 0), r.y], [r.x + (r.w || 0), r.y + (r.h || 0)], [r.x, r.y + (r.h || 0)]];
+    let aw = 0, awS = []; const c = [pts.reduce((t, a) => t + a[0], 0) / pts.length, pts.reduce((t, a) => t + a[1], 0) / pts.length];
+    pts.forEach((a, i) => {
+      const b = pts[(i + 1) % pts.length], L = Math.hypot(b[0] - a[0], b[1] - a[1]); if (!L) return;
+      const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, nx = -(b[1] - a[1]) / L, ny = (b[0] - a[0]) / L, s = (nx * (mx - c[0]) + ny * (my - c[1])) >= 0 ? 1 : -1, px = mx + s * nx * 14, py = my + s * ny * 14;
+      if (!oth.some((q) => this._grInRoom(q, px, py))) { aw += L / sc; awS.push(((((Math.atan2(s * nx, -s * ny) * 180) / Math.PI + (P.north || 0)) % 360) + 360) % 360); }
+    });
+    const m2 = (Array.isArray(r.pts) && r.pts.length >= 3 ? Math.abs(r.pts.reduce((t, a, i) => { const b = r.pts[(i + 1) % r.pts.length]; return t + a[0] * b[1] - b[0] * a[1]; }, 0)) / 2 : (r.w || 0) * (r.h || 0)) / (sc * sc);
+    const win = I.filter((i) => i.t === "f" && i.fl === r.fl && this._grInRoom(r, i.x + (i.w || 0) / 2, i.y + (i.h || 0) / 2)).reduce((t, w) => t + ((w.b || 90) * (w.hh || 120)) / 10000, 0), h = (r.hh || 250) / 100;
+    const sc2 = m2 > 0 ? (aw * h * 0.35 + win * 1.0) / m2 : 0;
+    return { aw: Math.round(aw * 10) / 10, seiten: awS.length, fenster: Math.round(win * 100) / 100, stufe: sc2 < 0.35 ? "niedrig" : sc2 < 0.7 ? "mittel" : "hoch" };
+  }
   _grRoom(id) { return this._grRegister().find((r) => r.id === id) || null; }
   _grRoomOf(entity) {
     const R = this._grRegister(); if (!R.length || !entity) return null;

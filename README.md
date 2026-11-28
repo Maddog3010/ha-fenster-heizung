@@ -395,6 +395,8 @@ Für Tablets an der Wand: große Knöpfe, Uhr im Kopf, untere Leiste mit den akt
 
 **Neu ab 2026.11.5b10 (Testversion):** Dazu E-Auto, Stromtarif und Solar-Prognose.
 
+**Neu ab 2026.11.5b26 (Testversion):** Haus & Grundriss: Unter „Boden & Höhe“ zeigt ein Raum eine grobe Schätzung seines Heizbedarfs, Vorlagen (Wohnung, Reihenhaus, Doppelhaushälfte, Bungalow) erleichtern den Start, und ein Suchfeld im Plan findet „Wo ist …?“ (Sicherungskasten, Haupthahn, Steckdose Büro).
+
 **Neu ab 2026.11.5b25 (Testversion):** Haus & Grundriss: Modul 1 ordnet Plan-Räume jetzt auch über Sensoren und Bereiche zu, wenn der Name nicht passt.
 
 **Neu ab 2026.11.5b24 (Testversion):** Haus & Grundriss: Beim Verschieben im Baukasten zeigen Hilfslinien die Ausrichtung an anderen Gegenständen, und jeder Gegenstand kann eine eigene Farbe bekommen.

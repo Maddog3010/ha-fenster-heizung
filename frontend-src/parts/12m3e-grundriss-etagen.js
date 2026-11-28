@@ -38,6 +38,7 @@
       <div class="mut sm" style="margin:8px 0 4px">Dachschräge: niedrige Kante</div><div class="grseg">${b("grxsd", "", "Keine", sd === "")}${[["n", "oben"], ["s", "unten"], ["w", "links"], ["o", "rechts"]].map(([k, t]) => b("grxsd", k, t, sd === k)).join("")}</div>
       ${sd !== "" && sd !== "-" ? `<div class="mut sm" style="margin:8px 0 4px">Kniestock (Höhe an der niedrigen Kante)</div><div class="grseg">${[0, 50, 80, 100, 120, 150].map((v) => b("grxkn", v, `${num(v / 100, 2)} m`, kn === v)).join("")}</div>
       <div class="mut sm" style="margin:8px 0 4px">Neigung</div><div class="grseg">${[25, 30, 35, 40, 45, 50].map((v) => b("grxdn", v, `${v}°`, dn === v)).join("")}</div>` : ""}
+      ${T.length === 1 && this._grBedarf && !T[0].ds ? (() => { const B = this._grBedarf(P, T[0]); return `<div class="mut sm" style="margin-top:8px">Heizbedarf (Schätzung): <b>${B.stufe}</b> · ${B.seiten} Außenwand${B.seiten === 1 ? "" : "wände"} (${f(B.aw)} m) · Fenster ${num(B.fenster, 1)} m²</div>`; })() : ""}
       ${ms && ms.slope ? `<div class="mut sm" style="margin-top:8px">Grundfläche ${f(ms.gf)} m² · <b>Wohnfläche ${f(ms.wf)} m²</b> · Volumen ${f(ms.vol)} m³</div>` : ""}</div>`;
   }
   _grMassAct(a, b) {
