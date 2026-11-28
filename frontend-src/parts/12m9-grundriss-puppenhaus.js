@@ -17,12 +17,21 @@
       ["grill", "Grill", "spiel", 60, 50], ["feuerstelle", "Feuerstelle", "spiel", 120, 120],
       ["weg", "Weg / Einfahrt", "bauten", 300, 120], ["trittsteine", "Trittsteine", "bauten", 300, 60], ["holzterrasse", "Holzterrasse", "bauten", 400, 300], ["zaun", "Zaun", "bauten", 400, 10], ["tor", "Tor", "bauten", 300, 10],
       ["gartenhaus", "Gartenhaus", "bauten", 300, 250], ["garage", "Garage", "bauten", 300, 600], ["carport", "Carport", "bauten", 300, 550], ["pv", "PV-Anlage", "bauten", 500, 300], ["zisterne", "Zisterne", "bauten", 200, 200],
+      ["nachttisch", "Nachttisch", "wohnen", 50, 40, "box"], ["kleiderschrank", "Kleiderschrank", "wohnen", 250, 60, "doors"], ["schuhschrank", "Schuhschrank", "wohnen", 100, 35, "doors"], ["garderobe", "Garderobe", "wohnen", 120, 40, "doors"],
+      ["teppich", "Teppich", "wohnen", 240, 170, "rug"], ["tischrund", "Esstisch rund", "wohnen", 120, 120, "round"], ["hocker", "Hocker", "wohnen", 40, 40, "round"], ["stuhl", "Stuhl", "wohnen", 45, 45, "seat"],
+      ["kinderbett", "Kinderbett", "wohnen", 70, 140, "bed"], ["stockbett", "Stockbett", "wohnen", 90, 200, "bed"], ["buecherregal", "Bücherregal", "wohnen", 200, 30, "rows"],
+      ["herd", "Herd", "kueche", 60, 60, "stove"], ["spuelmaschine", "Spülmaschine", "kueche", 60, 60, "box"], ["gefrierschrank", "Gefrierschrank", "kueche", 60, 65, "box"], ["theke", "Theke", "kueche", 200, 60, "box"], ["spuele", "Spüle", "kueche", 120, 60, "sink"],
+      ["trockner", "Wäschetrockner", "bad", 60, 60, "drum"], ["doppelwaschtisch", "Doppelwaschtisch", "bad", 140, 50, "sink"], ["waeschestaender", "Wäscheständer", "bad", 150, 60, "rows"],
+      ["kiesbett", "Kiesfläche", "garten", 300, 200, "rug"], ["pergola", "Pergola", "garten", 300, 300, "grid"], ["blumenkuebel", "Blumenkübel", "garten", 50, 50, "round"], ["brunnen", "Brunnen", "garten", 80, 80, "round"], ["steinmauer", "Steinmauer", "garten", 400, 30, "box"], ["kraeuter", "Kräuterbeet", "garten", 100, 60, "rows"],
+      ["tischtennis", "Tischtennisplatte", "spiel", 274, 152, "tt"], ["hollywood", "Hollywoodschaukel", "spiel", 200, 120, "seat"], ["hundehuette", "Hundehütte", "spiel", 80, 100, "box"], ["fussballtor", "Fußballtor", "spiel", 300, 10, "box"],
+      ["wallbox", "Wallbox", "bauten", 30, 15, "box"], ["waermepumpe", "Wärmepumpe außen", "bauten", 120, 60, "fan"], ["briefkasten", "Briefkasten", "bauten", 30, 20, "box"], ["kellerabgang", "Kellerabgang", "bauten", 120, 200, "stairs"],
+      ["lichtschacht", "Lichtschacht", "bauten", 100, 60, "grid"], ["terrasse", "Terrasse (Stein)", "bauten", 400, 300, "rug"], ["fahrradgarage", "Fahrradgarage", "bauten", 200, 80, "box"], ["solarthermie", "Solarthermie", "bauten", 200, 100, "grid"],
       ["muell", "Mülltonnen", "bauten", 150, 70], ["fahrrad", "Fahrradständer", "bauten", 180, 60], ["auto", "Auto", "bauten", 180, 450], ["gartenlampe", "Gartenlampe", "bauten", 30, 30]];
     const G = { wohnen: ["Wohnen & Schlafen", "#94a3b8"], kueche: ["Küche", "#94a3b8"], bad: ["Bad & Wäsche", "#7dd3fc"], garten: ["Garten & Pflanzen", "#4ade80"], spiel: ["Spielen & Freizeit", "#fbbf24"], bauten: ["Wege, Bauten & Technik", "#a8a29e"] };
     const D = { pool: ["sensor:temperature"], pv: ["sensor:power", "sensor:energy"], zisterne: ["sensor"], muell: ["sensor", "calendar"], garage: ["cover"], tor: ["cover"], maehroboter: ["lawn_mower", "vacuum"], auto: ["sensor:battery", "device_tracker"], waschmaschine: ["sensor:power", "switch", "sensor"], kuehlschrank: ["sensor:temperature"],
-      bewaesserung: ["valve", "switch"], wasserhahn: ["valve", "switch"], gartenlampe: ["light", "switch"], whirlpool: ["sensor:temperature", "climate", "water_heater"], sauna: ["sensor:temperature", "climate"], regentonne: ["sensor"], teich: ["sensor:temperature"], gewaechshaus: ["sensor:temperature", "sensor:humidity"] };
+      bewaesserung: ["valve", "switch"], wasserhahn: ["valve", "switch"], gartenlampe: ["light", "switch"], whirlpool: ["sensor:temperature", "climate", "water_heater"], sauna: ["sensor:temperature", "climate"], regentonne: ["sensor"], teich: ["sensor:temperature"], gewaechshaus: ["sensor:temperature", "sensor:humidity"], spuelmaschine: ["sensor:power", "switch"], trockner: ["sensor:power", "switch"], herd: ["switch", "sensor:power"], gefrierschrank: ["sensor:temperature"], waermepumpe: ["sensor:power", "climate", "switch"], wallbox: ["sensor:power", "switch"], tischrund: [], kellerabgang: ["cover"], solarthermie: ["sensor:temperature"], hundehuette: [] };
     this._grOUT = new Set(["garten", "spiel", "bauten"]);
-    this._grMKc = { L, G, D, by: Object.fromEntries(L.map((x) => [x[0], { k: x[0], n: x[1], g: x[2], w: x[3], h: x[4], d: D[x[0]] || [] }])) };
+    this._grMKc = { L, G, D, by: Object.fromEntries(L.map((x) => [x[0], { k: x[0], n: x[1], g: x[2], w: x[3], h: x[4], sh: x[5] || "", d: D[x[0]] || [] }])) };
     return this._grMKc;
   }
   _grMk(i) { const K = this._grMK(); return K.by[i.ok] || K.by.tisch; }
@@ -90,7 +99,24 @@
       case "holzterrasse": s = R(x, y, w, h, 1, "#8b5a2b", "#d6a46b", 1.2).replace('fill="#8b5a2b"', 'fill="#8b5a2b" fill-opacity=".8"') + L(Array.from({ length: Math.floor((w >= h ? h : w) / 10) }, (_, j) => (w >= h ? `M${x} ${y + (j + 1) * 10}H${x + w}` : `M${x + (j + 1) * 10} ${y}V${y + h}`)).join(""), "#a16207", 0.6); break;
       case "fahrrad": s = L(`M${x} ${cy}H${x + w}`, S, 1.6) + Array.from({ length: Math.max(2, Math.floor(w / 30)) }, (_, j) => { const bx2 = x + 12 + j * ((w - 24) / Math.max(1, Math.floor(w / 30) - 1)); return L(`M${bx2} ${y}V${y + h}`, "#94a3b8", 2.2); }).join(""); break;
       case "gartenlampe": { const on = !!(i.e && st && st[i.e] && st[i.e].state === "on"); s = (on ? `<circle cx="${cx}" cy="${cy}" r="${m * 2.2}" fill="#fde68a" opacity=".25"/>` : "") + C(cx, cy, Math.max(4, m / 2), on ? "#fde68a" : F, on ? "#fbbf24" : S, 1.4); break; }
-      default: s = R(x, y, w, h, 3);
+      default: {   /* v0.15: einfache Formen für die neuen Gegenstände */
+        const sh = k.sh || "box", tint = hell ? "#e2e8f0" : "#243247";
+        if (sh === "round") s = `<ellipse cx="${cx}" cy="${cy}" rx="${w / 2}" ry="${h / 2}" fill="${F}" stroke="${S}" stroke-width="1.3"/>`;
+        else if (sh === "rug") s = `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="4" fill="${tint}" fill-opacity=".7" stroke="${S}" stroke-opacity=".7" stroke-dasharray="5 4"/>` + R(x + 6, y + 6, w - 12, h - 12, 2, "none", S, 0.7);
+        else if (sh === "rows") { const n2 = Math.max(1, Math.floor((w >= h ? w : h) / 28)); s = R(x, y, w, h, 1) + L(Array.from({ length: n2 }, (_, j) => { const t2 = (j + 1) / (n2 + 1); return w >= h ? `M${x + w * t2} ${y + 2}V${y + h - 2}` : `M${x + 2} ${y + h * t2}H${x + w - 2}`; }).join(""), null, 0.8); }
+        else if (sh === "doors") s = R(x, y, w, h, 1) + L(`M${cx} ${y}V${y + h}`, null, 0.9) + C(cx - 4, cy, 1.2, S, S, 1) + C(cx + 4, cy, 1.2, S, S, 1);
+        else if (sh === "stove") { const r2 = Math.min(w, h) * 0.17; s = R(x, y, w, h, 2) + [[0.3, 0.3], [0.7, 0.3], [0.3, 0.7], [0.7, 0.7]].map(([a, b]) => C(x + w * a, y + h * b, r2)).join(""); }
+        else if (sh === "drum") s = R(x, y, w, h, 3) + C(cx, cy + h * 0.06, m * 0.3) + L(`M${x + 4} ${y + 5}h${w * 0.25}`, null, 1);
+        else if (sh === "sink") { const n2 = w > h * 1.6 ? 2 : 1; s = R(x, y, w, h, 3) + Array.from({ length: n2 }, (_, j) => `<ellipse cx="${x + (w / n2) * (j + 0.5)}" cy="${cy + h * 0.06}" rx="${(w / n2) * 0.34}" ry="${h * 0.28}" fill="none" stroke="#7dd3fc" stroke-width="1.3"/>`).join(""); }
+        else if (sh === "bed") s = R(x, y, w, h, 3) + R(x + 4, y + 4, w - 8, Math.min(h * 0.2, 26), 4) + R(x + 3, y + Math.min(h * 0.2, 26) + 7, w - 6, h - Math.min(h * 0.2, 26) - 10, 3, "none", S, 0.8);
+        else if (sh === "seat") s = R(x, y, w, h, 7) + R(x, y, w, h * 0.26, 5);
+        else if (sh === "grid") s = R(x, y, w, h, 1) + L(Array.from({ length: Math.max(1, Math.floor(w / 40)) }, (_, j) => `M${x + (w / (Math.floor(w / 40) + 1)) * (j + 1)} ${y}V${y + h}`).join("") + Array.from({ length: Math.max(1, Math.floor(h / 40)) }, (_, j) => `M${x} ${y + (h / (Math.floor(h / 40) + 1)) * (j + 1)}H${x + w}`).join(""), null, 0.8);
+        else if (sh === "fan") s = R(x, y, w, h, 3) + C(cx, cy, m * 0.36) + L(`M${cx} ${cy - m * 0.3}V${cy + m * 0.3}M${cx - m * 0.3} ${cy}H${cx + m * 0.3}`, null, 1);
+        else if (sh === "stairs") s = R(x, y, w, h, 1) + L(Array.from({ length: Math.max(3, Math.floor(h / 22)) }, (_, j) => `M${x} ${y + (h / (Math.max(3, Math.floor(h / 22)) + 1)) * (j + 1)}H${x + w}`).join(""), null, 0.9);
+        else if (sh === "tt") s = `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="2" fill="#1f5f4a" stroke="${S}"/>` + L(`M${cx} ${y}V${y + h}`, "#e2e8f0", 1.2) + L(`M${x + 2} ${y + 2}H${x + w - 2}V${y + h - 2}H${x + 2}Z`, "#e2e8f0", 0.6);
+        else s = R(x, y, w, h, 3);
+        break;
+      }
     }
     const S2 = i.e && this._grTechState ? this._grTechState(i) : null, lab = S2 && S2.t ? S2.t : "", lw = lab.length * 5.6 + 12;
     const chip = lab ? `<rect x="${cx - lw / 2}" y="${cy - 7.5}" width="${lw}" height="15" rx="7.5" fill="${hell ? "#fff" : "#0b1220"}" opacity=".92"/><text x="${cx}" y="${cy + 3.5}" text-anchor="middle" font-size="9.5" font-weight="700" fill="${S2.on ? "#fbbf24" : hell ? "#334155" : "#e2e8f0"}">${esc(lab)}</text>` : "";
@@ -181,7 +207,7 @@
     return this._wzSel(cand, sel.e || "", "grxpk", `data-k="${esc(sel.t)}"`, "– nicht verbunden –", hint || null);
   }
   /* ---- Baukasten: Möbel/Außen */
-  _grMobCat(cur, act, onlyOut) { const K = this._grMK(); return Object.entries(K.G).filter(([g]) => onlyOut == null || this._grOUT.has(g) === onlyOut).map(([g, [gn, gc]]) => `<div class="grtkg"><small style="color:${gc}">${gn}</small><div class="grseg">${K.L.filter((x) => x[2] === g).map((x) => `<button class="${cur === x[0] ? "on" : ""}" data-act="${act}" data-v="${x[0]}">${x[1]}</button>`).join("")}</div></div>`).join(""); }
+  _grMobCat0(cur, act, onlyOut) { const K = this._grMK(); return Object.entries(K.G).filter(([g]) => onlyOut == null || this._grOUT.has(g) === onlyOut).map(([g, [gn, gc]]) => `<div class="grtkg"><small style="color:${gc}">${gn}</small><div class="grseg">${K.L.filter((x) => x[2] === g).map((x) => `<button class="${cur === x[0] ? "on" : ""}" data-act="${act}" data-v="${x[0]}">${x[1]}</button>`).join("")}</div></div>`).join(""); }
   _grMobProps(sel) {
     const k = this._grMk(sel), sc = this._sfScale(), st = this._hass.states, cm = (px) => Math.round((px / sc) * 100);
     const want = k.d, match = (e) => want.some((w) => { const [dm, dc] = w.split(":"); return e.startsWith(dm + ".") && (!dc || ((st[e].attributes || {}).device_class === dc)); }), cand = want.length ? Object.keys(st).filter(match) : [];
@@ -189,6 +215,7 @@
     return `<details class="grtkd"><summary><span style="color:${this._grMK().G[k.g][1]}">●</span> ${esc(k.n)} <small class="mut">· ändern</small></summary>${this._grMobCat(sel.ok, "grxok2")}</details>
       ${step("grxow", "Breite", cm(sel.w || 40))}${step("grxoh", "Tiefe", cm(sel.h || 40))}
       <div class="grseg" style="margin:2px 0 8px"><button data-act="grxorot" data-s="-15">↺ 15°</button><button data-act="grxorot" data-s="15">↻ 15°</button><button data-act="grxorot" data-s="90">↻ 90°</button><button data-act="grxosz">Normgröße</button></div>
+      ${this._grNeoRot ? this._grNeoRot(sel) : ""}
       ${want.length ? `<div class="sffld"><label>Verbinden mit Home Assistant (optional)</label>${cand.length || sel.e ? this._grPick(sel, cand, /heiz|thermostat|trv|radiator|klima|ofen|kamin|lampe|licht/i) : `<div class="mut sm">Keine passende Entität gefunden.</div>`}${S ? `<div class="grwall ok" style="margin-top:6px">${ic("check", 14)}<span>${esc(this._wzName(sel.e))} · <b>${esc(S.t || "verbunden")}</b></span></div>` : ""}</div>` : ""}`;
   }
   _grB10Box() {
@@ -206,10 +233,11 @@
     const P = ed.plan;
     if (a === "grxnorth") { this._sfSnap(); P.north = ((((P.north || 0) + s) % 360) + 360) % 360; this._render(); return true; }
     if (a === "grxlot") { if (P.floors.length >= 6 || P.floors.some((f) => f.ga)) return true; this._sfSnap(); const id = "ga" + Date.now().toString(36).slice(-4); P.floors.push({ id, n: "Außen", ga: 1 }); this._sfFlId = id; ed.sel = ""; ed.tool = "o"; this._grOkLast = "rasen"; this._render(); this._toast("Grundstück angelegt – Rasen, Wege, Pool & Co. mit „Möbel“ setzen"); return true; }
-    if (a === "grxokt") { this._grOkLast = v; this._render(); return true; }
+    if (this._grKatAct && this._grKatAct(a, b)) return true;   /* v0.15: Katalog-Filter, Favoriten, Spiegeln, Ausrichten */
+    if (a === "grxokt") { this._grOkLast = v; this._grRecAdd(v); this._render(); return true; }
     const cur = P.items.find((x) => x.id === ed.sel); if (!cur || cur.t !== "o") return false;
     const sc = this._sfScale(), px = (cm) => Math.max(4, Math.round((cm / 100) * sc));
-    if (a === "grxok2") { this._sfSnap(); const kk = this._grMK().by[v]; if (kk) { const cx = cur.x + cur.w / 2, cy = cur.y + cur.h / 2; cur.ok = v; cur.w = px(kk.w); cur.h = px(kk.h); cur.x = Math.round(cx - cur.w / 2); cur.y = Math.round(cy - cur.h / 2); if (!kk.d.length) cur.e = ""; } this._grOkLast = v; this._render(); return true; }
+    if (a === "grxok2") { this._sfSnap(); const kk = this._grMK().by[v]; if (kk) { const cx = cur.x + cur.w / 2, cy = cur.y + cur.h / 2; cur.ok = v; this._grRecAdd(v); cur.w = px(kk.w); cur.h = px(kk.h); cur.x = Math.round(cx - cur.w / 2); cur.y = Math.round(cy - cur.h / 2); if (!kk.d.length) cur.e = ""; } this._grOkLast = v; this._render(); return true; }
     /* 2026.11.4.6: Größe ändern, ohne dass das Element wandert – die Mitte bleibt (gedreht wird um die Mitte) */
     const keepC = (fn) => { const cx = cur.x + (cur.w || 0) / 2, cy = cur.y + (cur.h || 0) / 2; fn(); cur.x = Math.round(cx - (cur.w || 0) / 2); cur.y = Math.round(cy - (cur.h || 0) / 2); };
     if (a === "grxow" || a === "grxoh") { this._sfSnap(); const key = a === "grxow" ? "w" : "h", cm = Math.max(10, Math.round(((cur[key] || 40) / sc) * 100) + s); keepC(() => { cur[key] = px(cm); }); this._render(); return true; }

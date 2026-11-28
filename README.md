@@ -395,6 +395,8 @@ Für Tablets an der Wand: große Knöpfe, Uhr im Kopf, untere Leiste mit den akt
 
 **Neu ab 2026.11.5b10 (Testversion):** Dazu E-Auto, Stromtarif und Solar-Prognose.
 
+**Neu ab 2026.11.5b18 (Testversion):** Haus & Grundriss: Katalog mit Suche und Favoriten, 46 neue Gegenstände, Spiegeln und Ausrichten im Baukasten, außerdem Raum-Blatt mit drei Kacheln und „Genutzt von“, dazu eine Kachel „Haus“ auf der Startseite.
+
 **Neu ab 2026.11.5b16 (Testversion):** Haus & Grundriss prüft den Plan vor dem Speichern, repariert doppelte Raum-Kennungen und sperrt den Baukasten, solange ihn jemand bearbeitet. Dazu eine neue Optik mit Haus-Szene, Kennzahlen und einer Kopfleiste (Einstellungen → Optik → „Wie bisher“).
 
 **Neu ab 2026.11.5b15 (Testversion):** Tablet-Modus für die restlichen Module (Lüftung, Rollläden, Wärmepumpe, Garten, Pool, Batterie, Haus & Grundriss), jeweils ohne Scrollen.

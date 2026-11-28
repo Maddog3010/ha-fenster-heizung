@@ -74,6 +74,7 @@
       const x = B[0], same = B.filter((b) => b.days === x.days); K.v = x.days === 0 ? "Heute" : x.days === 1 ? "Morgen" : `${x.days}`; K.u = x.days > 1 ? "Tage" : ""; K.tx = x.days <= 1;
       K.l1 = same.map((b) => esc(b.name)).join(", "); K.l2 = x.days <= 1 ? "Tonne rausstellen" : ""; K.z = x.state === "out" ? "hint" : x.days <= 1 ? "info" : "ok"; K.o.col = x.color; return K;
     }
+    if (m.id === "gr" && this._grStartK) return this._grStartK(K, off);
     if (m.id === "li") {
       if (!this._liOn()) return off("Aus"); const L = this._liLamps().filter((x) => !x.un), n = L.filter((x) => x.on).length; if (!L.length) return off("Keine Lampen");
       K.v = String(n); K.u = "an"; K.p = n / L.length; K.l1 = n ? `von ${L.length} Lampen` : "alles aus"; K.z = n ? "act" : "ok"; K.o.on = n > 0; return K;

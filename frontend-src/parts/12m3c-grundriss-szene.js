@@ -61,6 +61,36 @@
   }
   /* A6: Ebenen als wischbare Leiste (ersetzt die umbrechenden Knöpfe); gleiche Aktionen wie bisher */
   _grLayerBar(lyr) { return lyr.replace('<div class="grl">', '<div class="grl grlb">'); }
+  /* v0.14 Build 2 · A5 Raum-Blatt 2.0: oben drei Kacheln (Temperatur mit Soll, Feuchte, Lampen), darunter eine Zeile mit dem Weiteren */
+  _grRoomTiles(s, lamps, win, mot, tC) {
+    const st = this._hass.states, tile = (ico, lab, big, sub, col, k) => `<${k ? `button data-act="grxgo" data-k="${k}"` : "div"} class="grrt"><span class="grrti">${ic(ico, 16)}</span><small>${lab}</small><b${col ? ` style="color:${col}"` : ""}>${big}</b><em>${sub || "&nbsp;"}</em></${k ? "button" : "div"}>`;
+    const on = lamps.filter((x) => x.on).length;
+    const t1 = s && s.cur != null ? tile("thermo", "Temperatur", `${num(s.cur, 1)}°`, s.ziel != null ? `Soll ${num(s.ziel, 1)}°` : "", tC, "fh") : tile("thermo", "Temperatur", "–", "kein Raum aus Modul 1", "", "");
+    const t2 = tile("humidity", "Feuchte", s && s.hum != null ? `${num(s.hum)} %` : "–", s && s.hum != null ? "" : "kein Sensor", "", s ? "fh" : "");
+    const t3 = tile("lamp", "Lampen", lamps.length ? `${on}` : "–", lamps.length ? `${on === 1 ? "an" : "an"} von ${lamps.length}` : "keine", on ? "#ffb36b" : "", lamps.length ? "li" : "");
+    const bits = [];
+    if (s) bits.push(s.anyOpen ? `<span style="color:#f59e0b">${s.anyOpen} ${s.anyOpen === 1 ? "Fenster" : "Fenster"} offen</span>` : win.length || (s.wins || []).length ? "Fenster zu" : "");
+    else if (win.length) bits.push(`${win.length} Fenster im Plan`);
+    if (s && s.heating) bits.push(`<span style="color:#fb923c">heizt</span>`);
+    if (mot.length) bits.push(mot.some((e) => st[e].state === "on") ? `<span style="color:var(--teal)">Bewegung gerade</span>` : "keine Bewegung");
+    return `<style>.grrts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:2px 0 10px}.grrt{display:flex;flex-direction:column;align-items:flex-start;gap:1px;border:0;border-radius:14px;padding:10px 12px;background:color-mix(in srgb,var(--primary-text-color) 6%,transparent);color:var(--primary-text-color);font:inherit;text-align:left}
+      button.grrt{cursor:pointer}.grrt small{color:var(--mut);font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase}.grrt b{font-size:1.5rem;line-height:1.15;font-variant-numeric:tabular-nums}.grrt em{font-style:normal;color:var(--mut);font-size:.76rem}.grrti{color:var(--mut)}.grrline{color:var(--mut);font-size:.85rem;margin:0 0 6px}</style>
+      <div class="grrts">${t1}${t2}${t3}</div>${bits.filter(Boolean).length ? `<div class="grrline">${bits.filter(Boolean).join(" · ")}</div>` : ""}`;
+  }
+  /* „Genutzt von“: welche Module diesen Raum kennen, mit Sprung dorthin */
+  _grRoomUse(s, lamps, mel, win) {
+    const u = []; if (s) u.push(["fh", "Modul 1"]); if (mel.length || win.length) u.push(["sf", "Modul 11"]); if (lamps.length) u.push(["li", "Modul 18"]);
+    const ok = u.filter(([k]) => this._mdList().some((m) => m.id === k)); if (!ok.length) return "";
+    return `<div class="grrline" style="margin-top:10px">Genutzt von: ${ok.map(([k, t]) => `<button class="grc" style="background:color-mix(in srgb,var(--primary-text-color) 8%,transparent);color:inherit" data-act="grxgo" data-k="${k}">${t}</button>`).join(" ")}</div>`;
+  }
+  /* C14: Kachel „Haus“ auf der Startseite – Mini-Plan und Kennzahlen */
+  _grStartK(K, off) {
+    const P = this._grPlan(); if (!P || P.error || !(P.items || []).some((i) => i.t === "r")) return off("Kein Plan");
+    const L = this._grLive(), n = (P.items || []).filter((i) => i.t === "r").length;
+    K.v = String(n); K.u = n === 1 ? "Raum" : "Räume"; K.l1 = L.win ? `${L.win} ${L.win === 1 ? "Fenster" : "Fenster"} offen` : "alle Fenster zu"; K.z = L.win ? "hint" : "ok";
+    K.gr = `<svg viewBox="0 0 270 150" aria-hidden="true" style="width:100%;height:auto;max-height:54px">${this._grScene(P).replace(/^<svg[^>]*>/, "").replace(/<\/svg>$/, "")}</svg>`;
+    return K;
+  }
   _grLookCss() {
     return `.grh2{background:radial-gradient(120% 140% at 95% 0%,#0e7490 0%,transparent 55%),linear-gradient(135deg,#0f3d3a,#0b1a2c 70%)}.grh2 svg.grhs{width:min(42%,270px)}
       .grh2 .b{font-size:1.35rem;font-weight:800;color:#fff}.grcs{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}

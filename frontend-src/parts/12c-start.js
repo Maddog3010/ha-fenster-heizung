@@ -86,6 +86,7 @@
     else if (m.id === "gs") { const n = this._gsState().devices.length; sub = n ? `${n} ${n === 1 ? "Gerät" : "Geräte"}` : "Keine Geräte"; c = n ? "" : "mut"; }
     else if (m.id === "ev") { const E = this._evStartK(); sub = E ? `${E.est ? "≈ " : ""}${num(E.soc, 0)} %${E.chg ? " · lädt" : ""}` : "Nicht eingerichtet"; c = E ? "" : "mut"; }
     else if (m.id === "mu" && this._muOn()) { const x = this._hzMu().filter((b) => b.next).sort((a, b) => a.days - b.days)[0]; sub = x ? `${esc(x.name)} ${this._muWhen(x.days)}` : "Keine Termine"; c = x && x.days <= 1 ? "wa" : x ? "" : "mut"; this._muLoad(); }
+    else if (m.id === "gr") { const P = this._grPlan(), n = P && !P.error ? (P.items || []).filter((i) => i.t === "r").length : 0, w = n && this._grLive ? this._grLive().win : 0; sub = n ? `${n} ${n === 1 ? "Raum" : "Räume"}${w ? ` · ${w} Fenster offen` : ""}` : "Kein Plan"; c = w ? "wa" : n ? "" : "mut"; }
     else if (m.id === "li" && this._liOn()) { const L = this._liLamps().filter((x) => !x.un), n = L.filter((x) => x.on).length; sub = L.length ? (n ? `${n} von ${L.length} an` : "Alles aus") : "Keine Lampen"; c = n ? "wa" : "mut"; }
     else if (m.id === "sp") { const t = this._spStart(); sub = esc(t.sub); c = t.c; if (t.icon) return `<button class="hzt ${c}" data-act="hzgo" data-k="${m.id}"><span class="hti hsp">${t.icon}</span><b>${esc(m.short)}</b><small>${sub}</small></button>`; }
     else if (m.addon) { const t = this._adTile(m); sub = t.sub; c = t.c; }

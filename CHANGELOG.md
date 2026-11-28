@@ -2,6 +2,24 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.5b18] - 2026-11-28
+
+Modul 0 Haus & Grundriss: Version 0.14 „Neue Optik Plan“, zweiter Teil, und Version 0.15 „Baukasten & Gegenstände“, erster Teil.
+
+### Neu
+- **Baukasten in neuer Optik:** dieselbe ruhige Gestaltung wie der Plan. Die Kopfleiste trägt den Titel „Baukasten“, der Plan-Check ist eine Ampel (grün, gelb, rot) mit der Zahl der Hinweise, Werkzeugleiste, Eigenschaften und Ablage haben weiche dunkle Flächen ohne harte Rahmen. Bei Gegenständen gibt es die Drehung in Schritten (0°, 90°, 180°, 270°) und „Abstand zur nächsten Wand“ in cm. Unter Einstellungen → Optik → „Wie bisher“ kommt der frühere Baukasten zurück.
+- **Ein Katalog mit Suche:** Im Werkzeug „Möbel“ und beim Ändern eines Gegenstands gibt es jetzt ein Suchfeld, „Zuletzt“, Favoriten ★ und die Kategorien. Zuletzt und Favoriten merkt sich jeder Browser.
+- **46 neue Gegenstände (jetzt 96):** zum Beispiel Nachttisch, Kleiderschrank, Teppich, Herd, Spülmaschine, Wäschetrockner, Pergola, Tischtennisplatte, Wallbox, Wärmepumpe und Kellerabgang. Mit passender Home-Assistant-Entität, wo es Sinn ergibt (zum Beispiel Wärmepumpe, Wallbox, Spülmaschine).
+- **Spiegeln:** Mehrere ausgewählte Elemente links ↔ rechts oder oben ↔ unten an der Mitte der Auswahl spiegeln.
+- **Ausrichten und Verteilen:** Möbel, Geräte und Technik bündig links, rechts, oben, unten, mittig oder mit gleichen Abständen. Alles lässt sich mit „Rückgängig“ zurücknehmen.
+- **Raum-Blatt 2.0:** Antippen eines Raums zeigt oben drei Kacheln (Temperatur mit Soll, Feuchte, Lampen), darunter eine Zeile mit Fenstern, Heizung und Bewegung. „Genutzt von“ zeigt, welche Module den Raum kennen, mit Sprung dorthin. Die Kacheln springen in Modul 1 und 18. Schnellaktionen: Heizen, Licht, Heranzoomen. Gilt mit „Neue Optik“, „Wie bisher“ zeigt die Liste wie zuvor.
+- **Kachel „Haus“ auf der Startseite:** Mini-Haus mit Tageszeit und Temperaturfarben, Zahl der Räume und offene Fenster. Ohne Plan steht „Kein Plan“.
+
+### Noch offen
+- Ebenen für Rollläden (Modul 6) und Bewässerung (Modul 10): erst, wenn die Module Daten liefern.
+- Hintergrundbilder als Dateien und Zeichner mit Zwischenspeicher: brauchen Tests auf einer echten Installation, deshalb ein eigener Schritt.
+- Zustände aller Gegenstände mit Entität im Plan und die Gegenstands-Pakete als Addon (v0.15, nächste Builds). Im Baukasten fehlen noch „Fest (nicht verschiebbar)“ (braucht eine Erweiterung der Plan-Daten), Farbe/Material und Hilfslinien beim Verschieben.
+
 ## [2026.11.5b17] - 2026-11-27
 
 Neuer Auftritt: neues Icon, neues Banner und ein neu sortiertes README.
@@ -17,6 +35,7 @@ Neuer Auftritt: neues Icon, neues Banner und ein neu sortiertes README.
 
 ### Hinweis
 - Nach dem Update Home Assistant neu starten und die Seite neu laden (in der App die App ganz schließen). Das Icon im Marketplace kann eine Weile brauchen, bis es sich ändert.
+
 
 ## [2026.11.5b16] - 2026-11-27
 
